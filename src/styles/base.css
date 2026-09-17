@@ -1,0 +1,194 @@
+/**
+ * WARSTWA BAZOWA - dokument, typografia, dostępność globalna.
+ *
+ * Wszystko tutaj obowiązuje w całym serwisie i nie powinno być nadpisywane
+ * lokalnie. Reguły dostępności w tym pliku pokrywają punkty 🧱 checklisty
+ * przedwdrożeniowej: widoczny wskaźnik fokusu, obsługa ograniczonego ruchu,
+ * pominięcie nawigacji, cel dotykowy.
+ */
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    /* Kotwica nie może wylądować pod przyklejonym nagłówkiem. */
+    scroll-padding-top: 5rem;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background: var(--color-tlo);
+    background-image: var(--tlo-strony);
+    background-attachment: fixed;
+    color: var(--color-tresc);
+    font-family: var(--font-tresc);
+    font-size: var(--text-tresc);
+    line-height: 1.6;
+    min-height: 100svh;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: var(--font-naglowek);
+    color: var(--color-tekst);
+    text-wrap: balance;
+  }
+
+  p,
+  li {
+    text-wrap: pretty;
+  }
+
+  /* Zdjęcia nigdy nie wychodzą poza kontener i nie wiszą na linii bazowej. */
+  img,
+  picture,
+  video,
+  canvas,
+  svg {
+    display: block;
+    max-width: 100%;
+  }
+
+  /* ------------------------------------------------------------------
+     FOKUS - jedna reguła na cały serwis.
+
+     `outline: 0` bez zamiennika jest błędem, nie stylem. Jeśli gdzieś
+     musisz zdjąć obrys, zastąp go czymś równie widocznym W TEJ SAMEJ
+     regule - nie licz na to, że ktoś doda to później.
+
+     `:focus-visible`, nie `:focus`: mysz nie ma dostać obrysu po kliknięciu
+     w przycisk, klawiatura ma go dostać zawsze.
+     ------------------------------------------------------------------ */
+  :focus-visible {
+    outline: var(--fokus-grubosc) solid var(--fokus-kolor);
+    outline-offset: var(--fokus-odsuniecie);
+    border-radius: var(--radius-s);
+  }
+
+  /* ------------------------------------------------------------------
+     UKRYWANIE - `opacity: 0` i `pointer-events: none` NIE wyjmują
+     elementu z kolejności Tab. Element niewidoczny, a łapiący fokus,
+     to pułapka dla klawiatury i punkt 🧱 checklisty.
+
+     Używaj tych dwóch mechanizmów i żadnego innego:
+       [hidden]                - element w ogóle nie istnieje wizualnie
+       .poza-ekranem           - treść dla czytnika, niewidoczna na ekranie
+     Do wyłączania całych obszarów (tło okna modalnego) służy `inert`.
+     ------------------------------------------------------------------ */
+  [hidden] {
+    display: none !important;
+  }
+
+  .poza-ekranem {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  /* ------------------------------------------------------------------
+     POMINIĘCIE NAWIGACJI - pierwszy element w kolejności Tab.
+     Niewidoczny do czasu złapania fokusu, potem w pełni widoczny.
+     ------------------------------------------------------------------ */
+  .pomin-nawigacje {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 100;
+    transform: translateY(-120%);
+    background: var(--color-akcent);
+    color: #ffffff;
+    font-weight: 600;
+    padding: 0.75rem 1.25rem;
+    border-bottom-right-radius: var(--radius-m);
+    transition: transform var(--czas-natychmiast) var(--ease-podstawowa);
+  }
+
+  .pomin-nawigacje:focus-visible {
+    transform: translateY(0);
+  }
+
+  /* ------------------------------------------------------------------
+     CEL DOTYKOWY - 44 px to minimum WCAG 2.1 AA dla przycisków, ikon
+     i pozycji menu. Reguła jest tutaj, żeby nie trzeba było jej pamiętać
+     przy każdym nowym komponencie.
+     ------------------------------------------------------------------ */
+  button,
+  [role='button'],
+  a.przycisk,
+  .cel-dotykowy {
+    min-height: var(--cel-dotykowy);
+    min-width: var(--cel-dotykowy);
+  }
+
+  /* ------------------------------------------------------------------
+     OGRANICZONY RUCH - warstwa CSS.
+     Warstwa JavaScriptu jest w `src/scripts/ruch.ts` i musi zostać
+     obsłużona osobno: samo CSS nie zatrzyma animacji sterowanej skryptem.
+     ------------------------------------------------------------------ */
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+@layer components {
+  /* ------------------------------------------------------------------
+     KONTENER TREŚCI - jedna szerokość i jeden margines boczny na serwis.
+     ------------------------------------------------------------------ */
+  .wrap {
+    width: 100%;
+    max-width: var(--container-tresc);
+    margin-inline: auto;
+    padding-inline: var(--margines-x);
+  }
+
+  .sekcja {
+    padding-block: var(--sekcja-y);
+  }
+
+  /* ------------------------------------------------------------------
+     ODSŁANIANIE PRZY PRZEWIJANIU.
+
+     Stan domyślny jest WIDOCZNY. To jest decyzja, nie przeoczenie:
+     przy wyłączonym JavaScripcie IntersectionObserver nigdy nie wystartuje,
+     a treść schowana pod `opacity: 0` zostałaby niewidoczna na zawsze.
+     Checklista klasyfikuje to jako bloker („treść widoczna, nie schowana
+     za animacją wejścia").
+
+     Skrypt `src/scripts/ruch.ts` dopiero USTAWIA `data-rv="czeka"` na
+     elementach, które ma odsłonić, i zdejmuje ten atrybut przy wejściu
+     w widok. Bez skryptu atrybut nie powstaje i nic się nie chowa.
+     ------------------------------------------------------------------ */
+  [data-rv='czeka'] {
+    opacity: 0;
+    transform: translateY(1.875rem);
+  }
+
+  [data-rv='widoczny'] {
+    opacity: 1;
+    transform: none;
+    transition:
+      opacity var(--czas-wejscie) var(--ease-podstawowa) var(--rv-zwloka, 0ms),
+      transform var(--czas-wejscie) var(--ease-podstawowa) var(--rv-zwloka, 0ms);
+  }
+}

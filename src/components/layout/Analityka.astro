@@ -1,0 +1,30 @@
+---
+/**
+ * ANALITYKA - moduł opcjonalny (`moduly.analityka`).
+ *
+ * Plausible, bo nie zapisuje niczego na urządzeniu odwiedzającego: bez plików
+ * cookie, bez identyfikatorów, bez okna zgody. Wystarczy wzmianka w polityce
+ * prywatności - i ta wzmianka pojawia się tam automatycznie, gdy moduł jest
+ * włączony (patrz `src/pages/polityka-prywatnosci.astro`).
+ *
+ * TRZY RZECZY MUSZĄ ZAJŚĆ RAZEM, inaczej audyt to wyłapie:
+ *   1. `moduly.analityka = true`   → skrypt się renderuje,
+ *   2. wpis w CSP                   → dzieje się sam, `astro.config.ts` czyta
+ *                                     `endpointy.plausible`,
+ *   3. opis w polityce prywatności → dzieje się sam, ten sam przełącznik.
+ *
+ * Checklista sprawdza to w obie strony: każde żądanie poza własną domenę musi
+ * być opisane, i nie może być opisu żądania, którego nie ma.
+ *
+ * ⚠️ Skrypt strony trzeciej wchodzi tylko wtedy, gdy KTOŚ BĘDZIE CZYTAŁ
+ * te dane. Analityka, w którą nikt nie zagląda, to żądanie zewnętrzne
+ * i wpis w polityce w zamian za nic.
+ */
+import { moduly, endpointy, site } from '../../config/site'
+
+const aktywna = moduly.analityka && Boolean(endpointy.plausible)
+const domena = new URL(site.origin).host
+const zrodlo = aktywna ? `${endpointy.plausible.replace(/\/$/, '')}/js/script.js` : null
+---
+
+{aktywna && zrodlo && <script is:inline defer data-domain={domena} src={zrodlo} />}

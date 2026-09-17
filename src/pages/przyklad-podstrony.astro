@@ -1,0 +1,53 @@
+---
+/**
+ * PRZYKŁADOWA PODSTRONA - wzór do kopiowania przy dodawaniu nowej.
+ *
+ * Nowa podstrona to JEDEN plik w `src/pages/`. Nic więcej:
+ *   · trafia do builda,          bo Astro czyta katalog `src/pages`,
+ *   · trafia do mapy strony,     bo `tools/build/mapa-strony.mjs` bierze listę
+ *                                z wyniku builda, nie z osobnego pliku,
+ *   · trafia do audytu,          bo audyt czyta mapę strony i listę builda.
+ *
+ * Nie ma trzeciego miejsca do dopisania. Jeśli kiedykolwiek będzie, to znaczy,
+ * że ktoś zepsuł tę własność i trzeba ją przywrócić, a nie dopisywać ręcznie.
+ *
+ * Nową pozycję w menu dopisujesz w `nawigacja` w `src/config/dane.ts` -
+ * to jest świadomie osobna decyzja, bo nie każda podstrona ma być w menu
+ * (polityka prywatności jest w stopce, strona 404 nigdzie).
+ */
+import Podstrona from '../layouts/Podstrona.astro'
+---
+
+<Podstrona
+  tytul="Przykładowa podstrona - baza projektowa Kodeleon"
+  opis="Wzór podstrony w bazie: jeden plik w src/pages, reszta dzieje się sama. Skopiuj ten plik, żeby dodać nową."
+>
+  <section class="sekcja">
+    <div class="wrap">
+      <div class="naglowek-sekcji" data-odslon>
+        <span class="nadtytul">Wzór</span>
+        <h1 class="tytul-glowny">Przykładowa podstrona</h1>
+        <p class="lead">
+          Jeden <code>&lt;h1&gt;</code> na podstronę i opisuje właśnie ją. Hierarchia
+          nagłówków bez przeskoków: po <code>h1</code> idzie <code>h2</code>, nie
+          <code>h3</code>.
+        </p>
+      </div>
+
+      <div class="proza" data-odslon="100">
+        <h2>Sekcja treści</h2>
+        <p>
+          Bloki tekstu redakcyjnego dostają klasę <code>proza</code>. Ogranicza szerokość
+          linii i ustawia odstępy dla nagłówków, list i odnośników, żeby nie trzeba było
+          stylować każdego akapitu osobno.
+        </p>
+        <h3>Podsekcja</h3>
+        <p>
+          Wartości powtarzalne - adres, telefon, godziny, ceny - biorą się z
+          <code>src/config/dane.ts</code>. Wartość, która pojawia się w kodzie drugi raz,
+          przenosi się tam. Nie „gdy się często powtarza", tylko przy drugim wystąpieniu.
+        </p>
+      </div>
+    </div>
+  </section>
+</Podstrona>

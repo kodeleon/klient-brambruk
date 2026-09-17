@@ -1,0 +1,60 @@
+---
+/**
+ * STRONA GŁÓWNA.
+ *
+ * To jest szkielet, nie projekt. Sekcje poniżej pokazują, jak wygląda
+ * podstrona w tej bazie: układ pod `Podstrona.astro`, klasy z systemu
+ * wizualnego, dane z `src/config/dane.ts`, odsłanianie przez `data-odslon`.
+ * Przy realnym projekcie treść i sekcje wymieniasz w całości.
+ */
+import Podstrona from '../layouts/Podstrona.astro'
+import { dane, cennik } from '../config/dane'
+---
+
+<Podstrona
+  tytul={`${dane.nazwa} - ${dane.opis}`}
+  opis="Szkielet strony głównej w bazie projektowej Kodeleon. Podmień tytuł, opis i treść na materiały klienta."
+>
+  <section class="sekcja">
+    <div class="wrap">
+      <div class="naglowek-sekcji" data-odslon>
+        <span class="nadtytul">Baza projektowa</span>
+        <h1 class="tytul-glowny"><span class="gradient">{dane.nazwa}</span></h1>
+        <p class="lead">
+          Ta podstrona jest miejscem na sekcję główną projektu. Treść jest widoczna bez
+          JavaScriptu, a animacja wejścia tylko ją odsłania - nigdy nie warunkuje.
+        </p>
+      </div>
+
+      <div class="stos-akcji" data-odslon="100">
+        <a class="przycisk" href="/przyklad-podstrony/">Zobacz przykład podstrony</a>
+        <a class="przycisk przycisk--drugi" href={`tel:${dane.telefonHref}`}>{dane.telefon}</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="sekcja">
+    <div class="wrap">
+      <div class="naglowek-sekcji" data-odslon>
+        <span class="nadtytul">Przykład</span>
+        <h2 class="tytul-sekcji">Siatka kart</h2>
+        <p class="lead">
+          Ceny pochodzą z jednego miejsca - tablicy <code>cennik</code> w
+          <code>src/config/dane.ts</code>. Ta sama wartość obsługuje stronę główną i cennik.
+        </p>
+      </div>
+
+      <ul class="siatka-kart">
+        {
+          cennik.map((pozycja, i) => (
+            <li class="karta" data-odslon={i * 100}>
+              <h3 class="karta__tytul">{pozycja.usluga}</h3>
+              <p class="karta__cena">{pozycja.cena}</p>
+              <p>{pozycja.opis}</p>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+</Podstrona>

@@ -1,0 +1,132 @@
+---
+/**
+ * POLITYKA PRYWATNOŚCI - SZABLON.
+ *
+ * ⚠️ TO NIE JEST GOTOWY DOKUMENT PRAWNY. To rusztowanie z blokami
+ * warunkowymi, które włączają się razem z modułami z `src/config/site.ts`.
+ * Zasada jest jedna i checklista sprawdza ją w obie strony:
+ *
+ *   · każde żądanie poza własną domenę MUSI być tu opisane,
+ *   · nie MOŻE tu być opisu rzeczy, których serwis nie robi.
+ *
+ * Nadmiarowa deklaracja o przetwarzaniu, którego nie ma, jest w audycie
+ * blokerem („strona deklaruje coś, co nie jest prawdą"), dokładnie tak samo
+ * jak brak opisu czegoś, co się dzieje.
+ *
+ * Podstawy prawne i uzasadnienia dla formularza kontaktowego:
+ * `PRAWO-rodo-formularz-kontaktowy.md` w dokumentacji Kodeleon.
+ *
+ * Podstrona ma `noindex` i jest wypisana w `pozaMapaStrony` w site.ts.
+ * Te dwie rzeczy muszą iść razem - podstrona z `noindex` obecna w mapie
+ * strony to sprzeczny sygnał indeksowania.
+ */
+import Podstrona from '../layouts/Podstrona.astro'
+import { dane } from '../config/dane'
+import { moduly } from '../config/site'
+---
+
+<Podstrona
+  tytul="Polityka prywatności"
+  opis="Jakie dane zbiera ten serwis, na jakiej podstawie i jak długo je przechowuje."
+  noindex
+>
+  <section class="sekcja">
+    <div class="wrap">
+      <div class="naglowek-sekcji">
+        <h1 class="tytul-glowny">Polityka prywatności</h1>
+        <p class="lead">
+          Dokument opisuje, jakie dane zbiera ten serwis, w jakim celu i na jakiej podstawie
+          prawnej.
+        </p>
+      </div>
+
+      <div class="proza">
+        <h2>Administrator danych</h2>
+        <p>
+          Administratorem danych osobowych jest {dane.administrator}. Kontakt w sprawach
+          danych osobowych: <a href={`mailto:${dane.emailRodo}`}>{dane.emailRodo}</a>.
+        </p>
+
+        <h2>Jakie dane zbieramy</h2>
+
+        {
+          !moduly.formularz && !moduly.analityka && (
+            <p>
+              Serwis nie zbiera danych osobowych. Nie ma formularzy, nie ma analityki, nie
+              ma plików cookie ustawianych przez ten serwis ani przez podmioty trzecie.
+              Serwer hostingu zapisuje standardowe logi dostępowe, na które nie mamy wpływu
+              i których nie wykorzystujemy do identyfikacji odwiedzających.
+            </p>
+          )
+        }
+
+        {
+          moduly.formularz && (
+            <>
+              <h3>Formularz kontaktowy</h3>
+              <p>
+                Dane podane w formularzu (imię, adres e-mail, treść wiadomości) przetwarzamy
+                wyłącznie po to, żeby odpowiedzieć na zapytanie. Podstawa prawna: art. 6 ust.
+                1 lit. f RODO - prawnie uzasadniony interes administratora polegający na
+                udzieleniu odpowiedzi.
+              </p>
+              <p>
+                Zgłoszenia przechowujemy przez 90 dni od udzielenia odpowiedzi, chyba że
+                korespondencja przerodzi się w rozmowę o zleceniu - wtedy przez czas
+                niezbędny do jego realizacji i rozliczenia.
+              </p>
+              <p>
+                Formularz jest chroniony przed botami polem ukrytym i weryfikacją czasu
+                wypełnienia. Nie korzystamy z reCAPTCHA ani z innego mechanizmu, który
+                przesyłałby dane do podmiotu trzeciego.
+              </p>
+            </>
+          )
+        }
+
+        {
+          moduly.analityka && (
+            <>
+              <h3>Statystyki odwiedzin</h3>
+              <p>
+                Korzystamy z Plausible Analytics. Narzędzie nie zapisuje plików cookie, nie
+                tworzy identyfikatorów odwiedzających i nie przekazuje danych poza Unię
+                Europejską. Zbierane są wyłącznie dane zbiorcze: liczba odsłon, adres
+                strony, źródło wejścia, typ urządzenia.
+              </p>
+            </>
+          )
+        }
+
+        <h2>Pamięć przeglądarki</h2>
+        <p>
+          Serwis nie zapisuje w przeglądarce żadnych danych: ani plików cookie, ani wpisów
+          w pamięci lokalnej.
+        </p>
+
+        <h2>Odbiorcy danych</h2>
+        <p>
+          Dostawca hostingu przetwarza dane w naszym imieniu w zakresie niezbędnym do
+          udostępnienia serwisu.
+          {moduly.formularz && ' Dostawca poczty transakcyjnej przekazuje wiadomości z formularza na nasz adres.'}
+        </p>
+
+        <h2>Twoje prawa</h2>
+        <ul>
+          <li>dostęp do danych i otrzymanie ich kopii,</li>
+          <li>sprostowanie danych,</li>
+          <li>usunięcie danych,</li>
+          <li>ograniczenie przetwarzania,</li>
+          <li>sprzeciw wobec przetwarzania opartego na uzasadnionym interesie,</li>
+          <li>skarga do Prezesa Urzędu Ochrony Danych Osobowych.</li>
+        </ul>
+
+        <h2>Zmiany polityki</h2>
+        <p>
+          Zmiany tego dokumentu publikujemy na tej podstronie. Data ostatniej aktualizacji
+          znajduje się poniżej.
+        </p>
+      </div>
+    </div>
+  </section>
+</Podstrona>

@@ -1,0 +1,46 @@
+---
+/**
+ * ZDJĘCIE - jedyny sposób wstawiania fotografii w tej bazie.
+ *
+ *   <Obraz use="galeria.01" />
+ *   <Obraz use="kafelek.uslugi" class="dodatkowa" alt="opis tylko dla tego miejsca" />
+ *
+ * Komponent NIE przyjmuje ścieżki do pliku i nie powinien jej nigdy przyjąć.
+ * Przyjmuje klucz z `uses` w `media/images.config.mjs`, a stamtąd bierze się
+ * komplet: `<picture>` z wariantami AVIF / WebP / JPEG, `srcset`, `sizes`,
+ * `width`, `height`, `loading`, `decoding`, `fetchpriority` i `alt`.
+ *
+ * DLACZEGO NIE `<img src="...">` WPROST: atrybuty wypisywane ręcznie rozjeżdżają
+ * się ze stanem plików przy pierwszej podmianie zdjęcia, a `sizes` wpisany
+ * „na oko" każe przeglądarce pobrać plik kilka razy za duży. Checklista
+ * sprawdza komplet tych atrybutów na każdym obrazie.
+ *
+ * NIEZNANY KLUCZ PRZERYWA BUDOWANIE. To jest celowe - cicho pominięte zdjęcie
+ * jest gorsze niż zatrzymany build.
+ */
+import { context } from '../../../tools/media/context.mjs'
+import { renderUse } from '../../../tools/media/markup.mjs'
+
+interface Props {
+  /** Klucz z `uses` w media/images.config.mjs. */
+  use: string
+  /** Dodatkowe klasy elementu opakowującego (tylko przy `as: 'figure'`). */
+  class?: string
+  /** Nadpisuje `alt` z konfiguracji dla tego jednego miejsca. */
+  alt?: string
+}
+
+const { use, class: klasa, alt } = Astro.props
+const ctx = await context()
+
+if (!ctx.aktywny) {
+  throw new Error(
+    `<Obraz use="${use}">: projekt nie ma media/images.config.mjs. ` +
+      'Dodaj zdjęcie do manifestu albo usuń ten komponent.'
+  )
+}
+
+const html = renderUse(use, ctx, { class: klasa, alt })
+---
+
+<Fragment set:html={html} />

@@ -1,0 +1,72 @@
+---
+/**
+ * STOPKA - punkt orientacyjny `contentinfo`.
+ *
+ * Dane kontaktowe biorą się z `src/config/dane.ts`, rok jest liczony, nie
+ * zaszyty. Odnośniki zewnętrzne renderują się tylko wtedy, gdy mają adres -
+ * pusty `href="#"` to martwa kotwica, a checklista sprawdza to wprost.
+ */
+import { dane, nawigacja, rok } from '../../config/dane'
+
+const spolecznosciowe = [
+  { etykieta: 'Instagram', url: dane.instagramUrl, nazwa: dane.instagram },
+  { etykieta: 'Facebook', url: dane.facebookUrl, nazwa: dane.facebook },
+].filter((p) => p.url)
+---
+
+<footer class="stopka">
+  <div class="wrap stopka__siatka">
+    <div>
+      <p class="stopka__marka">{dane.nazwa}</p>
+      <p class="stopka__opis">{dane.opis}</p>
+    </div>
+
+    <div>
+      <h2 class="stopka__tytul">Kontakt</h2>
+      <address class="stopka__adres">
+        <p>{dane.adres}</p>
+        <p><a href={`tel:${dane.telefonHref}`}>{dane.telefon}</a></p>
+        <p><a href={`mailto:${dane.email}`}>{dane.email}</a></p>
+      </address>
+    </div>
+
+    <div>
+      <h2 class="stopka__tytul">Godziny</h2>
+      <dl class="stopka__godziny">
+        <div><dt>Pon. - pt.</dt><dd>{dane.godzinyTydzien}</dd></div>
+        <div><dt>Sobota</dt><dd>{dane.godzinySobota}</dd></div>
+        <div><dt>Niedziela</dt><dd>{dane.godzinyNiedziela}</dd></div>
+      </dl>
+    </div>
+
+    <div>
+      <h2 class="stopka__tytul">Serwis</h2>
+      <nav aria-label="Nawigacja w stopce">
+        <ul class="stopka__lista">
+          {nawigacja.map((p) => <li><a href={p.sciezka}>{p.etykieta}</a></li>)}
+          <li><a href="/polityka-prywatnosci/">Polityka prywatności</a></li>
+        </ul>
+      </nav>
+
+      {
+        spolecznosciowe.length > 0 && (
+          <ul class="stopka__lista">
+            {spolecznosciowe.map((p) => (
+              <li>
+                <a href={p.url} target="_blank" rel="noopener noreferrer">
+                  {p.etykieta}
+                  <span class="poza-ekranem"> (otwiera się w nowej karcie)</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        )
+      }
+    </div>
+  </div>
+
+  <div class="wrap stopka__dol">
+    <p>© {rok} {dane.nazwa}</p>
+    <p class="stopka__autor">Realizacja: Kodeleon</p>
+  </div>
+</footer>

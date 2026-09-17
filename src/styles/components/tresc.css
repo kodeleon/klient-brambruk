@@ -1,0 +1,196 @@
+/**
+ * TREŚĆ - nagłówki sekcji, akapity, listy, karty.
+ *
+ * Klasy typograficzne odwzorowują hierarchię z systemu wizualnego 1:1.
+ * Nagłówek sekcji zawsze `h2`, podsekcji `h3` - hierarchia bez przeskoków
+ * to punkt checklisty, a `h1 → h3` jest błędem nawet jeśli wygląda dobrze.
+ *
+ * NADTYTUŁ (`.nadtytul`) stoi ZAWSZE nad nagłówkiem, nigdy samodzielnie
+ * i nigdy w dłuższej treści. Jest `<span>`, nie nagłówkiem - wygląda jak
+ * etykieta, ale nie niesie struktury, więc nie może być `<h3>`.
+ */
+
+@layer components {
+  .naglowek-sekcji {
+    display: grid;
+    gap: 0.75rem;
+    max-width: 48rem;
+    margin-bottom: 2.5rem;
+  }
+
+  .nadtytul {
+    font-family: var(--font-nadtytul);
+    font-size: var(--text-nadtytul);
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    color: var(--color-akcent-jasny);
+  }
+
+  .tytul-glowny {
+    font-size: var(--text-h1);
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+  }
+
+  .tytul-sekcji {
+    font-size: var(--text-h2);
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+  }
+
+  .tytul-podsekcji {
+    font-size: var(--text-h3);
+    font-weight: 600;
+    line-height: 1.4;
+  }
+
+  .lead {
+    font-size: var(--text-lead);
+    line-height: 1.7;
+    color: var(--color-tresc);
+  }
+
+  /* Gradient marki na tekście. Zarezerwowany dla sekcji głównej i najważniejszych
+     wyróżnień - użyty wszędzie przestaje cokolwiek znaczyć.
+     `background-clip: text` wymaga przezroczystego koloru tekstu, więc
+     fallback koloru musi stać PRZED, inaczej przeglądarka bez obsługi
+     pokaże pusty prostokąt zamiast napisu. */
+  .gradient {
+    color: var(--color-akcent-jasny);
+  }
+
+  @supports (background-clip: text) or (-webkit-background-clip: text) {
+    .gradient {
+      background-image: var(--gradient-marki);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+  }
+
+  /* --- proza: bloki tekstu redakcyjnego (polityka prywatności, artykuły) --- */
+  .proza {
+    max-width: 44rem;
+    display: grid;
+    gap: 1rem;
+  }
+
+  .proza h2 {
+    font-size: var(--text-h3);
+    font-weight: 600;
+    margin-top: 1.5rem;
+  }
+
+  .proza h3 {
+    font-size: var(--text-karta);
+    font-weight: 600;
+    margin-top: 1rem;
+  }
+
+  .proza ul,
+  .proza ol {
+    padding-left: 1.5rem;
+    display: grid;
+    gap: 0.5rem;
+  }
+
+  .proza ul {
+    list-style: disc;
+  }
+
+  .proza ol {
+    list-style: decimal;
+  }
+
+  .proza a {
+    color: var(--color-akcent-jasny);
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+  }
+
+  /* --- karta: powierzchnia wyniesiona ponad tło --- */
+  .karta {
+    background-color: var(--color-szklo);
+    backdrop-filter: blur(12px);
+    border: 1px solid var(--color-przeslona-jasna);
+    border-radius: var(--radius-l);
+    padding: 1.5rem;
+    box-shadow: var(--shadow-poswiata);
+    transition:
+      transform var(--czas-reakcja) var(--ease-podstawowa),
+      box-shadow var(--czas-reakcja) var(--ease-podstawowa);
+  }
+
+  .karta:hover {
+    transform: translateY(-6px);
+    box-shadow: var(--shadow-karta);
+  }
+
+  .karta__tytul {
+    font-family: var(--font-naglowek);
+    font-size: var(--text-karta);
+    font-weight: 600;
+    color: var(--color-tekst);
+  }
+
+  .siatka-kart {
+    display: grid;
+    gap: 1.5rem;
+    grid-template-columns: 1fr;
+  }
+
+  @media (min-width: 40rem) {
+    .siatka-kart {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (min-width: 64rem) {
+    .siatka-kart {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+}
+
+@layer components {
+  /* Poziomy stos przycisków, zawijający się na wąskim ekranie. */
+  .stos-akcji {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  .karta__cena {
+    font-family: var(--font-naglowek);
+    font-size: var(--text-h3);
+    font-weight: 700;
+    color: var(--color-akcent-jasny);
+    margin-block: 0.25rem 0.5rem;
+  }
+
+  /* Lista odnośników na stronie błędu. */
+  .blad-linki ul {
+    list-style: none;
+    margin: 2rem 0 0;
+    padding: 0;
+    display: grid;
+    gap: 0.25rem;
+  }
+
+  .blad-linki a {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--cel-dotykowy);
+  }
+
+  code {
+    font-family: ui-monospace, 'Cascadia Mono', 'Segoe UI Mono', Consolas, monospace;
+    font-size: 0.9em;
+    background-color: var(--color-powierzchnia);
+    border: 1px solid var(--color-obramowanie);
+    border-radius: var(--radius-s);
+    padding: 0.1em 0.35em;
+  }
+}

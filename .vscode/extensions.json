@@ -1,0 +1,7 @@
+{
+  "// uwaga": "VS Code pokazuje te pozycje przy pierwszym otwarciu katalogu. Bez pierwszej z nich edytor nie zna składni .astro i pokazuje plik jako zwykły tekst.",
+  "recommendations": [
+    "astro-build.astro-vscode",
+    "bradlc.vscode-tailwindcss"
+  ]
+}

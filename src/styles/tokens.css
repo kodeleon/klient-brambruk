@@ -1,0 +1,263 @@
+/**
+ * SYSTEM WIZUALNY - jedyne miejsce, w którym żyją wartości wyglądu.
+ *
+ * ┌──────────────────────────────────────────────────────────────────────┐
+ * │ TO JEST PRZYKŁAD DO PODMIANY.                                         │
+ * │ Wartości poniżej to system wizualny marki Kodeleon, wzięte w całości  │
+ * │ z `FIRMA-identyfikacja-wizualna.md`. Stoją tu po to, żeby pokazać,    │
+ * │ ile warstw ma każda oś i jak nazywamy tokeny - nie po to, żeby wejść  │
+ * │ do projektu klienta. Klient dostaje swój system z etapu B.4.          │
+ * │                                                                        │
+ * │ Podmiana projektu = podmiana wartości w tym pliku. Nic więcej.         │
+ * │ Jeśli musisz zmienić kolor gdziekolwiek indziej, to znaczy, że        │
+ * │ brakuje tu tokenu - dodaj go tutaj, nie obchodź systemu lokalnie.     │
+ * └──────────────────────────────────────────────────────────────────────┘
+ *
+ * MECHANIZM: `@theme` Tailwinda v4 robi dwie rzeczy naraz - definiuje
+ * właściwość niestandardową CSS (`var(--color-akcent)`) i generuje klasę
+ * narzędziową (`bg-akcent`, `text-akcent`). Dzięki temu jedna definicja
+ * obsługuje i zwykły CSS, i klasy w znaczniku. Drugiego miejsca nie ma.
+ *
+ * DOMYŚLNA PALETA TAILWINDA JEST WYŁĄCZONA (`--color-*: initial`).
+ * To jest celowe. `bg-slate-800` nie wygeneruje żadnej klasy i zobaczysz to
+ * od razu, zamiast wpuszczać do projektu kolor spoza systemu wizualnego.
+ * Tak samo kroje pisma. Skala odstępów, promieni i progów responsywności
+ * zostaje domyślna - jest zgodna z systemem, patrz sekcje niżej.
+ */
+
+@theme {
+  /* ==================================================================
+     KOLOR
+     Marka żyje na ciemnym tle. Nazwy opisują ROLĘ, nie barwę:
+     `--color-akcent` przetrwa zmianę z niebieskiego na zielony,
+     `--color-niebieski` nie przetrwa.
+     ================================================================== */
+
+  --color-*: initial;
+  --color-transparent: transparent;
+  --color-current: currentColor;
+
+  /* Tła */
+  --color-tlo: #0a0d1a;
+  --color-tlo-2: #0f1420;
+  --color-tlo-3: #1a1d2e;
+  --color-powierzchnia: #151825;
+
+  /* Akcenty */
+  --color-akcent: #4a90e2;
+  --color-akcent-jasny: #6ba3e8;
+  --color-akcent-ciemny: #3a7bc8;
+  --color-akcent-2: #6366f1;
+  --color-akcent-2-jasny: #818cf8;
+  --color-akcent-3: #7c5ce0;
+
+  /* Tekst */
+  --color-tekst: #ffffff;
+  --color-tresc: #e5e5e5;
+  --color-tekst-drugi: #9ca3af;
+  --color-tekst-subtelny: #6b7280;
+  --color-tekst-nieaktywny: #4b5563;
+
+  /* ⚠️ KONTRAST - policzone na tle podstawowym #0a0d1a, próg WCAG AA:
+     4,5:1 dla tekstu zwykłego, 3:1 dla tekstu dużego i elementów graficznych.
+
+       tekst          19,35  wszędzie
+       tresc          15,36  wszędzie
+       tekst-drugi     7,62  wszędzie
+       tekst-subtelny  4,00  TYLKO tekst duży i elementy nietekstowe
+       akcent          5,88  wszędzie (na tekście)
+       akcent-jasny    7,40  wszędzie
+       akcent-2        4,33  TYLKO tekst duży
+       akcent-2-jasny  6,49  wszędzie
+       akcent-3        4,11  TYLKO tekst duży i zamknięcie gradientu
+
+     Na tle karty (#1a1d2e) każda wartość spada o ok. 14%. `blad` na karcie
+     daje 4,43:1 - poniżej progu. Komunikat o błędzie na karcie stawiaj
+     na `--color-tlo`, nie na `--color-tlo-3`.
+
+     ŻADEN akcent z tej palety nie unosi BIAŁEGO tekstu w rozmiarze zwykłym
+     (najlepszy, #7c5ce0, daje 4,70:1, ale jest zarezerwowany na zamknięcie
+     gradientu). Dlatego przycisk główny ma ciemny tekst na jasnym akcencie -
+     patrz komentarz w `components/przyciski.css`.
+
+     Podmieniasz paletę? Przelicz tę tabelę. Kontrast to nie jest rzecz,
+     którą się ocenia na oko - checklista wymaga policzenia go dla KAŻDEJ
+     powierzchni, na której użyto koloru. */
+
+  /* Komunikaty */
+  --color-sukces: #10b981;
+  --color-ostrzezenie: #f59e0b;
+  --color-blad: #ef4444;
+  --color-info: #3b82f6;
+
+  /* Obramowania i przesłony.
+     Zapisane jako color-mix, żeby krycie szło za tokenem bazowym:
+     zmiana akcentu przenosi się na obramowanie bez drugiej edycji. */
+  --color-obramowanie: color-mix(in srgb, var(--color-akcent) 20%, transparent);
+  --color-obramowanie-2: color-mix(in srgb, var(--color-akcent-2) 20%, transparent);
+  --color-przeslona-jasna: color-mix(in srgb, #ffffff 8%, transparent);
+  --color-przeslona-ciemna: color-mix(in srgb, #000000 50%, transparent);
+  --color-szklo: color-mix(in srgb, var(--color-tlo-3) 40%, transparent);
+
+  /* ==================================================================
+     TYPOGRAFIA
+     Stos ma trzy stopnie i każdy jest potrzebny:
+       'Onest'        - nasz krój,
+       'Onest zapas'  - krój systemowy z podmienionymi metrykami; to on
+                        stoi na ekranie przez pierwsze milisekundy i dzięki
+                        niemu podmiana nie rusza układem (CLS),
+       Arial          - zwykły fallback, gdyby i to zawiodło.
+     Rodziny „zapas" generuje `npm run fonts` do `src/styles/fonts.css`.
+     Zmieniasz krój? Uruchom `npm run fonts` i przepisz tu obie nazwy.
+     Fallback musi być konkretny, nigdy `system-ui` - metryki liczy się
+     względem jednego znanego kroju, a `system-ui` to inny plik na macOS,
+     Windowsie i Androidzie.
+     ================================================================== */
+
+  --font-*: initial;
+  --font-naglowek: 'Onest', 'Onest zapas', Arial, sans-serif;
+  --font-tresc: 'Manrope', 'Manrope zapas', Arial, sans-serif;
+  --font-nadtytul: 'Shantell Sans', 'Shantell Sans zapas', 'Trebuchet MS', sans-serif;
+
+  /* Hierarchia rozmiarów.
+     `clamp` zamiast dwóch zestawów pod media query: nagłówek główny
+     schodzi z 56 px na 36 px płynnie, treść prawie się nie rusza -
+     dokładnie ta zasada skalowania, którą opisuje system wizualny. */
+
+  --text-*: initial;
+
+  --text-nadtytul: clamp(0.875rem, 0.85rem + 0.055vw, 0.9375rem);
+  --text-nadtytul--line-height: 1.4;
+  --text-nadtytul--letter-spacing: 0.02em;
+  --text-nadtytul--font-weight: 500;
+
+  --text-h1: clamp(2.25rem, 1.732rem + 2.21vw, 3.5rem);
+  --text-h1--line-height: 1.1;
+  --text-h1--letter-spacing: -0.02em;
+  --text-h1--font-weight: 700;
+
+  --text-h2: clamp(1.875rem, 1.616rem + 1.105vw, 2.5rem);
+  --text-h2--line-height: 1.2;
+  --text-h2--letter-spacing: -0.01em;
+  --text-h2--font-weight: 700;
+
+  --text-h3: clamp(1.25rem, 1.146rem + 0.442vw, 1.5rem);
+  --text-h3--line-height: 1.4;
+  --text-h3--font-weight: 600;
+
+  --text-karta: 1.25rem;
+  --text-karta--line-height: 1.4;
+  --text-karta--font-weight: 600;
+
+  --text-lead: clamp(1.0625rem, 1.017rem + 0.11vw, 1.125rem);
+  --text-lead--line-height: 1.7;
+
+  --text-tresc: clamp(0.9375rem, 0.892rem + 0.11vw, 1rem);
+  --text-tresc--line-height: 1.6;
+
+  --text-drobny: 0.875rem;
+  --text-drobny--line-height: 1.5;
+
+  /* ==================================================================
+     PRZESTRZEŃ
+     Skala odstępów zostaje domyślna Tailwinda (krok 0.25rem = 4 px).
+     Skala systemu wizualnego 8·16·24·32·48·64·96 px odpowiada klasom
+     2·4·6·8·12·16·24. Wartość spoza tej listy jest sygnałem, że układ
+     dopasowano na oko - to jedyne miejsce, w którym ta lista żyje.
+     ================================================================== */
+
+  --container-tresc: 75rem; /* 1200 px - maksymalna szerokość treści */
+
+  /* ==================================================================
+     PROMIENIE I CIENIE
+     ================================================================== */
+
+  --radius-*: initial;
+  --radius-s: 0.375rem;
+  --radius-m: 0.75rem;
+  --radius-l: 1.25rem;
+  --radius-pelny: 9999px;
+
+  /* Cienie i poświaty. Poświata jest subtelna, nigdy neonowa - jeśli jest
+     pierwszą rzeczą, którą widać na zrzucie ekranu, jest za mocna. */
+  --shadow-*: initial;
+  --shadow-karta: 0 20px 60px color-mix(in srgb, #000000 30%, transparent);
+  --shadow-przycisk: 0 4px 30px color-mix(in srgb, var(--color-akcent) 35%, transparent);
+  --shadow-przycisk-hover: 0 8px 50px color-mix(in srgb, var(--color-akcent) 45%, transparent);
+  --shadow-poswiata: 0 0 40px color-mix(in srgb, var(--color-akcent) 8%, transparent);
+  --shadow-poswiata-hover: 0 0 60px color-mix(in srgb, var(--color-akcent) 12%, transparent);
+
+  /* ==================================================================
+     PROGI RESPONSYWNOŚCI
+     Zostają domyślne Tailwinda, bo pokrywają się z systemem wizualnym:
+       telefon   do 640 px    → brak prefiksu
+       tablet    641-1024 px  → sm:  (od 640 px)
+       komputer  od 1025 px   → lg:  (od 1024 px)
+       duży      od 1536 px   → 2xl: (od 1536 px)
+     Prefiksy md: i xl: istnieją, ale system wizualny ich nie opisuje -
+     używaj ich tylko tam, gdzie układ realnie się psuje, i odnotuj powód.
+     ================================================================== */
+
+  /* ==================================================================
+     RUCH
+     Animacje są spokojne. Bez odbić, bez sprężynowania.
+     Krzywa z odbiciem istnieje w systemie, ale jest świadomie nieużywana -
+     kłóci się z tonem marki. Nie ma jej tutaj, żeby nie kusiła.
+     ================================================================== */
+
+  --ease-*: initial;
+  --ease-podstawowa: cubic-bezier(0.4, 0, 0.2, 1);
+
+  --czas-natychmiast: 150ms;
+  --czas-reakcja: 300ms;
+  --czas-wejscie: 800ms;
+  --czas-pojawienie: 1000ms;
+}
+
+/**
+ * Wartości, które nie mają przestrzeni nazw w Tailwindzie, więc nie
+ * wygenerują klasy narzędziowej i żyją jako zwykłe właściwości CSS.
+ */
+:root {
+  /* Rytm sekcji: 96 px na dużym ekranie, 48 px na telefonie. */
+  --sekcja-y: 3rem;
+  /* Margines boczny treści. */
+  --margines-x: 1.5rem;
+
+  /* Gradient marki. Kolejność jest stała: akcent → akcent-2 → akcent-3.
+     Odwracanie jej rozbija spójność między materiałami. Gradient jest
+     zarezerwowany dla logo, sekcji głównej i najważniejszych wezwań
+     do działania - użyty wszędzie przestaje cokolwiek znaczyć. */
+  --gradient-marki: linear-gradient(
+    135deg,
+    var(--color-akcent) 0%,
+    var(--color-akcent-2) 50%,
+    var(--color-akcent-3) 100%
+  );
+
+  /* Tło standardowe: ledwie zauważalne przejście przez trzy tła.
+     Chodzi o głębię, nie o widoczny gradient. */
+  --tlo-strony: linear-gradient(
+    135deg,
+    var(--color-tlo) 0%,
+    var(--color-tlo-2) 50%,
+    var(--color-tlo-3) 100%
+  );
+
+  /* Zaznaczenie aktywnego elementu. Jedna wartość dla całego serwisu -
+     obrysy dokładane lokalnie to najczęstsza droga do utraty widocznego
+     wskaźnika fokusu na połowie kontrolek. */
+  --fokus-kolor: var(--color-akcent);
+  --fokus-grubosc: 2px;
+  --fokus-odsuniecie: 2px;
+
+  /* Minimalny cel dotykowy. WCAG 2.1 AA, punkt 2.5.5. */
+  --cel-dotykowy: 44px;
+}
+
+@media (min-width: 64rem) {
+  :root {
+    --sekcja-y: 6rem;
+    --margines-x: 2.5rem;
+  }
+}

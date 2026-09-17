@@ -1,0 +1,71 @@
+/**
+ * NAGŁÓWEK SERWISU.
+ *
+ * Nawigacja jest zwykłą listą odnośników, zawijaną na wąskim ekranie.
+ * Zero skryptu, zero stanu, zero przeskoku układu. Uzasadnienie i warunki,
+ * przy których warto to zmienić, są w komentarzu w `Naglowek.astro`.
+ *
+ * Nagłówek jest przyklejony (`position: sticky`), więc `scroll-padding-top`
+ * w `base.css` musi odpowiadać jego wysokości - inaczej kotwica ląduje pod
+ * paskiem. To są dwa miejsca z tą samą liczbą i muszą się zgadzać.
+ */
+
+@layer components {
+  .naglowek {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background-color: color-mix(in srgb, var(--color-tlo) 85%, transparent);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--color-obramowanie);
+  }
+
+  .naglowek__pas {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    min-height: 4rem;
+    flex-wrap: wrap;
+  }
+
+  .naglowek__marka {
+    font-family: var(--font-naglowek);
+    font-size: var(--text-karta);
+    font-weight: 700;
+    color: var(--color-tekst);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--cel-dotykowy);
+  }
+
+  .naglowek__nawigacja ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem 1.5rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .naglowek__link {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--cel-dotykowy);
+    padding-inline: 0.25rem;
+    color: var(--color-tresc);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color var(--czas-natychmiast) var(--ease-podstawowa);
+  }
+
+  .naglowek__link:hover {
+    color: var(--color-tekst);
+  }
+
+  .naglowek__link--aktywny {
+    color: var(--color-akcent-jasny);
+  }
+
+}

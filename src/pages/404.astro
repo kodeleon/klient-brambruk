@@ -1,0 +1,56 @@
+---
+/**
+ * STRONA BŁĘDU 404.
+ *
+ * Musi mieć nawigację i wyglądać jak reszta serwisu - punkt 🧱 checklisty.
+ * Pusta odpowiedź hostingu nie jest stroną 404.
+ *
+ * Astro buduje ten plik do `dist/404.html`, a `wrangler.jsonc` ustawia
+ * `not_found_handling: "404-page"`, dzięki czemu Cloudflare oddaje ten
+ * dokument razem z KODEM 404, a nie 200. Bez tego ustawienia nieistniejący
+ * adres kończy się pustą odpowiedzią.
+ *
+ * `noindex` jest tu na wypadek, gdyby serwer kiedyś oddał ten dokument
+ * ze statusem 200 - tak zachowa się każdy hosting bez `not_found_handling`.
+ *
+ * `kanoniczny={false}` jest konieczne: ten dokument jest serwowany pod KAŻDYM
+ * nieistniejącym adresem, a nie pod `/404/`. Canonical wskazujący `/404/`
+ * deklarowałby adres, który sam zwraca błąd.
+ *
+ * Z mapy strony wypada automatycznie - patrz `NIE_PODSTRONA`
+ * w `tools/build/mapa-strony.mjs`.
+ */
+import Podstrona from '../layouts/Podstrona.astro'
+import { nawigacja } from '../config/dane'
+---
+
+<Podstrona
+  tytul="Nie znaleziono strony"
+  opis="Pod tym adresem nic nie ma. Poniżej jest wszystko, czego zwykle się tutaj szuka."
+  noindex
+  kanoniczny={false}
+>
+  <section class="sekcja">
+    <div class="wrap">
+      <div class="naglowek-sekcji">
+        <span class="nadtytul">Błąd 404</span>
+        <h1 class="tytul-glowny">Tej strony u nas nie ma</h1>
+        <p class="lead">
+          Adres mógł się zmienić albo zawiera literówkę. Poniżej jest wszystko, czego
+          zwykle się tutaj szuka.
+        </p>
+      </div>
+
+      <div class="stos-akcji">
+        <a class="przycisk" href="/">Wróć na stronę główną</a>
+      </div>
+
+      <nav class="blad-linki" aria-label="Pozostałe podstrony">
+        <ul>
+          {nawigacja.map((p) => <li><a class="link" href={p.sciezka}>{p.etykieta}</a></li>)}
+          <li><a class="link" href="/polityka-prywatnosci/">Polityka prywatności</a></li>
+        </ul>
+      </nav>
+    </div>
+  </section>
+</Podstrona>

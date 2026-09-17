@@ -1,0 +1,47 @@
+{
+  "// uwaga": "Ustawienia katalogu, nie ustawienia osobiste. Zmieniaj tylko wtedy, gdy zmienia się coś w projekcie.",
+
+  "// astro": "Bez tego formatowanie pliku .astro rozjeżdża blok frontmatter między `---`.",
+  "[astro]": {
+    "editor.defaultFormatter": "astro-build.astro-vscode"
+  },
+
+  "// tailwind": "Podpowiedzi klas w plikach .astro i w atrybutach class wewnątrz ciągów znaków.",
+  "tailwindCSS.includeLanguages": {
+    "astro": "html"
+  },
+  "editor.quickSuggestions": {
+    "strings": true
+  },
+
+  "// emmet": "Skróty HTML (div.karta + Tab) działają w .astro tak samo jak w .html.",
+  "emmet.includeLanguages": {
+    "astro": "html"
+  },
+
+  "// typy": "Wersja TypeScriptu z projektu, nie ta wbudowana w edytor - inaczej `npm run check` i podkreślenia w edytorze pokazują różne błędy.",
+  "typescript.tsdk": "node_modules/typescript/lib",
+
+  "// szukanie": "Katalogi generowane. Wyniki z nich tylko zaśmiecają wyszukiwanie w projekcie.",
+  "search.exclude": {
+    "**/node_modules": true,
+    "dist": true,
+    ".astro": true,
+    ".build-state": true,
+    ".media-cache": true,
+    "reports": true,
+    "public/assets/img": true,
+    "public/fonts": true
+  },
+  "files.watcherExclude": {
+    "**/node_modules/**": true,
+    "**/dist/**": true,
+    "**/.media-cache/**": true,
+    "**/reports/**": true
+  },
+
+  "// pliki": "Astro generuje `.astro/types.d.ts`; bez tego wpisu edytor traktuje go jak plik do edycji.",
+  "files.associations": {
+    "*.astro": "astro"
+  }
+}

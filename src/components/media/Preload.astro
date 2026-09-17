@@ -1,0 +1,35 @@
+---
+/**
+ * WCZESNE POBRANIE ZDJĘCIA LCP.
+ *
+ *   <Podstrona ...>
+ *     <Preload slot="head" use="hero.glowna" />
+ *     ...
+ *
+ * Wstawia `<link rel="preload" as="image">` z `imagesrcset`, `imagesizes`
+ * i `fetchpriority="high"` dla największego elementu widocznego na wejściu.
+ *
+ * ⚠️ To ma sens WYŁĄCZNIE dla zdjęcia, które faktycznie jest elementem LCP.
+ * Preload czegokolwiek innego odbiera pasmo prawdziwemu LCP i pogarsza wynik,
+ * zamiast go poprawiać. Jedno zdjęcie na podstronę, nigdy więcej.
+ *
+ * `fetchpriority` musi stać i tutaj, i na samym `<img>` - to dwa różne żądania
+ * w oczach audytu („LCP request discovery").
+ */
+import { context } from '../../../tools/media/context.mjs'
+import { renderPreload } from '../../../tools/media/markup.mjs'
+
+interface Props {
+  /** Klucz z `uses`. Musi mieć `priority: true` w konfiguracji. */
+  use: string
+}
+
+const { use } = Astro.props
+const ctx = await context()
+
+if (!ctx.aktywny) throw new Error(`<Preload use="${use}">: brak media/images.config.mjs.`)
+
+const html = renderPreload(use, ctx)
+---
+
+<Fragment set:html={html} />

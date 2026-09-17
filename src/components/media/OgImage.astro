@@ -1,0 +1,36 @@
+---
+/**
+ * OBRAZ PODGLĄDU LINKU.
+ *
+ *   <OgImage slot="head" use="og.domyslny" />
+ *
+ * Wstawia `og:image` z adresem BEZWZGLĘDNYM (serwisy społecznościowe nie
+ * przyjmują względnego), razem z wymiarami, opisem i `twitter:card`.
+ *
+ * ⚠️ PRÓG WAGI: 1200 × 630, JPEG, poniżej 300 kB. Powyżej tego progu WhatsApp
+ * cicho gubi obraz i cachuje porażkę na około tydzień. PNG ze zdjęciem
+ * przekracza próg bez trudu - dlatego preset `social` w `presets.mjs` wymusza
+ * JPEG i jedną szerokość.
+ *
+ * Brak wariantów degraduje się łagodnie, jeśli użycie ma `optional: true`:
+ * bez obrazu link traci miniaturę, ale strona wygląda i działa tak samo.
+ *
+ * Alternatywa bez potoku zdjęć: podaj `ogImage` wprost do `<Podstrona>`.
+ */
+import { context } from '../../../tools/media/context.mjs'
+import { renderOg } from '../../../tools/media/markup.mjs'
+
+interface Props {
+  /** Klucz z `uses` wskazujący kadr w presecie `social`. */
+  use: string
+}
+
+const { use } = Astro.props
+const ctx = await context()
+
+if (!ctx.aktywny) throw new Error(`<OgImage use="${use}">: brak media/images.config.mjs.`)
+
+const html = renderOg(use, ctx)
+---
+
+<Fragment set:html={html} />

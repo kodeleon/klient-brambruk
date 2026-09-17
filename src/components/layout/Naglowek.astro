@@ -1,0 +1,59 @@
+---
+/**
+ * NAGŁÓWEK SERWISU - punkt orientacyjny `banner` plus nawigacja główna.
+ *
+ * Pozycje menu biorą się z `nawigacja` w `src/config/dane.ts`. Nie dopisuj
+ * ich tutaj: ta sama lista obsługuje stopkę i stronę 404, a trzy kopie
+ * rozjadą się przy pierwszej nowej podstronie.
+ *
+ * `aria-current="page"` na aktywnej pozycji jest wymagane - sama klasa CSS
+ * nie wystarczy, bo czytnik ekranu jej nie widzi.
+ *
+ * ┌── DLACZEGO NIE MA TU HAMBURGERA ────────────────────────────────────┐
+ * │ Menu chowane za przyciskiem kosztuje trzy rzeczy naraz: skrypt,     │
+ * │ pełny cykl dostępności (otwarcie, blokada przewijania, Escape,      │
+ * │ powrót fokusu) i PRZESKOK UKŁADU, bo bez JavaScriptu panel musi być │
+ * │ widoczny, a po starcie skryptu znika. Zmierzone: CLS 0,057 na       │
+ * │ telefonie, wyłącznie z tego jednego powodu.                         │
+ * │                                                                      │
+ * │ Pakiety Kodeleon to wizytówki o 2-6 podstronach. Lista zawijana     │
+ * │ w dwa wiersze mieści się na 320 px, działa bez skryptu, ma natywną   │
+ * │ obsługę klawiatury i nie rusza układem. Hamburger zaczyna się        │
+ * │ opłacać dopiero powyżej ~7 pozycji albo przy menu wielopoziomowym.  │
+ * │                                                                      │
+ * │ Projekt, który tego naprawdę potrzebuje: użyj `<details>`/`<summary>`│
+ * │ zamiast przycisku ze stanem w skrypcie. Bez JavaScriptu menu nadal   │
+ * │ się rozwija, `aria-expanded` obsługuje przeglądarka, a klawiatura    │
+ * │ działa natywnie - skrypt dokłada tylko Escape, zamknięcie kliknięciem│
+ * │ obok i powrót fokusu.                                                │
+ * └──────────────────────────────────────────────────────────────────────┘
+ */
+import { dane, nawigacja } from '../../config/dane'
+
+const tu = Astro.url.pathname
+const aktywna = (sciezka: string) => tu === sciezka
+---
+
+<header class="naglowek">
+  <div class="wrap naglowek__pas">
+    <a class="naglowek__marka" href="/">{dane.nazwa}</a>
+
+    <nav class="naglowek__nawigacja" aria-label="Nawigacja główna">
+      <ul>
+        {
+          nawigacja.map((pozycja) => (
+            <li>
+              <a
+                href={pozycja.sciezka}
+                aria-current={aktywna(pozycja.sciezka) ? 'page' : undefined}
+                class:list={['naglowek__link', { 'naglowek__link--aktywny': aktywna(pozycja.sciezka) }]}
+              >
+                {pozycja.etykieta}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+  </div>
+</header>

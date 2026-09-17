@@ -1,0 +1,34 @@
+{
+  // Worker formularza kontaktowego. WDROŻENIE OSOBNE od serwisu:
+  //
+  //   cd worker
+  //   npx wrangler secret put RESEND_API_KEY
+  //   npx wrangler deploy
+  //
+  // Potem skopiuj adres Workera do `endpointy.formularz` w src/config/site.ts.
+  // Bez tego przeglądarka zablokuje wysyłkę na `connect-src` z CSP.
+  //
+  // ⚠️ `name` musi być unikalny w koncie Cloudflare.
+  "name": "kodeleon-baza-formularz",
+  "main": "index.js",
+  "compatibility_date": "2026-09-14",
+
+  "vars": {
+    // Adres serwisu. Worker odrzuca żądania z innych źródeł.
+    // Gwiazdka wyłącza to sprawdzenie - dopuszczalne tylko lokalnie.
+    "DOZWOLONY_ORIGIN": "https://przyklad.kodeleon.pl",
+
+    // Nadawca musi być na domenie zweryfikowanej w Resend.
+    "NADAWCA": "Formularz <formularz@przyklad.pl>",
+
+    // Adres, na który mają przychodzić zgłoszenia.
+    "ODBIORCA": "kontakt@przyklad.pl",
+
+    // "tak" włącza automatyczne potwierdzenie do osoby wypełniającej
+    // (zakres pakietu Premium). Domyślnie wyłączone.
+    "POTWIERDZENIE": "nie"
+  }
+
+  // RESEND_API_KEY NIE jest tutaj i nigdy nie będzie.
+  // To sekret: `npx wrangler secret put RESEND_API_KEY`.
+}

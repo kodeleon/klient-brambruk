@@ -1,0 +1,127 @@
+---
+/**
+ * FORMULARZ KONTAKTOWY - moduł opcjonalny.
+ *
+ * Włączasz go przełącznikiem `moduly.formularz` w `src/config/site.ts`
+ * i adresem Workera w `endpointy.formularz`. Bez adresu formularz się nie
+ * renderuje - lepiej brak formularza niż formularz, który nigdzie nie wysyła.
+ *
+ * ZAKRES DANYCH: e-mail i wiadomość są obowiązkowe, imię i temat opcjonalne.
+ * To nie jest estetyka, tylko minimalizacja danych z art. 25 RODO - zbieramy
+ * tylko to, co jest niezbędne do udzielenia odpowiedzi. Nigdy nie rób
+ * obowiązkowymi jednocześnie telefonu i e-maila; jeden kanał wystarczy.
+ *
+ * BEZ JAVASCRIPTU FORMULARZ NIE KŁAMIE. Pola są `disabled` w znaczniku,
+ * a `<noscript>` mówi wprost, co zrobić zamiast tego. Skrypt zdejmuje
+ * `disabled` przy starcie. Formularz, który wygląda na działający i po
+ * wysłaniu nic nie robi, jest w audycie blokerem - zgłoszenie klienta
+ * końcowego może nie dotrzeć.
+ *
+ * OCHRONA PRZED BOTAMI: pole-pułapka i token czasowy. Zero żądań poza własną
+ * infrastrukturę, więc zero wpisów w CSP i zero zgody do zbierania.
+ * Uzasadnienie odrzucenia reCAPTCHA: PRAWO-rodo-formularz-kontaktowy.md.
+ */
+import { moduly, endpointy } from '../../config/site'
+import { dane } from '../../config/dane'
+
+interface Props {
+  /** Dodaje pole „Temat". Zakres pakietu Premium. */
+  temat?: boolean
+}
+
+const { temat = false } = Astro.props
+const aktywny = moduly.formularz && Boolean(endpointy.formularz)
+---
+
+{
+  !aktywny ? (
+    <p class="formularz__wylaczony">
+      Formularz jest wyłączony. Napisz na <a class="link" href={`mailto:${dane.email}`}>{dane.email}</a>.
+    </p>
+  ) : (
+    <form class="formularz" data-formularz data-endpoint={endpointy.formularz} novalidate>
+      <noscript>
+        <p class="formularz__uwaga">
+          Wysyłka formularza wymaga JavaScriptu. Napisz na{' '}
+          <a class="link" href={`mailto:${dane.email}`}>{dane.email}</a> albo zadzwoń:{' '}
+          <a class="link" href={`tel:${dane.telefonHref}`}>{dane.telefon}</a>.
+        </p>
+      </noscript>
+
+      {/*
+        `disabled` na fieldsecie wyłącza wszystkie pola naraz i jest widoczne
+        dla czytnika ekranu. Skrypt zdejmuje je przy starcie - patrz
+        src/scripts/formularz.ts.
+      */}
+      <fieldset class="formularz__pola" disabled data-formularz-pola>
+        <legend class="poza-ekranem">Formularz kontaktowy</legend>
+
+        <p class="formularz__pole">
+          <label for="f-imie">Imię <span class="formularz__opcjonalne">(opcjonalnie)</span></label>
+          <input id="f-imie" name="imie" type="text" autocomplete="given-name" maxlength="100" />
+        </p>
+
+        <p class="formularz__pole">
+          <label for="f-email">Adres e-mail <span aria-hidden="true">*</span></label>
+          <input
+            id="f-email"
+            name="email"
+            type="email"
+            autocomplete="email"
+            maxlength="254"
+            required
+            aria-describedby="f-email-blad"
+          />
+          <span class="formularz__blad" id="f-email-blad" data-blad-dla="email"></span>
+        </p>
+
+        {temat && (
+          <p class="formularz__pole">
+            <label for="f-temat">Temat <span class="formularz__opcjonalne">(opcjonalnie)</span></label>
+            <input id="f-temat" name="temat" type="text" maxlength="150" />
+          </p>
+        )}
+
+        <p class="formularz__pole">
+          <label for="f-wiadomosc">Wiadomość <span aria-hidden="true">*</span></label>
+          <textarea
+            id="f-wiadomosc"
+            name="wiadomosc"
+            rows="6"
+            maxlength="5000"
+            required
+            aria-describedby="f-wiadomosc-blad"
+          />
+          <span class="formularz__blad" id="f-wiadomosc-blad" data-blad-dla="wiadomosc"></span>
+        </p>
+
+        {/*
+          Pole-pułapka. Człowiek go nie widzi i nie dosięgnie Tabem
+          (`tabindex="-1"`), bot wypełnia wszystko, co znajdzie.
+          `aria-hidden` trzyma je z dala od czytnika ekranu.
+          Klasa `.poza-ekranem` zamiast `display:none` - część botów pomija
+          pola ukryte przez CSS display.
+        */}
+        <p class="poza-ekranem" aria-hidden="true">
+          <label for="f-strona">Nie wypełniaj tego pola</label>
+          <input id="f-strona" name="strona" type="text" tabindex="-1" autocomplete="off" />
+        </p>
+
+        <p class="formularz__klauzula">
+          Administratorem danych jest {dane.administrator}. Dane z formularza przetwarzamy
+          wyłącznie po to, żeby odpowiedzieć na Twoje zapytanie.{' '}
+          <a class="link" href="/polityka-prywatnosci/">Polityka prywatności</a>.
+        </p>
+
+        <button class="przycisk" type="submit">Wyślij wiadomość</button>
+      </fieldset>
+
+      {/*
+        Obszar komunikatów wstawiamy PUSTY, a tekst pojawia się dopiero potem -
+        tylko wtedy czytnik ekranu go ogłosi. Obszar utworzony razem z treścią
+        bywa pomijany.
+      */}
+      <p class="formularz__status" role="status" data-formularz-status></p>
+    </form>
+  )
+}

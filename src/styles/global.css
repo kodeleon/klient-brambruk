@@ -1,0 +1,29 @@
+/**
+ * PUNKT WEJŚCIA ARKUSZA - wyłącznie importy, zero reguł.
+ *
+ * Kolejność ma znaczenie:
+ *   1. tailwindcss   - warstwy base/components/utilities i silnik klas
+ *   2. fonts.css     - deklaracje @font-face (generowane, nie edytować ręcznie)
+ *   3. tokens.css    - system wizualny (@theme); musi wejść przed warstwą bazową
+ *   4. base.css      - dokument, typografia, dostępność globalna
+ *   5. components/   - jeden plik na komponent, razem z jego media queries
+ *
+ * Nowy plik komponentu dopisujesz na końcu listy. Reguły nie pisze się tutaj.
+ */
+
+@import 'tailwindcss';
+
+@import './fonts.css';
+@import './tokens.css';
+@import './base.css';
+
+@import './components/przyciski.css';
+@import './components/naglowek.css';
+@import './components/stopka.css';
+@import './components/tresc.css';
+@import './components/formularz.css';
+@import './components/lightbox.css';
+
+/* Skan klas: Tailwind v4 sam wykrywa źródła, ale katalogi poza `src`
+   (np. znaczniki generowane przez potok zdjęć) trzeba wskazać jawnie. */
+@source '../../src';

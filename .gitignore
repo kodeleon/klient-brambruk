@@ -1,0 +1,68 @@
+node_modules/
+dist/
+.astro/
+.vite/
+*.log
+.DS_Store
+
+# --- sekrety: NIGDY do repozytorium ---
+#
+# W statycznym froncie nie ma sekretów - wszystko, co trafia do builda, trafia
+# też do przeglądarki. Te wpisy są tu na wypadek pliku dołożonego lokalnie
+# przez człowieka albo model. `.dev.vars` jest tu najważniejszy: czyta go
+# `wrangler dev`, więc to tam ląduje klucz API Workera przy pracy lokalnej.
+# Klucz raz wrzucony do repozytorium jest spalony, nawet po usunięciu commitem.
+.env
+.env.*
+!.env.example
+.dev.vars
+.dev.vars.*
+
+# --- generowane, odtwarzalne jednym poleceniem ---
+
+# wynik potoku zdjęć: npm run images
+public/assets/img/
+public/assets/logo/
+public/assets/favicon-*.png
+public/assets/apple-touch-icon.png
+.media-cache/
+
+# oryginały zdjęć przed normalizacją: nie trafiają do repozytorium,
+# bo raz wrzucony plik zostaje w historii Gita na zawsze.
+# Sam KATALOG zostaje w repozytorium (pusty `.gitkeep`), żeby potok zdjęć
+# zastał gotową strukturę i nikt nie musiał zgadywać, gdzie wrzucić oryginały.
+# `media/img/source/` NIE jest ignorowane - znormalizowane źródła są częścią
+# repozytorium, bo z nich powstaje build i one decydują o wyniku.
+media/img/_raw/*
+!media/img/_raw/.gitkeep
+
+# stan builda dla narzędzia audytu: npm run build
+.build-state/
+
+# raporty audytu: npm run audit
+reports/
+
+# manifesty haszy do porównania buildów
+manifest-*.txt
+
+# katalog przejściowy na pliki do skasowania
+_do-usuniecia/
+
+# --- .vscode: CELOWO w repozytorium ---
+#
+# Bez `extensions.json` świeży klon otwiera pliki .astro jako zwykły tekst:
+# bez kolorowania składni, podpowiedzi i sprawdzania typów. To jest pierwsza
+# rzecz, o którą potyka się każdy, kto dostanie to repozytorium.
+#
+# Kolejność tych czterech linii jest wymuszona. Wielu deweloperów ma `.vscode/`
+# w globalnym .gitignore, a Git NIE wchodzi do katalogu wykluczonego - wyjątek
+# na plik w środku sam z siebie by nie zadziałał. Dlatego najpierw cofamy
+# wykluczenie katalogu, potem wykluczamy jego zawartość, a na końcu wpuszczamy
+# dwa pliki. Reguły z repozytorium mają pierwszeństwo przed globalnymi.
+#
+# Wszystko inne w .vscode (launch.json, ustawienia osobiste) zostaje poza repo.
+!.vscode/
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+

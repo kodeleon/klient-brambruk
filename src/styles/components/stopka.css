@@ -1,0 +1,118 @@
+/**
+ * STOPKA.
+ *
+ * Nagłówki kolumn to realne `<h2>`, nie tekst ozdobny na klasie - czytnik
+ * ekranu nawiguje po nagłówkach i stopka bez nich jest jedną ścianą tekstu.
+ * Odwrotny błąd (tekst ozdobny udający nagłówek) checklista też wyłapuje.
+ */
+
+@layer components {
+  .stopka {
+    margin-top: var(--sekcja-y);
+    border-top: 1px solid var(--color-obramowanie);
+    background-color: color-mix(in srgb, var(--color-tlo) 60%, transparent);
+    padding-block: 3rem 1.5rem;
+    font-size: var(--text-drobny);
+  }
+
+  .stopka__siatka {
+    display: grid;
+    gap: 2rem;
+    grid-template-columns: 1fr;
+  }
+
+  @media (min-width: 40rem) {
+    .stopka__siatka {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (min-width: 64rem) {
+    .stopka__siatka {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+
+  .stopka__marka {
+    font-family: var(--font-naglowek);
+    font-size: var(--text-karta);
+    font-weight: 700;
+    color: var(--color-tekst);
+  }
+
+  .stopka__opis {
+    color: var(--color-tekst-drugi);
+    margin-top: 0.25rem;
+  }
+
+  .stopka__tytul {
+    font-size: var(--text-drobny);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-tekst-drugi);
+    margin-bottom: 0.75rem;
+  }
+
+  .stopka__adres {
+    font-style: normal;
+    display: grid;
+    gap: 0.25rem;
+  }
+
+  .stopka__adres a,
+  .stopka__lista a {
+    color: var(--color-tresc);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--cel-dotykowy);
+  }
+
+  .stopka__adres a:hover,
+  .stopka__lista a:hover {
+    color: var(--color-akcent-jasny);
+    text-decoration: underline;
+  }
+
+  .stopka__godziny {
+    display: grid;
+    gap: 0.25rem;
+  }
+
+  .stopka__godziny > div {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .stopka__godziny dt {
+    color: var(--color-tekst-drugi);
+  }
+
+  .stopka__godziny dd {
+    margin: 0;
+  }
+
+  .stopka__lista {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+  }
+
+  .stopka__dol {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 0.5rem;
+    margin-top: 2.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--color-obramowanie);
+    color: var(--color-tekst-drugi);
+  }
+
+  .stopka__autor {
+    color: var(--color-tekst-drugi);
+  }
+}

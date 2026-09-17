@@ -1,0 +1,24 @@
+# Normalizacja końców linii. Repozytorium trzyma LF, checkout daje LF na każdym
+# systemie. Bez tego całe drzewo robocze na Windowsie pokazuje się jako zmienione.
+* text=auto eol=lf
+
+*.md    text eol=lf
+*.astro text eol=lf
+*.html  text eol=lf
+*.css   text eol=lf
+*.ts    text eol=lf
+*.tsx   text eol=lf
+*.mjs   text eol=lf
+*.json  text eol=lf
+*.jsonc text eol=lf
+*.svg   text eol=lf
+
+# Binaria - nigdy nie tykać
+*.jpg   binary
+*.jpeg  binary
+*.png   binary
+*.webp  binary
+*.avif  binary
+*.ico   binary
+*.woff  binary
+*.woff2 binary

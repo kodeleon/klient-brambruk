@@ -1,0 +1,51 @@
+{
+  "name": "baza-astro",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Baza projektowa Kodeleon - repozytorium startowe dla projektow klienckich.",
+  "engines": {
+    "node": ">=22.22"
+  },
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "node tools/audit/server.mjs",
+    "check": "astro check",
+    "fonts": "node tools/fonts/import-fonts.mjs",
+    "images": "node tools/media/build-images.mjs",
+    "images:check": "node tools/media/build-images.mjs --check",
+    "images:fast": "node tools/media/build-images.mjs --profile=fast",
+    "images:force": "node tools/media/build-images.mjs --force",
+    "images:source": "node tools/media/build-source.mjs",
+    "images:source:plan": "node tools/media/build-source.mjs --plan",
+    "images:crop": "node tools/media/build-crop.mjs",
+    "images:crop:all": "node tools/media/build-crop.mjs --all",
+    "prebuild": "node tools/media/build-images.mjs --profile=full",
+    "predev": "node tools/media/build-images.mjs --profile=fast",
+    "audit": "node tools/audit/audit.mjs",
+    "manifest": "node tools/build/manifest.mjs",
+    "manifest:compare": "node tools/build/manifest.mjs compare",
+    "no-js": "node tools/audit/no-js.mjs",
+    "preview:astro": "astro preview"
+  },
+  "dependencies": {
+    "astro": "^7.3.2"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.10",
+    "@fontsource-variable/manrope": "^5.3.0",
+    "@fontsource-variable/onest": "^5.3.1",
+    "@fontsource-variable/shantell-sans": "^5.3.0",
+    "@tailwindcss/vite": "^4.3.3",
+    "axe-core": "^4.13.0",
+    "chrome-launcher": "^1.2.1",
+    "fontaine": "^0.8.1",
+    "lighthouse": "^13.4.1",
+    "puppeteer-core": "^25.11.0",
+    "sharp": "^0.35.4",
+    "svgo": "^4.1.0",
+    "tailwindcss": "^4.3.3",
+    "typescript": "^6.0.3"
+  }
+}

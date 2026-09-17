@@ -1,0 +1,34 @@
+{
+  // Konfiguracja wdrożenia na Cloudflare Workers ze statycznymi zasobami.
+  //
+  // Serwis nie ma kodu Workera - sam katalog `dist`. Dlatego NIE ma tu pola
+  // `main` ani `assets.binding`: oba mają sens wyłącznie wtedy, gdy istnieje
+  // skrypt Workera, który miałby z tego bindingu korzystać. Worker formularza
+  // (jeśli moduł jest włączony) to OSOBNE wdrożenie, patrz worker/README.md.
+  //
+  // Wdrożenie: `npm run build`, potem `npx wrangler deploy`. Wrangler celowo
+  // NIE jest w devDependencies - to narzędzie wdrożeniowe, nie zależność
+  // builda, a `npx` pobiera je na żądanie. Stąd też brak pola "$schema",
+  // które wskazywałoby na plik w node_modules.
+  //
+  // ⚠️ `name` musi być unikalny w koncie Cloudflare. Zmień go przy zakładaniu
+  // projektu, inaczej wdrożenie nadpisze cudzy serwis.
+  "name": "kodeleon-baza",
+  "compatibility_date": "2026-09-14",
+
+  "assets": {
+    "directory": "./dist",
+
+    // Bez tego brak dopasowania kończy się PUSTĄ odpowiedzią 404.
+    // `404-page` każe Cloudflare oddać `dist/404.html` razem ze statusem 404,
+    // czyli naszą stronę błędu z nawigacją i linkiem powrotnym.
+    "not_found_handling": "404-page",
+
+    // Podstrony to katalogi z `index.html`, a `canonical` i mapa strony
+    // wskazują adresy ze slashem na końcu (`trailingSlash: 'always'`
+    // w astro.config.ts). `auto-trailing-slash` serwuje katalog pod adresem
+    // ze slashem i przekierowuje wersję bez niego, czyli serwer zgadza się
+    // z tym, co deklaruje HTML.
+    "html_handling": "auto-trailing-slash"
+  }
+}
