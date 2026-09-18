@@ -1,0 +1,58 @@
+---
+/**
+ * IKONA - jeden komponent na wszystkie kształty.
+ *
+ *   <Ikona nazwa="phone" rozmiar={14} class="text-brand-olive shrink-0" />
+ *   <Ikona nazwa="star" rozmiar={16} wypelnienie="currentColor" />
+ *
+ * Odpowiednik `<Phone size={14} className="..." />` ze starego projektu,
+ * z tą różnicą, że nie ma tu żadnego kodu w przeglądarce: kształt jest
+ * wstawiany do HTML przy budowaniu.
+ *
+ * `aria-hidden` jest domyślne i takie ma zostać. Ikona w tym serwisie zawsze
+ * stoi obok tekstu albo w elemencie z `aria-label` - czytnik ekranu ma ją
+ * pominąć, a nie przeczytać „obraz".
+ */
+import { ikony, type NazwaIkony } from './ikony'
+
+interface Props {
+  nazwa: NazwaIkony
+  /** Szerokość i wysokość w pikselach. Odpowiada `size` z lucide. */
+  rozmiar?: number
+  class?: string
+  /** Wypełnienie kształtu. Domyślnie sam obrys. */
+  wypelnienie?: string
+  /** Kolor obrysu. `none` wyłącza obrys (ikony rysowane wypełnieniem). */
+  obrys?: string
+  /** Grubość obrysu. Domyślnie 2, jak w lucide. */
+  grubosc?: number
+}
+
+const {
+  nazwa,
+  rozmiar = 24,
+  class: klasa,
+  wypelnienie = 'none',
+  obrys = 'currentColor',
+  grubosc = 2,
+} = Astro.props
+
+const ksztalt = ikony[nazwa]
+if (!ksztalt) throw new Error(`<Ikona nazwa="${nazwa}">: nie ma takiego kształtu w src/components/icons/ikony.ts`)
+---
+
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  width={rozmiar}
+  height={rozmiar}
+  viewBox="0 0 24 24"
+  fill={wypelnienie}
+  stroke={obrys}
+  stroke-width={grubosc}
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  class={klasa}
+  aria-hidden="true"
+  focusable="false"
+  set:html={ksztalt}
+/>

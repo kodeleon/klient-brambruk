@@ -1,0 +1,30 @@
+---
+/**
+ * PASEK STATYSTYK - odpowiednik `StatBar.jsx`.
+ * Liczby biorą się z `src/config/dane.ts`, nie z kodu komponentu.
+ */
+import { statystyki, fixly } from '../../config/dane'
+
+interface Props {
+  class?: string
+}
+const { class: klasa = '' } = Astro.props
+
+const pozycje = [
+  { wartosc: String(statystyki.lata), etykieta: 'lat doświadczenia' },
+  { wartosc: String(statystyki.miejscowosci), etykieta: 'miejscowości' },
+  { wartosc: statystyki.realizacje, etykieta: 'realizacji' },
+  { wartosc: fixly.ocena, etykieta: 'ocena na Fixly' },
+]
+---
+
+<div class:list={['grid grid-cols-2 lg:grid-cols-4 gap-4', klasa]}>
+  {
+    pozycje.map((p) => (
+      <div class="text-center lg:text-left">
+        <div class="font-display text-3xl lg:text-4xl font-bold text-brand-sage">{p.wartosc}</div>
+        <div class="text-xs text-brand-text-light mt-1">{p.etykieta}</div>
+      </div>
+    ))
+  }
+</div>

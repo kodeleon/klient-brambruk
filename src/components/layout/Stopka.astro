@@ -1,72 +1,131 @@
 ---
 /**
- * STOPKA - punkt orientacyjny `contentinfo`.
+ * STOPKA - odpowiednik `Footer.jsx`.
  *
- * Dane kontaktowe biorą się z `src/config/dane.ts`, rok jest liczony, nie
- * zaszyty. Odnośniki zewnętrzne renderują się tylko wtedy, gdy mają adres -
- * pusty `href="#"` to martwa kotwica, a checklista sprawdza to wprost.
+ * Trzy kolumny odnośników i dane firmy biorą się z `src/config/dane.ts`.
+ * Rok jest liczony, nie wpisany na sztywno (stary projekt miał „© 2026"
+ * w kodzie - checklista sprawdza to wprost).
+ *
+ * Odnośniki zewnętrzne dostały `rel="noopener noreferrer"`, którego
+ * poprzednio brakowało przy `target="_blank"`.
  */
-import { dane, nawigacja, rok } from '../../config/dane'
+import { dane, fixly, nawigacjaStopki, rok } from '../../config/dane'
+import Ikona from '../icons/Ikona.astro'
+import IkonaTikTok from '../icons/IkonaTikTok.astro'
+import PrzyciskFixly from '../ui/PrzyciskFixly.astro'
+import Foto from '../media/Foto.astro'
 
 const spolecznosciowe = [
-  { etykieta: 'Instagram', url: dane.instagramUrl, nazwa: dane.instagram },
-  { etykieta: 'Facebook', url: dane.facebookUrl, nazwa: dane.facebook },
+  { etykieta: 'Facebook', url: dane.facebookUrl, ikona: 'facebook' as const },
+  { etykieta: 'Instagram', url: dane.instagramUrl, ikona: 'instagram' as const },
 ].filter((p) => p.url)
 ---
 
-<footer class="stopka">
-  <div class="wrap stopka__siatka">
-    <div>
-      <p class="stopka__marka">{dane.nazwa}</p>
-      <p class="stopka__opis">{dane.opis}</p>
+<footer class="bg-brand-dark text-neutral-400">
+  <div class="max-w-7xl mx-auto px-5 lg:px-10 pt-12 pb-8">
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-10 lg:gap-8 mb-8">
+      <div class="col-span-2">
+        <a href="/" class="flex items-center gap-2 group" aria-label="BramBruk - strona główna">
+          <Foto klucz="logo.znak" alt="" class="w-12 h-12 pb-1" />
+          <span class="text-brand-bg font-brand text-2xl">BramBruk</span>
+        </a>
+
+        <div class="space-y-2 text-sm">
+          <p class="text-neutral-500">{dane.opis}</p>
+          <p class="text-neutral-500">NIP: {dane.nip}</p>
+          <p class="text-neutral-500">REGON: {dane.regon}</p>
+          <div class="flex items-center gap-2 pt-1">
+            <Ikona nazwa="map-pin" rozmiar={14} class="text-brand-olive shrink-0" />
+            <span>{dane.adres}</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <Ikona nazwa="phone" rozmiar={14} class="text-brand-olive shrink-0" />
+            <a href={`tel:${dane.telefonHref}`} class="hover:text-white transition-colors">{dane.telefon}</a>
+          </div>
+          <div class="flex items-center gap-2">
+            <Ikona nazwa="mail" rozmiar={14} class="text-brand-olive shrink-0" />
+            <a href={`mailto:${dane.email}`} class="hover:text-white transition-colors">{dane.email}</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex flex-col h-full justify-center">
+        <h2 class="text-white text-xs font-semibold tracking-wider uppercase mb-4">Social media</h2>
+        <div class="flex gap-3 mb-4">
+          {
+            spolecznosciowe.map((p) => (
+              <a
+                href={p.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="w-10 h-10 rounded-full bg-white/5 hover:bg-brand-olive/20 flex items-center justify-center transition-colors"
+                aria-label={`${p.etykieta} (otwiera się w nowej karcie)`}
+              >
+                <Ikona nazwa={p.ikona} rozmiar={18} wypelnienie={p.ikona === 'facebook' ? 'currentColor' : 'none'} obrys={p.ikona === 'facebook' ? 'none' : 'currentColor'} />
+              </a>
+            ))
+          }
+          {
+            dane.tiktokUrl && (
+              <a
+                href={dane.tiktokUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="w-10 h-10 rounded-full bg-white/5 hover:bg-brand-olive/20 flex items-center justify-center transition-colors"
+                aria-label="TikTok (otwiera się w nowej karcie)"
+              >
+                <IkonaTikTok rozmiar={18} />
+              </a>
+            )
+          }
+        </div>
+
+        <div class="flex items-center gap-2 text-sm">
+          <div class="flex text-fixly-main" role="img" aria-label={`Ocena ${fixly.ocena}`}>
+            {Array.from({ length: 5 }).map(() => <Ikona nazwa="star" rozmiar={14} wypelnienie="currentColor" />)}
+          </div>
+          <span class="flex flex-wrap items-center gap-1.5">
+            <span>{fixly.ocena} na</span>
+            <PrzyciskFixly />
+          </span>
+        </div>
+
+        <p class="text-xs text-neutral-500 mt-4">
+          {dane.godzinyTydzien}
+          <br />
+          {dane.godzinySobota}
+        </p>
+      </div>
     </div>
 
-    <div>
-      <h2 class="stopka__tytul">Kontakt</h2>
-      <address class="stopka__adres">
-        <p>{dane.adres}</p>
-        <p><a href={`tel:${dane.telefonHref}`}>{dane.telefon}</a></p>
-        <p><a href={`mailto:${dane.email}`}>{dane.email}</a></p>
-      </address>
-    </div>
-
-    <div>
-      <h2 class="stopka__tytul">Godziny</h2>
-      <dl class="stopka__godziny">
-        <div><dt>Pon. - pt.</dt><dd>{dane.godzinyTydzien}</dd></div>
-        <div><dt>Sobota</dt><dd>{dane.godzinySobota}</dd></div>
-        <div><dt>Niedziela</dt><dd>{dane.godzinyNiedziela}</dd></div>
-      </dl>
-    </div>
-
-    <div>
-      <h2 class="stopka__tytul">Serwis</h2>
-      <nav aria-label="Nawigacja w stopce">
-        <ul class="stopka__lista">
-          {nawigacja.map((p) => <li><a href={p.sciezka}>{p.etykieta}</a></li>)}
-          <li><a href="/polityka-prywatnosci/">Polityka prywatności</a></li>
-        </ul>
-      </nav>
-
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-10 lg:gap-8">
       {
-        spolecznosciowe.length > 0 && (
-          <ul class="stopka__lista">
-            {spolecznosciowe.map((p) => (
-              <li>
-                <a href={p.url} target="_blank" rel="noopener noreferrer">
-                  {p.etykieta}
-                  <span class="poza-ekranem"> (otwiera się w nowej karcie)</span>
-                </a>
-              </li>
-            ))}
-          </ul>
-        )
+        nawigacjaStopki.map((kolumna) => (
+          <div>
+            <h2 class="text-white text-xs font-semibold tracking-wider uppercase mb-4">{kolumna.tytul}</h2>
+            <ul class="space-y-2.5">
+              {kolumna.pozycje.map((pozycja) => (
+                <li>
+                  <a href={pozycja.sciezka} class="text-sm hover:text-white transition-colors">
+                    {pozycja.etykieta}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))
       }
     </div>
-  </div>
 
-  <div class="wrap stopka__dol">
-    <p>© {rok} {dane.nazwa}</p>
-    <p class="stopka__autor">Realizacja: Kodeleon</p>
+    <div
+      class="mt-12 pt-6 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-3 text-xs text-neutral-500"
+    >
+      <span>© {rok} BramBruk · Wszelkie prawa zastrzeżone</span>
+      <div class="flex gap-4">
+        <a href="/polityka-prywatnosci/" class="hover:text-white transition-colors">Polityka Prywatności</a>
+        <span class="text-neutral-700">·</span>
+        <span>brambruk.pl</span>
+      </div>
+    </div>
   </div>
 </footer>

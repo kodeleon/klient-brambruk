@@ -1,0 +1,73 @@
+---
+/**
+ * OKRUSZKI - odpowiednik `Breadcrumb.jsx`.
+ *
+ * Tło zależy od podstrony: sekcje z ciemnym nagłówkiem dostają ciemny pasek.
+ * Lista ścieżek przeniesiona bez zmian; w starym projekcie decydował
+ * `useLocation`, tutaj `Astro.url.pathname` - ta sama wartość, tylko liczona
+ * przy buildzie.
+ */
+interface Pozycja {
+  etykieta: string
+  sciezka?: string
+}
+interface Props {
+  pozycje: Pozycja[]
+}
+const { pozycje } = Astro.props
+
+const CIEMNE = ['/wycena', '/uslugi', '/realizacje', '/ogrodzenia', '/brukarstwo', '/budownictwo']
+const sciezka = Astro.url.pathname
+const ciemne = CIEMNE.some((p) => sciezka.startsWith(p))
+---
+
+<div class={ciemne ? 'bg-brand-dark' : 'bg-brand-section border-b border-brand-border'}>
+  <div class="max-w-7xl mx-auto px-5 lg:px-10">
+    <nav
+      class:list={[
+        'flex items-center gap-1.5 text-xs py-3',
+        ciemne ? 'text-neutral-500' : 'text-brand-text-light',
+      ]}
+      aria-label="Okruszki"
+    >
+      {
+        pozycje.map((pozycja, i) => (
+          <span class="flex items-center gap-1.5">
+            {i > 0 && (
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="11"
+                height="11"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="opacity-40"
+                aria-hidden="true"
+              >
+                <path d="m9 18 6-6-6-6" />
+              </svg>
+            )}
+            {pozycja.sciezka ? (
+              <a
+                href={pozycja.sciezka}
+                class:list={['hover:text-brand-olive transition-colors', ciemne && 'text-neutral-500']}
+              >
+                {pozycja.etykieta}
+              </a>
+            ) : (
+              <span
+                class={ciemne ? 'text-neutral-300 font-medium' : 'text-brand-text font-medium'}
+                aria-current="page"
+              >
+                {pozycja.etykieta}
+              </span>
+            )}
+          </span>
+        ))
+      }
+    </nav>
+  </div>
+</div>

@@ -1,0 +1,116 @@
+---
+/**
+ * GALERIA - KARUZELA (widok telefonu). Odpowiednik `GalleryCarousel.jsx`.
+ *
+ * ┌── JEDNA ŚWIADOMA RÓŻNICA WOBEC STAREGO PROJEKTU ────────────────────┐
+ * │ Stara karuzela trzymała w DOM jedno zdjęcie i podmieniała je stanem  │
+ * │ Reacta z przejściem na krycie. Bez JavaScriptu telefon widział       │
+ * │ JEDNO z sześciu zdjęć - siatka na desktopie jest wtedy ukryta        │
+ * │ (`hidden md:grid`), więc reszta galerii po prostu znikała.           │
+ * │                                                                      │
+ * │ Tutaj slajdy leżą obok siebie w pasie z `scroll-snap`. Przesuwanie   │
+ * │ palcem działa natywnie, bez ani jednej linii kodu, a skrypt          │
+ * │ `karuzela.ts` dokłada tylko automatyczne przewijanie, strzałki       │
+ * │ i kropki. Przejście jest przesunięciem zamiast przenikania - to       │
+ * │ jedyna widoczna zmiana i jest ceną za działanie bez JavaScriptu.     │
+ * └──────────────────────────────────────────────────────────────────────┘
+ */
+import Ikona from '../icons/Ikona.astro'
+import Foto from '../media/Foto.astro'
+
+interface Pozycja {
+  foto: string
+  tytul?: string
+  lokalizacja?: string
+}
+interface Props {
+  pozycje: readonly Pozycja[]
+  class?: string
+}
+const { pozycje, class: klasa = '' } = Astro.props
+---
+
+<div
+  class:list={[
+    'rounded-2xl overflow-hidden bg-brand-card border border-brand-border/60 shadow-md shadow-black/[0.07] select-none',
+    klasa,
+  ]}
+  data-karuzela
+>
+  <div class="relative aspect-[16/10] overflow-hidden bg-brand-bg">
+    {/*
+      `tabindex` i `role` są wymagane, bo pas przewija się w poziomie:
+      bez nich klawiatura nie ma jak dojść do dalszych zdjęć
+      (axe: scrollable-region-focusable).
+    */}
+    <div
+      class="karuzela-tor flex h-full w-full overflow-x-auto snap-x snap-mandatory"
+      data-karuzela-tor
+      tabindex="0"
+      role="region"
+      aria-label="Galeria realizacji - przewijanie w poziomie"
+    >
+      {
+        pozycje.map((pozycja, i) => (
+          <figure class="relative shrink-0 w-full h-full snap-center" data-karuzela-slajd={i}>
+            <Foto
+              klucz={pozycja.foto}
+              alt={pozycja.tytul ?? 'Realizacja BramBruk'}
+              class="w-full h-full object-cover"
+            />
+            <div class="absolute inset-0 bg-gradient-to-t from-black/55 via-black/0 to-transparent pointer-events-none" />
+            {(pozycja.tytul || pozycja.lokalizacja) && (
+              <figcaption class="absolute bottom-0 left-0 right-0 px-5 py-4 flex items-end justify-between pointer-events-none">
+                {pozycja.tytul && (
+                  <span class="text-white font-display font-semibold text-sm drop-shadow">{pozycja.tytul}</span>
+                )}
+                {pozycja.lokalizacja && (
+                  <span class="flex items-center gap-1 text-white/70 text-xs">
+                    <Ikona nazwa="map-pin" rozmiar={12} class="shrink-0" />
+                    {pozycja.lokalizacja}
+                  </span>
+                )}
+              </figcaption>
+            )}
+          </figure>
+        ))
+      }
+    </div>
+
+    <button
+      type="button"
+      class="absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 flex items-center justify-center rounded-full bg-brand-dark/75 hover:bg-brand-olive backdrop-blur-sm text-white transition-all duration-200 hover:scale-105"
+      data-karuzela-poprzednie
+      aria-label="Poprzednie zdjęcie"
+      hidden
+    >
+      <Ikona nazwa="chevron-left" rozmiar={20} grubosc={2.5} />
+    </button>
+
+    <button
+      type="button"
+      class="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 flex items-center justify-center rounded-full bg-brand-dark/75 hover:bg-brand-olive backdrop-blur-sm text-white transition-all duration-200 hover:scale-105"
+      data-karuzela-nastepne
+      aria-label="Następne zdjęcie"
+      hidden
+    >
+      <Ikona nazwa="chevron-right" rozmiar={20} grubosc={2.5} />
+    </button>
+  </div>
+</div>
+
+<div class:list={['flex items-center justify-center gap-2 py-3 px-4', klasa]} data-karuzela-kropki hidden>
+  {
+    pozycje.map((_, i) => (
+      <button
+        type="button"
+        class:list={[
+          'rounded-full transition-all duration-300',
+          i === 0 ? 'w-5 h-2 bg-brand-sage' : 'w-2 h-2 bg-brand-text-xlight hover:bg-brand-text-light',
+        ]}
+        data-karuzela-kropka={i}
+        aria-label={`Zdjęcie ${i + 1}`}
+      />
+    ))
+  }
+</div>

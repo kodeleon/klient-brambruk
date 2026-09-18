@@ -1,59 +1,119 @@
 ---
 /**
- * NAGŁÓWEK SERWISU - punkt orientacyjny `banner` plus nawigacja główna.
+ * NAGŁÓWEK SERWISU - odpowiednik `Navbar.jsx`.
  *
- * Pozycje menu biorą się z `nawigacja` w `src/config/dane.ts`. Nie dopisuj
- * ich tutaj: ta sama lista obsługuje stopkę i stronę 404, a trzy kopie
- * rozjadą się przy pierwszej nowej podstronie.
- *
- * `aria-current="page"` na aktywnej pozycji jest wymagane - sama klasa CSS
- * nie wystarczy, bo czytnik ekranu jej nie widzi.
- *
- * ┌── DLACZEGO NIE MA TU HAMBURGERA ────────────────────────────────────┐
- * │ Menu chowane za przyciskiem kosztuje trzy rzeczy naraz: skrypt,     │
- * │ pełny cykl dostępności (otwarcie, blokada przewijania, Escape,      │
- * │ powrót fokusu) i PRZESKOK UKŁADU, bo bez JavaScriptu panel musi być │
- * │ widoczny, a po starcie skryptu znika. Zmierzone: CLS 0,057 na       │
- * │ telefonie, wyłącznie z tego jednego powodu.                         │
+ * ┌── MENU MOBILNE BEZ JAVASCRIPTU ─────────────────────────────────────┐
+ * │ Stary hamburger trzymał stan w Reakcie: bez JavaScriptu na telefonie │
+ * │ nie dało się otworzyć menu w ogóle. Tutaj stan trzyma ukryte pole    │
+ * │ wyboru (`#menu-mobilne`), a panel rozwija się regułą CSS.            │
  * │                                                                      │
- * │ Pakiety Kodeleon to wizytówki o 2-6 podstronach. Lista zawijana     │
- * │ w dwa wiersze mieści się na 320 px, działa bez skryptu, ma natywną   │
- * │ obsługę klawiatury i nie rusza układem. Hamburger zaczyna się        │
- * │ opłacać dopiero powyżej ~7 pozycji albo przy menu wielopoziomowym.  │
+ * │ Kolejność w dokumencie została ta sama co poprzednio: pasek u góry,  │
+ * │ panel pod nim, oba w `<header>`. Dzięki temu panel rozsuwa nagłówek, │
+ * │ a nie przykrywa treść - tak jak działało to wcześniej.               │
  * │                                                                      │
- * │ Projekt, który tego naprawdę potrzebuje: użyj `<details>`/`<summary>`│
- * │ zamiast przycisku ze stanem w skrypcie. Bez JavaScriptu menu nadal   │
- * │ się rozwija, `aria-expanded` obsługuje przeglądarka, a klawiatura    │
- * │ działa natywnie - skrypt dokłada tylko Escape, zamknięcie kliknięciem│
- * │ obok i powrót fokusu.                                                │
+ * │ Przyklejenie po przewinięciu (`bg-brand-dark/95` + rozmycie + cień)  │
+ * │ dokłada moduł `src/scripts/naglowek.ts`. Bez skryptu pasek jest      │
+ * │ po prostu zawsze nieprzezroczysty - czyli stan, który stary projekt  │
+ * │ pokazywał na górze strony.                                          │
  * └──────────────────────────────────────────────────────────────────────┘
  */
 import { dane, nawigacja } from '../../config/dane'
+import Przycisk from '../ui/Przycisk.astro'
+import Ikona from '../icons/Ikona.astro'
+import Foto from '../media/Foto.astro'
 
 const tu = Astro.url.pathname
-const aktywna = (sciezka: string) => tu === sciezka
+/** Stary projekt podświetlał pozycję przez `pathname.startsWith(href)`. */
+const aktywna = (sciezka: string) => tu.startsWith(sciezka.replace(/\/$/, ''))
 ---
 
-<header class="naglowek">
-  <div class="wrap naglowek__pas">
-    <a class="naglowek__marka" href="/">{dane.nazwa}</a>
+<header class="naglowek sticky top-0 left-0 right-0 z-50 transition-all duration-300 bg-brand-dark" data-naglowek>
+  {/*
+    `md:hidden` na samym polu wyboru, nie tylko na przełączniku: od 768 px
+    menu mobilnego nie ma, a pole bez widocznej etykiety zostawało w drzewie
+    dostępności jako kontrolka bez nazwy (axe: label).
+  */}
+  <input type="checkbox" id="menu-mobilne" class="poza-ekranem md:hidden" />
 
-    <nav class="naglowek__nawigacja" aria-label="Nawigacja główna">
-      <ul>
+  <div class="max-w-7xl mx-auto px-2 lg:px-10 min-h-[72px]">
+    <div class="flex items-center justify-between h-[72px]">
+      <a href="/" class="flex items-center gap-1 group" aria-label="BramBruk - strona główna">
+        <Foto klucz="logo.znak" alt="" class="w-12 h-12 pb-1" />
+        <span class="text-brand-bg font-brand text-2xl">BramBruk</span>
+      </a>
+
+      <nav class="hidden md:flex items-center gap-8" aria-label="Nawigacja główna">
         {
           nawigacja.map((pozycja) => (
-            <li>
-              <a
-                href={pozycja.sciezka}
-                aria-current={aktywna(pozycja.sciezka) ? 'page' : undefined}
-                class:list={['naglowek__link', { 'naglowek__link--aktywny': aktywna(pozycja.sciezka) }]}
-              >
-                {pozycja.etykieta}
-              </a>
-            </li>
+            <a
+              href={pozycja.sciezka}
+              aria-current={aktywna(pozycja.sciezka) ? 'page' : undefined}
+              class:list={[
+                'text-[13px] font-medium transition-colors duration-200',
+                aktywna(pozycja.sciezka) ? 'text-brand-olive' : 'text-neutral-400 hover:text-white',
+              ]}
+            >
+              {pozycja.etykieta}
+            </a>
           ))
         }
-      </ul>
-    </nav>
+      </nav>
+
+      <div class="flex items-center gap-4 px-4">
+        <div class="hidden sm:flex items-center gap-2">
+          <Przycisk href={`tel:${dane.telefonHref}`} wariant="custom-dark" rozmiar="sm">
+            <Ikona nazwa="phone" rozmiar={14} />
+            <span class="hidden xl:inline text-sm font-normal">{dane.telefon}</span>
+          </Przycisk>
+          <Przycisk href="/wycena/" rozmiar="sm" ikona="receipt-text">Bezpłatna wycena</Przycisk>
+        </div>
+
+        <label
+          for="menu-mobilne"
+          class="naglowek__przelacznik flex md:hidden text-white p-2 hover:bg-white/10 rounded-lg transition-colors cursor-pointer"
+        >
+          {/*
+            Nazwa przełącznika idzie TREŚCIĄ etykiety, nie atrybutem `aria-label`:
+            na `<label>` ten atrybut jest zabroniony (axe: aria-prohibited-attr),
+            a pole wyboru zostawało wtedy bez nazwy (axe: label).
+          */}
+          <span class="poza-ekranem">Menu</span>
+          <Ikona nazwa="menu" rozmiar={24} class="naglowek__ikona-menu" />
+          <Ikona nazwa="x" rozmiar={24} class="naglowek__ikona-zamknij" />
+        </label>
+      </div>
+    </div>
+  </div>
+
+  <div class="naglowek__panel lg:hidden overflow-hidden transition-all duration-300">
+    <div class="px-5 py-4 bg-brand-dark space-y-1">
+      {
+        nawigacja.map((pozycja) => (
+          <a
+            href={pozycja.sciezka}
+            aria-current={aktywna(pozycja.sciezka) ? 'page' : undefined}
+            class:list={[
+              'block px-4 py-3 rounded-lg text-sm font-medium transition-colors',
+              aktywna(pozycja.sciezka)
+                ? 'text-brand-olive bg-brand-olive/10'
+                : 'text-neutral-300 hover:bg-white/5',
+            ]}
+          >
+            {pozycja.etykieta}
+          </a>
+        ))
+      }
+      <div class="pt-3 flex flex-col gap-2">
+        <Przycisk
+          href={`tel:${dane.telefonHref}`}
+          wariant="secondary"
+          class="flex items-center justify-center gap-2 py-3 border border-brand-bg text-brand-bg rounded-full text-sm font-semibold hover:bg-brand-bg"
+        >
+          <Ikona nazwa="phone" rozmiar={16} />
+          Zadzwoń
+        </Przycisk>
+        <Przycisk href="/wycena/" class="w-full" ikona="receipt-text">Bezpłatna wycena</Przycisk>
+      </div>
+    </div>
   </div>
 </header>

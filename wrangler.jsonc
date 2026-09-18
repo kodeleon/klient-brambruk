@@ -11,9 +11,8 @@
   // builda, a `npx` pobiera je na żądanie. Stąd też brak pola "$schema",
   // które wskazywałoby na plik w node_modules.
   //
-  // ⚠️ `name` musi być unikalny w koncie Cloudflare. Zmień go przy zakładaniu
-  // projektu, inaczej wdrożenie nadpisze cudzy serwis.
-  "name": "kodeleon-baza",
+  // ⚠️ `name` musi być unikalny w koncie Cloudflare.
+  "name": "brambruk",
   "compatibility_date": "2026-09-14",
 
   "assets": {

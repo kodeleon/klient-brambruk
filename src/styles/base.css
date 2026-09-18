@@ -1,83 +1,53 @@
 /**
- * WARSTWA BAZOWA - dokument, typografia, dostępność globalna.
+ * WARSTWA BAZOWA - dokument, dostępność globalna, odsłanianie.
  *
- * Wszystko tutaj obowiązuje w całym serwisie i nie powinno być nadpisywane
- * lokalnie. Reguły dostępności w tym pliku pokrywają punkty 🧱 checklisty
- * przedwdrożeniowej: widoczny wskaźnik fokusu, obsługa ograniczonego ruchu,
- * pominięcie nawigacji, cel dotykowy.
+ * ZASADA TEGO PLIKU W PROJEKCIE MIGROWANYM: nic tutaj nie może zmienić
+ * wyglądu strony zastanej. Dlatego nie ma tu globalnych reguł na nagłówki,
+ * akapity ani przyciski - stary projekt stylował je wyłącznie klasami
+ * narzędziowymi, a globalna reguła zmieniłaby krój albo łamanie linii
+ * w miejscach, których nikt nie oglądał.
+ *
+ * Reguły dostępności poniżej są widoczne WYŁĄCZNIE dla klawiatury
+ * i czytników ekranu, więc wchodzą bez zmiany wyglądu.
  */
 
 @layer base {
   html {
     scroll-behavior: smooth;
-    /* Kotwica nie może wylądować pod przyklejonym nagłówkiem. */
-    scroll-padding-top: 5rem;
+    /* Kotwica (`#sekcja-cennik`) nie może wylądować pod przyklejonym
+       nagłówkiem. W starym projekcie załatwiał to skrypt (`ScrollManager`),
+       tutaj robi to przeglądarka. */
+    scroll-padding-top: calc(var(--naglowek-wysokosc) + 1rem);
     -webkit-text-size-adjust: 100%;
   }
 
   body {
-    background: var(--color-tlo);
-    background-image: var(--tlo-strony);
-    background-attachment: fixed;
-    color: var(--color-tresc);
-    font-family: var(--font-tresc);
-    font-size: var(--text-tresc);
-    line-height: 1.6;
+    background: var(--color-brand-bg);
+    color: var(--color-brand-text);
+    font-family: var(--font-body);
     min-height: 100svh;
     -webkit-font-smoothing: antialiased;
-  }
-
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6 {
-    font-family: var(--font-naglowek);
-    color: var(--color-tekst);
-    text-wrap: balance;
-  }
-
-  p,
-  li {
-    text-wrap: pretty;
-  }
-
-  /* Zdjęcia nigdy nie wychodzą poza kontener i nie wiszą na linii bazowej. */
-  img,
-  picture,
-  video,
-  canvas,
-  svg {
-    display: block;
-    max-width: 100%;
+    -moz-osx-font-smoothing: grayscale;
   }
 
   /* ------------------------------------------------------------------
      FOKUS - jedna reguła na cały serwis.
 
-     `outline: 0` bez zamiennika jest błędem, nie stylem. Jeśli gdzieś
-     musisz zdjąć obrys, zastąp go czymś równie widocznym W TEJ SAMEJ
-     regule - nie licz na to, że ktoś doda to później.
-
-     `:focus-visible`, nie `:focus`: mysz nie ma dostać obrysu po kliknięciu
-     w przycisk, klawiatura ma go dostać zawsze.
+     Stary projekt miał `focus:outline-none` w ośmiu miejscach BEZ
+     zamiennika: strzałki galerii, kafelki, pola formularzy. Nawigacja
+     klawiaturą była tam niewidoczna. To jest punkt blokujący checklisty
+     i jedyna zmiana w tym pliku, którą w ogóle widać - ale wyłącznie
+     wtedy, gdy ktoś naciśnie Tab.
      ------------------------------------------------------------------ */
   :focus-visible {
     outline: var(--fokus-grubosc) solid var(--fokus-kolor);
     outline-offset: var(--fokus-odsuniecie);
-    border-radius: var(--radius-s);
   }
 
   /* ------------------------------------------------------------------
      UKRYWANIE - `opacity: 0` i `pointer-events: none` NIE wyjmują
      elementu z kolejności Tab. Element niewidoczny, a łapiący fokus,
-     to pułapka dla klawiatury i punkt 🧱 checklisty.
-
-     Używaj tych dwóch mechanizmów i żadnego innego:
-       [hidden]                - element w ogóle nie istnieje wizualnie
-       .poza-ekranem           - treść dla czytnika, niewidoczna na ekranie
-     Do wyłączania całych obszarów (tło okna modalnego) służy `inert`.
+     to pułapka dla klawiatury.
      ------------------------------------------------------------------ */
   [hidden] {
     display: none !important;
@@ -97,7 +67,7 @@
 
   /* ------------------------------------------------------------------
      POMINIĘCIE NAWIGACJI - pierwszy element w kolejności Tab.
-     Niewidoczny do czasu złapania fokusu, potem w pełni widoczny.
+     Niewidoczny do czasu złapania fokusu.
      ------------------------------------------------------------------ */
   .pomin-nawigacje {
     position: absolute;
@@ -105,12 +75,12 @@
     left: 0;
     z-index: 100;
     transform: translateY(-120%);
-    background: var(--color-akcent);
-    color: #ffffff;
+    background: var(--color-brand-olive);
+    color: var(--color-brand-dark);
     font-weight: 600;
     padding: 0.75rem 1.25rem;
-    border-bottom-right-radius: var(--radius-m);
-    transition: transform var(--czas-natychmiast) var(--ease-podstawowa);
+    border-bottom-right-radius: 0.75rem;
+    transition: transform 150ms var(--ease-out);
   }
 
   .pomin-nawigacje:focus-visible {
@@ -118,22 +88,21 @@
   }
 
   /* ------------------------------------------------------------------
-     CEL DOTYKOWY - 44 px to minimum WCAG 2.1 AA dla przycisków, ikon
-     i pozycji menu. Reguła jest tutaj, żeby nie trzeba było jej pamiętać
-     przy każdym nowym komponencie.
+     ⚠️ CEL DOTYKOWY - reguły z bazy NIE MA tutaj świadomie.
+
+     Baza wymusza `min-height: 44px` na każdym `button`. W tym projekcie
+     złamałoby to układ w kilkunastu miejscach naraz: przyciski `size="sm"`
+     mają 28 px wysokości, kafelki filtrów 40 px, ikonowe przyciski galerii
+     32 px. Włączenie tej reguły to przeprojektowanie serwisu, czyli
+     dokładnie to, czego migracja robić nie może.
+
+     Zostaje jako pozycja do osobnej decyzji - patrz `MIGRACJA-audyt.md`,
+     sekcja 10.
      ------------------------------------------------------------------ */
-  button,
-  [role='button'],
-  a.przycisk,
-  .cel-dotykowy {
-    min-height: var(--cel-dotykowy);
-    min-width: var(--cel-dotykowy);
-  }
 
   /* ------------------------------------------------------------------
-     OGRANICZONY RUCH - warstwa CSS.
-     Warstwa JavaScriptu jest w `src/scripts/ruch.ts` i musi zostać
-     obsłużona osobno: samo CSS nie zatrzyma animacji sterowanej skryptem.
+     OGRANICZONY RUCH - warstwa CSS. Warstwa JavaScriptu jest
+     w `src/scripts/ruch.ts` i musi być obsłużona osobno.
      ------------------------------------------------------------------ */
   @media (prefers-reduced-motion: reduce) {
     html {
@@ -149,46 +118,72 @@
       scroll-behavior: auto !important;
     }
   }
+
+  /* Pasek przewijania - przeniesiony ze starego `index.css`. */
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    background: var(--color-brand-bg);
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #d8d5cc;
+    border-radius: 4px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #bbb8ae;
+  }
 }
 
 @layer components {
   /* ------------------------------------------------------------------
-     KONTENER TREŚCI - jedna szerokość i jeden margines boczny na serwis.
+     POWIĘKSZENIE ZDJĘCIA PRZY NAJECHANIU - ze starego `index.css`.
+     Używane przez karty usług i kafelki galerii.
      ------------------------------------------------------------------ */
-  .wrap {
-    width: 100%;
-    max-width: var(--container-tresc);
-    margin-inline: auto;
-    padding-inline: var(--margines-x);
+  .img-hover {
+    overflow: hidden;
   }
-
-  .sekcja {
-    padding-block: var(--sekcja-y);
+  .img-hover img {
+    transition: transform 0.5s ease;
+  }
+  .img-hover:hover img {
+    transform: scale(1.05);
   }
 
   /* ------------------------------------------------------------------
      ODSŁANIANIE PRZY PRZEWIJANIU.
 
-     Stan domyślny jest WIDOCZNY. To jest decyzja, nie przeoczenie:
-     przy wyłączonym JavaScripcie IntersectionObserver nigdy nie wystartuje,
-     a treść schowana pod `opacity: 0` zostałaby niewidoczna na zawsze.
-     Checklista klasyfikuje to jako bloker („treść widoczna, nie schowana
-     za animacją wejścia").
+     Odpowiednik komponentu `Reveal` ze starego projektu: te same warianty,
+     ten sam czas (500 ms) i ta sama krzywa (`ease-out`).
 
-     Skrypt `src/scripts/ruch.ts` dopiero USTAWIA `data-rv="czeka"` na
-     elementach, które ma odsłonić, i zdejmuje ten atrybut przy wejściu
-     w widok. Bez skryptu atrybut nie powstaje i nic się nie chowa.
+     RÓŻNICA, KTÓRA MA ZNACZENIE: stan domyślny jest WIDOCZNY. Stary `Reveal`
+     startował z `opacity-0` i odsłaniał dopiero po starcie Reacta - przy
+     wyłączonym JavaScripcie połowa treści serwisu była niewidoczna na zawsze.
+     Tutaj to skrypt `ruch.ts` najpierw CHOWA (`data-rv="czeka"`), więc bez
+     skryptu nie chowa się nic.
      ------------------------------------------------------------------ */
   [data-rv='czeka'] {
     opacity: 0;
-    transform: translateY(1.875rem);
+    transform: translateY(2rem);
+  }
+  [data-rv='czeka'][data-odslon-wariant='left'] {
+    transform: translateX(-2rem);
+  }
+  [data-rv='czeka'][data-odslon-wariant='right'] {
+    transform: translateX(2rem);
+  }
+  [data-rv='czeka'][data-odslon-wariant='scale'] {
+    transform: scale(0.95);
+  }
+  [data-rv='czeka'][data-odslon-wariant='fade'] {
+    transform: none;
   }
 
   [data-rv='widoczny'] {
     opacity: 1;
     transform: none;
     transition:
-      opacity var(--czas-wejscie) var(--ease-podstawowa) var(--rv-zwloka, 0ms),
-      transform var(--czas-wejscie) var(--ease-podstawowa) var(--rv-zwloka, 0ms);
+      opacity var(--czas-odslon) var(--ease-odslon) var(--rv-zwloka, 0ms),
+      transform var(--czas-odslon) var(--ease-odslon) var(--rv-zwloka, 0ms);
   }
 }

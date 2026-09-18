@@ -13,33 +13,41 @@
 
 export const site = {
   /** Adres bezwzględny, bez ukośnika na końcu. */
-  origin: 'https://przyklad.kodeleon.pl',
+  origin: 'https://brambruk.pl',
 
   /** Nazwa serwisu. Trafia do og:site_name i danych strukturalnych. */
-  nazwa: 'Baza Kodeleon',
+  nazwa: 'BramBruk',
 
   /** Krótki opis serwisu. Trafia do danych strukturalnych, nie do meta description. */
-  opis: 'Repozytorium startowe projektów klienckich Kodeleon.',
+  opis: 'Ogrodzenia, brukarstwo i budownictwo - Biała Podlaska i okolice.',
 
   /** Język dokumentu. Idzie do <html lang> i og:locale. */
   jezyk: 'pl',
   ogLocale: 'pl_PL',
 
-  /** Kolor paska przeglądarki na telefonie. Powinien odpowiadać tłu strony. */
-  themeColor: '#0a0d1a',
+  /** Kolor paska przeglądarki na telefonie. Odpowiada tłu nagłówka. */
+  themeColor: '#1E1E1E',
 } as const
 
 /**
  * MODUŁY - co ten projekt faktycznie ma.
  *
  * Przełącznik nie jest ozdobą: steruje jednocześnie dyrektywami CSP,
- * blokami polityki prywatności i zakresem audytu. Włączenie modułu bez
- * dopisania go tutaj zostawi zablokowany zasób w konsoli i lukę w polityce.
- *
- * Domyślnie wszystko wyłączone. Pusta baza ma zero żądań poza własny origin.
+ * blokami polityki prywatności i zakresem audytu.
  */
 export const moduly = {
-  /** Formularz kontaktowy. Wysyłka idzie do Workera, nie do natywnego action. */
+  /**
+   * Formularze (kontakt + kreator wyceny).
+   *
+   * ⚠️ STAN PRZEJŚCIOWY. Formularze renderują się i walidują po stronie
+   * przeglądarki, ale NIE MAJĄ jeszcze backendu: stary punkt docelowy
+   * (`/wp-json/codove-mailing/...` w WordPressie) odpada razem z WordPressem,
+   * a Worker powstanie osobno. Do tego czasu wysyłka pokazuje komunikat
+   * zastępczy z telefonem i e-mailem - patrz `src/scripts/formularz.ts`.
+   *
+   * Przełącznik zostaje na `false`, dopóki `endpointy.formularz` jest pusty:
+   * to on decyduje o wpisie w `connect-src`.
+   */
   formularz: false,
 
   /** Analityka Plausible. Skrypt strony trzeciej - wymaga wpisu w polityce prywatności. */
@@ -48,13 +56,18 @@ export const moduly = {
   /** Galeria z powiększaniem zdjęć. */
   galeria: true,
 
-  /** Kolekcja artykułów pod SEO (pakiet Premium). */
+  /** Kolekcja artykułów pod SEO. */
   artykuly: false,
 
   /** Druga wersja językowa. */
   drugiJezyk: false,
 
-  /** Mapa renderowana statycznie przez osm-custom-view. */
+  /**
+   * Mapa. Wyłączona świadomie: zamiast osadzonego iframe Google (żądanie poza
+   * domenę, pliki cookie u dostawcy, akapit w polityce prywatności) sekcja
+   * kontaktu pokazuje statyczny obraz mapy plus odnośnik do wizytówki
+   * w Mapach Google. Do czasu wgrania obrazu stoi tam zaślepka.
+   */
   mapa: false,
 } as const
 
@@ -66,8 +79,8 @@ export const moduly = {
  */
 export const endpointy = {
   /**
-   * Worker przyjmujący zgłoszenia z formularza.
-   * Trafia do `connect-src`. Przykład: 'https://formularz.przyklad.workers.dev'
+   * Worker przyjmujący zgłoszenia z formularzy.
+   * Trafia do `connect-src`. Przykład: 'https://formularz.brambruk.workers.dev'
    */
   formularz: '',
 
@@ -78,22 +91,24 @@ export const endpointy = {
 /**
  * Podstrony wyłączone z mapy strony.
  *
- * Mapa strony jest deklaracją „to chcemy w wynikach wyszukiwania".
- * Podstrona z `noindex` nie może w niej stać - to sprzeczny sygnał
- * indeksowania. W `robots.txt` jej nie blokujemy: robot musi wejść
- * na stronę, żeby w ogóle zobaczyć `noindex`.
+ * `/cennik/` to widok administracyjny: zestawienie wszystkich cen używanych
+ * na stronie, nielinkowane z nawigacji ani ze stopki. W starym projekcie nie
+ * miało wpisu w mapie SEO i dostawało `noindex` - zachowujemy to zachowanie.
  *
- * Ścieżki podajemy tak, jak wychodzą z builda: z ukośnikiem na końcu.
+ * Polityka prywatności ZOSTAJE w mapie strony: w starym serwisie była
+ * indeksowana (`index,follow`, priorytet 0.4), a migracja nie zmienia
+ * sygnałów indeksowania bez powodu.
  */
-export const pozaMapaStrony: string[] = ['/polityka-prywatnosci/']
+export const pozaMapaStrony: string[] = ['/cennik/']
 
 /**
  * Dodatkowe źródła w CSP, ponad to, co wynika z modułów.
  *
- * Wpisujesz tu host tylko wtedy, gdy strona faktycznie coś z niego pobiera.
- * Każdy wpis musi mieć odpowiednik w inwentarzu żądań zewnętrznych
- * i w polityce prywatności - to wymóg z checklisty przedwdrożeniowej,
- * nie sugestia.
+ * ⚠️ PUSTE I TAKIE MA ZOSTAĆ. Po migracji serwis nie wykonuje ANI JEDNEGO
+ * żądania poza własny origin: kroje są lokalne, zdjęcia są lokalne, mapa jest
+ * obrazem, analityki nie ma. Każdy wpis tutaj to nowy podmiot przetwarzający
+ * dane odwiedzających, wpis w polityce prywatności i pozycja w inwentarzu
+ * żądań zewnętrznych z checklisty.
  */
 export const dodatkoweZrodlaCSP = {
   'script-src': [] as string[],

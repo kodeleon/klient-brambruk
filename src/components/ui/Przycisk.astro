@@ -1,0 +1,68 @@
+---
+/**
+ * PRZYCISK - odpowiednik `Button.jsx` ze starego projektu.
+ *
+ * Warianty, rozmiary i komplet klas przeniesione 1:1. Renderuje `<a>`, jeśli
+ * dostanie `href`, w przeciwnym razie `<button>` - tak jak poprzednio.
+ *
+ * Ikona: zamiast komponentu Reacta podajemy nazwę kształtu z `ikony.ts`.
+ */
+import Ikona from '../icons/Ikona.astro'
+import type { NazwaIkony } from '../icons/ikony'
+
+interface Props {
+  href?: string
+  wariant?: 'primary' | 'secondary' | 'dark' | 'custom-dark' | 'ghost'
+  rozmiar?: 'sm' | 'md' | 'lg'
+  class?: string
+  ikona?: NazwaIkony
+  typ?: 'button' | 'submit'
+  [klucz: string]: unknown
+}
+
+const {
+  href,
+  wariant = 'primary',
+  rozmiar = 'md',
+  class: klasa = '',
+  ikona,
+  typ = 'button',
+  ...reszta
+} = Astro.props
+
+const baza =
+  'inline-flex items-center justify-center font-semibold transition-all duration-300 rounded-full whitespace-nowrap'
+
+const warianty = {
+  primary:
+    'bg-brand-olive text-brand-dark hover:bg-brand-olive-dark hover:shadow-lg hover:shadow-brand-olive/20 active:scale-[0.97]',
+  secondary:
+    'border-2 border-brand-olive text-brand-olive hover:bg-brand-olive hover:text-brand-dark active:scale-[0.97]',
+  dark: 'bg-brand-dark text-white hover:bg-neutral-800 active:scale-[0.97]',
+  'custom-dark':
+    'flex bg-brand-dark hover:bg-neutral-800 active:scale-[0.97] items-center gap-2 text-neutral-400 hover:text-white text-sm transition-colors',
+  ghost: 'text-brand-olive hover:text-brand-olive-dark hover:bg-brand-olive/5',
+}
+
+const rozmiary = {
+  sm: 'px-5 py-2 text-xs tracking-wide',
+  md: 'px-7 py-3 text-sm tracking-wide',
+  lg: 'px-9 py-4 text-base',
+}
+
+const klasy = `${baza} ${warianty[wariant]} ${rozmiary[rozmiar]} ${klasa}`
+---
+
+{
+  href ? (
+    <a href={href} class={klasy} {...reszta}>
+      {ikona && <Ikona nazwa={ikona} rozmiar={16} class="mr-2 shrink-0" />}
+      <slot />
+    </a>
+  ) : (
+    <button type={typ} class={klasy} {...reszta}>
+      {ikona && <Ikona nazwa={ikona} rozmiar={16} class="mr-2 shrink-0" />}
+      <slot />
+    </button>
+  )
+}

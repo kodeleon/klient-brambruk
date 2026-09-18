@@ -6,15 +6,12 @@
  * wymaga wyjątku w CSP i wpisu w polityce prywatności, a przy pierwszym
  * malowaniu i tak jest wolniejsze niż plik z własnej domeny.
  *
- * Źródłem plików są paczki `@fontsource-variable/*` trzymane jako zależność
- * deweloperska. To nie jest zależność produkcyjna - `npm run fonts` kopiuje
- * z nich woff2 do `public/fonts/`, przepisuje licencję i liczy metryki kroju
- * zastępczego. Pliki w `public/fonts/` idą do repozytorium i to one jadą
- * na serwer.
+ * Stary projekt ciągnął całą trójkę z Google Fonts jednym `<link>`
+ * w `index.html`, razem z dwoma `preconnect`. Po migracji: zero żądań
+ * poza własną domenę.
  *
- * PODMIANA KROJU W PROJEKCIE KLIENTA:
- *   1. `npm i -D @fontsource-variable/<krój>` (albo wrzuć woff2 ręcznie,
- *      patrz `zrodloPliku` niżej),
+ * PODMIANA KROJU W PROJEKCIE:
+ *   1. `npm i -D @fontsource(-variable)/<krój>`,
  *   2. popraw wpis poniżej,
  *   3. `npm run fonts`,
  *   4. popraw stos `--font-*` w `src/styles/tokens.css`.
@@ -26,31 +23,37 @@
 
 export const kroje = [
   {
-    /** Nazwa rodziny używana w CSS. Musi zgadzać się ze stosem w tokens.css. */
-    rodzina: 'Onest',
-    /** Paczka fontsource albo `null`, jeśli pliki wrzucasz ręcznie. */
-    pakiet: '@fontsource-variable/onest',
-    /** Wzorzec nazwy pliku w paczce; {subset} podstawia się z listy niżej. */
-    plik: 'onest-{subset}-wght-normal.woff2',
-    /** Podzbiory znaków. Dla polskiego wystarczą dwa. */
+    /**
+     * Znak słowny „BramBruk" w nagłówku i stopce. Krój statyczny (jedna waga),
+     * nie zmienny - Audiowide ma tylko 400.
+     */
+    rodzina: 'Audiowide',
+    pakiet: '@fontsource/audiowide',
+    plik: 'audiowide-{subset}-400-normal.woff2',
     podzbiory: ['latin', 'latin-ext'],
-    /** Zakres wag kroju zmiennego. */
-    waga: '100 900',
+    waga: '400',
     styl: 'normal',
-    /** Podbij przy podmianie pliku - wymusza nowy adres mimo reguły immutable. */
     wersja: 1,
     /**
      * Krój systemowy, względem którego liczymy metryki zastępcze.
-     * Musi być konkretny. `system-ui` to inny plik na macOS, Windowsie
-     * i Androidzie, więc metryki policzone raz byłyby błędne na dwóch z nich.
-     * Dopuszczalne wartości to kroje mające metryki w bazie fontaine
-     * (Arial, Verdana, Tahoma, Trebuchet MS, Georgia, Times New Roman,
-     * Courier New, Segoe UI). Krój spoza tej listy kończy się ostrzeżeniem
-     * i brakiem rodziny zapasowej, nie cichym `size-adjust: 100%`.
+     * Audiowide jest szeroki i geometryczny - z listy kroju mających metryki
+     * w bazie fontaine najbliżej mu do Trebuchet MS.
      */
+    zastepczy: ['Trebuchet MS'],
+  },
+  {
+    /** Nagłówki i liczby - klasa `font-display`. */
+    rodzina: 'Montserrat',
+    pakiet: '@fontsource-variable/montserrat',
+    plik: 'montserrat-{subset}-wght-normal.woff2',
+    podzbiory: ['latin', 'latin-ext'],
+    waga: '100 900',
+    styl: 'normal',
+    wersja: 1,
     zastepczy: ['Arial'],
   },
   {
+    /** Treść i interfejs - klasa `font-body`, domyślny krój `body`. */
     rodzina: 'Manrope',
     pakiet: '@fontsource-variable/manrope',
     plik: 'manrope-{subset}-wght-normal.woff2',
@@ -59,16 +62,6 @@ export const kroje = [
     styl: 'normal',
     wersja: 1,
     zastepczy: ['Arial'],
-  },
-  {
-    rodzina: 'Shantell Sans',
-    pakiet: '@fontsource-variable/shantell-sans',
-    plik: 'shantell-sans-{subset}-wght-normal.woff2',
-    podzbiory: ['latin', 'latin-ext'],
-    waga: '300 800',
-    styl: 'normal',
-    wersja: 1,
-    zastepczy: ['Trebuchet MS'],
   },
 ]
 

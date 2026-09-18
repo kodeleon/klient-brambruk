@@ -1,6 +1,9 @@
 /**
  * RUCH - odsłanianie przy przewijaniu i jedna pętla animacji na stronę.
  *
+ * Odpowiednik komponentu `Reveal.jsx` ze starego projektu: te same progi
+ * obserwatora (0,08 widoczności, margines -40 px), ten sam czas i krzywa.
+ *
  * KOLEJNOŚĆ JEST ISTOTNA. Element oznaczony `data-odslon` jest w dokumencie
  * WIDOCZNY. Dopiero ten skrypt ustawia mu `data-rv="czeka"` (czyli chowa go)
  * i zwalnia przy wejściu w widok. Odwrotna kolejność - chowanie w CSS,
@@ -63,7 +66,7 @@ export function ruch() {
         obserwator.unobserve(el)
       }
     },
-    { rootMargin: '0px 0px -10% 0px', threshold: 0.05 }
+    { rootMargin: '0px 0px -40px 0px', threshold: 0.08 }
   )
 
   for (const el of elementy) {

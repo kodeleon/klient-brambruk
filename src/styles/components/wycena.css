@@ -1,0 +1,117 @@
+/**
+ * KREATOR WYCENY - stany kontrolek i wskaźnika kroków.
+ *
+ * Wybór trzymają natywne pola (`radio`, `checkbox`), więc stan „zaznaczone"
+ * opisuje CSS, a nie skrypt - dokładnie tak samo wygląda to bez JavaScriptu.
+ * Skrypt ustawia wyłącznie `data-stan` na wskaźniku kroków i chowa kroki,
+ * których akurat nie oglądamy.
+ *
+ * Wartości kolorów są te same, co w starym `Wycena.jsx` i `StepIndicator.jsx`.
+ */
+
+/* --- kafelek wyboru (chip) --- */
+
+.chip-pole:checked + .chip {
+  border-color: var(--color-brand-olive);
+  background-color: color-mix(in srgb, var(--color-brand-olive) 10%, transparent);
+  color: var(--color-brand-text);
+}
+
+.chip-pole:focus-visible + .chip,
+.karta-pole:focus-visible + .karta-wyboru {
+  outline: var(--fokus-grubosc) solid var(--fokus-kolor);
+  outline-offset: var(--fokus-odsuniecie);
+}
+
+/* --- karta typu usługi --- */
+
+.karta-wyboru {
+  cursor: pointer;
+}
+
+.karta-pole:checked + .karta-wyboru {
+  border-color: var(--color-brand-olive);
+  box-shadow: 0 10px 15px -3px color-mix(in srgb, var(--color-brand-olive) 10%, transparent),
+    0 4px 6px -4px color-mix(in srgb, var(--color-brand-olive) 10%, transparent);
+}
+
+.karta-przeslona {
+  display: none;
+}
+
+.karta-pole:checked + .karta-wyboru .karta-przeslona {
+  display: block;
+}
+
+.karta-pole:checked + .karta-wyboru .karta-ikona {
+  background-color: var(--color-brand-olive);
+  color: var(--color-brand-dark);
+}
+
+/* Podświetlenie braku wyboru - klasę ustawia skrypt po nieudanym „Dalej". */
+[data-krok='0'][data-blad] .karta-pole:not(:checked) + .karta-wyboru {
+  border-color: var(--color-red-300);
+}
+
+/* --- wskaźnik kroków --- */
+
+.wskaznik-kolko {
+  background-color: rgb(255 255 255 / 0.05);
+  border-color: rgb(255 255 255 / 0.2);
+  color: rgb(255 255 255 / 0.4);
+}
+.wskaznik-etykieta,
+.wskaznik-opis {
+  color: rgb(255 255 255 / 0.4);
+}
+.wskaznik-opis {
+  color: transparent;
+}
+.wskaznik-ptaszek {
+  display: none;
+}
+.wskaznik-kreska {
+  background-color: rgb(255 255 255 / 0.15);
+}
+
+[data-wskaznik-krok][data-stan='aktywny'] .wskaznik-kolko {
+  background-color: #ffffff;
+  border-color: var(--color-brand-olive);
+  color: var(--color-brand-olive);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--color-brand-olive) 20%, transparent);
+}
+[data-wskaznik-krok][data-stan='aktywny'] .wskaznik-etykieta {
+  color: #ffffff;
+}
+[data-wskaznik-krok][data-stan='aktywny'] .wskaznik-opis {
+  color: rgb(255 255 255 / 0.7);
+}
+
+[data-wskaznik-krok][data-stan='zrobiony'] .wskaznik-kolko {
+  background-color: var(--color-brand-olive);
+  border-color: var(--color-brand-olive);
+  color: var(--color-brand-dark);
+}
+[data-wskaznik-krok][data-stan='zrobiony'] .wskaznik-etykieta {
+  color: var(--color-brand-olive);
+}
+[data-wskaznik-krok][data-stan='zrobiony'] .wskaznik-ptaszek {
+  display: block;
+}
+[data-wskaznik-krok][data-stan='zrobiony'] [data-wskaznik-numer] {
+  display: none;
+}
+
+[data-wskaznik-kreska='zrobiona'] {
+  background-color: var(--color-brand-olive);
+}
+
+[data-wskaznik-krok]:not([disabled]) {
+  cursor: pointer;
+}
+
+/* --- pole z błędem --- */
+
+[data-pole][data-blad-pola] {
+  border-color: var(--color-red-400);
+}

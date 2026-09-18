@@ -1,131 +1,188 @@
 ---
 /**
- * POLITYKA PRYWATNOŚCI - SZABLON.
+ * /polityka-prywatnosci/ - dokument prawny.
  *
- * ⚠️ TO NIE JEST GOTOWY DOKUMENT PRAWNY. To rusztowanie z blokami
- * warunkowymi, które włączają się razem z modułami z `src/config/site.ts`.
- * Zasada jest jedna i checklista sprawdza ją w obie strony:
+ * Treść przeniesiona bez zmian z `code/src/pages/PolitykaPrywatnosci.jsx`.
  *
- *   · każde żądanie poza własną domenę MUSI być tu opisane,
- *   · nie MOŻE tu być opisu rzeczy, których serwis nie robi.
+ * Punkt 5 mówi, że serwis używa wyłącznie technicznych plików cookies.
+ * W starym serwisie było to NIEPRAWDĄ: osadzona mapa Google zapisywała
+ * własne pliki i wysyłała IP odwiedzającego do Google. Po migracji mapa jest
+ * obrazem, analityki nie ma, kroje są lokalne - serwis nie wykonuje ani
+ * jednego żądania poza własną domenę, więc ten akapit wreszcie opisuje stan
+ * faktyczny. Nie trzeba go było zmieniać; trzeba było zmienić serwis.
  *
- * Nadmiarowa deklaracja o przetwarzaniu, którego nie ma, jest w audycie
- * blokerem („strona deklaruje coś, co nie jest prawdą"), dokładnie tak samo
- * jak brak opisu czegoś, co się dzieje.
- *
- * Podstawy prawne i uzasadnienia dla formularza kontaktowego:
- * `PRAWO-rodo-formularz-kontaktowy.md` w dokumentacji Kodeleon.
- *
- * Podstrona ma `noindex` i jest wypisana w `pozaMapaStrony` w site.ts.
- * Te dwie rzeczy muszą iść razem - podstrona z `noindex` obecna w mapie
- * strony to sprzeczny sygnał indeksowania.
+ * Podstrona ZOSTAJE w mapie strony i jest indeksowana - tak jak poprzednio.
  */
 import Podstrona from '../layouts/Podstrona.astro'
 import { dane } from '../config/dane'
-import { moduly } from '../config/site'
+import Okruszki from '../components/ui/Okruszki.astro'
+import EtykietaSekcji from '../components/ui/EtykietaSekcji.astro'
+import Odslon from '../components/ui/Odslon.astro'
 ---
 
 <Podstrona
-  tytul="Polityka prywatności"
-  opis="Jakie dane zbiera ten serwis, na jakiej podstawie i jak długo je przechowuje."
-  noindex
+  tytul="Polityka prywatności - BramBruk"
+  opis="Polityka prywatności serwisu BramBruk. Informacje o przetwarzaniu danych osobowych zgodnie z RODO."
 >
-  <section class="sekcja">
-    <div class="wrap">
-      <div class="naglowek-sekcji">
-        <h1 class="tytul-glowny">Polityka prywatności</h1>
-        <p class="lead">
-          Dokument opisuje, jakie dane zbiera ten serwis, w jakim celu i na jakiej podstawie
-          prawnej.
+  <Okruszki pozycje={[{ etykieta: 'Strona główna', sciezka: '/' }, { etykieta: 'Polityka Prywatności' }]} />
+
+  <section class="bg-brand-section py-12 lg:py-20">
+    <div class="max-w-3xl mx-auto px-5 lg:px-10">
+      <Odslon>
+        <EtykietaSekcji>Dokument prawny</EtykietaSekcji>
+        <h1 class="font-display text-3xl lg:text-4xl font-bold text-brand-text mt-2 mb-2">
+          Polityka Prywatności
+        </h1>
+        <p class="text-brand-text-light text-sm mb-10">
+          Ostatnia aktualizacja: <strong>01.03.2026</strong>
         </p>
-      </div>
+      </Odslon>
 
-      <div class="proza">
-        <h2>Administrator danych</h2>
-        <p>
-          Administratorem danych osobowych jest {dane.administrator}. Kontakt w sprawach
-          danych osobowych: <a href={`mailto:${dane.emailRodo}`}>{dane.emailRodo}</a>.
-        </p>
-
-        <h2>Jakie dane zbieramy</h2>
-
-        {
-          !moduly.formularz && !moduly.analityka && (
-            <p>
-              Serwis nie zbiera danych osobowych. Nie ma formularzy, nie ma analityki, nie
-              ma plików cookie ustawianych przez ten serwis ani przez podmioty trzecie.
-              Serwer hostingu zapisuje standardowe logi dostępowe, na które nie mamy wpływu
-              i których nie wykorzystujemy do identyfikacji odwiedzających.
-            </p>
-          )
-        }
-
-        {
-          moduly.formularz && (
-            <>
-              <h3>Formularz kontaktowy</h3>
+      <div
+        class="bg-brand-card border border-brand-border/60 rounded-2xl shadow-sm shadow-black/[0.04] p-6 lg:p-10"
+      >
+        <Odslon>
+          <div class="mb-8">
+            <h2 class="font-display text-lg font-bold text-brand-text mb-3">1. Administrator danych osobowych</h2>
+            <div class="text-brand-text-light leading-relaxed space-y-2 text-sm">
               <p>
-                Dane podane w formularzu (imię, adres e-mail, treść wiadomości) przetwarzamy
-                wyłącznie po to, żeby odpowiedzieć na zapytanie. Podstawa prawna: art. 6 ust.
-                1 lit. f RODO - prawnie uzasadniony interes administratora polegający na
-                udzieleniu odpowiedzi.
+                Administratorem Twoich danych osobowych jest <strong>{dane.nazwaPelna}</strong>, NIP:
+                <strong>{dane.nip}</strong>, REGON: <strong>{dane.regon}</strong>, z siedzibą pod adresem:
+                <strong>{dane.adres}</strong>, e-mail: <strong>{dane.email}</strong> (dalej: „Administrator"
+                lub „BramBruk").
+              </p>
+            </div>
+          </div>
+
+          <div class="mb-8">
+            <h2 class="font-display text-lg font-bold text-brand-text mb-3">
+              2. Cel i podstawa prawna przetwarzania danych
+            </h2>
+            <div class="text-brand-text-light leading-relaxed space-y-2 text-sm">
+              <p>Twoje dane osobowe przetwarzamy w następujących celach:</p>
+              <ul class="list-disc pl-5 space-y-1">
+                <li>
+                  Obsługa zapytań i wycen przesłanych przez formularz kontaktowy lub wyceny - podstawa: art. 6
+                  ust. 1 lit. f RODO (uzasadniony interes Administratora polegający na udzieleniu odpowiedzi na
+                  zapytanie).
+                </li>
+                <li>
+                  Kontakt telefoniczny lub e-mailowy w celu doprecyzowania szczegółów zlecenia - podstawa: art. 6
+                  ust. 1 lit. f RODO.
+                </li>
+                <li>Realizacja umowy (gdy dochodzi do jej zawarcia) - podstawa: art. 6 ust. 1 lit. b RODO.</li>
+                <li>
+                  Wypełnienie obowiązków prawnych (np. podatkowych) - podstawa: art. 6 ust. 1 lit. c RODO.
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="mb-8">
+            <h2 class="font-display text-lg font-bold text-brand-text mb-3">3. Zakres zbieranych danych</h2>
+            <div class="text-brand-text-light leading-relaxed space-y-2 text-sm">
+              <p>
+                Za pośrednictwem formularzy na stronie zbieramy wyłącznie dane niezbędne do obsługi zapytania:
+              </p>
+              <ul class="list-disc pl-5 space-y-1">
+                <li>imię,</li>
+                <li>adres e-mail,</li>
+                <li>numer telefonu (opcjonalnie),</li>
+                <li>opis projektu i załączone zdjęcia (opcjonalnie),</li>
+                <li>miejscowość lokalizacji inwestycji.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="mb-8">
+            <h2 class="font-display text-lg font-bold text-brand-text mb-3">
+              4. Prawa osoby, której dane dotyczą
+            </h2>
+            <div class="text-brand-text-light leading-relaxed space-y-2 text-sm">
+              <p>Przysługują Ci następujące prawa:</p>
+              <ul class="list-disc pl-5 space-y-1">
+                <li><strong>Prawo dostępu</strong> - możesz uzyskać informację o przetwarzanych danych.</li>
+                <li>
+                  <strong>Prawo do sprostowania</strong> - możesz zażądać poprawienia nieprawidłowych danych.
+                </li>
+                <li>
+                  <strong>Prawo do usunięcia</strong> - możesz zażądać usunięcia danych, jeśli nie ma podstawy do
+                  ich przetwarzania.
+                </li>
+                <li>
+                  <strong>Prawo do ograniczenia przetwarzania</strong> - możesz zażądać wstrzymania przetwarzania
+                  w określonych przypadkach.
+                </li>
+                <li>
+                  <strong>Prawo do sprzeciwu</strong> - możesz wnieść sprzeciw wobec przetwarzania opartego na
+                  uzasadnionym interesie Administratora.
+                </li>
+                <li>
+                  <strong>Prawo do skargi</strong> - masz prawo wnieść skargę do Prezesa Urzędu Ochrony Danych
+                  Osobowych (UODO), ul. Stawki 2, 00-193 Warszawa.
+                </li>
+              </ul>
+              <p>
+                Aby skorzystać z powyższych praw, skontaktuj się pod adresem e-mail: <strong>{dane.email}</strong>.
+              </p>
+            </div>
+          </div>
+
+          <div class="mb-8">
+            <h2 class="font-display text-lg font-bold text-brand-text mb-3">5. Pliki cookies</h2>
+            <div class="text-brand-text-light leading-relaxed space-y-2 text-sm">
+              <p>
+                Strona brambruk.pl korzysta wyłącznie z technicznych plików cookies niezbędnych do prawidłowego
+                działania serwisu (np. obsługa sesji formularzy). Nie korzystamy z analitycznych ani
+                marketingowych plików cookies bez Twojej uprzedniej zgody.
               </p>
               <p>
-                Zgłoszenia przechowujemy przez 90 dni od udzielenia odpowiedzi, chyba że
-                korespondencja przerodzi się w rozmowę o zleceniu - wtedy przez czas
-                niezbędny do jego realizacji i rozliczenia.
+                Podstawa prawna stosowania technicznych cookies: art. 399 ust. 3 ustawy Prawo komunikacji
+                elektronicznej (PKE). Nie wymagają one Twojej zgody, gdyż są niezbędne do świadczenia usługi
+                drogą elektroniczną.
               </p>
+            </div>
+          </div>
+
+          <div class="mb-8">
+            <h2 class="font-display text-lg font-bold text-brand-text mb-3">6. Okres przechowywania danych</h2>
+            <div class="text-brand-text-light leading-relaxed space-y-2 text-sm">
               <p>
-                Formularz jest chroniony przed botami polem ukrytym i weryfikacją czasu
-                wypełnienia. Nie korzystamy z reCAPTCHA ani z innego mechanizmu, który
-                przesyłałby dane do podmiotu trzeciego.
+                Dane z formularzy przechowujemy przez okres niezbędny do obsługi zapytania lub realizacji umowy,
+                a następnie przez czas wymagany przepisami prawa (np. dokumentacja podatkowa: 5 lat od końca roku
+                podatkowego). Dane, które nie doprowadziły do zawarcia umowy, usuwamy nie później niż po 12
+                miesiącach od ostatniego kontaktu.
               </p>
-            </>
-          )
-        }
+            </div>
+          </div>
 
-        {
-          moduly.analityka && (
-            <>
-              <h3>Statystyki odwiedzin</h3>
+          <div class="mb-8">
+            <h2 class="font-display text-lg font-bold text-brand-text mb-3">7. Odbiorcy danych</h2>
+            <div class="text-brand-text-light leading-relaxed space-y-2 text-sm">
               <p>
-                Korzystamy z Plausible Analytics. Narzędzie nie zapisuje plików cookie, nie
-                tworzy identyfikatorów odwiedzających i nie przekazuje danych poza Unię
-                Europejską. Zbierane są wyłącznie dane zbiorcze: liczba odsłon, adres
-                strony, źródło wejścia, typ urządzenia.
+                Twoje dane mogą być przekazywane dostawcom usług technicznych (hosting, obsługa poczty e-mail),
+                którzy przetwarzają je wyłącznie na nasze zlecenie i na podstawie stosownych umów powierzenia
+                przetwarzania danych. Nie przekazujemy danych osobom trzecim w celach marketingowych.
               </p>
-            </>
-          )
-        }
+            </div>
+          </div>
 
-        <h2>Pamięć przeglądarki</h2>
-        <p>
-          Serwis nie zapisuje w przeglądarce żadnych danych: ani plików cookie, ani wpisów
-          w pamięci lokalnej.
-        </p>
-
-        <h2>Odbiorcy danych</h2>
-        <p>
-          Dostawca hostingu przetwarza dane w naszym imieniu w zakresie niezbędnym do
-          udostępnienia serwisu.
-          {moduly.formularz && ' Dostawca poczty transakcyjnej przekazuje wiadomości z formularza na nasz adres.'}
-        </p>
-
-        <h2>Twoje prawa</h2>
-        <ul>
-          <li>dostęp do danych i otrzymanie ich kopii,</li>
-          <li>sprostowanie danych,</li>
-          <li>usunięcie danych,</li>
-          <li>ograniczenie przetwarzania,</li>
-          <li>sprzeciw wobec przetwarzania opartego na uzasadnionym interesie,</li>
-          <li>skarga do Prezesa Urzędu Ochrony Danych Osobowych.</li>
-        </ul>
-
-        <h2>Zmiany polityki</h2>
-        <p>
-          Zmiany tego dokumentu publikujemy na tej podstronie. Data ostatniej aktualizacji
-          znajduje się poniżej.
-        </p>
+          <div class="mb-8">
+            <h2 class="font-display text-lg font-bold text-brand-text mb-3">
+              8. Kontakt w sprawach ochrony danych
+            </h2>
+            <div class="text-brand-text-light leading-relaxed space-y-2 text-sm">
+              <p>
+                W sprawach dotyczących ochrony danych osobowych możesz skontaktować się bezpośrednio
+                z Administratorem:
+              </p>
+              <ul class="list-disc pl-5">
+                <li>e-mail: <strong>{dane.email}</strong></li>
+                <li>adres korespondencyjny: <strong>{dane.adres}</strong></li>
+              </ul>
+            </div>
+          </div>
+        </Odslon>
       </div>
     </div>
   </section>

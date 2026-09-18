@@ -1,0 +1,196 @@
+---
+/**
+ * /cennik/ - widok administracyjny: wszystkie ceny używane w serwisie.
+ *
+ * Odpowiednik `code/src/pages/Cennik.jsx`. Podstrona nie jest linkowana
+ * z nawigacji ani ze stopki i nie ma jej w mapie strony (`pozaMapaStrony`
+ * w `src/config/site.ts`). Dostaje `noindex` - tak jak w starym serwisie,
+ * gdzie wypadała poza `ROUTES_SEO` i dostawała `noindex` z fallbacku.
+ *
+ * ⚠️ To nadal jest strona PUBLICZNA, tylko nielinkowana. Zestawienie cen
+ * zakupu obok sprzedażowych pod zgadywalnym adresem to pozycja do decyzji
+ * po migracji (MIGRACJA-audyt.md, sekcja 10).
+ */
+import Podstrona from '../layouts/Podstrona.astro'
+import { cennikHubow, cennikUslug, kartyUslug } from '../data/cennik'
+import EtykietaSekcji from '../components/ui/EtykietaSekcji.astro'
+import Ikona from '../components/icons/Ikona.astro'
+
+const opisyUslug: Record<string, { etykieta: string; adres: string }> = {
+  panelowe: { etykieta: 'Ogrodzenia panelowe 2D/3D', adres: '/ogrodzenia/panelowe/' },
+  murowane: { etykieta: 'Ogrodzenia murowane', adres: '/ogrodzenia/murowane/' },
+  siatka: { etykieta: 'Siatka ogrodzeniowa', adres: '/ogrodzenia/siatka/' },
+  'bramy-przesuwne': { etykieta: 'Bramy przesuwne', adres: '/ogrodzenia/bramy-przesuwne/' },
+  'bramy-dwuskrzydlowe': { etykieta: 'Bramy dwuskrzydłowe', adres: '/ogrodzenia/bramy-dwuskrzydlowe/' },
+  furtki: { etykieta: 'Furtki ogrodzeniowe', adres: '/ogrodzenia/furtki/' },
+  'kostka-brukowa': { etykieta: 'Kostka brukowa', adres: '/brukarstwo/kostka-brukowa/' },
+  podjazdy: { etykieta: 'Podjazdy z kostki', adres: '/brukarstwo/podjazdy/' },
+  'chodniki-tarasy': { etykieta: 'Chodniki, alejki i tarasy', adres: '/brukarstwo/chodniki-tarasy/' },
+}
+
+const opisyHubow: Record<string, { etykieta: string; adres: string }> = {
+  ogrodzenia: { etykieta: 'Ogrodzenia i bramy', adres: '/ogrodzenia/' },
+  brukarstwo: { etykieta: 'Brukarstwo', adres: '/brukarstwo/' },
+  budownictwo: { etykieta: 'Budownictwo', adres: '/budownictwo/' },
+}
+---
+
+<Podstrona
+  tytul="Cennik - widok administracyjny - BramBruk"
+  opis="Zestawienie wszystkich cen używanych w serwisie BramBruk. Widok roboczy, nielinkowany z nawigacji."
+  noindex
+>
+  <div class="max-w-4xl mx-auto px-5 lg:px-10 py-10 space-y-16">
+    <div>
+      <EtykietaSekcji class="mb-2">Widok administracyjny</EtykietaSekcji>
+      <h1 class="font-display text-2xl lg:text-3xl font-bold text-brand-text mb-2">
+        Wszystkie ceny używane na stronie
+      </h1>
+      <p class="text-sm text-brand-text-light">
+        Źródło: <code class="bg-brand-section px-1.5 py-0.5 rounded text-brand-text font-mono text-xs"
+          >src/data/cennik.ts</code
+        >
+        · Trzy eksporty odpowiadają trzem miejscom na stronie.
+      </p>
+    </div>
+
+    <section>
+      <div class="flex items-center gap-4 mb-6">
+        <div class="h-px flex-1 bg-brand-border"></div>
+        <div class="text-center">
+          <div class="text-[10px] uppercase tracking-widest text-brand-text-light font-semibold mb-0.5">
+            eksport kartyUslug
+          </div>
+          <div class="font-display text-sm font-bold text-brand-text">Karty usług ze znacznikami cen</div>
+        </div>
+        <div class="h-px flex-1 bg-brand-border"></div>
+      </div>
+      <p class="text-xs text-brand-text-light mb-5">
+        Wyświetlane jako kafelki z ceną w prawym górnym rogu na stronie
+        <a href="/uslugi/" class="inline-flex items-center gap-1 text-xs text-brand-sage font-medium hover:underline">
+          /uslugi/ <Ikona nazwa="external-link" rozmiar={11} />
+        </a>.
+      </p>
+
+      {
+        Object.entries(kartyUslug).map(([kategoria, karty]) => (
+          <div class="mb-6">
+            <div class="text-xs font-bold uppercase tracking-wider text-brand-text mb-2 px-1">{kategoria}</div>
+            <div class="bg-brand-card rounded-lg border border-brand-border overflow-hidden text-sm">
+              <div class="grid grid-cols-[1fr_auto_auto] text-[11px] uppercase tracking-wider text-brand-text-light font-semibold px-4 py-2 border-b border-brand-border bg-brand-section">
+                <span>Nazwa karty</span>
+                <span class="text-right pr-6">Cena</span>
+                <span class="text-right">Nota</span>
+              </div>
+              {karty.map((karta, i) => (
+                <div
+                  class:list={[
+                    'grid grid-cols-[1fr_auto_auto] items-center px-4 py-3',
+                    i !== karty.length - 1 && 'border-b border-brand-border',
+                    i % 2 === 0 ? 'bg-brand-card' : 'bg-brand-section',
+                  ]}
+                >
+                  <span class="text-brand-text">{karta.tytul}</span>
+                  <span class="font-semibold text-brand-olive whitespace-nowrap pr-6">{karta.cena}</span>
+                  <span class="text-brand-text-light text-xs whitespace-nowrap">{karta.nota || '—'}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        ))
+      }
+    </section>
+
+    <section>
+      <div class="flex items-center gap-4 mb-6">
+        <div class="h-px flex-1 bg-brand-border"></div>
+        <div class="text-center">
+          <div class="text-[10px] uppercase tracking-widest text-brand-text-light font-semibold mb-0.5">
+            eksport cennikHubow
+          </div>
+          <div class="font-display text-sm font-bold text-brand-text">Tabele cennika na stronach kategorii</div>
+        </div>
+        <div class="h-px flex-1 bg-brand-border"></div>
+      </div>
+
+      <div class="space-y-6">
+        {
+          Object.entries(cennikHubow).map(([klucz, hub]) => (
+            <div>
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-sm font-bold text-brand-text font-display">{opisyHubow[klucz].etykieta}</span>
+                <a
+                  href={opisyHubow[klucz].adres}
+                  class="inline-flex items-center gap-1 text-xs text-brand-sage font-medium hover:underline"
+                >
+                  {opisyHubow[klucz].adres} <Ikona nazwa="external-link" rozmiar={11} />
+                </a>
+              </div>
+              <div class="bg-brand-card rounded-lg border border-brand-border overflow-hidden text-sm">
+                {hub.pozycje.map((wiersz, i) => (
+                  <div
+                    class:list={[
+                      'flex items-center justify-between px-4 py-3',
+                      i !== hub.pozycje.length - 1 && 'border-b border-brand-border',
+                      i % 2 === 0 ? 'bg-brand-card' : 'bg-brand-section',
+                    ]}
+                  >
+                    <span class="text-brand-text-light">{wiersz.usluga}</span>
+                    <span class="font-semibold text-brand-olive whitespace-nowrap ml-6">{wiersz.cena}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))
+        }
+      </div>
+    </section>
+
+    <section class="pb-16">
+      <div class="flex items-center gap-4 mb-6">
+        <div class="h-px flex-1 bg-brand-border"></div>
+        <div class="text-center">
+          <div class="text-[10px] uppercase tracking-widest text-brand-text-light font-semibold mb-0.5">
+            eksport cennikUslug
+          </div>
+          <div class="font-display text-sm font-bold text-brand-text">
+            Tabele cennika na stronach szczegółowych usług
+          </div>
+        </div>
+        <div class="h-px flex-1 bg-brand-border"></div>
+      </div>
+
+      <div class="space-y-6">
+        {
+          Object.entries(cennikUslug).map(([klucz, pozycje]) => (
+            <div>
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-sm font-bold text-brand-text font-display">{opisyUslug[klucz].etykieta}</span>
+                <a
+                  href={opisyUslug[klucz].adres}
+                  class="inline-flex items-center gap-1 text-xs text-brand-sage font-medium hover:underline"
+                >
+                  {opisyUslug[klucz].adres} <Ikona nazwa="external-link" rozmiar={11} />
+                </a>
+              </div>
+              <div class="bg-brand-card rounded-lg border border-brand-border overflow-hidden text-sm">
+                {pozycje.map((wiersz, i) => (
+                  <div
+                    class:list={[
+                      'flex items-center justify-between px-4 py-3',
+                      i !== pozycje.length - 1 && 'border-b border-brand-border',
+                      i % 2 === 0 ? 'bg-brand-card' : 'bg-brand-section',
+                    ]}
+                  >
+                    <span class="text-brand-text-light">{wiersz.usluga}</span>
+                    <span class="font-semibold text-brand-olive whitespace-nowrap ml-6">{wiersz.cena}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))
+        }
+      </div>
+    </section>
+  </div>
+</Podstrona>

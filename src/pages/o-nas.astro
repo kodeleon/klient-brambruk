@@ -1,0 +1,189 @@
+---
+/**
+ * /o-nas/ - historia firmy, zespół, dane formalne, obszar działania.
+ *
+ * Odpowiednik `code/src/pages/About.jsx`. Jedyna zmiana wobec oryginału:
+ * osadzona mapa Google zastąpiona komponentem `MapaKontakt` (statyczny obraz
+ * plus odnośnik) - powód opisany w tym komponencie.
+ */
+import Podstrona from '../layouts/Podstrona.astro'
+import { dane, statystyki } from '../config/dane'
+import Okruszki from '../components/ui/Okruszki.astro'
+import EtykietaSekcji from '../components/ui/EtykietaSekcji.astro'
+import Odslon from '../components/ui/Odslon.astro'
+import PasekStatystyk from '../components/ui/PasekStatystyk.astro'
+import PrzyciskFixly from '../components/ui/PrzyciskFixly.astro'
+import MapaKontakt from '../components/ui/MapaKontakt.astro'
+import Ikona from '../components/icons/Ikona.astro'
+import Foto from '../components/media/Foto.astro'
+
+const wartosci = [
+  {
+    ikona: 'shield' as const,
+    tytul: 'Gwarancja jakości',
+    opis: 'Każda realizacja objęta jest gwarancją. Używamy materiałów najwyższej jakości od sprawdzonych dostawców.',
+  },
+  {
+    ikona: 'map-pin' as const,
+    tytul: 'Lokalnie od 5 lat',
+    opis: 'Znamy specyfikę regionu - typy gruntów, warunki pogodowe, lokalne przepisy. To przekłada się na lepszą jakość wykonania.',
+  },
+  {
+    ikona: 'award' as const,
+    tytul: 'Kompleksowa obsługa',
+    opis: 'Od bezpłatnej wizji lokalnej, przez dobór materiałów, po realizację i gwarancję - zajmujemy się wszystkim.',
+  },
+]
+
+const obszary = [
+  'Biała Podlaska', 'Międzyrzec Podlaski', 'Terespol', 'Radzyń Podlaski',
+  'Parczew', 'Łosice', 'Janów Podlaski', 'Piszczac', 'Kodeń',
+  'Leśna Podlaska', 'Wisznice', 'Sławatycze', 'Drelów', 'Konstantynów',
+]
+
+const zdjeciaZespolu = ['zespol.praca-01', 'zespol.praca-02', 'zespol.praca-03']
+---
+
+<Podstrona
+  tytul="O nas - BramBruk | Biała Podlaska i okolice"
+  opis="BramBruk - lokalna firma z Białej Podlaskiej. 5 lat doświadczenia, 50+ realizacji, obszar działania do 50 km. Poznaj nasz zespół."
+>
+  <Okruszki pozycje={[{ etykieta: 'Strona główna', sciezka: '/' }, { etykieta: 'O nas' }]} />
+
+  <section class="bg-brand-section py-12 lg:py-20">
+    <div class="max-w-7xl mx-auto px-5 lg:px-10">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center">
+        <div>
+          <EtykietaSekcji class="mb-3">O nas</EtykietaSekcji>
+          <h1 class="font-display text-3xl lg:text-[42px] font-bold text-brand-text leading-tight mb-6">
+            Poznaj firmę BramBruk
+          </h1>
+          <p class="text-brand-text-light leading-relaxed mb-4">
+            BramBruk to lokalna firma budowlana z Białej Podlaskiej, działająca od 2021 roku.
+            Specjalizujemy się w montażu ogrodzeń, brukarstwie i budownictwie lekkim - obsługujemy
+            klientów indywidualnych i firmy w promieniu 50 km od Białej Podlaskiej.
+          </p>
+          <p class="text-brand-text-light leading-relaxed mb-4">
+            Zaczynaliśmy jako mała ekipa specjalizująca się w ogrodzeniach panelowych. Dziś oferujemy
+            kompleksową obsługę posesji - od ogrodzenia, przez podjazd z kostki brukowej, po altanę
+            ogrodową. Wszystko z jednej ręki, od jednego wykonawcy.
+          </p>
+          <p class="text-brand-text-light leading-relaxed mb-8">
+            Stawiamy na uczciwość, terminowość i transparentność. Każdy projekt wyceniamy bezpłatnie po
+            wizji lokalnej, a nasze ceny orientacyjne podajemy otwarcie - bo wiemy, że klient ceni sobie
+            jasność i konkretne informacje.
+          </p>
+
+          <PasekStatystyk />
+        </div>
+        <div class="rounded-2xl overflow-hidden">
+          <Foto
+            klucz="zespol.portret"
+            alt="Zespół BramBruk przy pracy"
+            class="w-full h-[220px] lg:h-[450px] object-contain"
+          />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="bg-brand-bg py-12 lg:py-20">
+    <div class="max-w-7xl mx-auto px-5 lg:px-10">
+      <div class="mb-6">
+        <EtykietaSekcji>Nasz zespół</EtykietaSekcji>
+        <h2 class="font-display text-2xl lg:text-3xl font-bold text-brand-text mt-2 mb-3">
+          Doświadczeni profesjonaliści
+        </h2>
+        <p class="text-brand-text-light max-w-2xl leading-relaxed">
+          Nasz zespół to doświadczeni fachowcy, którzy od lat pracują w branży budowlanej. Każdy projekt
+          realizujemy z dbałością o detale i terminowość.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        {
+          zdjeciaZespolu.map((klucz, i) => (
+            <div class="rounded-2xl overflow-hidden">
+              <Foto
+                klucz={klucz}
+                alt={`BramBruk - praca zespołu ${i + 1}`}
+                class="w-full h-[120px] object-cover hover:scale-105 transition-transform duration-500"
+              />
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="bg-brand-section py-12 lg:py-20">
+    <div class="max-w-7xl mx-auto px-5 lg:px-10">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {
+          wartosci.map((wartosc) => (
+            <div class="bg-brand-card rounded-2xl border border-brand-border p-7 hover:shadow-lg hover:shadow-black/5 transition-all duration-300">
+              <div class="w-12 h-12 rounded-xl bg-brand-olive/10 flex items-center justify-center mb-5">
+                <Ikona nazwa={wartosc.ikona} rozmiar={22} class="text-brand-olive" />
+              </div>
+              <h3 class="font-display text-lg font-bold text-brand-text mb-2">{wartosc.tytul}</h3>
+              <p class="text-sm text-brand-text-light leading-relaxed">{wartosc.opis}</p>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="bg-brand-bg py-12 lg:py-20">
+    <div class="max-w-7xl mx-auto px-5 lg:px-10">
+      <div class="mb-6">
+        <EtykietaSekcji>Dane firmy</EtykietaSekcji>
+        <h2 class="font-display text-2xl lg:text-3xl font-bold text-brand-text mt-2">Informacje formalne</h2>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div class="bg-brand-card rounded-2xl border border-brand-border p-7">
+          <div class="space-y-3 text-sm text-brand-text-light">
+            <p class="text-brand-text font-semibold text-base">{dane.nazwaPelna}</p>
+            <p>NIP: {dane.nip} · REGON: {dane.regon}</p>
+            <p>{dane.adres}</p>
+            <p class="flex items-center gap-2 text-fixly-dark">
+              <Ikona nazwa="shield" rozmiar={14} />
+              Ubezpieczenie OC: ✓
+            </p>
+            <div class="inline-flex items-center gap-2 text-fixly-dark font-medium mt-2">
+              <div class="flex text-fixly-main">
+                {Array.from({ length: 5 }).map(() => <Ikona nazwa="star" rozmiar={12} wypelnienie="currentColor" />)}
+              </div>
+              Sprawdź opinie na <PrzyciskFixly />
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-brand-card rounded-2xl border border-brand-border p-7">
+          <h3 class="font-display text-lg font-bold text-brand-text mb-2">Obszar działania</h3>
+          <p class="text-sm text-brand-text-light mb-4">
+            Biała Podlaska i okolice w promieniu {statystyki.zasieg}
+          </p>
+          <Odslon wariant="right" zwloka={100}>
+            <MapaKontakt class="max-h-[240px] mb-4" />
+          </Odslon>
+          <div class="flex flex-wrap gap-2">
+            {
+              obszary.map((obszar) => (
+                <span class="px-3 py-1.5 bg-brand-bg rounded-full text-xs text-brand-text-light border border-brand-border">
+                  {obszar}
+                </span>
+              ))
+            }
+            <span
+              class="px-3 py-1.5 bg-brand-olive/10 rounded-full text-xs text-brand-olive font-medium border border-brand-olive/20"
+            >
+              i wiele innych...
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</Podstrona>

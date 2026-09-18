@@ -1,0 +1,23 @@
+---
+/**
+ * BANER WEZWANIA DO DZIAŁANIA - odpowiednik `CtaBanner.jsx`.
+ * Przycisk wchodzi slotem `akcja`, bo w starym projekcie był przekazywany
+ * jako element (`btn`), a nie jako zestaw właściwości.
+ */
+interface Props {
+  tytul?: string
+  podtytul?: string
+}
+const {
+  tytul = 'Potrzebujesz wyceny?',
+  podtytul = 'Bezpłatna wycena · Odpowiedź w 24h · Region Białej Podlaskiej',
+} = Astro.props
+---
+
+<section class="bg-brand-dark py-10 lg:py-16">
+  <div class="max-w-7xl mx-auto px-5 lg:px-10 text-center">
+    <h2 class="font-display text-2xl lg:text-3xl font-bold text-white mb-3 text-balance">{tytul}</h2>
+    <p class="text-white/60 text-sm lg:text-base mb-8 max-w-xl mx-auto">{podtytul}</p>
+    <slot name="akcja" />
+  </div>
+</section>

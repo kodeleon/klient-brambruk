@@ -1,0 +1,23 @@
+/**
+ * KARUZELA - pas slajdów z zatrzymywaniem.
+ *
+ * Pasek przewijania byłby widoczny pod zdjęciem, a przewijanie i tak
+ * obsługują palec, strzałki i kropki - stąd jego ukrycie. To jedyna rzecz,
+ * której nie da się zrobić klasą narzędziową.
+ */
+
+.karuzela-tor {
+  scrollbar-width: none;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+
+.karuzela-tor::-webkit-scrollbar {
+  display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .karuzela-tor {
+    scroll-behavior: auto;
+  }
+}

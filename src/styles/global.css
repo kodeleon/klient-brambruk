@@ -5,10 +5,14 @@
  *   1. tailwindcss   - warstwy base/components/utilities i silnik klas
  *   2. fonts.css     - deklaracje @font-face (generowane, nie edytować ręcznie)
  *   3. tokens.css    - system wizualny (@theme); musi wejść przed warstwą bazową
- *   4. base.css      - dokument, typografia, dostępność globalna
+ *   4. base.css      - dokument, dostępność globalna, odsłanianie
  *   5. components/   - jeden plik na komponent, razem z jego media queries
  *
- * Nowy plik komponentu dopisujesz na końcu listy. Reguły nie pisze się tutaj.
+ * ⚠️ Ten projekt jest utility-first: wygląd komponentów siedzi w klasach
+ * w znaczniku, nie w plikach CSS. Do `components/` trafia tylko to, czego
+ * klasami narzędziowymi zrobić się nie da: stany natywnych elementów
+ * (`<details>`, `<dialog>`, pole wyboru menu) i reguły dla węzłów, które
+ * skrypt wstawia dopiero w przeglądarce.
  */
 
 @import 'tailwindcss';
@@ -17,12 +21,12 @@
 @import './tokens.css';
 @import './base.css';
 
-@import './components/przyciski.css';
+@import './components/galeria.css';
+@import './components/faq.css';
+@import './components/karuzela.css';
 @import './components/naglowek.css';
-@import './components/stopka.css';
-@import './components/tresc.css';
-@import './components/formularz.css';
-@import './components/lightbox.css';
+@import './components/zakladki.css';
+@import './components/wycena.css';
 
 /* Skan klas: Tailwind v4 sam wykrywa źródła, ale katalogi poza `src`
    (np. znaczniki generowane przez potok zdjęć) trzeba wskazać jawnie. */

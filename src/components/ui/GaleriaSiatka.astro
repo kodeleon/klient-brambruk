@@ -1,0 +1,122 @@
+---
+/**
+ * GALERIA - SIATKA KAFELKÓW + POWIĘKSZENIE.
+ *
+ * Odpowiednik `GalleryGrid.jsx` razem z jego `Lightbox`. Różnice wobec
+ * starego kodu, obie wymuszone checklistą:
+ *
+ *   1. Kafelek jest `<button>`, nie `<div onClick>`. Klawiatura dostaje go
+ *      za darmo, czytnik ekranu wie, że to kontrolka.
+ *   2. Okno powiększenia to natywny `<dialog>`: warstwa najwyższa, pułapka
+ *      na fokus, Escape i powrót fokusu bez ani jednej linii kodu.
+ *
+ * Zawartość okna wstawia skrypt `galeria.ts` - kopiuje ją z klikniętego
+ * kafelka. Bez JavaScriptu okno się nie otwiera, a zdjęcia i tak są widoczne
+ * w siatce; nic z treści nie ginie.
+ */
+import Odslon from './Odslon.astro'
+import Ikona from '../icons/Ikona.astro'
+import Foto from '../media/Foto.astro'
+
+interface Pozycja {
+  foto: string
+  tytul?: string
+  lokalizacja?: string
+  /** Używane przez filtr na /realizacje/. Bez niej kafelek nie jest filtrowany. */
+  kategoria?: string
+}
+interface Props {
+  pozycje: readonly Pozycja[]
+  class?: string
+}
+const { pozycje, class: klasa = '' } = Astro.props
+const idOkna = `galeria-${Math.random().toString(36).slice(2, 8)}`
+---
+
+<div class:list={['grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4', klasa]} data-galeria={idOkna}>
+  {
+    pozycje.map((pozycja, i) => (
+      <Odslon
+        wariant="scale"
+        zwloka={i * 60}
+        data-kategoria={pozycja.kategoria}
+        data-szukaj={`${pozycja.tytul ?? ''} ${pozycja.lokalizacja ?? ''}`.toLowerCase()}
+      >
+        <button
+          type="button"
+          class="group relative block w-full text-left rounded-2xl overflow-hidden bg-brand-card border border-brand-border/60 shadow-sm shadow-black/[0.04] hover:shadow-md hover:shadow-black/[0.07] transition-all duration-300 cursor-pointer"
+          data-galeria-kafelek={i}
+          data-tytul={pozycja.tytul ?? ''}
+          data-lokalizacja={pozycja.lokalizacja ?? ''}
+          aria-label={`Powiększ zdjęcie: ${pozycja.tytul ?? 'Realizacja BramBruk'}`}
+        >
+          <div class="img-hover aspect-[16/11]">
+            <Foto
+              klucz={pozycja.foto}
+              alt={pozycja.tytul ?? 'Realizacja BramBruk'}
+              class="w-full h-full object-cover"
+            />
+          </div>
+
+          <div class="absolute top-3 right-3 w-8 h-8 flex items-center justify-center rounded-full bg-black/0 group-hover:bg-black/45 text-transparent group-hover:text-white/90 transition-all duration-300">
+            <Ikona nazwa="maximize-2" rozmiar={15} />
+          </div>
+
+          <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+
+          <div class="absolute bottom-0 left-0 right-0 p-4 flex items-end justify-between translate-y-2 group-hover:translate-y-0 opacity-0 group-hover:opacity-100 transition-all duration-300">
+            {pozycja.tytul && <span class="text-white text-sm font-semibold">{pozycja.tytul}</span>}
+            {pozycja.lokalizacja && (
+              <span class="flex items-center gap-1 text-white/80 text-xs">
+                <Ikona nazwa="map-pin" rozmiar={12} />
+                {pozycja.lokalizacja}
+              </span>
+            )}
+          </div>
+        </button>
+      </Odslon>
+    ))
+  }
+</div>
+
+<dialog class="galeria-okno items-center justify-center" id={idOkna} aria-label="Powiększone zdjęcie">
+  <button
+    type="button"
+    class="absolute top-4 right-4 z-10 w-9 h-9 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 text-white transition"
+    data-galeria-zamknij
+    aria-label="Zamknij"
+  >
+    <Ikona nazwa="x" rozmiar={18} />
+  </button>
+
+  <button
+    type="button"
+    class="absolute left-3 md:left-5 top-1/2 -translate-y-1/2 z-10 w-11 h-11 flex items-center justify-center rounded-full bg-white/10 hover:bg-brand-olive text-white transition-all duration-200 hover:scale-105"
+    data-galeria-poprzednie
+    aria-label="Poprzednie zdjęcie"
+  >
+    <Ikona nazwa="chevron-left" rozmiar={22} grubosc={2.5} />
+  </button>
+
+  <div class="relative mx-4 md:mx-8 max-w-5xl">
+    <div class="galeria-okno__obraz" data-galeria-obraz></div>
+    <div class="mt-2 flex items-center justify-between px-1" data-galeria-podpis>
+      <span class="text-white text-sm font-semibold font-display" data-galeria-tytul></span>
+      <span class="flex items-center gap-1 text-white/55 text-xs" data-galeria-lokalizacja hidden>
+        <Ikona nazwa="map-pin" rozmiar={12} />
+        <span data-galeria-lokalizacja-tekst></span>
+      </span>
+    </div>
+  </div>
+
+  <button
+    type="button"
+    class="absolute right-3 md:right-5 top-1/2 -translate-y-1/2 z-10 w-11 h-11 flex items-center justify-center rounded-full bg-white/10 hover:bg-brand-olive text-white transition-all duration-200 hover:scale-105"
+    data-galeria-nastepne
+    aria-label="Następne zdjęcie"
+  >
+    <Ikona nazwa="chevron-right" rozmiar={22} grubosc={2.5} />
+  </button>
+
+  <div class="absolute bottom-4 left-1/2 -translate-x-1/2 text-white/40 text-sm tabular-nums" data-galeria-licznik></div>
+</dialog>

@@ -2,53 +2,58 @@
 /**
  * STRONA BŁĘDU 404.
  *
- * Musi mieć nawigację i wyglądać jak reszta serwisu - punkt 🧱 checklisty.
- * Pusta odpowiedź hostingu nie jest stroną 404.
+ * Odpowiednik `Placeholder.jsx`, którego stary router pokazywał pod
+ * nieznanym adresem. Różnica: tamten renderował się ze statusem 200
+ * (SPA nie potrafi inaczej), tutaj Cloudflare oddaje ten dokument
+ * z kodem 404 - ustawia to `not_found_handling: "404-page"` w `wrangler.jsonc`.
  *
- * Astro buduje ten plik do `dist/404.html`, a `wrangler.jsonc` ustawia
- * `not_found_handling: "404-page"`, dzięki czemu Cloudflare oddaje ten
- * dokument razem z KODEM 404, a nie 200. Bez tego ustawienia nieistniejący
- * adres kończy się pustą odpowiedzią.
- *
- * `noindex` jest tu na wypadek, gdyby serwer kiedyś oddał ten dokument
- * ze statusem 200 - tak zachowa się każdy hosting bez `not_found_handling`.
- *
- * `kanoniczny={false}` jest konieczne: ten dokument jest serwowany pod KAŻDYM
- * nieistniejącym adresem, a nie pod `/404/`. Canonical wskazujący `/404/`
- * deklarowałby adres, który sam zwraca błąd.
- *
- * Z mapy strony wypada automatycznie - patrz `NIE_PODSTRONA`
- * w `tools/build/mapa-strony.mjs`.
+ * `kanoniczny={false}` jest konieczne: dokument jest serwowany pod KAŻDYM
+ * nieistniejącym adresem, a nie pod `/404/`.
  */
 import Podstrona from '../layouts/Podstrona.astro'
+import Przycisk from '../components/ui/Przycisk.astro'
+import Ikona from '../components/icons/Ikona.astro'
 import { nawigacja } from '../config/dane'
 ---
 
 <Podstrona
-  tytul="Nie znaleziono strony"
+  tytul="Strona nie znaleziona - BramBruk"
   opis="Pod tym adresem nic nie ma. Poniżej jest wszystko, czego zwykle się tutaj szuka."
   noindex
   kanoniczny={false}
 >
-  <section class="sekcja">
-    <div class="wrap">
-      <div class="naglowek-sekcji">
-        <span class="nadtytul">Błąd 404</span>
-        <h1 class="tytul-glowny">Tej strony u nas nie ma</h1>
-        <p class="lead">
-          Adres mógł się zmienić albo zawiera literówkę. Poniżej jest wszystko, czego
-          zwykle się tutaj szuka.
-        </p>
+  <section class="bg-brand-section py-24 lg:py-40">
+    <div class="max-w-2xl mx-auto px-5 text-center">
+      <div class="w-20 h-20 rounded-2xl bg-brand-olive/10 flex items-center justify-center mx-auto mb-6">
+        <Ikona nazwa="construction" rozmiar={36} class="text-brand-olive" />
+      </div>
+      <h1 class="font-display text-3xl font-bold text-brand-text mb-3">Strona nie znaleziona</h1>
+      <p class="text-brand-text-light mb-8 leading-relaxed">
+        Adres mógł się zmienić albo zawiera literówkę.
+        <br />
+        Tymczasem zapraszamy do kontaktu lub skorzystania z bezpłatnej wyceny.
+      </p>
+      <div class="flex flex-wrap justify-center gap-4">
+        <Przycisk href="/wycena/" ikona="receipt-text">Bezpłatna wycena</Przycisk>
+        <Przycisk href="/" wariant="secondary" ikona="home">Strona główna</Przycisk>
       </div>
 
-      <div class="stos-akcji">
-        <a class="przycisk" href="/">Wróć na stronę główną</a>
-      </div>
-
-      <nav class="blad-linki" aria-label="Pozostałe podstrony">
-        <ul>
-          {nawigacja.map((p) => <li><a class="link" href={p.sciezka}>{p.etykieta}</a></li>)}
-          <li><a class="link" href="/polityka-prywatnosci/">Polityka prywatności</a></li>
+      <nav class="mt-10" aria-label="Pozostałe podstrony">
+        <ul class="flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm">
+          {
+            nawigacja.map((pozycja) => (
+              <li>
+                <a href={pozycja.sciezka} class="text-brand-sage font-medium hover:underline">
+                  {pozycja.etykieta}
+                </a>
+              </li>
+            ))
+          }
+          <li>
+            <a href="/polityka-prywatnosci/" class="text-brand-sage font-medium hover:underline">
+              Polityka prywatności
+            </a>
+          </li>
         </ul>
       </nav>
     </div>

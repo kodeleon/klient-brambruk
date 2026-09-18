@@ -1,0 +1,52 @@
+---
+/**
+ * MAPA DOJAZDU - następca `GoogleMap.jsx`.
+ *
+ * ┌── DLACZEGO NIE MA TU OSADZONEJ MAPY ────────────────────────────────┐
+ * │ Stary komponent wstawiał `<iframe>` z Map Google na dwóch podstronach│
+ * │ (`/kontakt/`, `/o-nas/`). Kosztowało to: żądanie poza domenę przy    │
+ * │ każdym wejściu, pliki cookie Google u odwiedzającego, wyjątek        │
+ * │ `frame-src` w CSP i akapit w polityce prywatności, którego tam nie   │
+ * │ było - czyli deklarację „wyłącznie techniczne cookies", która nie     │
+ * │ była prawdziwa.                                                      │
+ * │                                                                      │
+ * │ Zamiast tego: statyczny obraz mapy (do wgrania) plus odnośnik do     │
+ * │ wizytówki w Mapach Google. Zero żądań poza domenę, zero cookie,      │
+ * │ polityka prywatności zostaje zgodna z tym, co serwis robi.           │
+ * │                                                                      │
+ * │ ⚠️ STAN PRZEJŚCIOWY: do czasu wgrania obrazu stoi tu zaślepka.       │
+ * └──────────────────────────────────────────────────────────────────────┘
+ */
+import { dane } from '../../config/dane'
+import Foto from '../media/Foto.astro'
+import Ikona from '../icons/Ikona.astro'
+
+interface Props {
+  class?: string
+}
+const { class: klasa = '' } = Astro.props
+---
+
+<div
+  class:list={[
+    'relative bg-brand-card rounded-2xl border border-brand-border/60 shadow-sm shadow-black/[0.04] overflow-hidden h-full min-h-[360px]',
+    klasa,
+  ]}
+>
+  <Foto
+    klucz="mapa.dojazd"
+    alt={`Mapa dojazdu do BramBruk, ${dane.adres}`}
+    class="w-full h-full min-h-[360px] object-cover"
+  />
+
+  <a
+    href={dane.mapyUrl}
+    target="_blank"
+    rel="noopener noreferrer"
+    class="absolute bottom-3 right-3 inline-flex items-center gap-2 rounded-full bg-brand-card/95 border border-brand-border px-4 py-2 text-xs font-semibold text-brand-text shadow-sm shadow-black/[0.04] hover:border-brand-olive/40 transition-colors"
+  >
+    <Ikona nazwa="map-pin" rozmiar={14} class="text-brand-olive shrink-0" />
+    Otwórz w Mapach Google
+    <span class="poza-ekranem">(otwiera się w nowej karcie)</span>
+  </a>
+</div>

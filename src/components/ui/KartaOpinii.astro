@@ -1,0 +1,26 @@
+---
+/** KARTA OPINII - odpowiednik `TestimonialCard.jsx`. */
+import Ikona from '../icons/Ikona.astro'
+
+interface Props {
+  imie: string
+  lokalizacja: string
+  data: string
+  tresc: string
+  ocena?: number
+}
+const { imie, lokalizacja, data, tresc, ocena = 5 } = Astro.props
+---
+
+<div
+  class="bg-brand-card rounded-2xl border border-brand-border p-6 lg:p-7 flex flex-col hover:shadow-lg hover:shadow-black/5 transition-all duration-300 h-full"
+>
+  <div class="flex text-fixly-main gap-0.5 mb-4" role="img" aria-label={`Ocena ${ocena} na 5`}>
+    {Array.from({ length: ocena }).map(() => <Ikona nazwa="star" rozmiar={16} wypelnienie="currentColor" />)}
+  </div>
+  <p class="text-sm text-brand-text leading-relaxed flex-1 mb-5">„{tresc}"</p>
+  <div>
+    <p class="text-sm font-semibold text-brand-text">- {imie}</p>
+    <p class="text-xs text-brand-text-light mt-0.5">{lokalizacja} · {data}</p>
+  </div>
+</div>

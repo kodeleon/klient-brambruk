@@ -1,0 +1,24 @@
+---
+/**
+ * ODSŁONIĘCIE PRZY PRZEWIJANIU - odpowiednik `Reveal.jsx`.
+ *
+ * Renderuje ten sam `<div>` co poprzednio (ważne: w siatkach to on jest
+ * elementem siatki), ale zamiast stanu Reacta niesie atrybuty, które czyta
+ * `src/scripts/ruch.ts`.
+ *
+ * RÓŻNICA: bez JavaScriptu treść jest WIDOCZNA. Stary `Reveal` startował
+ * z `opacity-0` i bez Reacta zostawiał pół serwisu niewidoczne.
+ */
+interface Props {
+  wariant?: 'up' | 'left' | 'right' | 'scale' | 'fade'
+  zwloka?: number
+  class?: string
+  /** Pozostałe atrybuty (np. `data-kategoria` przy filtrowaniu) jadą na element. */
+  [klucz: string]: unknown
+}
+const { wariant = 'up', zwloka = 0, class: klasa, ...reszta } = Astro.props
+---
+
+<div data-odslon={zwloka} data-odslon-wariant={wariant} class={klasa} {...reszta}>
+  <slot />
+</div>

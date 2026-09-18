@@ -1,0 +1,139 @@
+---
+/**
+ * /uslugi/ - przegląd wszystkich usług z widełkami cenowymi.
+ *
+ * Odpowiednik `code/src/pages/Uslugi.jsx`. Zakładki działają bez JavaScriptu:
+ * stan trzymają ukryte przyciski wyboru, a CSS chowa nieaktywne grupy
+ * (`src/styles/components/zakladki.css`). Wszystkie karty są w HTML,
+ * niezależnie od wybranej zakładki.
+ */
+import Podstrona from '../layouts/Podstrona.astro'
+import { kartyUslug } from '../data/cennik'
+import Okruszki from '../components/ui/Okruszki.astro'
+import EtykietaSekcji from '../components/ui/EtykietaSekcji.astro'
+import Przycisk from '../components/ui/Przycisk.astro'
+import Odslon from '../components/ui/Odslon.astro'
+import KartaUslugi from '../components/ui/KartaUslugi.astro'
+import BanerCta from '../components/ui/BanerCta.astro'
+import Foto from '../components/media/Foto.astro'
+
+const zakladki = [
+  { klucz: 'ogrodzenia', etykieta: 'Ogrodzenia i bramy' },
+  { klucz: 'brukarstwo', etykieta: 'Brukarstwo' },
+  { klucz: 'budownictwo', etykieta: 'Budownictwo' },
+] as const
+
+const klasaZakladki =
+  'inline-flex px-5 py-2.5 rounded-full text-sm font-semibold border transition-all duration-200 bg-brand-card text-brand-text border-brand-border/60 hover:border-brand-olive/40'
+---
+
+<Podstrona
+  tytul="Usługi i cennik - BramBruk | Biała Podlaska i okolice"
+  opis="Pełna oferta i cennik BramBruk: ogrodzenia panelowe i murowane, bramy, furtki, kostka brukowa, podjazdy, budownictwo. Biała Podlaska i okolice."
+>
+  <Okruszki pozycje={[{ etykieta: 'Strona główna', sciezka: '/' }, { etykieta: 'Usługi i cennik' }]} />
+
+  <section class="relative bg-brand-dark overflow-hidden">
+    <div class="absolute inset-0">
+      <Foto klucz="hero.ogrodzenia" alt="" class="w-full h-full object-cover opacity-20" />
+      <div class="absolute inset-0 bg-gradient-to-r from-brand-dark via-brand-dark/90 to-brand-dark/60"></div>
+    </div>
+    <div class="relative max-w-7xl mx-auto px-5 lg:px-10 py-16 lg:py-24">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
+        <div>
+          <EtykietaSekcji class="mb-3">Usługi i cennik</EtykietaSekcji>
+          <h1 class="font-display text-3xl lg:text-[42px] font-bold text-white leading-tight mb-2">
+            Zakres usług BramBruk
+          </h1>
+          <p class="font-display text-xl lg:text-2xl font-semibold text-brand-olive leading-tight mb-6">
+            Orientacyjne widełki cenowe
+          </p>
+          <p class="text-neutral-400 leading-relaxed max-w-lg mb-8">
+            Poniżej znajdziesz przegląd wszystkich usług wraz z orientacyjnymi cenami. Dokładna wycena
+            zawsze zależy od zakresu, materiałów i lokalizacji - opisz swój projekt w formularzu.
+          </p>
+          <Przycisk href="/wycena/" rozmiar="lg" ikona="receipt-text">Bezpłatna wycena</Przycisk>
+        </div>
+        <div class="hidden lg:block">
+          <Foto klucz="realizacja.03" alt="Realizacje BramBruk" class="w-full h-[320px] object-cover rounded-2xl" />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="main-content" class="bg-brand-bg py-12 lg:py-16">
+    <div class="max-w-7xl mx-auto px-5 lg:px-10" data-zakladki>
+      {
+        zakladki.map((zakladka, i) => (
+          <input
+            type="radio"
+            name="zakladka-uslug"
+            id={`zakladka-${zakladka.klucz}`}
+            class="poza-ekranem"
+            checked={i === 0}
+          />
+        ))
+      }
+
+      {/* Nagłówek, nie `div`: bez niego hierarchia skakała z h1 wprost do h3
+          na kartach usług, co narzędzie sprawdzające zgłaszało jako przeskok.
+          Klasy są te same, więc wygląd się nie zmienia. */}
+      <h2 class="font-display text-base font-bold text-brand-text mb-2">Typ usługi:</h2>
+      <div class="flex flex-wrap gap-2 mb-6" role="group" aria-label="Typ usługi">
+        {zakladki.map((zakladka) => <label for={`zakladka-${zakladka.klucz}`} class={klasaZakladki}>{zakladka.etykieta}</label>)}
+      </div>
+
+      <div
+        class="mb-6 px-5 py-4 rounded-xl bg-brand-section border border-brand-border/60 text-sm text-brand-text-light"
+      >
+        <div class="font-display text-base font-bold text-brand-text pb-1">Uwaga!</div>
+        Ceny są wyłącznie orientacyjne i nie stanowią oferty sprzedażowej. Ostateczna kwota zależy od
+        zakresu prac, użytych materiałów i specyfiki terenu.
+        <div class="mt-2"></div>
+        <a href="/wycena/" class="text-brand-sage font-medium hover:underline">Zapytaj o dokładną wycenę →</a>
+      </div>
+
+      {
+        zakladki.map((zakladka) => (
+          <div
+            class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5"
+            data-grupa={zakladka.klucz}
+            aria-label={zakladka.etykieta}
+          >
+            {kartyUslug[zakladka.klucz].map((karta, i) => (
+              <Odslon wariant="up" zwloka={i * 60}>
+                <KartaUslugi tytul={karta.tytul} opis={karta.opis} foto={karta.foto} href={karta.href}>
+                  <div
+                    slot="odznaka"
+                    class="absolute z-100 top-3 right-3 bg-brand-dark/90 opacity-90 backdrop-blur-sm rounded-lg px-3 py-1.5 text-right"
+                  >
+                    <span class="text-brand-olive font-bold transition-all duration-300 text-md">{karta.cena}</span>
+                    {karta.nota && <p class="text-brand-text-light text-[13px]">{karta.nota}</p>}
+                  </div>
+                </KartaUslugi>
+              </Odslon>
+            ))}
+          </div>
+        ))
+      }
+
+      <div class="font-display text-base font-bold text-brand-text pb-1 mt-8">Typ usługi:</div>
+      <div class="flex flex-wrap gap-2" role="group" aria-label="Typ usługi">
+        {
+          zakladki.map((zakladka) => (
+            <label for={`zakladka-${zakladka.klucz}`} class={klasaZakladki} data-zakladka-dolna>
+              {zakladka.etykieta}
+            </label>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <BanerCta
+    tytul="Chcesz poznać dokładną cenę?"
+    podtytul="Opisz projekt w formularzu - wycenimy go w ciągu 24 godzin, bezpłatnie"
+  >
+    <Przycisk slot="akcja" href="/wycena/" rozmiar="lg" ikona="receipt-text">Bezpłatna wycena</Przycisk>
+  </BanerCta>
+</Podstrona>

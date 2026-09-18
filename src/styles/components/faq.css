@@ -1,0 +1,48 @@
+/**
+ * AKORDEON FAQ - to, czego nie da się opisać klasami narzędziowymi:
+ * stan `[open]` natywnego `<details>` i znacznik trójkąta przeglądarki.
+ *
+ * Wygląd jest ten sam co w starym projekcie: biała karta, obramowanie
+ * zmieniające kolor po otwarciu, kółko z plusem zmieniające się w minus.
+ */
+
+.faq-przycisk {
+  cursor: pointer;
+  list-style: none;
+}
+
+/* Trójkąt przeglądarki. Dwie reguły, bo Safari nadal używa pseudoelementu. */
+.faq-przycisk::-webkit-details-marker {
+  display: none;
+}
+
+.faq-pozycja[open] {
+  border-color: color-mix(in srgb, var(--color-brand-olive) 30%, transparent);
+  box-shadow: var(--shadow-md);
+}
+
+.faq-pozycja[open] .faq-znak {
+  background-color: var(--color-brand-olive);
+  color: var(--color-brand-dark);
+}
+
+.faq-minus {
+  display: none;
+}
+
+.faq-pozycja[open] .faq-plus {
+  display: none;
+}
+
+.faq-pozycja[open] .faq-minus {
+  display: block;
+}
+
+/**
+ * Płynne rozwijanie. `max-height` ustawia skrypt `faq.ts` - tutaj jest tylko
+ * przejście. Bez skryptu odpowiedź pojawia się od razu, czyli tak, jak działa
+ * `<details>` od zawsze.
+ */
+.faq-tresc {
+  transition: max-height 0.35s var(--ease-out);
+}

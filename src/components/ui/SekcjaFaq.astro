@@ -1,0 +1,73 @@
+---
+/**
+ * SEKCJA FAQ - odpowiednik `FaqSection.jsx`.
+ *
+ * ┌── DLACZEGO `<details>`, A NIE PRZYCISK ZE STANEM ───────────────────┐
+ * │ Stary akordeon chował odpowiedzi w `max-h-0` i otwierał je stanem    │
+ * │ Reacta. Bez JavaScriptu wszystkie odpowiedzi były niewidoczne,       │
+ * │ a treść FAQ to połowa wartości SEO tych podstron.                    │
+ * │                                                                      │
+ * │ `<details>` daje to samo zachowanie bez ani jednej linii kodu:       │
+ * │ rozwijanie, obsługę klawiatury i `aria-expanded` robi przeglądarka,  │
+ * │ a atrybut `name` wymusza „tylko jedna otwarta naraz" - dokładnie to, │
+ * │ co poprzednio robił `openIndex`. Skrypt `faq.ts` dokłada wyłącznie   │
+ * │ płynne rozwijanie.                                                   │
+ * └──────────────────────────────────────────────────────────────────────┘
+ */
+import EtykietaSekcji from './EtykietaSekcji.astro'
+import Odslon from './Odslon.astro'
+import Ikona from '../icons/Ikona.astro'
+
+interface Props {
+  etykieta?: string
+  tytul?: string
+  pytania: readonly { pytanie: string; odpowiedz: string }[]
+  tlo?: string
+  /** Nazwa grupy - decyduje o tym, że otwarcie jednej pozycji zamyka pozostałe. */
+  grupa?: string
+}
+const {
+  etykieta = 'FAQ',
+  tytul = 'Najczęściej zadawane pytania',
+  pytania,
+  tlo = 'bg-brand-bg',
+  grupa = 'faq',
+} = Astro.props
+---
+
+<section class:list={[tlo, 'py-8 lg:py-14']}>
+  <div class="max-w-4xl mx-auto px-5 lg:px-10">
+    <Odslon>
+      <div class="mb-6">
+        <EtykietaSekcji>{etykieta}</EtykietaSekcji>
+        <h2 class="font-display text-2xl lg:text-3xl font-bold text-brand-text mt-2">{tytul}</h2>
+      </div>
+    </Odslon>
+
+    <div class="space-y-3">
+      {
+        pytania.map((pozycja, i) => (
+          <Odslon wariant="up" zwloka={i * 50}>
+            <details
+              name={grupa}
+              class="faq-pozycja bg-brand-card rounded-xl border border-brand-border hover:border-brand-olive/20 transition-all duration-300"
+            >
+              <summary class="faq-przycisk w-full flex items-center justify-between px-6 py-5 text-left group">
+                <span class="text-sm lg:text-[15px] font-medium pr-4 transition-colors text-brand-text">
+                  {pozycja.pytanie}
+                </span>
+                <span class="faq-znak shrink-0 w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300 bg-brand-bg text-brand-text-light group-hover:bg-brand-olive/10">
+                  <Ikona nazwa="plus" rozmiar={16} class="faq-plus" />
+                  <Ikona nazwa="minus" rozmiar={16} class="faq-minus" />
+                </span>
+              </summary>
+              <div class="faq-tresc overflow-hidden">
+                <div class="px-6 pb-5 text-sm text-brand-text-light leading-relaxed">{pozycja.odpowiedz}</div>
+              </div>
+            </details>
+          </Odslon>
+        ))
+      }
+    </div>
+  </div>
+</section>

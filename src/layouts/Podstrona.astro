@@ -2,24 +2,21 @@
 /**
  * UKŁAD PODSTRONY - jedyne miejsce, w którym powstaje <head>.
  *
- * Każda podstrona serwisu przechodzi przez ten plik. Znaczniki SEO nie
- * powstają nigdzie indziej i nie ma powodu, żeby powstawały - dzięki temu
- * nie da się wypuścić podstrony bez `canonical` albo z `og:url` niezgodnym
- * z `canonical`.
+ * Stary projekt budował `<head>` w przeglądarce (`react-helmet-async`)
+ * i dodatkowo wstrzykiwał go skryptem po buildzie (`scripts/postbuild.mjs`) -
+ * dwa źródła prawdy o tych samych znacznikach. Tutaj jest jedno i wykonuje
+ * się przy budowaniu.
  *
  * CO SIĘ STANIE, JEŚLI ZAPOMNISZ O META:
- *   `tytul` i `opis` są wymagane i build PRZERWIE się z nazwą podstrony,
- *   jeśli ich brakuje albo jeśli są puste. Nie ma wartości domyślnej,
- *   bo domyślna oznaczałaby duplikat na dwóch podstronach - a checklista
- *   klasyfikuje duplikat `title`/`description` jako błąd.
+ *   `tytul` i `opis` są wymagane i build PRZERWIE się z nazwą podstrony.
+ *   Nie ma wartości domyślnej, bo domyślna oznaczałaby duplikat na dwóch
+ *   podstronach - a duplikat `title`/`description` jest w audycie błędem.
  *
  *   `canonical` i `og:url` NIE są parametrem. Liczą się z rzeczywistego
- *   adresu podstrony (`Astro.url.pathname`) i `origin` z konfiguracji,
- *   więc nie da się ich podać błędnie ani zapomnieć.
+ *   adresu podstrony i `origin` z konfiguracji.
  */
 
 import { site, adres } from '../config/site'
-import { dane } from '../config/dane'
 import Naglowek from '../components/layout/Naglowek.astro'
 import Stopka from '../components/layout/Stopka.astro'
 import Analityka from '../components/layout/Analityka.astro'
@@ -32,31 +29,12 @@ interface Props {
   opis: string
   /** Wyłącza indeksowanie tej podstrony. Pamiętaj wtedy o `pozaMapaStrony` w site.ts. */
   noindex?: boolean
-  /** Ścieżka do obrazu podglądu linku. Bezwzględna od korzenia, np. `/assets/img/og.jpg`. */
+  /** Ścieżka do obrazu podglądu linku. Bezwzględna od korzenia. */
   ogImage?: string
-  /** Szerokość i wysokość obrazu podglądu. Serwisy społecznościowe lubią je znać. */
   ogImageRozmiar?: [number, number]
-  /**
-   * `false` wyłącza `canonical` i `og:url`.
-   * Jedyny przypadek, w którym to jest poprawne: dokument serwowany pod
-   * adresem innym niż jego ścieżka w buildzie - czyli strona 404. Wskazanie
-   * `canonical` na `/404/` deklarowałoby adres, który zwraca błąd.
-   */
+  /** `false` wyłącza `canonical` i `og:url`. Jedyny poprawny przypadek: strona 404. */
   kanoniczny?: false
-  /**
-   * Język TEJ podstrony, jeśli inny niż `site.jezyk`. Idzie do `<html lang>`
-   * i `og:locale`. Moduł drugiej wersji językowej - patrz `wersje` niżej.
-   */
   jezyk?: string
-  /**
-   * Wzajemne odwołania między wersjami językowymi, jako `{ 'pl': '/', 'en': '/en/' }`.
-   *
-   * Komplet MUSI być wzajemny: każda wersja wskazuje wszystkie pozostałe
-   * i samą siebie. Niepełne odwołania są w audycie błędem, bo wyszukiwarka
-   * traktuje wtedy wersje jako oddzielne, konkurujące ze sobą strony.
-   * `canonical` zostaje osobny per wersja - tego nie zmieniamy.
-   */
-  wersje?: Record<string, string>
 }
 
 const {
@@ -67,7 +45,6 @@ const {
   ogImageRozmiar = [1200, 630],
   kanoniczny: kanonicznyProp,
   jezyk = site.jezyk,
-  wersje,
 } = Astro.props
 
 const sciezka = Astro.url.pathname
@@ -81,15 +58,9 @@ const ogUrl = ogImage ? adres(ogImage) : null
 /**
  * Dane strukturalne.
  *
- * Świadomie BEZ `LocalBusiness` w pustej bazie: to deklaracja faktów o firmie
- * (adres, godziny otwarcia, zakres usług), a baza żadnej firmy nie opisuje.
- * Wyszukiwarka dostałaby dane nieistniejącego podmiotu, czyli dokładnie to,
- * co checklista klasyfikuje jako bloker („strona deklaruje coś, co nie jest
- * prawdą"). Blok `LocalBusiness` dla realnego klienta wchodzi w projekcie,
- * po potwierdzeniu danych - wzór jest w README.
- *
- * CSP tego nie blokuje mimo `script-src` bez `unsafe-inline`: `application/ld+json`
- * to dane, nie kod wykonywalny. Nie dodawaj dla niego hasha „na wszelki wypadek".
+ * Świadomie BEZ `LocalBusiness`, mimo że dane firmy są potwierdzone: stary
+ * serwis go nie miał, a migracja nie zmienia sygnałów dla wyszukiwarki bez
+ * osobnej decyzji. Wpisany na listę do rozmowy po migracji.
  */
 const daneStrukturalne = {
   '@context': 'https://schema.org',
@@ -134,12 +105,6 @@ const daneStrukturalne = {
     <meta property="og:title" content={tytul} />
     <meta property="og:description" content={opis} />
     <meta property="og:locale" content={jezyk === site.jezyk ? site.ogLocale : jezyk} />
-    {
-      wersje &&
-        Object.entries(wersje).map(([kod, sciezkaWersji]) => (
-          <link rel="alternate" hreflang={kod} href={adres(sciezkaWersji)} />
-        ))
-    }
     {kanoniczny && <meta property="og:url" content={kanoniczny} />}
     {
       ogUrl && (
@@ -162,26 +127,22 @@ const daneStrukturalne = {
   <body>
     {/*
       Pominięcie nawigacji. Pierwszy element w kolejności Tab, niewidoczny
-      do czasu złapania fokusu. Punkt 🧱 checklisty - razem z punktami
-      orientacyjnymi niżej (header / nav / main / footer).
+      do czasu złapania fokusu. Stary projekt tego nie miał.
     */}
     <a class="pomin-nawigacje" href="#tresc">Przejdź do treści</a>
 
-    <Naglowek />
+    {/* Ten `div` odpowiada korzeniowi aplikacji ze starego `App.jsx` -
+        stąd te same klasy tła, kroju i koloru tekstu. */}
+    <div class="min-h-screen bg-brand-bg font-body text-brand-text">
+      <Naglowek />
 
-    <main id="tresc">
-      <slot />
-    </main>
+      <main id="tresc">
+        <slot />
+      </main>
 
-    <Stopka />
+      <Stopka />
+    </div>
 
-    {/*
-      Skrypty wchodzą jako moduł z własnej domeny, nigdy inline.
-      `main.ts` uruchamia każdy moduł osobno i łapie jego błędy, więc awaria
-      jednego zachowania nie zabija pozostałych (punkt 🧱: „moduły odizolowane
-      od siebie"). Bez tego pliku strona nadal się czyta i działa - to jest
-      warunek, a nie efekt uboczny.
-    */}
     <script>
       import '../scripts/main'
     </script>

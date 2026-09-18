@@ -1,60 +1,376 @@
 ---
 /**
- * STRONA GŁÓWNA.
+ * / - strona główna.
  *
- * To jest szkielet, nie projekt. Sekcje poniżej pokazują, jak wygląda
- * podstrona w tej bazie: układ pod `Podstrona.astro`, klasy z systemu
- * wizualnego, dane z `src/config/dane.ts`, odsłanianie przez `data-odslon`.
- * Przy realnym projekcie treść i sekcje wymieniasz w całości.
+ * Odpowiednik `code/src/pages/Home.jsx`. Sekcje, treść i klasy przeniesione
+ * 1:1. Jedna zmiana techniczna: tło sekcji głównej było zdjęciem wstawionym
+ * przez `style={{ backgroundImage }}` w znaczniku - CSP tego nie przepuszcza
+ * (`style-src` bez `'unsafe-inline'`), a i tak omijało to potok zdjęć.
+ * Teraz jest to zwykłe zdjęcie rozciągnięte na sekcję, pod gradientem.
  */
 import Podstrona from '../layouts/Podstrona.astro'
-import { dane, cennik } from '../config/dane'
+import { dane, opinie, fixly, statystyki } from '../config/dane'
+import EtykietaSekcji from '../components/ui/EtykietaSekcji.astro'
+import Przycisk from '../components/ui/Przycisk.astro'
+import Odslon from '../components/ui/Odslon.astro'
+import KartaUslugi from '../components/ui/KartaUslugi.astro'
+import KartaOpinii from '../components/ui/KartaOpinii.astro'
+import PasekStatystyk from '../components/ui/PasekStatystyk.astro'
+import SekcjaFaq from '../components/ui/SekcjaFaq.astro'
+import GaleriaSiatka from '../components/ui/GaleriaSiatka.astro'
+import GaleriaKaruzela from '../components/ui/GaleriaKaruzela.astro'
+import BanerCta from '../components/ui/BanerCta.astro'
+import PrzyciskFixly from '../components/ui/PrzyciskFixly.astro'
+import Ikona from '../components/icons/Ikona.astro'
+import Foto from '../components/media/Foto.astro'
+
+const uslugi = [
+  {
+    tytul: 'Ogrodzenia i bramy',
+    opis: 'Montaż ogrodzeń panelowych, murowanych i z siatki. Bramy przesuwne, dwuskrzydłowe, furtki. Automatyka i sterowanie.',
+    foto: 'karta.glowna-ogrodzenia',
+    href: '/ogrodzenia/',
+  },
+  {
+    tytul: 'Brukarstwo',
+    opis: 'Układanie kostki brukowej na podjazdy, chodniki, alejki ogrodowe i tarasy. Pełna realizacja z podbudową.',
+    foto: 'karta.glowna-brukarstwo',
+    href: '/brukarstwo/',
+  },
+  {
+    tytul: 'Budownictwo',
+    opis: 'Altany ogrodowe, garaże blaszane i drewniane, domki narzędziowe, wiaty. Solidna konstrukcja, terminowy montaż.',
+    foto: 'karta.glowna-budownictwo',
+    href: '/budownictwo/',
+  },
+]
+
+const galeria = [
+  { foto: 'realizacja.01', tytul: 'Ogrodzenie panelowe', lokalizacja: 'Biała Podlaska' },
+  { foto: 'realizacja.02', tytul: 'Podjazd z kostki', lokalizacja: 'Sławacinek' },
+  { foto: 'realizacja.03', tytul: 'Brama przesuwna', lokalizacja: 'Cicibór' },
+  { foto: 'realizacja.04', tytul: 'Altanka ogrodowa', lokalizacja: 'Rakowiska' },
+  { foto: 'realizacja.05', tytul: 'Furtka metalowa', lokalizacja: 'Międzyrzec Podl.' },
+  { foto: 'realizacja.06', tytul: 'Chodnik z kostki', lokalizacja: 'Biała Podlaska' },
+]
+
+const faq = [
+  {
+    pytanie: 'Czy wycena jest bezpłatna?',
+    odpowiedz:
+      'Tak, wycena jest całkowicie bezpłatna i niezobowiązująca. Wystarczy opisać projekt przez formularz lub zadzwonić - odpowiemy w ciągu 24 godzin.',
+  },
+  {
+    pytanie: 'Jak długo trwa realizacja ogrodzenia?',
+    odpowiedz:
+      'Standardowe ogrodzenie panelowe (50–100 mb) montujemy w 2–5 dni roboczych. Bardziej złożone projekty z podmurówką i bramami mogą zająć 1–2 tygodnie.',
+  },
+  {
+    pytanie: 'Jaki jest obszar działania firmy?',
+    odpowiedz:
+      'Działamy na terenie Białej Podlaskiej i okolic w promieniu ok. 50 km: Międzyrzec Podlaski, Terespol, Radzyń Podlaski, Parczew, Łosice i okoliczne miejscowości.',
+  },
+  {
+    pytanie: 'Co wpływa na cenę ogrodzenia?',
+    odpowiedz:
+      'Na cenę wpływa typ ogrodzenia, długość, wysokość, rodzaj podmurówki, kolor RAL, typ gruntu i nachylenie terenu. Dokładną wycenę przygotujemy po poznaniu szczegółów.',
+  },
+  {
+    pytanie: 'Czy potrzebuję pozwolenia na budowę ogrodzenia?',
+    odpowiedz:
+      'Ogrodzenie do 2,2 m wysokości co do zasady nie wymaga pozwolenia, ale budowę należy zgłosić do starostwa. Pomożemy ustalić formalności dla Twojego projektu.',
+  },
+]
+
+const kroki = [
+  {
+    numer: '01',
+    tytul: 'Kontakt i opis projektu',
+    opis: 'Wypełnij formularz wyceny - opisz co chcesz zrealizować, podaj orientacyjne wymiary i lokalizację. Możesz też zadzwonić lub napisać e-mail.',
+  },
+  {
+    numer: '02',
+    tytul: 'Bezpłatna wycena w 24h',
+    opis: 'Na podstawie Twojego opisu przygotujemy orientacyjną wycenę i odeślemy ją w ciągu jednego dnia roboczego. W razie potrzeby umówimy wizję lokalną.',
+  },
+  {
+    numer: '03',
+    tytul: 'Realizacja i odbiór',
+    opis: 'Ekipa przyjeżdża w ustalonym terminie. Pracujemy sprawnie i zostawiamy posesję w porządku. Po zakończeniu odbierasz gotową realizację z gwarancją.',
+  },
+]
 ---
 
 <Podstrona
-  tytul={`${dane.nazwa} - ${dane.opis}`}
-  opis="Szkielet strony głównej w bazie projektowej Kodeleon. Podmień tytuł, opis i treść na materiały klienta."
+  tytul="Ogrodzenia, bramy i brukarstwo - BramBruk | Biała Podlaska i okolice"
+  opis="Ogrodzenia panelowe, bramy, furtki i kostka brukowa w Białej Podlaskiej i okolicach. 100+ realizacji, 5 lat doświadczenia. Bezpłatna wycena w 24h."
 >
-  <section class="sekcja">
-    <div class="wrap">
-      <div class="naglowek-sekcji" data-odslon>
-        <span class="nadtytul">Baza projektowa</span>
-        <h1 class="tytul-glowny"><span class="gradient">{dane.nazwa}</span></h1>
-        <p class="lead">
-          Ta podstrona jest miejscem na sekcję główną projektu. Treść jest widoczna bez
-          JavaScriptu, a animacja wejścia tylko ją odsłania - nigdy nie warunkuje.
-        </p>
-      </div>
+  {/* ═══ SEKCJA GŁÓWNA ═══════════════════════════════════ */}
+  <section class="relative bg-brand-dark overflow-hidden">
+    <div class="absolute inset-0">
+      <Foto klucz="hero.glowna" alt="" class="absolute inset-0 w-full h-full object-cover" />
+      <div class="absolute inset-0 bg-gradient-to-r from-brand-dark via-brand-dark/95 to-brand-dark/70"></div>
+    </div>
+    <div
+      class="relative max-w-7xl mx-auto px-5 lg:px-10 py-20 lg:py-28 min-h-[85vh] flex flex-col justify-center"
+    >
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center">
+        <div>
+          <EtykietaSekcji class="text-brand-olive/80 mb-4 flex items-center justify-between sm:justify-start sm:gap-x-2">
+            <span>Ogrodzenia</span>
+            <span>·</span>
+            <span>Brukarstwo</span>
+            <span>·</span>
+            <span>Budownictwo</span>
+          </EtykietaSekcji>
 
-      <div class="stos-akcji" data-odslon="100">
-        <a class="przycisk" href="/przyklad-podstrony/">Zobacz przykład podstrony</a>
-        <a class="przycisk przycisk--drugi" href={`tel:${dane.telefonHref}`}>{dane.telefon}</a>
+          <h1 class="font-display text-4xl md:text-5xl lg:text-[56px] font-bold text-white leading-[1.1] mb-3">
+            Ogrodzenia, bramy<br />i brukarstwo
+          </h1>
+          <p class="text-xl lg:text-2xl font-display font-semibold text-brand-olive mb-6">
+            Powiat bialski i okolice
+          </p>
+          <p class="text-neutral-400 text-base lg:text-lg leading-relaxed max-w-lg mb-10">
+            Montaż ogrodzeń panelowych, bram wjazdowych i furtek. Układanie kostki brukowej na podjazdy,
+            chodniki i tarasy. Obsługujemy Białą Podlaską, Międzyrzec Podlaski, Terespol i okolice.
+          </p>
+          <div class="flex flex-wrap gap-4 mb-12">
+            <Przycisk href="/wycena/" rozmiar="lg" ikona="receipt-text">Bezpłatna wycena</Przycisk>
+            <Przycisk href={`tel:${dane.telefonHref}`} wariant="secondary" rozmiar="lg" ikona="phone">Zadzwoń</Przycisk>
+          </div>
+          <div
+            class="flex flex-wrap items-center gap-y-1 text-sm text-neutral-500 justify-between sm:justify-start sm:gap-x-2"
+          >
+            <span class="flex items-center gap-1.5">5/5 Fixly</span>
+            <span>·</span>
+            <span>{statystyki.realizacje} realizacji</span>
+            <span>·</span>
+            <span>5 lat doświadczenia</span>
+          </div>
+        </div>
+        <div class="hidden lg:block">
+          <Foto
+            klucz="hero.glowna-obok"
+            alt="Ogrodzenie panelowe z bramą - realizacja BramBruk"
+            class="w-full h-[480px] object-cover rounded-2xl shadow-2xl"
+          />
+        </div>
+      </div>
+      <div
+        class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-neutral-600 animate-bounce"
+      >
+        <Ikona nazwa="chevron-down" rozmiar={20} />
       </div>
     </div>
   </section>
 
-  <section class="sekcja">
-    <div class="wrap">
-      <div class="naglowek-sekcji" data-odslon>
-        <span class="nadtytul">Przykład</span>
-        <h2 class="tytul-sekcji">Siatka kart</h2>
-        <p class="lead">
-          Ceny pochodzą z jednego miejsca - tablicy <code>cennik</code> w
-          <code>src/config/dane.ts</code>. Ta sama wartość obsługuje stronę główną i cennik.
-        </p>
-      </div>
-
-      <ul class="siatka-kart">
+  {/* ═══ USŁUGI ══════════════════════════════════════════ */}
+  <section class="bg-brand-section py-10 lg:py-16">
+    <div class="max-w-7xl mx-auto px-5 lg:px-10">
+      <Odslon>
+        <div class="mb-6">
+          <EtykietaSekcji>Nasze usługi</EtykietaSekcji>
+          <h2 class="font-display text-2xl lg:text-4xl font-bold text-brand-text mt-2">
+            Kompleksowa obsługa Twojej posesji
+          </h2>
+        </div>
+      </Odslon>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {
-          cennik.map((pozycja, i) => (
-            <li class="karta" data-odslon={i * 100}>
-              <h3 class="karta__tytul">{pozycja.usluga}</h3>
-              <p class="karta__cena">{pozycja.cena}</p>
-              <p>{pozycja.opis}</p>
-            </li>
+          uslugi.map((usluga, i) => (
+            <Odslon wariant="up" zwloka={i * 80}>
+              <KartaUslugi tytul={usluga.tytul} opis={usluga.opis} foto={usluga.foto} href={usluga.href} />
+            </Odslon>
           ))
         }
-      </ul>
+      </div>
+      <Odslon zwloka={240}>
+        <div class="mt-8 flex justify-center lg:justify-start">
+          <a
+            href="/uslugi/"
+            class="inline-flex items-center gap-2 text-brand-sage font-semibold text-sm hover:gap-3 transition-all"
+          >
+            Wszystkie usługi i cennik
+            <Ikona nazwa="arrow-right" rozmiar={16} />
+          </a>
+        </div>
+      </Odslon>
     </div>
   </section>
+
+  {/* ═══ REALIZACJE ══════════════════════════════════════ */}
+  <section class="bg-brand-bg py-10 lg:py-16">
+    <div class="max-w-7xl mx-auto px-5 lg:px-10">
+      <Odslon>
+        <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between mb-6">
+          <div>
+            <EtykietaSekcji>Realizacje</EtykietaSekcji>
+            <h2 class="font-display text-2xl lg:text-4xl font-bold text-brand-text mt-2">
+              Nasze ostatnie projekty
+            </h2>
+          </div>
+          <a
+            href="/realizacje/"
+            class="hidden lg:inline-flex items-center gap-2 text-brand-sage font-semibold text-sm hover:gap-3 transition-all"
+          >
+            Zobacz wszystkie realizacje
+            <Ikona nazwa="arrow-right" rozmiar={16} />
+          </a>
+        </div>
+      </Odslon>
+      <GaleriaSiatka pozycje={galeria} class="hidden md:grid" />
+      <GaleriaKaruzela pozycje={galeria} class="md:hidden" />
+      <div class="mt-6 flex justify-center lg:hidden">
+        <a
+          href="/realizacje/"
+          class="inline-flex items-center gap-2 text-brand-sage font-semibold text-sm hover:gap-3 transition-all"
+        >
+          <Ikona nazwa="images" rozmiar={16} />
+          Zobacz wszystkie realizacje
+          <Ikona nazwa="arrow-right" rozmiar={16} />
+        </a>
+      </div>
+    </div>
+  </section>
+
+  {/* ═══ O FIRMIE ════════════════════════════════════════ */}
+  <section class="bg-brand-section py-10 lg:py-16">
+    <div class="max-w-7xl mx-auto px-5 lg:px-10">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 items-center">
+        <Odslon wariant="left">
+          <div>
+            <EtykietaSekcji>O firmie</EtykietaSekcji>
+            <h2 class="font-display text-2xl lg:text-4xl font-bold text-brand-text mt-2 mb-6">
+              BramBruk - od 5 lat w regionie
+            </h2>
+            <p class="text-brand-text-light leading-relaxed mb-4">
+              Jesteśmy lokalną firmą z Białej Podlaskiej specjalizującą się w ogrodzeniach, brukarstwie
+              i budownictwie lekkim. Każdego roku realizujemy dziesiątki projektów dla klientów
+              indywidualnych i przedsiębiorstw w powiecie bialskim i sąsiednich powiatach.
+            </p>
+            <p class="text-brand-text-light leading-relaxed mb-6">
+              Stawiamy na jakość materiałów, terminowość i transparentną wycenę. Każdy projekt
+              poprzedzamy bezpłatną wizją lokalną - tak żebyście Państwo dokładnie wiedzieli, co i za ile
+              zostanie wykonane.
+            </p>
+            <PasekStatystyk />
+          </div>
+        </Odslon>
+        <Odslon wariant="right">
+          <div class="rounded-2xl overflow-hidden">
+            <Foto
+              klucz="zespol.portret"
+              alt="Zespół BramBruk przy pracy"
+              class="w-full h-[220px] lg:h-[420px] object-contain object-[50%_30%]"
+            />
+          </div>
+        </Odslon>
+      </div>
+    </div>
+  </section>
+
+  {/* ═══ OPINIE ══════════════════════════════════════════ */}
+  <section class="bg-brand-bg py-10 lg:py-16">
+    <div class="max-w-7xl mx-auto px-5 lg:px-10">
+      <Odslon>
+        <div class="mb-6">
+          <EtykietaSekcji class="text-fixly-dark">Opinie klientów</EtykietaSekcji>
+          <h2 class="font-display text-2xl lg:text-4xl font-bold text-brand-text mt-2 mb-2">
+            Co mówią nasi klienci
+          </h2>
+          <p class="text-brand-text-light text-sm flex items-center gap-2">
+            <span class="flex text-fixly-main">
+              {Array.from({ length: 5 }).map(() => <Ikona nazwa="star" rozmiar={14} wypelnienie="currentColor" />)}
+            </span>
+            {fixly.ocena} średnia ocen na
+            <PrzyciskFixly />
+            · {fixly.opinie} opinii
+          </p>
+        </div>
+      </Odslon>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
+        {
+          opinie.map((opinia, i) => (
+            <Odslon wariant="up" zwloka={i * 80}>
+              <KartaOpinii
+                imie={opinia.imie}
+                lokalizacja={opinia.lokalizacja}
+                data={opinia.data}
+                tresc={opinia.tresc}
+                ocena={opinia.ocena}
+              />
+            </Odslon>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  {/* ═══ JAK DZIAŁAMY ════════════════════════════════════ */}
+  <section class="bg-brand-section py-10 lg:py-16">
+    <div class="max-w-7xl mx-auto px-5 lg:px-10">
+      <Odslon>
+        <div class="mb-6 lg:mb-14">
+          <EtykietaSekcji class="justify-start">Jak działamy</EtykietaSekcji>
+          <h2 class="font-display text-2xl lg:text-4xl font-bold text-brand-text mt-2">
+            Od zapytania do gotowej realizacji
+          </h2>
+        </div>
+      </Odslon>
+      <div class="grid grid-cols-1 lg:grid-cols-2 lg:gap-16 items-start">
+        <Odslon wariant="left">
+          <div>
+            <p class="text-brand-text-light leading-relaxed mb-4">
+              Zrealizujemy ogrodzenie, podjazd z kostki lub altanę - niezależnie od wielkości projektu.
+              Wystarczy, że opiszesz swoje potrzeby.
+            </p>
+            <p class="text-brand-text-light leading-relaxed mb-4">
+              Wypełnij formularz online lub zadzwoń - nasi specjaliści zadadzą kilka pytań, żeby
+              przygotować wycenę dokładnie dopasowaną do Twojej posesji i budżetu.
+            </p>
+            <p class="text-brand-text-light leading-relaxed mb-6">
+              W ciągu 24 godzin od wysłania zgłoszenia otrzymasz orientacyjną wycenę. Następnie ustalamy
+              termin, przyjeżdżamy i realizujemy - bez ukrytych kosztów.
+            </p>
+            <div class="hidden lg:flex flex-wrap gap-3">
+              <Przycisk href="/wycena/" rozmiar="md" ikona="receipt-text">Bezpłatna wycena</Przycisk>
+              <Przycisk href="/uslugi/" wariant="secondary" rozmiar="md" ikona="dollar-sign">
+                Sprawdź cennik
+              </Przycisk>
+            </div>
+          </div>
+        </Odslon>
+        <div class="space-y-4">
+          {
+            kroki.map((krok, i) => (
+              <Odslon wariant="right" zwloka={i * 100}>
+                <div class="flex gap-5 bg-brand-card border border-brand-border/60 rounded-2xl p-5 shadow-sm shadow-black/[0.04] hover:shadow-md hover:shadow-black/[0.06] transition-shadow duration-300">
+                  <div class="shrink-0 w-11 h-11 rounded-xl bg-brand-olive/10 flex items-center justify-center">
+                    <span class="font-display text-base font-bold text-brand-sage">{krok.numer}</span>
+                  </div>
+                  <div>
+                    <h3 class="font-display text-base font-bold text-brand-text mb-1">{krok.tytul}</h3>
+                    <p class="text-sm text-brand-text-light leading-relaxed">{krok.opis}</p>
+                  </div>
+                </div>
+              </Odslon>
+            ))
+          }
+        </div>
+        <div class="lg:hidden flex flex-wrap gap-3 mt-6">
+          <Przycisk href="/wycena/" rozmiar="md" ikona="receipt-text">Bezpłatna wycena</Przycisk>
+          <Przycisk href="/uslugi/" wariant="secondary" rozmiar="md" ikona="dollar-sign">Sprawdź cennik</Przycisk>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <SekcjaFaq pytania={faq} />
+
+  <BanerCta
+    tytul="Chcesz poznać dokładną cenę?"
+    podtytul="Opisz swój projekt - wycenimy go w ciągu 24 godzin, bezpłatnie"
+  >
+    <Przycisk slot="akcja" href="/wycena/" rozmiar="lg" ikona="receipt-text">Bezpłatna wycena</Przycisk>
+  </BanerCta>
 </Podstrona>

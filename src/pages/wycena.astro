@@ -1,0 +1,544 @@
+---
+/**
+ * /wycena/ - kreator wyceny w pięciu krokach.
+ *
+ * Odpowiednik `code/src/pages/Wycena.jsx` (36 kB Reacta). Tutaj cały
+ * formularz jest w HTML, a `src/scripts/wycena.ts` chowa kroki, waliduje,
+ * zapisuje postęp w `localStorage` i składa podsumowanie.
+ *
+ * ┌── DLACZEGO MODUŁ, A NIE WYSPA REACT ────────────────────────────────┐
+ * │ Formalnie kreator przechodzi próg wyspy z README bazy (pięć kroków,  │
+ * │ walidacja krzyżowa, zapis postępu, upload). Kosztowałoby to ~69 kB   │
+ * │ gzip na tej podstronie i powrót Reacta do zależności projektu.       │
+ * │ Stan kreatora jest jednak płaski: jeden obiekt pól, jedna zależność  │
+ * │ (typ usługi → lista podtypów) i pięć widoków. Ręczne pilnowanie tego │
+ * │ broni się bez frameworka, a formularz bez JavaScriptu zostaje jedną  │
+ * │ długą, czytelną formą zamiast pustej strony.                         │
+ * └──────────────────────────────────────────────────────────────────────┘
+ *
+ * ⚠️ WYSYŁKA: backend dopiero powstanie (Worker). Do tego czasu przycisk
+ * pokazuje komunikat zastępczy z telefonem i e-mailem.
+ */
+import Podstrona from '../layouts/Podstrona.astro'
+import { typyUslug, podtypy, opcjeTerenu, opcjeTerminu, opcjeBudzetu } from '../data/wycena'
+import Okruszki from '../components/ui/Okruszki.astro'
+import EtykietaSekcji from '../components/ui/EtykietaSekcji.astro'
+import Przycisk from '../components/ui/Przycisk.astro'
+import OsCzasuProcesu from '../components/ui/OsCzasuProcesu.astro'
+import Ikona from '../components/icons/Ikona.astro'
+import Foto from '../components/media/Foto.astro'
+
+const kroki = [
+  { klucz: 'service', etykieta: 'Usługa', opis: 'Wybierz usługę' },
+  { klucz: 'details', etykieta: 'Szczegóły', opis: 'Podaj szczegóły' },
+  { klucz: 'extras', etykieta: 'Dodatkowe', opis: 'Dodatkowe info' },
+  { klucz: 'contact', etykieta: 'Dane', opis: 'Twoje dane' },
+  { klucz: 'summary', etykieta: 'Sprawdź', opis: 'Sprawdź i wyślij' },
+]
+
+const klasaPola =
+  'w-full px-4 py-3 rounded-lg border bg-white text-brand-text text-sm focus:outline-none focus:border-brand-olive focus:ring-2 focus:ring-brand-olive/10 transition-all border-brand-border'
+const klasaChipa =
+  'chip inline-flex px-5 py-2.5 rounded-full border text-sm font-medium transition-all duration-200 border-brand-border bg-brand-card text-brand-text-light hover:border-brand-olive/40 hover:text-brand-text'
+
+const wierszePodsumowania = [
+  { pole: 'usluga', etykieta: 'Usługa', krok: 0 },
+  { pole: 'wymiary', etykieta: 'Wymiary', krok: 1 },
+  { pole: 'lokalizacja', etykieta: 'Lokalizacja', krok: 1 },
+  { pole: 'teren', etykieta: 'Teren', krok: 2 },
+  { pole: 'termin', etykieta: 'Termin', krok: 2 },
+  { pole: 'budzet', etykieta: 'Budżet', krok: 2 },
+  { pole: 'opis', etykieta: 'Opis', krok: 2 },
+  { pole: 'zdjecia', etykieta: 'Zdjęcia', krok: 2 },
+  { pole: 'kontakt', etykieta: 'Kontakt', krok: 3 },
+]
+---
+
+<Podstrona
+  tytul="Bezpłatna wycena w 24h - BramBruk | Biała Podlaska i okolice"
+  opis="Opisz swój projekt i otrzymaj bezpłatną wycenę w ciągu 24 godzin. Ogrodzenia, bramy, brukarstwo - Biała Podlaska i okolice. Bez zobowiązań."
+>
+  <Okruszki pozycje={[{ etykieta: 'Strona główna', sciezka: '/' }, { etykieta: 'Wycena' }]} />
+
+  {/* ═══ PODZIĘKOWANIE - odsłania je skrypt po udanej wysyłce ═══ */}
+  <div data-wycena-sukces hidden>
+    <section class="bg-brand-section py-4 lg:py-10">
+      <div class="max-w-2xl mx-auto px-5 lg:px-10">
+        <div class="bg-brand-card border border-brand-border rounded-2xl p-5 lg:p-8 text-center">
+          <div
+            class="w-10 h-10 rounded-xl bg-brand-olive/10 flex items-center justify-center text-brand-olive mx-auto mb-3"
+          >
+            <Ikona nazwa="check-circle-2" rozmiar={20} />
+          </div>
+          <h2 class="font-display text-xl lg:text-2xl font-bold text-brand-text">Dziękujemy za zapytanie!</h2>
+          <p class="mt-2 text-sm text-brand-text-light">
+            Nic nie musisz robić - odpiszemy na e-mail w ciągu
+            <strong class="text-brand-text font-semibold">24 godzin</strong>.
+          </p>
+          <OsCzasuProcesu aktywny="2" etykieta="Co dalej" kompakt />
+          <div class="flex flex-wrap justify-center gap-3">
+            <Przycisk href="/" wariant="secondary" ikona="home">Strona główna</Przycisk>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <div data-wycena>
+    <section class="relative bg-brand-dark overflow-hidden">
+      <div class="absolute inset-0">
+        <Foto klucz="hero.ogrodzenia" alt="" class="w-full h-full object-cover opacity-15" />
+        <div class="absolute inset-0 bg-gradient-to-b from-brand-dark via-brand-dark/95 to-brand-dark"></div>
+      </div>
+      <div class="relative max-w-7xl mx-auto px-5 lg:px-10 py-10 lg:py-14 text-center">
+        <EtykietaSekcji class="mb-3">Bezpłatna wycena</EtykietaSekcji>
+        <h1 class="font-display text-3xl lg:text-[42px] font-bold text-white leading-tight mb-3">
+          Bezpłatna wycena w 24h
+        </h1>
+        <p class="text-neutral-400 max-w-lg mx-auto">
+          Opisz swój projekt - bez zobowiązań. Odpowiedź zwykle w ciągu jednego dnia roboczego.
+        </p>
+
+        {/* Wskaźnik kroków - stany aktualizuje skrypt. */}
+        <div class="mt-8 max-w-2xl mx-auto">
+          <div class="flex items-start justify-between gap-1" data-wskaznik>
+            {
+              kroki.map((krok, i) => (
+                <div class="flex items-center flex-1 last:flex-initial">
+                  <button
+                    type="button"
+                    class="flex flex-col items-center group"
+                    data-wskaznik-krok={i}
+                    disabled={i > 0}
+                  >
+                    <span
+                      class="wskaznik-kolko w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold border-2 transition-all duration-250"
+                    >
+                      <span data-wskaznik-numer>{i + 1}</span>
+                      <Ikona nazwa="check" rozmiar={16} class="wskaznik-ptaszek" />
+                    </span>
+                    <span class="wskaznik-etykieta mt-1.5 text-[10px] font-semibold tracking-wide hidden sm:block leading-tight text-center max-w-[64px]">
+                      {krok.etykieta}
+                    </span>
+                    <span class="wskaznik-opis mt-0.5 text-[9px] hidden lg:block text-center max-w-[80px] leading-tight">
+                      {krok.opis}
+                    </span>
+                  </button>
+                  {i < kroki.length - 1 && (
+                    <div class="flex-1 mx-2 mt-[-14px]">
+                      <div class="wskaznik-kreska h-0.5 rounded-full transition-colors duration-300"></div>
+                    </div>
+                  )}
+                </div>
+              ))
+            }
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="bg-brand-bg py-10 lg:py-14 scroll-mt-[72px]" data-wycena-formularz>
+      <div class="max-w-4xl mx-auto px-5 lg:px-10">
+        <form
+          class="bg-brand-card rounded-2xl border border-brand-border/60 shadow-sm shadow-black/[0.04] p-6 lg:p-8"
+          novalidate
+          data-formularz="wycena"
+        >
+          <p class="text-xs text-brand-text-light mb-1">
+            Krok <span data-wycena-numer>1</span> z {kroki.length}
+          </p>
+          <p class="text-xs font-semibold text-brand-sage mb-6" data-wycena-etykieta>{kroki[0].etykieta}</p>
+
+          {/* ═══ KROK 1 - typ usługi ═══════════════════════ */}
+          <div data-krok="0">
+            <h2 class="font-display text-2xl lg:text-3xl font-bold text-brand-text">Wybierz typ usługi</h2>
+            <p class="mt-2 text-sm text-brand-text-light" data-krok0-opis>
+              Kliknij kartę odpowiadającą Twojemu projektowi.
+            </p>
+            <div class="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-4">
+              {
+                typyUslug.map((typ) => (
+                  <div>
+                    <input
+                      type="radio"
+                      name="serviceType"
+                      id={`typ-${typ.klucz}`}
+                      value={typ.klucz}
+                      class="poza-ekranem karta-pole"
+                      data-pole="serviceType"
+                    />
+                    <label
+                      for={`typ-${typ.klucz}`}
+                      class="karta-wyboru flex flex-col text-left rounded-2xl border-2 overflow-hidden transition-all duration-300 justify-start border-brand-border/60 hover:border-brand-olive/40"
+                    >
+                      <span class="relative block aspect-[16/8] overflow-hidden">
+                        <Foto klucz={typ.foto} alt={typ.etykieta} class="w-full h-full object-cover" />
+                        <span class="karta-przeslona absolute inset-0 bg-brand-olive/15"></span>
+                        <span
+                          class="karta-ikona absolute top-3 right-3 w-9 h-9 rounded-xl flex items-center justify-center transition-colors bg-white/80 text-brand-olive"
+                        >
+                          <Ikona nazwa={typ.ikona as 'shield'} rozmiar={18} />
+                        </span>
+                      </span>
+                      <span class="block p-4 bg-brand-card">
+                        <span class="block text-sm font-bold text-brand-text">{typ.etykieta}</span>
+                        <span class="block mt-1 text-xs text-brand-text-light leading-relaxed">{typ.opis}</span>
+                      </span>
+                    </label>
+                  </div>
+                ))
+              }
+            </div>
+          </div>
+
+          {/* ═══ KROK 2 - szczegóły ════════════════════════ */}
+          <div data-krok="1" class="space-y-8">
+            <div>
+              <h2 class="font-display text-2xl lg:text-3xl font-bold text-brand-text">Szczegóły projektu</h2>
+              <p class="mt-2 text-sm text-brand-text-light">Wybierz rodzaj i podaj orientacyjne wymiary.</p>
+              <div class="mt-6">
+                <span class="block text-xs font-semibold text-brand-text mb-3">Rodzaj</span>
+                {
+                  Object.entries(podtypy).map(([typ, lista]) => (
+                    <div class="flex flex-wrap gap-2" data-podtypy={typ} hidden>
+                      {lista.map((podtyp) => (
+                        <span>
+                          <input
+                            type="radio"
+                            name="subtype"
+                            id={`podtyp-${podtyp.klucz}`}
+                            value={podtyp.klucz}
+                            class="poza-ekranem chip-pole"
+                            data-pole="subtype"
+                          />
+                          <label for={`podtyp-${podtyp.klucz}`} class={klasaChipa}>{podtyp.etykieta}</label>
+                        </span>
+                      ))}
+                    </div>
+                  ))
+                }
+              </div>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs font-semibold text-brand-text mb-2" for="pole-wymiary">
+                  Orientacyjne wymiary
+                </label>
+                <div class="flex">
+                  <input
+                    id="pole-wymiary"
+                    name="amount"
+                    inputmode="decimal"
+                    data-pole="amount"
+                    data-limit="50"
+                    placeholder="np. 40"
+                    class={`${klasaPola} flex-1 rounded-r-none`}
+                  />
+                  <span
+                    class="px-4 py-3 rounded-r-lg bg-brand-section border border-l-0 border-brand-border text-sm text-brand-text-light font-medium"
+                    data-jednostka>mb</span>
+                </div>
+                <p class="mt-1 text-xs text-red-500" data-blad="amount" hidden></p>
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-brand-text mb-2" for="pole-lokalizacja">
+                  Miejscowość
+                </label>
+                <input
+                  id="pole-lokalizacja"
+                  name="location"
+                  data-pole="location"
+                  data-limit="100"
+                  placeholder="np. Biała Podlaska"
+                  class={klasaPola}
+                />
+                <p class="mt-1 text-xs text-red-500" data-blad="location" hidden></p>
+              </div>
+            </div>
+          </div>
+
+          {/* ═══ KROK 3 - dodatkowe ════════════════════════ */}
+          <div data-krok="2" class="space-y-8">
+            <div>
+              <h2 class="font-display text-2xl lg:text-3xl font-bold text-brand-text">Dodatkowe informacje</h2>
+              <p class="mt-2 text-sm text-brand-text-light">
+                Im więcej szczegółów, tym dokładniejsza wycena. Wszystkie pola opcjonalne.
+              </p>
+            </div>
+            <div>
+              <span class="block text-xs font-semibold text-brand-text mb-3">Utrudnienia terenu</span>
+              <div class="flex flex-wrap gap-2">
+                {
+                  opcjeTerenu.map((opcja) => (
+                    <span>
+                      <input
+                        type="checkbox"
+                        name="terrain"
+                        id={`teren-${opcja.klucz}`}
+                        value={opcja.klucz}
+                        class="poza-ekranem chip-pole"
+                        data-pole="terrain"
+                      />
+                      <label for={`teren-${opcja.klucz}`} class={klasaChipa}>{opcja.etykieta}</label>
+                    </span>
+                  ))
+                }
+              </div>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs font-semibold text-brand-text mb-2" for="pole-termin">
+                  Planowany termin realizacji
+                </label>
+                <select id="pole-termin" name="timeline" data-pole="timeline" class={klasaPola}>
+                  {opcjeTerminu.map((opcja) => <option value={opcja.klucz}>{opcja.etykieta}</option>)}
+                </select>
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-brand-text mb-2" for="pole-budzet">
+                  Orientacyjny budżet
+                </label>
+                <select id="pole-budzet" name="budget" data-pole="budget" class={klasaPola}>
+                  {
+                    opcjeBudzetu.map((opcja) => (
+                      <option value={opcja.klucz} selected={opcja.klucz === 'unknown'}>
+                        {opcja.etykieta}
+                      </option>
+                    ))
+                  }
+                </select>
+              </div>
+            </div>
+
+            <div>
+              <div class="flex items-baseline justify-between mb-2">
+                <label class="text-xs font-semibold text-brand-text" for="pole-opis">Dodatkowe informacje</label>
+                <span class="text-xs tabular-nums text-brand-text-light" data-licznik="description">
+                  0&nbsp;/&nbsp;2 000
+                </span>
+              </div>
+              <textarea
+                id="pole-opis"
+                name="description"
+                rows="4"
+                data-pole="description"
+                data-limit="2000"
+                placeholder="Opisz szczegóły, które nie zostały jeszcze uwzględnione - np. kolor ogrodzenia, materiał, planowane elementy dodatkowe (oświetlenie, przęsła ozdobne, rodzaj słupków), dostępność placu budowy..."
+                class={`${klasaPola} resize-none`}></textarea>
+              <p class="mt-1 text-xs text-red-500" data-blad="description" hidden></p>
+            </div>
+
+            {/* --- zdjęcia --- */}
+            <div>
+              <div
+                class="rounded-xl border-2 border-dashed p-5 transition-colors border-brand-border bg-brand-section/50 hover:border-brand-olive/30"
+                data-upload
+              >
+                <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+                  <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl flex items-center justify-center bg-brand-olive/10 text-brand-olive">
+                      <Ikona nazwa="upload" rozmiar={18} />
+                    </div>
+                    <div>
+                      <p class="text-sm font-medium text-brand-text">Dodaj zdjęcia</p>
+                      <p class="text-xs text-brand-text-light">
+                        Opcjonalnie - przyspiesza wycenę · max 2 plików, do 4 MB każdy
+                      </p>
+                    </div>
+                  </div>
+
+                  <label
+                    for="pole-zdjecia"
+                    class="px-5 py-2.5 rounded-full font-semibold text-sm transition-colors bg-brand-olive text-brand-dark hover:bg-brand-olive-dark cursor-pointer"
+                    data-upload-przycisk
+                  >
+                    Wybierz pliki
+                  </label>
+                  <input
+                    id="pole-zdjecia"
+                    type="file"
+                    name="photos"
+                    accept=".jpg,.jpeg,.png,.webp"
+                    multiple
+                    class="poza-ekranem"
+                    data-upload-pole
+                  />
+                </div>
+              </div>
+
+              <div class="mt-2 space-y-1" data-upload-odrzucone></div>
+              <div class="mt-3 flex flex-wrap gap-2" data-upload-lista></div>
+            </div>
+          </div>
+
+          {/* ═══ KROK 4 - dane kontaktowe ══════════════════ */}
+          <div data-krok="3">
+            <h2 class="font-display text-2xl lg:text-3xl font-bold text-brand-text">Dane kontaktowe</h2>
+            <p class="mt-2 text-sm text-brand-text-light">
+              Odpowiedź odeślemy na e-mail. Telefon opcjonalny - przyspiesza kontakt.
+            </p>
+            <div class="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs font-semibold text-brand-text mb-2" for="pole-imie">
+                  Imię <span class="text-red-400">*</span>
+                </label>
+                <input
+                  id="pole-imie"
+                  name="name"
+                  data-pole="name"
+                  data-limit="100"
+                  required
+                  placeholder="Twoje imię"
+                  class={klasaPola}
+                />
+                <p class="mt-1 text-xs text-red-500" data-blad="name" hidden></p>
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-brand-text mb-2" for="pole-email">
+                  E-mail <span class="text-red-400">*</span>
+                </label>
+                <input
+                  id="pole-email"
+                  type="email"
+                  name="email"
+                  data-pole="email"
+                  data-limit="200"
+                  required
+                  placeholder="np. jan@domena.pl"
+                  class={klasaPola}
+                />
+                <p class="mt-1 text-xs text-red-500" data-blad="email" hidden></p>
+              </div>
+              <div class="sm:col-span-2">
+                <label class="block text-xs font-semibold text-brand-text mb-2" for="pole-telefon">
+                  Telefon <span class="text-brand-text-light text-xs">(opcjonalnie)</span>
+                </label>
+                <input
+                  id="pole-telefon"
+                  type="tel"
+                  name="phone"
+                  data-pole="phone"
+                  data-limit="12"
+                  placeholder="+48 xxx xxx xxx"
+                  class={klasaPola}
+                />
+                <p class="mt-1 text-xs text-red-500" data-blad="phone" hidden></p>
+                <p class="mt-1 text-xs text-brand-text-light" data-podpowiedz="phone">
+                  Podanie numeru przyspiesza odpowiedź - oddzwonimy w ciągu 24h.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* ═══ KROK 5 - podsumowanie ═════════════════════ */}
+          <div data-krok="4">
+            <h2 class="font-display text-2xl lg:text-3xl font-bold text-brand-text">Podsumowanie</h2>
+            <p class="mt-2 text-sm text-brand-text-light">
+              Sprawdź dane przed wysłaniem. Kliknij wiersz, aby edytować.
+            </p>
+            <div class="mt-8 bg-brand-card border border-brand-border rounded-2xl overflow-hidden">
+              <div class="px-5 py-3 bg-brand-section border-b border-brand-border">
+                <span class="text-[10px] tracking-widest font-semibold text-brand-sage uppercase">
+                  Karta projektu
+                </span>
+              </div>
+              {
+                wierszePodsumowania.map((wiersz) => (
+                  <button
+                    type="button"
+                    data-podsumowanie-wiersz={wiersz.pole}
+                    data-krok-docelowy={wiersz.krok}
+                    class="w-full flex items-center justify-between gap-4 px-5 py-4 border-t border-brand-border text-left hover:bg-brand-section/50 transition-colors group"
+                  >
+                    <span class="min-w-0">
+                      <span class="block text-[10px] tracking-widest font-semibold text-brand-text-light uppercase">
+                        {wiersz.etykieta}
+                      </span>
+                      <span class="block mt-0.5 text-sm text-brand-text truncate" data-podsumowanie-wartosc>
+                        -
+                      </span>
+                    </span>
+                    <Ikona
+                      nazwa="chevron-right"
+                      rozmiar={16}
+                      class="text-brand-text-light shrink-0 group-hover:text-brand-olive transition-colors"
+                    />
+                  </button>
+                ))
+              }
+            </div>
+          </div>
+
+          {/* Pułapka na boty. */}
+          <input type="text" name="_hp" tabindex="-1" autocomplete="off" class="poza-ekranem" aria-hidden="true" />
+
+          <div
+            class="mt-6 flex items-start gap-3 px-4 py-3 rounded-xl bg-red-50 border border-red-200"
+            data-formularz-blad
+            role="alert"
+            hidden
+          >
+            <Ikona nazwa="alert-triangle" rozmiar={18} class="text-red-500 shrink-0 mt-0.5" />
+            <p class="text-sm text-red-700" data-formularz-blad-tekst></p>
+          </div>
+
+          <p class="mt-6 text-xs text-brand-text-light" data-wycena-rodo hidden>
+            Wysyłając formularz akceptujesz
+            <a href="/polityka-prywatnosci/" class="text-brand-olive underline hover:text-brand-olive-dark">
+              Politykę Prywatności
+            </a>.
+          </p>
+
+          <div class="mt-4 px-4 py-3 rounded-xl bg-red-50 border border-red-200" data-formularz-podsumowanie hidden>
+            <div class="flex items-start gap-3">
+              <Ikona nazwa="alert-triangle" rozmiar={18} class="text-red-500 shrink-0 mt-0.5" />
+              <div class="flex-1 min-w-0">
+                <p class="text-sm font-semibold text-red-700" data-podsumowanie-tytul></p>
+                <ul class="mt-1.5 space-y-0.5" data-podsumowanie-lista></ul>
+              </div>
+              <button
+                type="button"
+                data-podsumowanie-zamknij
+                class="text-red-400 hover:text-red-600 transition-colors p-1 -mr-1 -mt-1"
+              >
+                <span class="poza-ekranem">Zamknij</span>
+                <Ikona nazwa="x" rozmiar={14} />
+              </button>
+            </div>
+          </div>
+
+          <div class="mt-8 flex flex-row justify-between border-t border-brand-border pt-6">
+            <button
+              type="button"
+              data-wycena-wstecz
+              class="inline-flex items-center gap-1 px-5 py-3 rounded-full border text-sm font-semibold transition-all border-brand-border text-brand-text-light/50 cursor-not-allowed"
+              disabled
+            >
+              <Ikona nazwa="arrow-left" rozmiar={16} />
+              Wstecz
+            </button>
+
+            <button
+              type="button"
+              data-wycena-dalej
+              class="inline-flex items-center gap-1 px-6 py-3 rounded-full text-sm font-semibold transition-all bg-brand-olive text-brand-dark hover:bg-brand-olive-dark hover:shadow-lg hover:shadow-brand-olive/20"
+            >
+              Dalej
+              <Ikona nazwa="arrow-right" rozmiar={16} />
+            </button>
+
+            <button
+              type="button"
+              data-wycena-wyslij
+              class="flex items-center gap-1 px-6 py-3 rounded-full text-sm font-semibold transition-all bg-brand-olive text-brand-dark hover:bg-brand-olive-dark hover:shadow-lg hover:shadow-brand-olive/20"
+              hidden
+            >
+              Poproś o wycenę
+              <Ikona nazwa="send" rozmiar={16} />
+            </button>
+          </div>
+        </form>
+      </div>
+    </section>
+  </div>
+</Podstrona>

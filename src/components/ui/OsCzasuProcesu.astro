@@ -1,0 +1,111 @@
+---
+/**
+ * PROCES REALIZACJI - odpowiednik `ProcessTimeline.jsx`.
+ * W serwisie używany tylko w wariancie `kompakt` (podziękowanie po wysłaniu
+ * wyceny), ale pełny wariant zostaje - był w starym projekcie i jest gotowy
+ * do wstawienia na podstronę.
+ */
+import EtykietaSekcji from './EtykietaSekcji.astro'
+import Ikona from '../icons/Ikona.astro'
+
+interface Props {
+  aktywny?: string
+  etykieta?: string
+  tytul?: string
+  kompakt?: boolean
+}
+const {
+  aktywny = '1',
+  etykieta = 'Jak pracujemy',
+  tytul = 'Proces realizacji w 4 krokach',
+  kompakt = false,
+} = Astro.props
+
+const kroki = [
+  { numer: '1', tytul: 'Kontakt', opis: 'Opisz swój projekt' },
+  { numer: '2', tytul: 'Wycena', opis: 'Bezpłatna wycena 24h' },
+  { numer: '3', tytul: 'Realizacja', opis: 'Terminowa realizacja' },
+  { numer: '4', tytul: 'Odbiór', opis: 'Gwarancja jakości' },
+]
+
+const numerAktywny = parseInt(aktywny)
+---
+
+<section class={kompakt ? 'py-5' : 'bg-brand-section py-16 lg:py-20'}>
+  <div class={kompakt ? '' : 'max-w-7xl mx-auto px-5 lg:px-10'}>
+    {
+      !kompakt && (
+        <div class="mb-12 text-center lg:text-left">
+          <EtykietaSekcji>{etykieta}</EtykietaSekcji>
+          <h2 class="font-display text-2xl lg:text-3xl font-bold text-brand-text mt-2">{tytul}</h2>
+        </div>
+      )
+    }
+
+    <div class={kompakt ? 'grid grid-cols-4 gap-2' : 'grid grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-4'}>
+      {
+        kroki.map((krok, i) => {
+          const numer = parseInt(krok.numer)
+          const zrobiony = numer < numerAktywny
+          const aktywnyKrok = krok.numer === aktywny
+          const przyszly = numer > numerAktywny
+
+          return (
+            <div class="flex flex-col items-center text-center relative group">
+              {!kompakt && i < kroki.length - 1 && (
+                <div
+                  class:list={[
+                    'hidden lg:block absolute top-9 left-[60%] w-[80%] h-[2px] border-t-2 border-dashed',
+                    zrobiony ? 'border-brand-olive/40' : 'border-brand-border',
+                  ]}
+                />
+              )}
+
+              <div class:list={['relative', kompakt ? 'mb-2' : 'mb-5']}>
+                {aktywnyKrok && (
+                  <div
+                    class:list={[
+                      'absolute inset-0 rounded-full border-2 border-brand-olive/30 animate-pulse-ring',
+                      kompakt ? '-m-2' : '-m-3',
+                    ]}
+                  />
+                )}
+                <div
+                  class:list={[
+                    'flex items-center justify-center font-display font-bold rounded-full transition-transform duration-300',
+                    kompakt ? 'w-10 h-10 text-sm' : 'w-[70px] h-[70px] text-2xl group-hover:scale-110',
+                    aktywnyKrok
+                      ? 'bg-brand-olive text-brand-dark shadow-lg shadow-brand-olive/20'
+                      : zrobiony
+                        ? 'bg-brand-olive/15 text-brand-olive border-2 border-brand-olive/30'
+                        : 'bg-brand-card border-2 border-brand-border text-brand-text-light',
+                  ]}
+                >
+                  {zrobiony ? <Ikona nazwa="check" rozmiar={kompakt ? 15 : 22} grubosc={2.5} /> : <span>{krok.numer}</span>}
+                </div>
+              </div>
+
+              <h3
+                class:list={[
+                  'font-display font-bold leading-tight',
+                  kompakt ? 'text-[11px]' : 'text-lg mb-1',
+                  aktywnyKrok ? 'text-brand-text' : zrobiony ? 'text-brand-olive' : 'text-brand-text-light',
+                ]}
+              >
+                {krok.tytul}
+              </h3>
+
+              {kompakt && aktywnyKrok && (
+                <span class="mt-0.5 text-[9px] text-brand-olive font-medium animate-pulse">W toku...</span>
+              )}
+
+              {!kompakt && (
+                <p class:list={['text-sm text-brand-text-light', przyszly && 'opacity-50']}>{krok.opis}</p>
+              )}
+            </div>
+          )
+        })
+      }
+    </div>
+  </div>
+</section>

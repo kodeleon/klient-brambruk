@@ -1,0 +1,183 @@
+---
+/**
+ * SZABLON HUBA KATEGORII - odpowiednik komponentu `ServiceHub.jsx`.
+ *
+ * Trzy podstrony (/ogrodzenia/, /brukarstwo/, /budownictwo/) dzielą ten
+ * układ i różnią się wyłącznie danymi z `src/data/huby.ts`.
+ */
+import Podstrona from '../../layouts/Podstrona.astro'
+import { huby } from '../../data/huby'
+import { cennikHubow } from '../../data/cennik'
+import Okruszki from '../ui/Okruszki.astro'
+import EtykietaSekcji from '../ui/EtykietaSekcji.astro'
+import Przycisk from '../ui/Przycisk.astro'
+import Odslon from '../ui/Odslon.astro'
+import KartaUslugi from '../ui/KartaUslugi.astro'
+import SekcjaFaq from '../ui/SekcjaFaq.astro'
+import GaleriaSiatka from '../ui/GaleriaSiatka.astro'
+import GaleriaKaruzela from '../ui/GaleriaKaruzela.astro'
+import Ikona from '../icons/Ikona.astro'
+import Foto from '../media/Foto.astro'
+
+interface Props {
+  klucz: keyof typeof huby
+  tytul: string
+  opis: string
+}
+const { klucz, tytul, opis } = Astro.props
+
+const dane = huby[klucz]
+const cennik = cennikHubow[klucz]
+if (!dane) throw new Error(`SzablonHubu: nie ma huba "${klucz}" w src/data/huby.ts`)
+if (!cennik) throw new Error(`SzablonHubu: nie ma cennika huba "${klucz}" w src/data/cennik.ts`)
+---
+
+<Podstrona tytul={tytul} opis={opis}>
+  <Okruszki pozycje={[{ etykieta: 'Strona główna', sciezka: '/' }, { etykieta: dane.okruszek }]} />
+
+  {/* ═══ SEKCJA GŁÓWNA ═══════════════════════════════════ */}
+  <section class="relative bg-brand-dark overflow-hidden">
+    <div class="absolute inset-0">
+      <Foto klucz={dane.fotoHero} alt="" class="w-full h-full object-cover opacity-20" />
+      <div class="absolute inset-0 bg-gradient-to-r from-brand-dark via-brand-dark/90 to-brand-dark/60"></div>
+    </div>
+
+    <div class="relative max-w-7xl mx-auto px-5 lg:px-10 py-16 lg:py-24">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
+        <div>
+          <EtykietaSekcji class="mb-3">{dane.etykieta}</EtykietaSekcji>
+          <h1 class="font-display text-3xl lg:text-[42px] font-bold text-white leading-tight mb-2">
+            {dane.tytulHero[0]}
+          </h1>
+          <p class="font-display text-3xl lg:text-[42px] font-bold text-brand-olive leading-tight mb-6">
+            {dane.tytulHero[1]}
+          </p>
+          <p class="text-neutral-400 leading-relaxed max-w-lg mb-8">{dane.opisHero}</p>
+          <div class="flex flex-wrap gap-4">
+            <Przycisk href="/wycena/" rozmiar="lg" ikona="receipt-text">Bezpłatna wycena</Przycisk>
+            <Przycisk href="/uslugi/" wariant="secondary" rozmiar="lg">Sprawdź inne usługi</Przycisk>
+          </div>
+        </div>
+        <div class="hidden lg:block">
+          <Foto klucz={dane.fotoHero} alt={dane.tytulHero.join(' ')} class="w-full h-[340px] object-cover rounded-2xl" />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {/* ═══ KARTY USŁUG ═════════════════════════════════════ */}
+  <section class="bg-brand-section py-16 lg:py-24">
+    <div class="max-w-7xl mx-auto px-5 lg:px-10">
+      <div class="mb-6">
+        <EtykietaSekcji>{dane.etykietaSekcji}</EtykietaSekcji>
+        <h2 class="font-display text-2xl lg:text-4xl font-bold text-brand-text mt-2">{dane.tytulSekcji}</h2>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {
+          dane.uslugi.map((usluga, i) => (
+            <Odslon wariant="up" zwloka={i * 60}>
+              <KartaUslugi tytul={usluga.tytul} opis={usluga.opis} foto={usluga.foto} href={usluga.href} />
+            </Odslon>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  {/* ═══ TREŚĆ (SEO) ═════════════════════════════════════ */}
+  <section class="bg-brand-bg py-14 lg:py-20">
+    <div class="max-w-7xl mx-auto px-5 lg:px-10">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
+        <div class="space-y-8">
+          <div>
+            <h2 class="font-display text-xl lg:text-2xl font-bold text-brand-text mb-4">{dane.tresc.tytul}</h2>
+            <p class="text-brand-text-light leading-relaxed">{dane.tresc.tekst}</p>
+          </div>
+          <div>
+            <h3 class="font-display text-lg font-bold text-brand-text mb-3">{dane.tresc.podtytul}</h3>
+            <p class="text-brand-text-light leading-relaxed">{dane.tresc.podtekst}</p>
+          </div>
+        </div>
+        <div>
+          <Foto
+            klucz={dane.tresc.fotoObok}
+            alt={dane.tresc.fotoObokAlt}
+            class="w-full h-[380px] object-cover rounded-xl"
+          />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {/* ═══ CENNIK ══════════════════════════════════════════ */}
+  <section class="bg-brand-section py-14 lg:py-16">
+    <div class="max-w-4xl mx-auto px-5 lg:px-10">
+      <div class="mb-6">
+        <EtykietaSekcji>Orientacyjne ceny</EtykietaSekcji>
+        <h2 class="font-display text-xl lg:text-2xl font-bold text-brand-text mt-2">{cennik.tytul}</h2>
+      </div>
+
+      <div class="bg-brand-card rounded-xl border border-brand-border overflow-hidden">
+        {
+          cennik.pozycje.map((wiersz, i) => (
+            <div
+              class:list={[
+                'flex items-center justify-between px-6 py-4',
+                i !== cennik.pozycje.length - 1 && 'border-b border-brand-border',
+                i % 2 === 0 ? 'bg-brand-card' : 'bg-brand-section',
+              ]}
+            >
+              <span class="text-sm text-brand-text">{wiersz.usluga}</span>
+              <span class="text-sm font-semibold text-brand-olive whitespace-nowrap ml-4">{wiersz.cena}</span>
+            </div>
+          ))
+        }
+      </div>
+
+      <p class="text-xs text-brand-text-light mt-4">
+        Ceny orientacyjne - dokładna wycena po bezpłatnej konsultacji. Aktualne na 2026 r.
+      </p>
+
+      <div class="flex flex-wrap gap-4 mt-6 justify-center">
+        <Przycisk href="/wycena/" rozmiar="md" ikona="receipt-text">Bezpłatna wycena</Przycisk>
+        <Przycisk href="/uslugi/" wariant="secondary" rozmiar="md" ikona="dollar-sign">Pełny cennik</Przycisk>
+      </div>
+    </div>
+  </section>
+
+  {/* ═══ REALIZACJE ══════════════════════════════════════ */}
+  <section class="bg-brand-bg py-14 pb-6 lg:py-20 lg:pb-12">
+    <div class="max-w-7xl mx-auto px-5 lg:px-10">
+      <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between mb-6">
+        <div>
+          <EtykietaSekcji>Realizacje</EtykietaSekcji>
+          <h2 class="font-display text-xl lg:text-2xl font-bold text-brand-text mt-2">{dane.tytulGalerii}</h2>
+        </div>
+        <a
+          href="/realizacje/"
+          class="hidden lg:inline-flex items-center gap-2 text-brand-sage font-semibold text-sm hover:gap-3 transition-all"
+        >
+          Zobacz wszystkie realizacje
+          <Ikona nazwa="arrow-right" rozmiar={16} />
+        </a>
+      </div>
+
+      <GaleriaSiatka pozycje={dane.galeria} class="hidden lg:grid" />
+      <GaleriaKaruzela pozycje={dane.galeria} class="lg:hidden" />
+
+      <div class="mt-6 flex justify-center lg:hidden">
+        <a
+          href="/realizacje/"
+          class="inline-flex items-center gap-2 text-brand-sage font-semibold text-sm hover:gap-3 transition-all"
+        >
+          <Ikona nazwa="images" rozmiar={16} />
+          Zobacz wszystkie realizacje
+          <Ikona nazwa="arrow-right" rozmiar={16} />
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <SekcjaFaq etykieta={dane.etykietaFaq} tytul={dane.tytulFaq} pytania={dane.faq} />
+</Podstrona>

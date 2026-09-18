@@ -1,0 +1,16 @@
+---
+/**
+ * ETYKIETA SEKCJI - odpowiednik `SectionLabel.jsx`.
+ *
+ * Nadtytuł nad nagłówkiem. Jest `<span>`, nie nagłówkiem, i tak ma zostać:
+ * hierarchia nagłówków to struktura dokumentu, nie styl.
+ */
+interface Props {
+  class?: string
+}
+const { class: klasa = '' } = Astro.props
+---
+
+<span class:list={['inline-block text-[11px] font-bold tracking-[3px] uppercase text-brand-sage', klasa]}>
+  <slot />
+</span>

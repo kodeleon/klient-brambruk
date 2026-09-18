@@ -1,0 +1,235 @@
+---
+/**
+ * SZABLON PODSTRONY USŁUGI - odpowiednik komponentu `ServicePage.jsx`.
+ *
+ * Dziewięć podstron dzieli ten układ i różni się wyłącznie danymi
+ * z `src/data/uslugi.ts`. Podstrona w `src/pages/` podaje klucz oraz
+ * tytuł i opis dla wyszukiwarki - i nic poza tym.
+ */
+import Podstrona from '../../layouts/Podstrona.astro'
+import { uslugi } from '../../data/uslugi'
+import { cennikUslug } from '../../data/cennik'
+import Okruszki from '../ui/Okruszki.astro'
+import EtykietaSekcji from '../ui/EtykietaSekcji.astro'
+import Przycisk from '../ui/Przycisk.astro'
+import Odslon from '../ui/Odslon.astro'
+import SekcjaFaq from '../ui/SekcjaFaq.astro'
+import GaleriaSiatka from '../ui/GaleriaSiatka.astro'
+import GaleriaKaruzela from '../ui/GaleriaKaruzela.astro'
+import Ikona from '../icons/Ikona.astro'
+import Foto from '../media/Foto.astro'
+
+interface Props {
+  klucz: keyof typeof uslugi
+  tytul: string
+  opis: string
+}
+const { klucz, tytul, opis } = Astro.props
+
+const dane = uslugi[klucz]
+const cennik = cennikUslug[klucz as keyof typeof cennikUslug]
+if (!dane) throw new Error(`SzablonUslugi: nie ma usługi "${klucz}" w src/data/uslugi.ts`)
+if (!cennik) throw new Error(`SzablonUslugi: nie ma cennika dla usługi "${klucz}" w src/data/cennik.ts`)
+
+/**
+ * Kadrowanie zdjęcia w sekcji głównej. Wartości z `pozycjaFoto` muszą stać
+ * tutaj DOSŁOWNIE - Tailwind generuje klasę tylko wtedy, gdy zobaczy ją
+ * w kodzie. Klasa zamiast atrybutu `style`, bo CSP nie przepuszcza stylów
+ * w znaczniku.
+ */
+const POZYCJE: Record<string, string> = {
+  '0 40%': 'object-[0_40%]',
+  '0% 0%': 'object-[0%_0%]',
+  '0% 75%': 'object-[0%_75%]',
+}
+const pozycjaFoto = 'pozycjaFoto' in dane ? POZYCJE[(dane as { pozycjaFoto: string }).pozycjaFoto] : undefined
+
+const okruszki = [
+  { etykieta: 'Strona główna', sciezka: '/' },
+  ...(dane.okruszekNadrzedny ? [{ etykieta: dane.okruszekNadrzedny.etykieta, sciezka: dane.okruszekNadrzedny.href }] : []),
+  { etykieta: dane.okruszek },
+]
+
+const tytulGalerii = `Nasze ${dane.nazwaMnoga}`
+---
+
+<Podstrona tytul={tytul} opis={opis}>
+  <Okruszki pozycje={okruszki} />
+
+  {/* ═══ SEKCJA GŁÓWNA ═══════════════════════════════════ */}
+  <section class="bg-brand-section py-12 lg:py-20">
+    <div class="max-w-7xl mx-auto px-5 lg:px-10">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 items-center">
+        <Odslon wariant="left">
+          <div>
+            <EtykietaSekcji class="mb-3">{dane.etykieta}</EtykietaSekcji>
+            <h1 class="font-display text-3xl lg:text-[40px] font-bold text-brand-text leading-tight mb-2">
+              {dane.tytul}
+            </h1>
+            <p class="font-display text-lg font-semibold text-brand-olive mb-6">{dane.podtytul}</p>
+            <p class="text-brand-text-light leading-relaxed max-w-lg mb-8">{dane.wstep}</p>
+            <div class="flex flex-wrap gap-2">
+              <Przycisk href="/wycena/" rozmiar="md" ikona="receipt-text" class=" px-2 sm:px-6">
+                Zapytaj o wycenę
+              </Przycisk>
+              <Przycisk href="#sekcja-cennik" wariant="secondary" rozmiar="md" ikona="dollar-sign">
+                Cennik usługi
+              </Przycisk>
+            </div>
+          </div>
+        </Odslon>
+        <Odslon wariant="right">
+          <div class="rounded-2xl overflow-hidden">
+            <Foto
+              klucz={dane.fotoHero}
+              alt={dane.tytul}
+              class:list={['w-full h-[280px] lg:h-[380px] object-cover', pozycjaFoto]}
+            />
+          </div>
+        </Odslon>
+      </div>
+    </div>
+  </section>
+
+  {/* ═══ PARAMETRY ═══════════════════════════════════════ */}
+  <section class="bg-brand-bg py-10 lg:py-16">
+    <div class="max-w-7xl mx-auto px-5 lg:px-10">
+      <Odslon>
+        <div class="mb-6">
+          <EtykietaSekcji>Parametry</EtykietaSekcji>
+          <h2 class="font-display text-2xl lg:text-3xl font-bold text-brand-text mt-2">
+            Dlaczego {dane.nazwaPojedyncza}?
+          </h2>
+        </div>
+      </Odslon>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        {
+          dane.cechy.map((cecha, i) => (
+            <Odslon zwloka={i * 80}>
+              <div class="bg-brand-card rounded-xl border border-brand-border p-6 hover:shadow-lg hover:shadow-black/5 hover:border-brand-olive/20 transition-all duration-300 h-full">
+                <div class="flex items-center gap-4 mb-2">
+                  <div class="w-10 h-10 rounded-full bg-brand-olive/10 flex items-center justify-center text-lg">
+                    {cecha.emoji}
+                  </div>
+                  <h3 class="font-display text-base font-bold text-brand-text mb-1">{cecha.tytul}</h3>
+                </div>
+                <p class="text-sm text-brand-text-light leading-relaxed">{cecha.opis}</p>
+              </div>
+            </Odslon>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  {/* ═══ TREŚĆ (SEO) ═════════════════════════════════════ */}
+  <section class="bg-brand-section py-10 lg:py-16">
+    <div class="max-w-7xl mx-auto px-5 lg:px-10">
+      <Odslon>
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
+          <div class="lg:col-span-2 space-y-10">
+            <div>
+              <h2 class="font-display text-xl lg:text-2xl font-bold text-brand-text mb-4">{dane.tresc.tytul1}</h2>
+              <p class="text-brand-text-light leading-relaxed">{dane.tresc.tekst1}</p>
+            </div>
+            <div>
+              <h3 class="font-display text-lg lg:text-xl font-bold text-brand-text mb-4">{dane.tresc.tytul2}</h3>
+              <p class="text-brand-text-light leading-relaxed">{dane.tresc.tekst2}</p>
+            </div>
+            <div>
+              <h3 class="font-display text-lg lg:text-xl font-bold text-brand-text mb-4">{dane.tresc.tytul3}</h3>
+              <p class="text-brand-text-light leading-relaxed">{dane.tresc.tekst3}</p>
+            </div>
+          </div>
+          <div>
+            <Foto
+              klucz={dane.fotoHero}
+              alt={`${dane.tytul} - realizacja BramBruk`}
+              class="w-full h-[380px] object-cover rounded-xl"
+            />
+          </div>
+        </div>
+      </Odslon>
+    </div>
+  </section>
+
+  {/* ═══ CENNIK ══════════════════════════════════════════ */}
+  <section class="bg-brand-bg py-10 lg:py-16" id="sekcja-cennik">
+    <div class="max-w-4xl mx-auto px-5 lg:px-10">
+      <div class="mb-6">
+        <EtykietaSekcji>Orientacyjny cennik</EtykietaSekcji>
+        <h2 class="font-display text-xl lg:text-2xl font-bold text-brand-text mt-2">
+          Ile kosztuje {dane.nazwaPojedyncza}?
+        </h2>
+      </div>
+
+      <div class="bg-brand-card rounded-xl border border-brand-border overflow-hidden">
+        {
+          cennik.map((wiersz, i) => (
+            <div
+              class:list={[
+                'flex items-center justify-between px-6 py-4',
+                i !== cennik.length - 1 && 'border-b border-brand-border',
+                i % 2 === 0 ? 'bg-brand-card' : 'bg-brand-section',
+              ]}
+            >
+              <span class="text-sm text-brand-text">{wiersz.usluga}</span>
+              <span class="text-sm font-semibold text-brand-olive whitespace-nowrap ml-4">{wiersz.cena}</span>
+            </div>
+          ))
+        }
+      </div>
+
+      <p class="text-xs text-brand-text-light mt-4">
+        Ceny orientacyjne - dokładna wycena po bezpłatnej konsultacji. Aktualne na 2026 r.
+      </p>
+
+      <div class="mt-6 text-center flex gap-2 justify-center">
+        <Przycisk href="/wycena/" rozmiar="md" ikona="receipt-text">Bezpłatna wycena</Przycisk>
+        <Przycisk href="/uslugi/" wariant="secondary" rozmiar="md" ikona="dollar-sign">Pełny cennik</Przycisk>
+      </div>
+    </div>
+  </section>
+
+  {/* ═══ REALIZACJE ══════════════════════════════════════ */}
+  <section class="bg-brand-section py-10 lg:py-16">
+    <div class="max-w-7xl mx-auto px-5 lg:px-10">
+      <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between mb-10">
+        <div>
+          <EtykietaSekcji>Realizacje</EtykietaSekcji>
+          <h2 class="font-display text-xl lg:text-2xl font-bold text-brand-text mt-2">{tytulGalerii}</h2>
+        </div>
+        <a
+          href="/realizacje/"
+          class="hidden lg:inline-flex items-center gap-2 text-brand-sage font-semibold text-sm hover:gap-3 transition-all"
+        >
+          Zobacz wszystkie realizacje
+          <Ikona nazwa="arrow-right" rozmiar={16} />
+        </a>
+      </div>
+
+      <GaleriaSiatka pozycje={dane.galeria} class="hidden md:grid" />
+      <GaleriaKaruzela pozycje={dane.galeria} class="md:hidden" />
+
+      <div class="mt-6 flex justify-center lg:hidden">
+        <a
+          href="/realizacje/"
+          class="inline-flex items-center gap-2 text-brand-sage font-semibold text-sm hover:gap-3 transition-all"
+        >
+          <Ikona nazwa="images" rozmiar={16} />
+          Zobacz wszystkie realizacje
+          <Ikona nazwa="arrow-right" rozmiar={16} />
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <SekcjaFaq
+    etykieta={`FAQ - ${dane.etykieta}`}
+    tytul={`Pytania o ${dane.okruszek.toLowerCase()}`}
+    pytania={dane.faq}
+  />
+
+  <div class="mt-6"></div>
+</Podstrona>

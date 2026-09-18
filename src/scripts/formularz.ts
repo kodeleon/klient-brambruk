@@ -1,148 +1,243 @@
 /**
- * FORMULARZ - warstwa skryptu.
+ * FORMULARZ KONTAKTOWY - walidacja i wysyłka.
  *
- * Trzy rzeczy, w tej kolejności:
- *   1. odblokowuje pola (w znaczniku są `disabled`, żeby bez skryptu formularz
- *      nie udawał działającego),
- *   2. stempluje czas otwarcia - Worker odrzuca zgłoszenia wysłane szybciej
- *      niż w kilka sekund, bo tak wysyłają boty,
- *   3. wysyła przez `fetch` i pokazuje komunikat sukcesu albo błędu.
- *
- * KOMUNIKATY SĄ NAPISANE, nie domyślne z przeglądarki. Formularz ma `novalidate`
- * właśnie po to: natywny dymek walidacji jest nieprzetłumaczony, znika przy
- * przewinięciu i nie jest ogłaszany czytnikowi ekranu.
- *
- * Błąd walidacji trafia jednocześnie do obszaru `role="status"` (ogłoszenie)
- * i do elementu przy polu (wskazanie), a fokus ląduje na pierwszym błędnym
- * polu. Sam czerwony obrys nie jest komunikatem.
+ * ┌── STAN PRZEJŚCIOWY ─────────────────────────────────────────────────┐
+ * │ Stary formularz wysyłał do wtyczki w WordPressie                     │
+ * │ (`/wp-json/codove-mailing/v1/forms/contact/send`). WordPress znika    │
+ * │ ze stosu, a Worker przyjmujący zgłoszenia dopiero powstanie.          │
+ * │                                                                      │
+ * │ Do tego czasu: walidacja działa w całości (te same reguły i te same   │
+ * │ komunikaty, co poprzednio), a wysyłka pokazuje komunikat zastępczy    │
+ * │ z telefonem i e-mailem. Podpięcie backendu to ustawienie              │
+ * │ `endpointy.formularz` w `src/config/site.ts` - reszta jest gotowa.    │
+ * └──────────────────────────────────────────────────────────────────────┘
  */
 
-const CZAS_KOMUNIKATU = 8000
+import { endpointy } from '../config/site'
+import { dane } from '../config/dane'
 
-type Odpowiedz = { ok: boolean; blad?: string; pole?: string }
+const KOMUNIKATY: Record<string, string> = {
+  required: 'To pole jest wymagane.',
+  invalid_format: 'Nieprawidłowy format.',
+  invalid_phone: 'Nieprawidłowy numer telefonu.',
+  too_long: 'Tekst jest za długi.',
+}
+
+const ETYKIETY: Record<string, string> = {
+  name: 'Imię',
+  email: 'E-mail',
+  phone: 'Telefon',
+  message: 'Wiadomość',
+}
+
+const BRAK_BACKENDU =
+  'Wysyłka formularza jest chwilowo niedostępna - trwa przenoszenie serwisu. ' +
+  `Zadzwoń: ${dane.telefon} albo napisz: ${dane.email}. Przepraszamy za utrudnienie.`
+
+export type Pole = HTMLInputElement | HTMLTextAreaElement
+
+export function pobierzPola(formularz: HTMLElement): Pole[] {
+  return [...formularz.querySelectorAll<Pole>('[data-pole]')]
+}
+
+export function limit(pole: Pole): number | null {
+  const wartosc = Number(pole.dataset.limit)
+  return Number.isFinite(wartosc) && wartosc > 0 ? wartosc : null
+}
+
+export function ponadLimit(pole: Pole): boolean {
+  const maks = limit(pole)
+  return maks !== null && pole.value.length > maks
+}
+
+export function poprawnyEmail(wartosc: string): boolean {
+  return /\S+@\S+\.\S+/.test(wartosc)
+}
+
+export function poprawnyTelefon(wartosc: string): boolean {
+  const przyciety = wartosc.trim()
+  if (!przyciety) return true
+  return /^[+\d\s\-()]{3,}$/.test(przyciety)
+}
+
+/** Pokazuje albo chowa komunikat przy jednym polu. */
+export function oznaczPole(formularz: HTMLElement, nazwa: string, kod: string | null) {
+  const pole = formularz.querySelector<Pole>(`[data-pole="${nazwa}"]`)
+  const komunikat = formularz.querySelector<HTMLElement>(`[data-blad="${nazwa}"]`)
+  const podpowiedz = formularz.querySelector<HTMLElement>(`[data-podpowiedz="${nazwa}"]`)
+
+  if (pole) {
+    if (kod) pole.setAttribute('data-blad-pola', '')
+    else pole.removeAttribute('data-blad-pola')
+    pole.setAttribute('aria-invalid', kod ? 'true' : 'false')
+  }
+
+  if (komunikat) {
+    const maks = pole ? limit(pole) : null
+    komunikat.textContent = kod
+      ? pole && ponadLimit(pole) && maks
+        ? `Za długie - max ${maks} znaków.`
+        : (KOMUNIKATY[kod] ?? kod)
+      : ''
+    komunikat.hidden = !kod
+  }
+
+  // Podpowiedź pod telefonem ustępuje miejsca komunikatowi o błędzie -
+  // tak samo, jak robił to stary komponent.
+  if (podpowiedz) podpowiedz.hidden = Boolean(kod)
+}
+
+export function pokazPodsumowanie(formularz: HTMLElement, bledy: Record<string, string>, wstep: string) {
+  const blok = formularz.querySelector<HTMLElement>('[data-formularz-podsumowanie]')
+  const tytul = formularz.querySelector<HTMLElement>('[data-podsumowanie-tytul]')
+  const lista = formularz.querySelector<HTMLElement>('[data-podsumowanie-lista]')
+  if (!blok || !tytul || !lista) return
+
+  const pozycje = Object.entries(bledy)
+  if (!pozycje.length) {
+    blok.hidden = true
+    return
+  }
+
+  tytul.textContent = `${wstep} ${pozycje.length === 1 ? 'pole' : 'pola'}:`
+  lista.replaceChildren(
+    ...pozycje.map(([nazwa, kod]) => {
+      const pozycja = document.createElement('li')
+      pozycja.className = 'text-xs text-red-600'
+      const etykieta = document.createElement('span')
+      etykieta.className = 'font-medium'
+      etykieta.textContent = ETYKIETY[nazwa] ?? nazwa
+      pozycja.append(etykieta, ` - ${KOMUNIKATY[kod] ?? kod}`)
+      return pozycja
+    })
+  )
+  blok.hidden = false
+}
+
+export function pokazBlad(formularz: HTMLElement, tresc: string) {
+  const blok = formularz.querySelector<HTMLElement>('[data-formularz-blad]')
+  const tekst = formularz.querySelector<HTMLElement>('[data-formularz-blad-tekst]')
+  if (!blok || !tekst) return
+  tekst.textContent = tresc
+  blok.hidden = false
+}
+
+export function podepnijLicznik(formularz: HTMLElement) {
+  for (const licznik of formularz.querySelectorAll<HTMLElement>('[data-licznik]')) {
+    const nazwa = licznik.dataset.licznik
+    const pole = formularz.querySelector<Pole>(`[data-pole="${nazwa}"]`)
+    if (!pole) continue
+    const maks = limit(pole)
+    if (maks === null) continue
+
+    const odswiez = () => {
+      licznik.textContent = `${pole.value.length.toLocaleString('pl-PL')} / ${maks.toLocaleString('pl-PL')}`
+      const ponad = pole.value.length > maks
+      licznik.classList.toggle('text-red-500', ponad)
+      licznik.classList.toggle('font-semibold', ponad)
+      licznik.classList.toggle('text-brand-text-light', !ponad)
+    }
+
+    pole.addEventListener('input', odswiez)
+    odswiez()
+  }
+}
+
+/** Czy backend zgłoszeń jest już podpięty. */
+export function backendGotowy(): boolean {
+  return Boolean(endpointy.formularz)
+}
+
+export function komunikatBrakBackendu(): string {
+  return BRAK_BACKENDU
+}
+
+function sprawdz(formularz: HTMLElement): Record<string, string> {
+  const bledy: Record<string, string> = {}
+
+  for (const pole of pobierzPola(formularz)) {
+    const nazwa = pole.dataset.pole ?? ''
+    const wartosc = pole.value.trim()
+
+    if (pole.required && !wartosc) {
+      bledy[nazwa] = 'required'
+      continue
+    }
+    if (ponadLimit(pole)) {
+      bledy[nazwa] = 'too_long'
+      continue
+    }
+    if (nazwa === 'email' && wartosc && !poprawnyEmail(wartosc)) {
+      bledy[nazwa] = 'invalid_format'
+      continue
+    }
+    if (nazwa === 'phone' && !poprawnyTelefon(wartosc)) {
+      bledy[nazwa] = 'invalid_phone'
+    }
+  }
+
+  return bledy
+}
 
 export function formularz() {
-  const form = document.querySelector<HTMLFormElement>('[data-formularz]')
-  if (!form) return
+  const element = document.querySelector<HTMLFormElement>('[data-formularz="kontakt"]')
+  if (!element) return
 
-  const endpoint = form.dataset.endpoint
-  const pola = form.querySelector<HTMLFieldSetElement>('[data-formularz-pola]')
-  const status = form.querySelector<HTMLElement>('[data-formularz-status]')
-  if (!endpoint || !pola || !status) return
+  const przycisk = element.querySelector<HTMLButtonElement>('[data-formularz-wyslij]')
+  const zamknijPodsumowanie = element.querySelector<HTMLElement>('[data-podsumowanie-zamknij]')
 
-  pola.disabled = false
-  const otwarty = Date.now()
+  podepnijLicznik(element)
 
-  const pokaz = (tekst: string, rodzaj: 'sukces' | 'blad') => {
-    status.textContent = ''
-    status.dataset.rodzaj = rodzaj
-    // Ustawienie tekstu w kolejnym zadaniu daje czytnikowi ekranu szansę
-    // zauważyć zmianę zawartości pustego obszaru.
-    window.setTimeout(() => {
-      status.textContent = tekst
-    }, 50)
+  for (const pole of pobierzPola(element)) {
+    pole.addEventListener('input', () => {
+      oznaczPole(element, pole.dataset.pole ?? '', null)
+      const blok = element.querySelector<HTMLElement>('[data-formularz-podsumowanie]')
+      if (blok) blok.hidden = true
+    })
   }
 
-  const wyczyscBledy = () => {
-    for (const el of form.querySelectorAll<HTMLElement>('[data-blad-dla]')) {
-      el.textContent = ''
+  zamknijPodsumowanie?.addEventListener('click', () => {
+    const blok = element.querySelector<HTMLElement>('[data-formularz-podsumowanie]')
+    if (blok) blok.hidden = true
+  })
+
+  przycisk?.addEventListener('click', async () => {
+    const bledy = sprawdz(element)
+
+    for (const pole of pobierzPola(element)) {
+      const nazwa = pole.dataset.pole ?? ''
+      oznaczPole(element, nazwa, bledy[nazwa] ?? null)
     }
-    for (const el of form.querySelectorAll<HTMLElement>('[aria-invalid]')) {
-      el.removeAttribute('aria-invalid')
-    }
-  }
 
-  const pokazBladPola = (pole: string, tekst: string) => {
-    const wskaznik = form.querySelector<HTMLElement>(`[data-blad-dla="${pole}"]`)
-    const kontrolka = form.querySelector<HTMLInputElement | HTMLTextAreaElement>(`[name="${pole}"]`)
-    if (wskaznik) wskaznik.textContent = tekst
-    if (kontrolka) {
-      kontrolka.setAttribute('aria-invalid', 'true')
-      kontrolka.focus()
-    }
-  }
-
-  /** Walidacja po stronie przeglądarki. Worker sprawdza to samo jeszcze raz. */
-  const sprawdz = (): { pole: string; tekst: string } | null => {
-    const email = form.querySelector<HTMLInputElement>('[name="email"]')?.value.trim() ?? ''
-    const wiadomosc = form.querySelector<HTMLTextAreaElement>('[name="wiadomosc"]')?.value.trim() ?? ''
-
-    if (!email) return { pole: 'email', tekst: 'Podaj adres e-mail, żebyśmy mogli odpowiedzieć.' }
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email))
-      return { pole: 'email', tekst: 'Ten adres e-mail wygląda na niepoprawny.' }
-    if (wiadomosc.length < 10)
-      return { pole: 'wiadomosc', tekst: 'Napisz kilka słów więcej - co najmniej 10 znaków.' }
-    return null
-  }
-
-  form.addEventListener('submit', async (e) => {
-    e.preventDefault()
-    wyczyscBledy()
-
-    const problem = sprawdz()
-    if (problem) {
-      pokazBladPola(problem.pole, problem.tekst)
-      pokaz(problem.tekst, 'blad')
+    if (Object.keys(bledy).length) {
+      pokazPodsumowanie(element, bledy, 'Popraw')
+      const pierwsze = element.querySelector<Pole>('[data-blad-pola]')
+      pierwsze?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      pierwsze?.focus({ preventScroll: true })
       return
     }
 
-    const przycisk = form.querySelector<HTMLButtonElement>('button[type="submit"]')
-    const etykieta = przycisk?.textContent ?? ''
-    if (przycisk) {
-      przycisk.disabled = true
-      przycisk.textContent = 'Wysyłanie...'
+    if (!backendGotowy()) {
+      pokazBlad(element, komunikatBrakBackendu())
+      return
     }
-    pokaz('Wysyłanie wiadomości...', 'sukces')
 
-    const wartosc = (nazwa: string) =>
-      form.querySelector<HTMLInputElement | HTMLTextAreaElement>(`[name="${nazwa}"]`)?.value ?? ''
-
+    // Ścieżka docelowa - włącza się sama, gdy `endpointy.formularz`
+    // dostanie adres Workera.
+    const dane = new FormData(element)
     try {
-      const odp = await fetch(endpoint, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          imie: wartosc('imie'),
-          email: wartosc('email'),
-          temat: wartosc('temat'),
-          wiadomosc: wartosc('wiadomosc'),
-          strona: wartosc('strona'),
-          czas: otwarty,
-        }),
-      })
-
-      const wynik: Odpowiedz = await odp.json().catch(() => ({ ok: false }))
-
-      if (odp.ok && wynik.ok) {
-        form.reset()
-        pokaz('Dziękujemy. Wiadomość została wysłana - odpowiemy najszybciej, jak to możliwe.', 'sukces')
-      } else {
-        const tekst = wynik.blad ?? 'Nie udało się wysłać wiadomości. Spróbuj ponownie za chwilę.'
-        if (wynik.pole) pokazBladPola(wynik.pole, tekst)
-        pokaz(tekst, 'blad')
+      const odpowiedz = await fetch(endpointy.formularz, { method: 'POST', body: dane })
+      if (odpowiedz.ok) {
+        const sukces = document.querySelector<HTMLElement>('[data-formularz-sukces]')
+        const tresc = document.querySelector<HTMLElement>('[data-formularz-tresc]')
+        if (sukces) sukces.hidden = false
+        if (tresc) tresc.hidden = true
+        window.scrollTo(0, 0)
+        return
       }
+      pokazBlad(element, 'Wystąpił błąd przy wysyłaniu. Spróbuj ponownie.')
     } catch {
-      // Brak sieci albo Worker nieosiągalny. Komunikat musi dać drogę wyjścia,
-      // a nie tylko zgłosić porażkę.
-      pokaz(
-        'Nie udało się połączyć z serwerem. Sprawdź połączenie i spróbuj ponownie albo napisz do nas bezpośrednio.',
-        'blad'
-      )
-    } finally {
-      if (przycisk) {
-        przycisk.disabled = false
-        przycisk.textContent = etykieta
-      }
+      pokazBlad(element, 'Nie udało się połączyć z serwerem. Sprawdź połączenie z internetem i spróbuj ponownie.')
     }
   })
-
-  // Komunikat sukcesu znika po chwili, komunikat błędu zostaje - użytkownik
-  // musi mieć czas przeczytać, co poszło nie tak.
-  const obserwator = new MutationObserver(() => {
-    if (status.dataset.rodzaj !== 'sukces' || !status.textContent) return
-    window.setTimeout(() => {
-      if (status.dataset.rodzaj === 'sukces') status.textContent = ''
-    }, CZAS_KOMUNIKATU)
-  })
-  obserwator.observe(status, { childList: true })
 }

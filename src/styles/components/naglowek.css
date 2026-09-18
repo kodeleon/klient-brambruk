@@ -1,71 +1,41 @@
 /**
- * NAGŁÓWEK SERWISU.
- *
- * Nawigacja jest zwykłą listą odnośników, zawijaną na wąskim ekranie.
- * Zero skryptu, zero stanu, zero przeskoku układu. Uzasadnienie i warunki,
- * przy których warto to zmienić, są w komentarzu w `Naglowek.astro`.
- *
- * Nagłówek jest przyklejony (`position: sticky`), więc `scroll-padding-top`
- * w `base.css` musi odpowiadać jego wysokości - inaczej kotwica ląduje pod
- * paskiem. To są dwa miejsca z tą samą liczbą i muszą się zgadzać.
+ * NAGŁÓWEK - stany, których nie da się zapisać klasą narzędziową:
+ * przewinięta strona i otwarte menu mobilne.
  */
 
-@layer components {
-  .naglowek {
-    position: sticky;
-    top: 0;
-    z-index: 50;
-    background-color: color-mix(in srgb, var(--color-tlo) 85%, transparent);
-    backdrop-filter: blur(12px);
-    border-bottom: 1px solid var(--color-obramowanie);
-  }
+/* Przewinięcie ponad 20 px. Atrybut ustawia `src/scripts/naglowek.ts`. */
+.naglowek[data-przewiniete] {
+  background-color: color-mix(in srgb, var(--color-brand-dark) 95%, transparent);
+  backdrop-filter: blur(var(--blur-md));
+  box-shadow: var(--shadow-lg);
+}
 
-  .naglowek__pas {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1rem;
-    min-height: 4rem;
-    flex-wrap: wrap;
-  }
+/* --- menu mobilne: stan trzyma ukryte pole wyboru --- */
 
-  .naglowek__marka {
-    font-family: var(--font-naglowek);
-    font-size: var(--text-karta);
-    font-weight: 700;
-    color: var(--color-tekst);
-    text-decoration: none;
-    display: inline-flex;
-    align-items: center;
-    min-height: var(--cel-dotykowy);
-  }
+.naglowek__panel {
+  max-height: 0;
+}
 
-  .naglowek__nawigacja ul {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.25rem 1.5rem;
-    list-style: none;
-    margin: 0;
-    padding: 0;
-  }
+#menu-mobilne:checked ~ .naglowek__panel {
+  max-height: 500px;
+  border-top: 1px solid rgb(255 255 255 / 0.1);
+}
 
-  .naglowek__link {
-    display: inline-flex;
-    align-items: center;
-    min-height: var(--cel-dotykowy);
-    padding-inline: 0.25rem;
-    color: var(--color-tresc);
-    text-decoration: none;
-    font-weight: 500;
-    transition: color var(--czas-natychmiast) var(--ease-podstawowa);
-  }
+.naglowek__ikona-zamknij {
+  display: none;
+}
 
-  .naglowek__link:hover {
-    color: var(--color-tekst);
-  }
+#menu-mobilne:checked ~ div .naglowek__ikona-menu {
+  display: none;
+}
 
-  .naglowek__link--aktywny {
-    color: var(--color-akcent-jasny);
-  }
+#menu-mobilne:checked ~ div .naglowek__ikona-zamknij {
+  display: block;
+}
 
+/* Pole wyboru jest poza ekranem, ale nadal łapie fokus z klawiatury -
+   obrys musi wtedy pojawić się na przełączniku, nie w pustce. */
+#menu-mobilne:focus-visible ~ div .naglowek__przelacznik {
+  outline: var(--fokus-grubosc) solid var(--color-brand-olive);
+  outline-offset: var(--fokus-odsuniecie);
 }

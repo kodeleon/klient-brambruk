@@ -1,0 +1,49 @@
+---
+/**
+ * ZDJĘCIE PROJEKTU - jedno miejsce, przez które przechodzą wszystkie fotografie.
+ *
+ * ┌── STAN PRZEJŚCIOWY ─────────────────────────────────────────────────┐
+ * │ Fotografie serwisu leżą dziś w WordPressie klienta i nie ma do nich │
+ * │ dostępu z tego środowiska. Dopóki oryginały nie trafią do           │
+ * │ `media/img/_raw/` i nie przejdą potoku, ten komponent rysuje         │
+ * │ ZAŚLEPKĘ o tych samych wymiarach co docelowe zdjęcie.               │
+ * │                                                                      │
+ * │ Zaślepka NIE UDAJE zdjęcia: ma widoczny opis i wzór, żeby nikt nie   │
+ * │ wypuścił strony w tym stanie. Lista brakujących plików jest          │
+ * │ w `MIGRACJA-braki.md`.                                              │
+ * │                                                                      │
+ * │ PO WGRANIU ZDJĘĆ: wpis pojawia się w `uses` w `media/images.config.mjs`,│
+ * │ a ten komponent sam przełącza się na `<Obraz>` - w podstronach nie   │
+ * │ zmienia się ani jedna linia.                                        │
+ * └──────────────────────────────────────────────────────────────────────┘
+ */
+import { uses } from '../../../media/images.config.mjs'
+import Obraz from './Obraz.astro'
+
+interface Props {
+  /** Klucz z `uses` w media/images.config.mjs. */
+  klucz: string
+  /** Opis treści zdjęcia. Pusty łańcuch = zdjęcie dekoracyjne. */
+  alt?: string
+  /** Klasy elementu obrazu - te same, co miał `<img>` w starym projekcie. */
+  class?: string
+}
+
+const { klucz, alt, class: klasa } = Astro.props
+const gotowe = Boolean((uses as Record<string, unknown>)[klucz])
+---
+
+{
+  gotowe ? (
+    <Obraz use={klucz} alt={alt} class={klasa} />
+  ) : (
+    <div
+      class:list={['foto-zaslepka', klasa]}
+      role="img"
+      aria-label={alt ? `Zdjęcie do wgrania: ${alt}` : 'Zdjęcie do wgrania'}
+      data-foto-brak={klucz}
+    >
+      <span class="foto-zaslepka__opis">{alt || klucz}</span>
+    </div>
+  )
+}

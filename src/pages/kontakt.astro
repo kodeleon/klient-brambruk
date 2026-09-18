@@ -1,0 +1,234 @@
+---
+/**
+ * /kontakt/ - dane kontaktowe, formularz, mapa.
+ *
+ * Odpowiednik `code/src/pages/Contact.jsx`. Dwie zmiany:
+ *
+ *   1. MAPA. Osadzony `<iframe>` Map Google zastąpiony statycznym obrazem
+ *      z odnośnikiem - patrz `MapaKontakt.astro`.
+ *
+ *   2. FORMULARZ. Stary punkt docelowy (`/wp-json/codove-mailing/...`
+ *      w WordPressie) odpada razem z WordPressem. Do czasu Workera formularz
+ *      wygląda i waliduje się tak samo, ale wysyłka pokazuje komunikat
+ *      zastępczy z telefonem i e-mailem (`src/scripts/formularz.ts`).
+ *      Pola i limity zostają te same, żeby podpięcie backendu było
+ *      podmianą jednej stałej, a nie przepisywaniem formularza.
+ */
+import Podstrona from '../layouts/Podstrona.astro'
+import { dane } from '../config/dane'
+import Okruszki from '../components/ui/Okruszki.astro'
+import EtykietaSekcji from '../components/ui/EtykietaSekcji.astro'
+import Przycisk from '../components/ui/Przycisk.astro'
+import Odslon from '../components/ui/Odslon.astro'
+import BanerCta from '../components/ui/BanerCta.astro'
+import MapaKontakt from '../components/ui/MapaKontakt.astro'
+import Ikona from '../components/icons/Ikona.astro'
+
+const klasaPola =
+  'w-full px-4 py-3 rounded-lg border bg-white text-brand-text text-sm focus:outline-none focus:border-brand-olive focus:ring-2 focus:ring-brand-olive/10 transition-all border-brand-border'
+---
+
+<Podstrona
+  tytul="Kontakt - BramBruk | Biała Podlaska i okolice"
+  opis="Skontaktuj się z BramBruk - ogrodzenia i brukarstwo w Białej Podlaskiej. Odpowiadamy szybko. Napisz lub zadzwoń."
+>
+  <Okruszki pozycje={[{ etykieta: 'Strona główna', sciezka: '/' }, { etykieta: 'Kontakt' }]} />
+
+  <section class="bg-brand-section py-10 lg:py-16">
+    <div class="max-w-7xl mx-auto px-5 lg:px-10">
+      <Odslon>
+        <div class="mb-6">
+          <EtykietaSekcji>Kontakt</EtykietaSekcji>
+          <h1 class="font-display text-3xl lg:text-4xl font-bold text-brand-text mt-2">
+            Skontaktuj się z nami
+          </h1>
+        </div>
+      </Odslon>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
+        <Odslon wariant="left">
+          <div
+            class="bg-brand-card rounded-2xl border border-brand-border/60 shadow-sm shadow-black/[0.04] p-6 lg:p-8"
+          >
+            {/* Stan „wysłano" - odsłania go skrypt po udanej wysyłce. */}
+            <div data-formularz-sukces hidden>
+              <div class="text-center py-6">
+                <div
+                  class="w-16 h-16 rounded-2xl bg-brand-olive/10 flex items-center justify-center text-brand-olive mx-auto mb-6"
+                >
+                  <Ikona nazwa="send" rozmiar={28} />
+                </div>
+                <h2 class="font-display text-2xl font-bold text-brand-text mb-3">Wiadomość wysłana!</h2>
+                <p class="text-brand-text-light">Odpowiemy w ciągu 24 godzin w dni robocze.</p>
+              </div>
+            </div>
+
+            <form class="space-y-5" data-formularz="kontakt" novalidate data-formularz-tresc>
+              <div>
+                <label class="block text-sm font-medium text-brand-text mb-1.5" for="pole-imie">
+                  Imię <span class="text-red-400">*</span>
+                </label>
+                <input
+                  id="pole-imie"
+                  name="name"
+                  type="text"
+                  data-pole="name"
+                  data-limit="100"
+                  required
+                  class={klasaPola}
+                  placeholder="Twoje imię"
+                />
+                <p class="mt-1 text-xs text-red-500" data-blad="name" hidden></p>
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium text-brand-text mb-1.5" for="pole-email">
+                  Email <span class="text-red-400">*</span>
+                </label>
+                <input
+                  id="pole-email"
+                  name="email"
+                  type="email"
+                  data-pole="email"
+                  data-limit="200"
+                  required
+                  class={klasaPola}
+                  placeholder="twoj@email.pl"
+                />
+                <p class="mt-1 text-xs text-red-500" data-blad="email" hidden></p>
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium text-brand-text mb-1.5" for="pole-telefon">
+                  Telefon <span class="text-brand-text-light text-xs">(opcjonalnie)</span>
+                </label>
+                <input
+                  id="pole-telefon"
+                  name="phone"
+                  type="tel"
+                  data-pole="phone"
+                  data-limit="12"
+                  class={klasaPola}
+                  placeholder="+48 xxx xxx xxx"
+                />
+                <p class="mt-1 text-xs text-red-500" data-blad="phone" hidden></p>
+                <p class="text-xs text-brand-text-light mt-1" data-podpowiedz="phone">
+                  Podanie numeru przyspiesza odpowiedź - oddzwonimy w ciągu 24h
+                </p>
+              </div>
+
+              <div>
+                <div class="flex items-baseline justify-between mb-1.5">
+                  <label class="text-sm font-medium text-brand-text" for="pole-wiadomosc">
+                    Wiadomość <span class="text-red-400">*</span>
+                  </label>
+                  <span class="text-xs tabular-nums text-brand-text-light" data-licznik="message">
+                    0&nbsp;/&nbsp;2 000
+                  </span>
+                </div>
+                <textarea
+                  id="pole-wiadomosc"
+                  name="message"
+                  rows="5"
+                  data-pole="message"
+                  data-limit="2000"
+                  required
+                  class={`${klasaPola} resize-none`}
+                  placeholder="W czym możemy pomóc?"></textarea>
+                <p class="mt-1 text-xs text-red-500" data-blad="message" hidden></p>
+              </div>
+
+              {/* Pułapka na boty - człowiek tego pola nie widzi i nie wypełni. */}
+              <input type="text" name="_hp" tabindex="-1" autocomplete="off" class="poza-ekranem" aria-hidden="true" />
+
+              <div
+                class="flex items-start gap-3 px-4 py-3 rounded-xl bg-red-50 border border-red-200"
+                data-formularz-blad
+                role="alert"
+                hidden
+              >
+                <Ikona nazwa="alert-triangle" rozmiar={18} class="text-red-500 shrink-0 mt-0.5" />
+                <p class="text-sm text-red-700" data-formularz-blad-tekst></p>
+              </div>
+
+              <div class="mt-4 px-4 py-3 rounded-xl bg-red-50 border border-red-200" data-formularz-podsumowanie hidden>
+                <div class="flex items-start gap-3">
+                  <Ikona nazwa="alert-triangle" rozmiar={18} class="text-red-500 shrink-0 mt-0.5" />
+                  <div class="flex-1 min-w-0">
+                    <p class="text-sm font-semibold text-red-700" data-podsumowanie-tytul></p>
+                    <ul class="mt-1.5 space-y-0.5" data-podsumowanie-lista></ul>
+                  </div>
+                  <button
+                    type="button"
+                    data-podsumowanie-zamknij
+                    class="text-red-400 hover:text-red-600 transition-colors p-1 -mr-1 -mt-1"
+                  >
+                    <span class="poza-ekranem">Zamknij</span>
+                    <Ikona nazwa="x" rozmiar={14} />
+                  </button>
+                </div>
+              </div>
+
+              <button
+                type="button"
+                data-formularz-wyslij
+                class="w-full font-semibold py-3.5 rounded-full flex items-center justify-center gap-2 transition-all duration-300 bg-brand-olive text-brand-dark hover:bg-brand-olive-dark hover:shadow-lg hover:shadow-brand-olive/20"
+              >
+                <Ikona nazwa="send" rozmiar={16} />
+                Wyślij wiadomość
+              </button>
+
+              <p class="text-[10px] text-brand-text-light text-center">
+                Wysyłając wiadomość akceptujesz
+                <a href="/polityka-prywatnosci/" class="text-brand-olive underline">Politykę Prywatności</a>.
+                Podst. prawna: art. 6 ust. 1 lit. f RODO.
+              </p>
+            </form>
+          </div>
+        </Odslon>
+
+        <div class="space-y-6 flex flex-col justify-between mb-6">
+          <Odslon wariant="right">
+            <div class="bg-brand-card rounded-2xl border border-brand-border/60 shadow-sm shadow-black/[0.04] p-6">
+              <h2 class="font-display text-lg font-bold text-brand-text mb-4">Dane kontaktowe</h2>
+              <div class="space-y-3 text-sm">
+                <a
+                  href={`tel:${dane.telefonHref}`}
+                  class="flex items-center gap-3 text-brand-text-light hover:text-brand-olive transition-colors"
+                >
+                  <Ikona nazwa="phone" rozmiar={16} class="text-brand-olive shrink-0" />
+                  {dane.telefon}
+                </a>
+                <a
+                  href={`mailto:${dane.email}`}
+                  class="flex items-center gap-3 text-brand-text-light hover:text-brand-olive transition-colors"
+                >
+                  <Ikona nazwa="mail" rozmiar={16} class="text-brand-olive shrink-0" />
+                  {dane.email}
+                </a>
+                <div class="flex items-center gap-3 text-brand-text-light">
+                  <Ikona nazwa="map-pin" rozmiar={16} class="text-brand-olive shrink-0" />
+                  {dane.adres}
+                </div>
+                <div class="flex items-center gap-3 text-brand-text-light">
+                  <Ikona nazwa="clock" rozmiar={16} class="text-brand-olive shrink-0" />
+                  <span>{dane.godzinyTydzien} · {dane.godzinySobota}</span>
+                </div>
+              </div>
+            </div>
+          </Odslon>
+          <Odslon wariant="right" zwloka={100} class="h-full">
+            <MapaKontakt />
+          </Odslon>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <BanerCta
+    tytul="Szukasz wyceny na ogrodzenie lub brukarstwo?"
+    podtytul="Skorzystaj z konfiguratora wycen - opisz projekt i otrzymaj odpowiedź w 24h"
+  >
+    <Przycisk slot="akcja" href="/wycena/" rozmiar="lg" ikona="receipt-text">Bezpłatna wycena</Przycisk>
+  </BanerCta>
+</Podstrona>
