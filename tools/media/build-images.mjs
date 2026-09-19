@@ -41,6 +41,14 @@ const svg = await buildSvg({ config, log: console.log })
 console.log(`  SVG: ${svg.created} plików, ${(svg.bytesIn / 1024).toFixed(1)} kB → ${(svg.bytesOut / 1024).toFixed(1)} kB`)
 for (const w of svg.warnings) console.log(`    · ${w}`)
 
+// Logotypy rastrowe. Osobna ścieżka od fotografii - uzasadnienie przy
+// `logos` w media/images.config.mjs. Stoi tu, a nie w osobnej komendzie,
+// żeby `predev` i `prebuild` obsługiwały je bez dokładania kroku.
+const { buildLogo } = await import('./build-logo.mjs')
+const logo = await buildLogo({ config, root: ROOT, force: flag('force') })
+console.log(`  LOGO: ${logo.created} plików nowych, ${logo.skipped} bez zmian, ${(logo.bytesOut / 1024).toFixed(1)} kB`)
+for (const w of logo.warnings) console.log(`    · ${w}`)
+
 const built = await buildImages({
   config,
   root: ROOT,

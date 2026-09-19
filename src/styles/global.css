@@ -22,9 +22,11 @@
 @import './base.css';
 
 @import './components/galeria.css';
+@import './components/cta.css';
 @import './components/faq.css';
 @import './components/karuzela.css';
 @import './components/naglowek.css';
+@import './components/stopka.css';
 @import './components/zakladki.css';
 @import './components/wycena.css';
 

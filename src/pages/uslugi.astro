@@ -2,10 +2,22 @@
 /**
  * /uslugi/ - przegląd wszystkich usług z widełkami cenowymi.
  *
- * Odpowiednik `code/src/pages/Uslugi.jsx`. Zakładki działają bez JavaScriptu:
- * stan trzymają ukryte przyciski wyboru, a CSS chowa nieaktywne grupy
- * (`src/styles/components/zakladki.css`). Wszystkie karty są w HTML,
- * niezależnie od wybranej zakładki.
+ * ┌── ZAKŁADKI ZAMIENIONE NA KOTWICE ──────────────────────────────────┐
+ * │ Wcześniej trzy zakładki przełączały widoczne karty: w dokumencie    │
+ * │ były wszystkie, ale CSS pokazywał jedną trzecią naraz. Kosztowało   │
+ * │ to dwie rzeczy naraz:                                               │
+ * │   · odwiedzający nie widział pełnej oferty bez klikania - a to JEST │
+ * │     podstrona oferty, jej zadaniem jest pokazać, ile tego jest,     │
+ * │   · nie dało się podlinkować konkretnego zakresu.                   │
+ * │                                                                     │
+ * │ Teraz wszystkie karty są widoczne, pogrupowane po typie, a przyciski│
+ * │ typu przewijają do grupy (`#ogrodzenia`, `#brukarstwo`,             │
+ * │ `#budownictwo`). Zero JavaScriptu, zero stanu, adres do wysłania    │
+ * │ klientowi. Przy okazji zniknął `zakladki.css`.                      │
+ * │                                                                     │
+ * │ Kotwice nie chowają się pod przyklejonym nagłówkiem - `base.css`    │
+ * │ ma `scroll-padding-top` liczone z `--naglowek-wysokosc`.            │
+ * └─────────────────────────────────────────────────────────────────────┘
  */
 import Podstrona from '../layouts/Podstrona.astro'
 import { kartyUslug } from '../data/cennik'
@@ -15,16 +27,29 @@ import Przycisk from '../components/ui/Przycisk.astro'
 import Odslon from '../components/ui/Odslon.astro'
 import KartaUslugi from '../components/ui/KartaUslugi.astro'
 import BanerCta from '../components/ui/BanerCta.astro'
+import Ikona from '../components/icons/Ikona.astro'
 import Foto from '../components/media/Foto.astro'
 
-const zakladki = [
-  { klucz: 'ogrodzenia', etykieta: 'Ogrodzenia i bramy' },
-  { klucz: 'brukarstwo', etykieta: 'Brukarstwo' },
-  { klucz: 'budownictwo', etykieta: 'Budownictwo' },
+const grupy = [
+  {
+    klucz: 'ogrodzenia',
+    etykieta: 'Ogrodzenia i bramy',
+    opis: 'Panele 2D i 3D, bramy przesuwne i dwuskrzydłowe, furtki, siatka, podmurówki.',
+    podstrona: '/ogrodzenia/',
+  },
+  {
+    klucz: 'brukarstwo',
+    etykieta: 'Brukarstwo',
+    opis: 'Podjazdy, chodniki, alejki ogrodowe, tarasy i schody terenowe z kostki.',
+    podstrona: '/brukarstwo/',
+  },
+  {
+    klucz: 'budownictwo',
+    etykieta: 'Budownictwo',
+    opis: 'Altany, garaże blaszane i drewniane, domki narzędziowe, wiaty.',
+    podstrona: '/budownictwo/',
+  },
 ] as const
-
-const klasaZakladki =
-  'inline-flex px-5 py-2.5 rounded-full text-sm font-semibold border transition-all duration-200 bg-brand-card text-brand-text border-brand-border/60 hover:border-brand-olive/40'
 ---
 
 <Podstrona
@@ -33,6 +58,7 @@ const klasaZakladki =
 >
   <Okruszki pozycje={[{ etykieta: 'Strona główna', sciezka: '/' }, { etykieta: 'Usługi i cennik' }]} />
 
+  {/* ═══ SEKCJA GŁÓWNA ═══════════════════════════════════ */}
   <section class="relative bg-brand-dark overflow-hidden">
     <div class="absolute inset-0">
       <Foto klucz="hero.ogrodzenia" alt="" class="w-full h-full object-cover opacity-20" />
@@ -41,50 +67,56 @@ const klasaZakladki =
     <div class="relative max-w-7xl mx-auto px-5 lg:px-10 py-16 lg:py-24">
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
         <div>
-          <EtykietaSekcji class="mb-3">Usługi i cennik</EtykietaSekcji>
-          <h1 class="font-display text-3xl lg:text-[42px] font-bold text-white leading-tight mb-2">
+          <EtykietaSekcji wariant="ciemne" class="mb-3">Usługi i cennik</EtykietaSekcji>
+          <h1 class="font-display text-3xl lg:text-[42px] font-bold text-white leading-tight mb-3">
             Zakres usług BramBruk
           </h1>
-          <p class="font-display text-xl lg:text-2xl font-semibold text-brand-olive leading-tight mb-6">
+          <p class="border-l-2 border-brand-olive pl-4 font-display text-xl lg:text-2xl font-semibold text-brand-olive mb-6">
             Orientacyjne widełki cenowe
           </p>
           <p class="text-neutral-400 leading-relaxed max-w-lg mb-8">
             Poniżej znajdziesz przegląd wszystkich usług wraz z orientacyjnymi cenami. Dokładna wycena
             zawsze zależy od zakresu, materiałów i lokalizacji - opisz swój projekt w formularzu.
           </p>
-          <Przycisk href="/wycena/" rozmiar="lg" ikona="receipt-text">Bezpłatna wycena</Przycisk>
+
+          <div class="flex flex-wrap gap-3 mb-8">
+            <Przycisk href="/wycena/" rozmiar="lg" ikona="receipt-text">Bezpłatna wycena</Przycisk>
+            <Przycisk href="/realizacje/" wariant="secondary" rozmiar="lg" ikona="images">Nasze realizacje</Przycisk>
+          </div>
+
+          {/* Typy usług przeniesione tutaj spod listy: są jednocześnie
+              spisem treści podstrony i skrótem do właściwej grupy. */}
+          <nav aria-label="Przejdź do typu usługi">
+            <p class="text-[10px] font-bold uppercase tracking-[2px] text-neutral-400 mb-3">Typ usługi</p>
+            <ul class="flex flex-wrap gap-2">
+              {
+                grupy.map((grupa) => (
+                  <li>
+                    <a
+                      href={`#${grupa.klucz}`}
+                      class="inline-flex items-center gap-2 rounded-full border border-white/20 px-4 py-2 text-sm font-semibold text-brand-text-xlight transition-colors hover:border-brand-olive hover:text-brand-olive"
+                    >
+                      {grupa.etykieta}
+                      <Ikona nazwa="chevron-down" rozmiar={14} class="shrink-0" />
+                    </a>
+                  </li>
+                ))
+              }
+            </ul>
+          </nav>
         </div>
+
         <div class="hidden lg:block">
-          <Foto klucz="realizacja.03" alt="Realizacje BramBruk" class="w-full h-[320px] object-cover rounded-2xl" />
+          <Foto klucz="hero.uslugi-obok" class="w-full h-[320px] object-cover rounded-2xl" />
         </div>
       </div>
     </div>
   </section>
 
   <section id="main-content" class="bg-brand-bg py-12 lg:py-16">
-    <div class="max-w-7xl mx-auto px-5 lg:px-10" data-zakladki>
-      {
-        zakladki.map((zakladka, i) => (
-          <input
-            type="radio"
-            name="zakladka-uslug"
-            id={`zakladka-${zakladka.klucz}`}
-            class="poza-ekranem"
-            checked={i === 0}
-          />
-        ))
-      }
-
-      {/* Nagłówek, nie `div`: bez niego hierarchia skakała z h1 wprost do h3
-          na kartach usług, co narzędzie sprawdzające zgłaszało jako przeskok.
-          Klasy są te same, więc wygląd się nie zmienia. */}
-      <h2 class="font-display text-base font-bold text-brand-text mb-2">Typ usługi:</h2>
-      <div class="flex flex-wrap gap-2 mb-6" role="group" aria-label="Typ usługi">
-        {zakladki.map((zakladka) => <label for={`zakladka-${zakladka.klucz}`} class={klasaZakladki}>{zakladka.etykieta}</label>)}
-      </div>
-
+    <div class="max-w-7xl mx-auto px-5 lg:px-10">
       <div
-        class="mb-6 px-5 py-4 rounded-xl bg-brand-section border border-brand-border/60 text-sm text-brand-text-light"
+        class="mb-10 px-5 py-4 rounded-xl bg-brand-section border border-brand-border/60 text-sm text-brand-text-light"
       >
         <div class="font-display text-base font-bold text-brand-text pb-1">Uwaga!</div>
         Ceny są wyłącznie orientacyjne i nie stanowią oferty sprzedażowej. Ostateczna kwota zależy od
@@ -94,46 +126,56 @@ const klasaZakladki =
       </div>
 
       {
-        zakladki.map((zakladka) => (
-          <div
-            class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5"
-            data-grupa={zakladka.klucz}
-            aria-label={zakladka.etykieta}
-          >
-            {kartyUslug[zakladka.klucz].map((karta, i) => (
-              <Odslon wariant="up" zwloka={i * 60}>
-                <KartaUslugi tytul={karta.tytul} opis={karta.opis} foto={karta.foto} href={karta.href}>
-                  <div
-                    slot="odznaka"
-                    class="absolute z-100 top-3 right-3 bg-brand-dark/90 opacity-90 backdrop-blur-sm rounded-lg px-3 py-1.5 text-right"
-                  >
-                    <span class="text-brand-olive font-bold transition-all duration-300 text-md">{karta.cena}</span>
-                    {karta.nota && <p class="text-brand-text-light text-[13px]">{karta.nota}</p>}
-                  </div>
-                </KartaUslugi>
-              </Odslon>
-            ))}
+        grupy.map((grupa, indeks) => (
+          <div id={grupa.klucz} class:list={['scroll-mt-24', indeks > 0 && 'mt-14 lg:mt-20']}>
+            {/* Nazwa typu i przycisk do jego podstrony stoją w jednym
+                wierszu, po przeciwnych stronach - ten sam układ, co przy
+                „Zobacz wszystkie realizacje" na pozostałych podstronach. */}
+            <div class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between mb-6">
+              <div>
+                <EtykietaSekcji>Co oferujemy</EtykietaSekcji>
+                <h2 class="font-display text-2xl lg:text-3xl font-bold text-brand-text mt-2">{grupa.etykieta}</h2>
+                <p class="text-sm text-brand-text-light mt-2 max-w-xl">{grupa.opis}</p>
+              </div>
+              <Przycisk
+                href={grupa.podstrona}
+                wariant="outline"
+                rozmiar="sm"
+                ikona="arrow-right"
+                ikonaPo="prawo"
+                class="self-start sm:self-end shrink-0"
+              >
+                Zobacz {grupa.etykieta.toLowerCase()}
+              </Przycisk>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+              {kartyUslug[grupa.klucz].map((karta, i) => (
+                <Odslon wariant="up" zwloka={i * 60}>
+                  <KartaUslugi tytul={karta.tytul} opis={karta.opis} foto={karta.foto} href={karta.href}>
+                    {/* Odznaka ceny: pełna oliwka z ciemnym napisem (9,22:1).
+                        Wcześniej był to oliwkowy napis na przyciemnionym
+                        zdjęciu - czyli kontrast zależny od tego, co akurat
+                        jest pod spodem, a więc niepoliczalny. */}
+                    <div
+                      slot="odznaka"
+                      class="absolute top-3 right-3 z-10 rounded-lg bg-brand-olive px-3 py-1.5 text-right shadow-md shadow-black/20"
+                    >
+                      <span class="block text-sm font-bold leading-tight text-brand-dark">{karta.cena}</span>
+                      {karta.nota && <span class="block text-[11px] leading-tight text-brand-dark/80">{karta.nota}</span>}
+                    </div>
+                  </KartaUslugi>
+                </Odslon>
+              ))}
+            </div>
           </div>
         ))
       }
-
-      <div class="font-display text-base font-bold text-brand-text pb-1 mt-8">Typ usługi:</div>
-      <div class="flex flex-wrap gap-2" role="group" aria-label="Typ usługi">
-        {
-          zakladki.map((zakladka) => (
-            <label for={`zakladka-${zakladka.klucz}`} class={klasaZakladki} data-zakladka-dolna>
-              {zakladka.etykieta}
-            </label>
-          ))
-        }
-      </div>
     </div>
   </section>
 
   <BanerCta
-    tytul="Chcesz poznać dokładną cenę?"
-    podtytul="Opisz projekt w formularzu - wycenimy go w ciągu 24 godzin, bezpłatnie"
-  >
-    <Przycisk slot="akcja" href="/wycena/" rozmiar="lg" ikona="receipt-text">Bezpłatna wycena</Przycisk>
-  </BanerCta>
+    tytul="Widełki to nie wycena. Chcesz konkret?"
+    opis="Ceny wyżej pokazują rząd wielkości. Dokładna kwota zależy od wymiarów, terenu i materiału - opisz projekt, a policzymy go dla Twojej posesji."
+  />
 </Podstrona>

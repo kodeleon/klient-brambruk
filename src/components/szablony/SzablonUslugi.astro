@@ -1,10 +1,19 @@
 ---
 /**
- * SZABLON PODSTRONY USŁUGI - odpowiednik komponentu `ServicePage.jsx`.
+ * SZABLON PODSTRONY USŁUGI - następca komponentu `ServicePage.jsx`.
  *
  * Dziewięć podstron dzieli ten układ i różni się wyłącznie danymi
  * z `src/data/uslugi.ts`. Podstrona w `src/pages/` podaje klucz oraz
  * tytuł i opis dla wyszukiwarki - i nic poza tym.
+ *
+ * Zmiany z przejścia po wyglądzie (18.09.2026), te same co na hubach:
+ *   · podpis pod nagłówkiem mówi o usłudze, nie o jednym mieście,
+ *   · parametry mają kształty z `ikony.ts` zamiast emoji - emoji rysuje
+ *     się inaczej na każdym systemie i nie da się go pokolorować tokenem,
+ *   · sekcja treści to „DLACZEGO MY - Tak działamy": akapity plus lista
+ *     kroków plus akapit o sprzęcie,
+ *   · cennik w dwóch kolumnach na ciemnym tle, z wyjaśnieniem widełek,
+ *   · FAQ na jaśniejszym tle niż cennik nad nim.
  */
 import Podstrona from '../../layouts/Podstrona.astro'
 import { uslugi } from '../../data/uslugi'
@@ -12,12 +21,14 @@ import { cennikUslug } from '../../data/cennik'
 import Okruszki from '../ui/Okruszki.astro'
 import EtykietaSekcji from '../ui/EtykietaSekcji.astro'
 import Przycisk from '../ui/Przycisk.astro'
+import LinkSekcji from '../ui/LinkSekcji.astro'
 import Odslon from '../ui/Odslon.astro'
 import SekcjaFaq from '../ui/SekcjaFaq.astro'
 import GaleriaSiatka from '../ui/GaleriaSiatka.astro'
 import GaleriaKaruzela from '../ui/GaleriaKaruzela.astro'
 import Ikona from '../icons/Ikona.astro'
 import Foto from '../media/Foto.astro'
+import type { NazwaIkony } from '../icons/ikony'
 
 interface Props {
   klucz: keyof typeof uslugi
@@ -51,6 +62,13 @@ const okruszki = [
 ]
 
 const tytulGalerii = `Nasze ${dane.nazwaMnoga}`
+
+/** Trzy akapity treści w kolejności, w jakiej mają stać pod „Tak działamy". */
+const akapity = [
+  { tytul: dane.tresc.tytul1, tekst: dane.tresc.tekst1 },
+  { tytul: dane.tresc.tytul2, tekst: dane.tresc.tekst2 },
+  { tytul: dane.tresc.tytul3, tekst: dane.tresc.tekst3 },
+]
 ---
 
 <Podstrona tytul={tytul} opis={opis}>
@@ -59,22 +77,20 @@ const tytulGalerii = `Nasze ${dane.nazwaMnoga}`
   {/* ═══ SEKCJA GŁÓWNA ═══════════════════════════════════ */}
   <section class="bg-brand-section py-12 lg:py-20">
     <div class="max-w-7xl mx-auto px-5 lg:px-10">
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 items-center">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center">
         <Odslon wariant="left">
           <div>
             <EtykietaSekcji class="mb-3">{dane.etykieta}</EtykietaSekcji>
-            <h1 class="font-display text-3xl lg:text-[40px] font-bold text-brand-text leading-tight mb-2">
+            <h1 class="font-display text-3xl lg:text-[40px] font-bold text-brand-text leading-tight mb-3">
               {dane.tytul}
             </h1>
-            <p class="font-display text-lg font-semibold text-brand-olive mb-6">{dane.podtytul}</p>
+            <p class="border-l-2 border-brand-olive pl-4 font-display text-lg font-semibold text-brand-olive-text mb-6">
+              {dane.podtytul}
+            </p>
             <p class="text-brand-text-light leading-relaxed max-w-lg mb-8">{dane.wstep}</p>
-            <div class="flex flex-wrap gap-2">
-              <Przycisk href="/wycena/" rozmiar="md" ikona="receipt-text" class=" px-2 sm:px-6">
-                Zapytaj o wycenę
-              </Przycisk>
-              <Przycisk href="#sekcja-cennik" wariant="secondary" rozmiar="md" ikona="dollar-sign">
-                Cennik usługi
-              </Przycisk>
+            <div class="flex flex-wrap gap-3">
+              <Przycisk href="/wycena/" rozmiar="md" ikona="receipt-text">Zapytaj o wycenę</Przycisk>
+              <Przycisk href="#sekcja-cennik" wariant="outline" rozmiar="md" ikona="banknote">Cennik usługi</Przycisk>
             </div>
           </div>
         </Odslon>
@@ -107,12 +123,12 @@ const tytulGalerii = `Nasze ${dane.nazwaMnoga}`
         {
           dane.cechy.map((cecha, i) => (
             <Odslon zwloka={i * 80}>
-              <div class="bg-brand-card rounded-xl border border-brand-border p-6 hover:shadow-lg hover:shadow-black/5 hover:border-brand-olive/20 transition-all duration-300 h-full">
+              <div class="bg-brand-card rounded-xl border border-brand-border p-6 hover:shadow-lg hover:shadow-black/5 hover:border-brand-olive/30 transition-all duration-300 h-full">
                 <div class="flex items-center gap-4 mb-2">
-                  <div class="w-10 h-10 rounded-full bg-brand-olive/10 flex items-center justify-center text-lg">
-                    {cecha.emoji}
-                  </div>
-                  <h3 class="font-display text-base font-bold text-brand-text mb-1">{cecha.tytul}</h3>
+                  <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-brand-olive/15 text-brand-olive-text">
+                    <Ikona nazwa={cecha.ikona as NazwaIkony} rozmiar={19} />
+                  </span>
+                  <h3 class="font-display text-base font-bold text-brand-text">{cecha.tytul}</h3>
                 </div>
                 <p class="text-sm text-brand-text-light leading-relaxed">{cecha.opis}</p>
               </div>
@@ -123,105 +139,156 @@ const tytulGalerii = `Nasze ${dane.nazwaMnoga}`
     </div>
   </section>
 
-  {/* ═══ TREŚĆ (SEO) ═════════════════════════════════════ */}
-  <section class="bg-brand-section py-10 lg:py-16">
+  {/* ═══ DLACZEGO MY - TAK DZIAŁAMY ══════════════════════ */}
+  <section class="bg-brand-section py-12 lg:py-20">
     <div class="max-w-7xl mx-auto px-5 lg:px-10">
       <Odslon>
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
-          <div class="lg:col-span-2 space-y-10">
+        <div class="mb-8 lg:mb-12">
+          <EtykietaSekcji>Dlaczego my</EtykietaSekcji>
+          <h2 class="font-display text-2xl lg:text-4xl font-bold text-brand-text mt-2">Tak działamy</h2>
+        </div>
+      </Odslon>
+
+      <div class="grid grid-cols-1 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] gap-10 lg:gap-14 items-start">
+        <div class="space-y-10">
+          <Odslon wariant="left">
             <div>
-              <h2 class="font-display text-xl lg:text-2xl font-bold text-brand-text mb-4">{dane.tresc.tytul1}</h2>
-              <p class="text-brand-text-light leading-relaxed">{dane.tresc.tekst1}</p>
+              <h3 class="font-display text-lg lg:text-xl font-bold text-brand-text mb-3">{akapity[0].tytul}</h3>
+              <p class="text-brand-text-light leading-relaxed">{akapity[0].tekst}</p>
             </div>
+          </Odslon>
+
+          <Odslon wariant="left" zwloka={60}>
             <div>
-              <h3 class="font-display text-lg lg:text-xl font-bold text-brand-text mb-4">{dane.tresc.tytul2}</h3>
-              <p class="text-brand-text-light leading-relaxed">{dane.tresc.tekst2}</p>
+              <h3 class="font-display text-lg lg:text-xl font-bold text-brand-text mb-3">{dane.kroki.tytul}</h3>
+              <p class="text-brand-text-light leading-relaxed mb-4">{dane.kroki.wstep}</p>
+              {/* Lista, nie akapit: kroki mają być policzalne wzrokiem. */}
+              <ol class="space-y-2.5">
+                {
+                  dane.kroki.lista.map((krok) => (
+                    <li class="flex gap-3 text-brand-text-light leading-relaxed">
+                      <span class="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-brand-olive" aria-hidden="true"></span>
+                      <span>{krok}</span>
+                    </li>
+                  ))
+                }
+              </ol>
             </div>
+          </Odslon>
+
+          {
+            akapity.slice(1).map((akapit, i) => (
+              <Odslon wariant="left" zwloka={120 + i * 60}>
+                <div>
+                  <h3 class="font-display text-lg lg:text-xl font-bold text-brand-text mb-3">{akapit.tytul}</h3>
+                  <p class="text-brand-text-light leading-relaxed">{akapit.tekst}</p>
+                </div>
+              </Odslon>
+            ))
+          }
+
+          <Odslon wariant="left" zwloka={240}>
             <div>
-              <h3 class="font-display text-lg lg:text-xl font-bold text-brand-text mb-4">{dane.tresc.tytul3}</h3>
-              <p class="text-brand-text-light leading-relaxed">{dane.tresc.tekst3}</p>
+              <h3 class="font-display text-lg lg:text-xl font-bold text-brand-text mb-3">Sprzęt, na którym pracujemy</h3>
+              <p class="text-brand-text-light leading-relaxed">{dane.sprzet}</p>
             </div>
-          </div>
-          <div>
+          </Odslon>
+        </div>
+
+        <Odslon wariant="right">
+          <div class="lg:sticky lg:top-[calc(var(--naglowek-wysokosc)+2rem)]">
             <Foto
               klucz={dane.fotoHero}
               alt={`${dane.tytul} - realizacja BramBruk`}
-              class="w-full h-[380px] object-cover rounded-xl"
+              class="w-full h-[380px] object-cover rounded-2xl"
             />
           </div>
-        </div>
-      </Odslon>
+        </Odslon>
+      </div>
     </div>
   </section>
 
   {/* ═══ CENNIK ══════════════════════════════════════════ */}
-  <section class="bg-brand-bg py-10 lg:py-16" id="sekcja-cennik">
-    <div class="max-w-4xl mx-auto px-5 lg:px-10">
-      <div class="mb-6">
-        <EtykietaSekcji>Orientacyjny cennik</EtykietaSekcji>
-        <h2 class="font-display text-xl lg:text-2xl font-bold text-brand-text mt-2">
-          Ile kosztuje {dane.nazwaPojedyncza}?
-        </h2>
-      </div>
+  <section class="bg-brand-dark py-14 lg:py-20" id="sekcja-cennik">
+    <div class="max-w-7xl mx-auto px-5 lg:px-10">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-start">
+        <Odslon wariant="left">
+          <div class="lg:sticky lg:top-[calc(var(--naglowek-wysokosc)+2rem)]">
+            <EtykietaSekcji wariant="ciemne">Orientacyjny cennik</EtykietaSekcji>
+            <h2 class="font-display text-2xl lg:text-3xl font-bold text-white mt-2 mb-4">
+              Ile kosztuje {dane.nazwaPojedyncza}?
+            </h2>
+            <p class="text-neutral-400 leading-relaxed mb-5">
+              Cennik pokazuje widełki cenowe, a nie konkretne ceny, ponieważ ostateczny koszt zależy od
+              kilku rzeczy, których nie widać na etapie zapytania:
+            </p>
 
-      <div class="bg-brand-card rounded-xl border border-brand-border overflow-hidden">
-        {
-          cennik.map((wiersz, i) => (
-            <div
-              class:list={[
-                'flex items-center justify-between px-6 py-4',
-                i !== cennik.length - 1 && 'border-b border-brand-border',
-                i % 2 === 0 ? 'bg-brand-card' : 'bg-brand-section',
-              ]}
-            >
-              <span class="text-sm text-brand-text">{wiersz.usluga}</span>
-              <span class="text-sm font-semibold text-brand-olive whitespace-nowrap ml-4">{wiersz.cena}</span>
+            <ul class="space-y-2.5 mb-8">
+              {
+                dane.cennikCzynniki.map((czynnik) => (
+                  <li class="flex gap-3 text-sm text-brand-text-xlight leading-relaxed">
+                    <Ikona nazwa="check-circle-2" rozmiar={17} class="mt-px shrink-0 text-brand-olive" />
+                    <span>{czynnik}</span>
+                  </li>
+                ))
+              }
+            </ul>
+
+            <div class="flex flex-wrap gap-3">
+              <Przycisk href="/wycena/" rozmiar="md" ikona="receipt-text">Bezpłatna wycena</Przycisk>
+              <Przycisk href="/uslugi/" wariant="secondary" rozmiar="md" ikona="banknote">Inne usługi</Przycisk>
             </div>
-          ))
-        }
-      </div>
+          </div>
+        </Odslon>
 
-      <p class="text-xs text-brand-text-light mt-4">
-        Ceny orientacyjne - dokładna wycena po bezpłatnej konsultacji. Aktualne na 2026 r.
-      </p>
+        <Odslon wariant="right">
+          <div>
+            <div class="overflow-hidden rounded-2xl border border-white/10 bg-white/[0.04]">
+              {
+                cennik.map((wiersz, i) => (
+                  <div
+                    class:list={[
+                      'flex items-center justify-between gap-4 px-6 py-4',
+                      i !== cennik.length - 1 && 'border-b border-white/10',
+                    ]}
+                  >
+                    <span class="text-sm text-brand-text-xlight">{wiersz.usluga}</span>
+                    <span class="text-sm font-bold text-brand-olive whitespace-nowrap">{wiersz.cena}</span>
+                  </div>
+                ))
+              }
+            </div>
 
-      <div class="mt-6 text-center flex gap-2 justify-center">
-        <Przycisk href="/wycena/" rozmiar="md" ikona="receipt-text">Bezpłatna wycena</Przycisk>
-        <Przycisk href="/uslugi/" wariant="secondary" rozmiar="md" ikona="dollar-sign">Pełny cennik</Przycisk>
+            <p class="mt-4 flex items-start gap-2 text-xs text-neutral-400 leading-relaxed">
+              <Ikona nazwa="alert-circle" rozmiar={14} class="mt-0.5 shrink-0" />
+              <span>
+                Ceny orientacyjne, aktualne na 2026 r. Nie stanowią oferty w rozumieniu Kodeksu cywilnego -
+                dokładną kwotę podajemy po bezpłatnej wizji lokalnej.
+              </span>
+            </p>
+          </div>
+        </Odslon>
       </div>
     </div>
   </section>
 
   {/* ═══ REALIZACJE ══════════════════════════════════════ */}
-  <section class="bg-brand-section py-10 lg:py-16">
+  <section class="bg-brand-section py-12 lg:py-16">
     <div class="max-w-7xl mx-auto px-5 lg:px-10">
-      <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between mb-10">
-        <div>
-          <EtykietaSekcji>Realizacje</EtykietaSekcji>
-          <h2 class="font-display text-xl lg:text-2xl font-bold text-brand-text mt-2">{tytulGalerii}</h2>
+      <Odslon>
+        <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4 mb-6">
+          <div>
+            <EtykietaSekcji>Realizacje</EtykietaSekcji>
+            <h2 class="font-display text-xl lg:text-2xl font-bold text-brand-text mt-2">{tytulGalerii}</h2>
+          </div>
+          <LinkSekcji href="/realizacje/" ikona="images" miejsce="naglowek">Zobacz wszystkie realizacje</LinkSekcji>
         </div>
-        <a
-          href="/realizacje/"
-          class="hidden lg:inline-flex items-center gap-2 text-brand-sage font-semibold text-sm hover:gap-3 transition-all"
-        >
-          Zobacz wszystkie realizacje
-          <Ikona nazwa="arrow-right" rozmiar={16} />
-        </a>
-      </div>
+      </Odslon>
 
       <GaleriaSiatka pozycje={dane.galeria} class="hidden md:grid" />
       <GaleriaKaruzela pozycje={dane.galeria} class="md:hidden" />
 
-      <div class="mt-6 flex justify-center lg:hidden">
-        <a
-          href="/realizacje/"
-          class="inline-flex items-center gap-2 text-brand-sage font-semibold text-sm hover:gap-3 transition-all"
-        >
-          <Ikona nazwa="images" rozmiar={16} />
-          Zobacz wszystkie realizacje
-          <Ikona nazwa="arrow-right" rozmiar={16} />
-        </a>
-      </div>
+      <LinkSekcji href="/realizacje/" ikona="images">Zobacz wszystkie realizacje</LinkSekcji>
     </div>
   </section>
 
@@ -229,7 +296,6 @@ const tytulGalerii = `Nasze ${dane.nazwaMnoga}`
     etykieta={`FAQ - ${dane.etykieta}`}
     tytul={`Pytania o ${dane.okruszek.toLowerCase()}`}
     pytania={dane.faq}
+    tlo="bg-brand-bg"
   />
-
-  <div class="mt-6"></div>
 </Podstrona>

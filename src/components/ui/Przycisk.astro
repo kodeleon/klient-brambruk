@@ -2,20 +2,36 @@
 /**
  * PRZYCISK - odpowiednik `Button.jsx` ze starego projektu.
  *
- * Warianty, rozmiary i komplet klas przeniesione 1:1. Renderuje `<a>`, jeśli
- * dostanie `href`, w przeciwnym razie `<button>` - tak jak poprzednio.
+ * Renderuje `<a>`, jeśli dostanie `href`, w przeciwnym razie `<button>`.
+ *
+ * ┌── WARIANT WYBIERA TŁO, NA KTÓRYM PRZYCISK STOI ────────────────────┐
+ * │ `secondary` (obrys oliwkowy) jest policzony pod CIEMNE tło. Na      │
+ * │ jasnym sam `brand-olive` daje 1,63:1, czyli obrys i napis są ledwo  │
+ * │ widoczne - to była uwaga „słaby kontrast przycisku cennika".        │
+ * │ Na jasnym tle jest od tego `outline`. Zasada i tabela: tokens.css.  │
+ * │                                                                     │
+ * │   ciemne tło → primary, secondary, dark                             │
+ * │   jasne tło  → primary, outline, ghost, dark                        │
+ * │                                                                     │
+ * │ `primary` działa wszędzie: to pełne wypełnienie oliwką z ciemnym    │
+ * │ napisem (9,22:1), niezależne od tła pod spodem.                     │
+ * └─────────────────────────────────────────────────────────────────────┘
  *
  * Ikona: zamiast komponentu Reacta podajemy nazwę kształtu z `ikony.ts`.
+ * `ikonaPo="prawo"` przesuwa ją za napis - do przycisków, które prowadzą
+ * dalej („Wszystkie usługi", „Zobacz realizacje"), gdzie strzałka przed
+ * napisem czytałaby się jak powrót.
  */
 import Ikona from '../icons/Ikona.astro'
 import type { NazwaIkony } from '../icons/ikony'
 
 interface Props {
   href?: string
-  wariant?: 'primary' | 'secondary' | 'dark' | 'custom-dark' | 'ghost'
+  wariant?: 'primary' | 'secondary' | 'outline' | 'dark' | 'custom-dark' | 'ghost'
   rozmiar?: 'sm' | 'md' | 'lg'
   class?: string
   ikona?: NazwaIkony
+  ikonaPo?: 'lewo' | 'prawo'
   typ?: 'button' | 'submit'
   [klucz: string]: unknown
 }
@@ -26,43 +42,50 @@ const {
   rozmiar = 'md',
   class: klasa = '',
   ikona,
+  ikonaPo = 'lewo',
   typ = 'button',
   ...reszta
 } = Astro.props
 
 const baza =
-  'inline-flex items-center justify-center font-semibold transition-all duration-300 rounded-full whitespace-nowrap'
+  'inline-flex items-center justify-center gap-2 font-semibold transition-all duration-300 rounded-full whitespace-nowrap'
 
 const warianty = {
   primary:
     'bg-brand-olive text-brand-dark hover:bg-brand-olive-dark hover:shadow-lg hover:shadow-brand-olive/20 active:scale-[0.97]',
+  /** Obrys na CIEMNYM tle. */
   secondary:
     'border-2 border-brand-olive text-brand-olive hover:bg-brand-olive hover:text-brand-dark active:scale-[0.97]',
+  /** Obrys na JASNYM tle - ten sam gest, przyciemniona oliwka. */
+  outline:
+    'border-2 border-brand-olive-text/45 text-brand-olive-text hover:border-brand-olive-text hover:bg-brand-olive-text hover:text-white active:scale-[0.97]',
   dark: 'bg-brand-dark text-white hover:bg-neutral-800 active:scale-[0.97]',
   'custom-dark':
-    'flex bg-brand-dark hover:bg-neutral-800 active:scale-[0.97] items-center gap-2 text-neutral-400 hover:text-white text-sm transition-colors',
-  ghost: 'text-brand-olive hover:text-brand-olive-dark hover:bg-brand-olive/5',
+    'flex bg-brand-dark hover:bg-neutral-800 active:scale-[0.97] items-center text-neutral-400 hover:text-white text-sm transition-colors',
+  ghost: 'text-brand-olive-text hover:bg-brand-olive/10 hover:text-brand-dark',
 }
 
+/** Wysokość mieści próg celu dotykowego (44 px, WCAG 2.5.5) od rozmiaru `md`. */
 const rozmiary = {
   sm: 'px-5 py-2 text-xs tracking-wide',
   md: 'px-7 py-3 text-sm tracking-wide',
   lg: 'px-9 py-4 text-base',
 }
 
+const rozmiaryIkon = { sm: 14, md: 16, lg: 18 } as const
+
 const klasy = `${baza} ${warianty[wariant]} ${rozmiary[rozmiar]} ${klasa}`
+const znacznik = href ? 'a' : 'button'
+const Znacznik = znacznik as 'a'
 ---
 
-{
-  href ? (
-    <a href={href} class={klasy} {...reszta}>
-      {ikona && <Ikona nazwa={ikona} rozmiar={16} class="mr-2 shrink-0" />}
-      <slot />
-    </a>
-  ) : (
-    <button type={typ} class={klasy} {...reszta}>
-      {ikona && <Ikona nazwa={ikona} rozmiar={16} class="mr-2 shrink-0" />}
-      <slot />
-    </button>
-  )
-}
+<Znacznik
+  href={href}
+  type={href ? undefined : typ}
+  class={klasy}
+  {...reszta}
+>
+  {ikona && ikonaPo === 'lewo' && <Ikona nazwa={ikona} rozmiar={rozmiaryIkon[rozmiar]} class="shrink-0" />}
+  <slot />
+  {ikona && ikonaPo === 'prawo' && <Ikona nazwa={ikona} rozmiar={rozmiaryIkon[rozmiar]} class="shrink-0" />}
+</Znacznik>

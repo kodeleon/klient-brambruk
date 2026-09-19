@@ -2,16 +2,16 @@
 /**
  * / - strona główna.
  *
- * Odpowiednik `code/src/pages/Home.jsx`. Sekcje, treść i klasy przeniesione
- * 1:1. Jedna zmiana techniczna: tło sekcji głównej było zdjęciem wstawionym
- * przez `style={{ backgroundImage }}` w znaczniku - CSP tego nie przepuszcza
- * (`style-src` bez `'unsafe-inline'`), a i tak omijało to potok zdjęć.
- * Teraz jest to zwykłe zdjęcie rozciągnięte na sekcję, pod gradientem.
+ * Następczyni `code/src/pages/Home.jsx`. Po przejściu po wyglądzie
+ * (18.09.2026) zmieniło się pięć rzeczy - każda ma uzasadnienie przy sekcji,
+ * której dotyczy. Wspólny mianownik: sekcje miały tę samą wagę wizualną,
+ * więc żadna nie prowadziła dalej.
  */
 import Podstrona from '../layouts/Podstrona.astro'
 import { dane, opinie, fixly, statystyki } from '../config/dane'
 import EtykietaSekcji from '../components/ui/EtykietaSekcji.astro'
 import Przycisk from '../components/ui/Przycisk.astro'
+import LinkSekcji from '../components/ui/LinkSekcji.astro'
 import Odslon from '../components/ui/Odslon.astro'
 import KartaUslugi from '../components/ui/KartaUslugi.astro'
 import KartaOpinii from '../components/ui/KartaOpinii.astro'
@@ -23,35 +23,54 @@ import BanerCta from '../components/ui/BanerCta.astro'
 import PrzyciskFixly from '../components/ui/PrzyciskFixly.astro'
 import Ikona from '../components/icons/Ikona.astro'
 import Foto from '../components/media/Foto.astro'
+import Logo from '../components/media/Logo.astro'
+import Preload from '../components/media/Preload.astro'
 
+/**
+ * Karty typów usług. `tagi` wypisują rodzaje z danego zakresu - odwiedzający
+ * ma zobaczyć „bramy przesuwne", zanim kliknie, a nie dopiero na hubie.
+ * Cztery pozycje to sufit: piąta nie mieści się w jednym wierszu na telefonie.
+ */
 const uslugi = [
   {
     tytul: 'Ogrodzenia i bramy',
     opis: 'Montaż ogrodzeń panelowych, murowanych i z siatki. Bramy przesuwne, dwuskrzydłowe, furtki. Automatyka i sterowanie.',
     foto: 'karta.glowna-ogrodzenia',
     href: '/ogrodzenia/',
+    tagi: ['Panelowe 2D/3D', 'Bramy przesuwne', 'Furtki', 'Podmurówki'],
   },
   {
     tytul: 'Brukarstwo',
     opis: 'Układanie kostki brukowej na podjazdy, chodniki, alejki ogrodowe i tarasy. Pełna realizacja z podbudową.',
     foto: 'karta.glowna-brukarstwo',
     href: '/brukarstwo/',
+    tagi: ['Podjazdy', 'Chodniki', 'Tarasy', 'Alejki ogrodowe'],
   },
   {
     tytul: 'Budownictwo',
     opis: 'Altany ogrodowe, garaże blaszane i drewniane, domki narzędziowe, wiaty. Solidna konstrukcja, terminowy montaż.',
     foto: 'karta.glowna-budownictwo',
     href: '/budownictwo/',
+    tagi: ['Altany', 'Garaże', 'Domki narzędziowe', 'Wiaty'],
   },
 ]
 
+/* Podpisy są dociągnięte do tego, co faktycznie jest na zdjęciu - klucz
+   `realizacja.NN` znaczy jedno zdjęcie i jeden temat na całej witrynie. */
 const galeria = [
-  { foto: 'realizacja.01', tytul: 'Ogrodzenie panelowe', lokalizacja: 'Biała Podlaska' },
-  { foto: 'realizacja.02', tytul: 'Podjazd z kostki', lokalizacja: 'Sławacinek' },
-  { foto: 'realizacja.03', tytul: 'Brama przesuwna', lokalizacja: 'Cicibór' },
-  { foto: 'realizacja.04', tytul: 'Altanka ogrodowa', lokalizacja: 'Rakowiska' },
-  { foto: 'realizacja.05', tytul: 'Furtka metalowa', lokalizacja: 'Międzyrzec Podl.' },
-  { foto: 'realizacja.06', tytul: 'Chodnik z kostki', lokalizacja: 'Biała Podlaska' },
+  { foto: 'realizacja.01', tytul: 'Ogrodzenie panelowe + brama', lokalizacja: 'Biała Podlaska' },
+  { foto: 'realizacja.02', tytul: 'Podjazd z kostki', lokalizacja: 'Międzyrzec Podlaski' },
+  { foto: 'realizacja.08', tytul: 'Brama przesuwna', lokalizacja: 'Janów Podlaski' },
+  { foto: 'realizacja.04', tytul: 'Altana ogrodowa', lokalizacja: 'Terespol' },
+  { foto: 'realizacja.07', tytul: 'Furtka i przęsła', lokalizacja: 'Radzyń Podlaski' },
+  { foto: 'realizacja.09', tytul: 'Chodniki i obrzeża', lokalizacja: 'Sławacinek Stary' },
+]
+
+/** Liczby w sekcji głównej. Wartości z `dane.ts`, nie wpisane tutaj. */
+const kluczoweLiczby = [
+  { wartosc: fixly.ocena, etykieta: 'ocena na Fixly' },
+  { wartosc: statystyki.realizacje, etykieta: 'realizacji' },
+  { wartosc: `${statystyki.lata} lat`, etykieta: 'w regionie' },
 ]
 
 const faq = [
@@ -68,7 +87,7 @@ const faq = [
   {
     pytanie: 'Jaki jest obszar działania firmy?',
     odpowiedz:
-      'Działamy na terenie Białej Podlaskiej i okolic w promieniu ok. 50 km: Międzyrzec Podlaski, Terespol, Radzyń Podlaski, Parczew, Łosice i okoliczne miejscowości.',
+      'Pracujemy w promieniu około 100 km od Białej Podlaskiej, czyli w województwie lubelskim, podlaskim i mazowieckim. Najczęściej jeździmy do Międzyrzeca Podlaskiego, Radzynia Podlaskiego, Łukowa, Siedlec, Łosic, Terespola, Janowa Podlaskiego i Parczewa. Mieszkasz dalej - zadzwoń, sprawdzimy, czy damy radę dojechać.',
   },
   {
     pytanie: 'Co wpływa na cenę ogrodzenia?',
@@ -103,61 +122,96 @@ const kroki = [
 
 <Podstrona
   tytul="Ogrodzenia, bramy i brukarstwo - BramBruk | Biała Podlaska i okolice"
-  opis="Ogrodzenia panelowe, bramy, furtki i kostka brukowa w Białej Podlaskiej i okolicach. 100+ realizacji, 5 lat doświadczenia. Bezpłatna wycena w 24h."
+  opis="Ogrodzenia panelowe, bramy, furtki i kostka brukowa w Białej Podlaskiej i okolicach. 50+ realizacji, 5 lat doświadczenia. Bezpłatna wycena w 24h."
 >
-  {/* ═══ SEKCJA GŁÓWNA ═══════════════════════════════════ */}
+  <Preload slot="head" use="hero.glowna" />
+
+  {/* ═══ SEKCJA GŁÓWNA ═══════════════════════════════════
+      Zamiast jednego zdjęcia obok treści - trzy, w różnych rozmiarach,
+      nachodzące na siebie. Jedno zdjęcie mówi „robimy ogrodzenia"; trzy
+      mówią „robimy ogrodzenia, bruk i budynki", czyli dokładnie to, co
+      niesie nadtytuł. Kolaż wchodzi dopiero od 1024 px - niżej nie ma go
+      gdzie złożyć, a `sizes` w manifeście deklaruje wtedy 1 px, więc
+      przeglądarka nie pobiera zdjęć, których i tak nie pokaże.
+  */}
   <section class="relative bg-brand-dark overflow-hidden">
     <div class="absolute inset-0">
       <Foto klucz="hero.glowna" alt="" class="absolute inset-0 w-full h-full object-cover" />
       <div class="absolute inset-0 bg-gradient-to-r from-brand-dark via-brand-dark/95 to-brand-dark/70"></div>
     </div>
-    <div
-      class="relative max-w-7xl mx-auto px-5 lg:px-10 py-20 lg:py-28 min-h-[85vh] flex flex-col justify-center"
-    >
+
+    <div class="relative max-w-7xl mx-auto px-5 lg:px-10 py-20 lg:py-28 min-h-[85vh] flex flex-col justify-center">
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center">
         <div>
-          <EtykietaSekcji class="text-brand-olive/80 mb-4 flex items-center justify-between sm:justify-start sm:gap-x-2">
+          <EtykietaSekcji wariant="ciemne" class="mb-4 flex items-center justify-between sm:justify-start sm:gap-x-2">
             <span>Ogrodzenia</span>
-            <span>·</span>
+            <span aria-hidden="true">·</span>
             <span>Brukarstwo</span>
-            <span>·</span>
+            <span aria-hidden="true">·</span>
             <span>Budownictwo</span>
           </EtykietaSekcji>
 
-          <h1 class="font-display text-4xl md:text-5xl lg:text-[56px] font-bold text-white leading-[1.1] mb-3">
+          <h1 class="font-display text-4xl md:text-5xl lg:text-[56px] font-bold text-white leading-[1.1] mb-5">
             Ogrodzenia, bramy<br />i brukarstwo
           </h1>
-          <p class="text-xl lg:text-2xl font-display font-semibold text-brand-olive mb-6">
-            Powiat bialski i okolice
+
+          {/* Pionowa kreska przed podpisem: oddziela go od nagłówka bez
+              dokładania kolejnego odstępu i wiąże go kolorem z akcentem. */}
+          <p class="border-l-2 border-brand-olive pl-4 text-xl lg:text-2xl font-display font-semibold text-brand-olive mb-6">
+            Lubelskie, podlaskie i mazowieckie
           </p>
+
           <p class="text-neutral-400 text-base lg:text-lg leading-relaxed max-w-lg mb-10">
             Montaż ogrodzeń panelowych, bram wjazdowych i furtek. Układanie kostki brukowej na podjazdy,
-            chodniki i tarasy. Obsługujemy Białą Podlaską, Międzyrzec Podlaski, Terespol i okolice.
+            chodniki i tarasy. Pracujemy w promieniu {statystyki.zasieg} od Białej Podlaskiej.
           </p>
-          <div class="flex flex-wrap gap-4 mb-12">
+
+          <div class="flex flex-wrap gap-4 mb-10">
             <Przycisk href="/wycena/" rozmiar="lg" ikona="receipt-text">Bezpłatna wycena</Przycisk>
             <Przycisk href={`tel:${dane.telefonHref}`} wariant="secondary" rozmiar="lg" ikona="phone">Zadzwoń</Przycisk>
           </div>
-          <div
-            class="flex flex-wrap items-center gap-y-1 text-sm text-neutral-500 justify-between sm:justify-start sm:gap-x-2"
-          >
-            <span class="flex items-center gap-1.5">5/5 Fixly</span>
-            <span>·</span>
-            <span>{statystyki.realizacje} realizacji</span>
-            <span>·</span>
-            <span>5 lat doświadczenia</span>
+
+          {/* Liczby były wcześniej jednym wierszem drobnego tekstu w kolorze
+              o kontraście 3,52:1 - czyli dowód na wiarygodność firmy wyglądał
+              jak stopka. Teraz: wartość w kolorze akcentu, etykieta pod nią. */}
+          <dl class="flex flex-wrap gap-x-10 gap-y-4">
+            {
+              kluczoweLiczby.map((pozycja) => (
+                <div>
+                  <dd class="font-display text-2xl lg:text-3xl font-bold text-brand-olive leading-none">
+                    {pozycja.wartosc}
+                  </dd>
+                  <dt class="mt-1.5 text-[11px] font-semibold uppercase tracking-[2px] text-neutral-400">
+                    {pozycja.etykieta}
+                  </dt>
+                </div>
+              ))
+            }
+          </dl>
+        </div>
+
+        <div class="hidden lg:block">
+          {/* Trzy prostokąty NACHODZĄ na siebie - to jest cała różnica wobec
+              trzech zdjęć obok siebie. Obwódka w kolorze tła (`ring-4
+              ring-brand-dark`) robi za odstęp na styku, więc warstwy czytają
+              się jako stos, a nie jako jedno zdjęcie z dziurami. */}
+          <div class="relative h-[520px]">
+            <div class="absolute left-0 top-8 z-10 w-[320px] overflow-hidden rounded-2xl shadow-2xl ring-4 ring-brand-dark">
+              <Foto klucz="hero.glowna-kolaz-1" class="w-full h-full object-cover" />
+            </div>
+            <div class="absolute right-0 top-0 w-[240px] overflow-hidden rounded-2xl shadow-xl ring-4 ring-brand-dark">
+              <Foto klucz="hero.glowna-kolaz-2" class="w-full h-full object-cover" />
+            </div>
+            <div class="absolute left-[180px] bottom-0 z-20 w-[260px] overflow-hidden rounded-2xl shadow-2xl ring-4 ring-brand-dark">
+              <Foto klucz="hero.glowna-kolaz-3" class="w-full h-full object-cover" />
+            </div>
           </div>
         </div>
-        <div class="hidden lg:block">
-          <Foto
-            klucz="hero.glowna-obok"
-            alt="Ogrodzenie panelowe z bramą - realizacja BramBruk"
-            class="w-full h-[480px] object-cover rounded-2xl shadow-2xl"
-          />
-        </div>
       </div>
+
       <div
-        class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-neutral-600 animate-bounce"
+        class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-neutral-400 animate-bounce"
+        aria-hidden="true"
       >
         <Ikona nazwa="chevron-down" rozmiar={20} />
       </div>
@@ -165,88 +219,81 @@ const kroki = [
   </section>
 
   {/* ═══ USŁUGI ══════════════════════════════════════════ */}
-  <section class="bg-brand-section py-10 lg:py-16">
+  <section class="bg-brand-section py-12 lg:py-16">
     <div class="max-w-7xl mx-auto px-5 lg:px-10">
       <Odslon>
-        <div class="mb-6">
-          <EtykietaSekcji>Nasze usługi</EtykietaSekcji>
-          <h2 class="font-display text-2xl lg:text-4xl font-bold text-brand-text mt-2">
-            Kompleksowa obsługa Twojej posesji
-          </h2>
+        <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4 mb-6">
+          <div>
+            <EtykietaSekcji>Nasze usługi</EtykietaSekcji>
+            <h2 class="font-display text-2xl lg:text-4xl font-bold text-brand-text mt-2">
+              Kompleksowa obsługa Twojej posesji
+            </h2>
+          </div>
+          <LinkSekcji href="/uslugi/" ikona="banknote" miejsce="naglowek">Wszystkie usługi i cennik</LinkSekcji>
         </div>
       </Odslon>
+
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {
           uslugi.map((usluga, i) => (
             <Odslon wariant="up" zwloka={i * 80}>
-              <KartaUslugi tytul={usluga.tytul} opis={usluga.opis} foto={usluga.foto} href={usluga.href} />
+              <KartaUslugi
+                tytul={usluga.tytul}
+                opis={usluga.opis}
+                foto={usluga.foto}
+                href={usluga.href}
+                tagi={usluga.tagi}
+              />
             </Odslon>
           ))
         }
       </div>
-      <Odslon zwloka={240}>
-        <div class="mt-8 flex justify-center lg:justify-start">
-          <a
-            href="/uslugi/"
-            class="inline-flex items-center gap-2 text-brand-sage font-semibold text-sm hover:gap-3 transition-all"
-          >
-            Wszystkie usługi i cennik
-            <Ikona nazwa="arrow-right" rozmiar={16} />
-          </a>
-        </div>
-      </Odslon>
+
+      <LinkSekcji href="/uslugi/" ikona="banknote">Wszystkie usługi i cennik</LinkSekcji>
     </div>
   </section>
 
   {/* ═══ REALIZACJE ══════════════════════════════════════ */}
-  <section class="bg-brand-bg py-10 lg:py-16">
+  <section class="bg-brand-bg py-12 lg:py-16">
     <div class="max-w-7xl mx-auto px-5 lg:px-10">
       <Odslon>
-        <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between mb-6">
+        <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4 mb-6">
           <div>
             <EtykietaSekcji>Realizacje</EtykietaSekcji>
             <h2 class="font-display text-2xl lg:text-4xl font-bold text-brand-text mt-2">
               Nasze ostatnie projekty
             </h2>
           </div>
-          <a
-            href="/realizacje/"
-            class="hidden lg:inline-flex items-center gap-2 text-brand-sage font-semibold text-sm hover:gap-3 transition-all"
-          >
-            Zobacz wszystkie realizacje
-            <Ikona nazwa="arrow-right" rozmiar={16} />
-          </a>
+          <LinkSekcji href="/realizacje/" ikona="images" miejsce="naglowek">Zobacz wszystkie realizacje</LinkSekcji>
         </div>
       </Odslon>
+
       <GaleriaSiatka pozycje={galeria} class="hidden md:grid" />
       <GaleriaKaruzela pozycje={galeria} class="md:hidden" />
-      <div class="mt-6 flex justify-center lg:hidden">
-        <a
-          href="/realizacje/"
-          class="inline-flex items-center gap-2 text-brand-sage font-semibold text-sm hover:gap-3 transition-all"
-        >
-          <Ikona nazwa="images" rozmiar={16} />
-          Zobacz wszystkie realizacje
-          <Ikona nazwa="arrow-right" rozmiar={16} />
-        </a>
-      </div>
+
+      <LinkSekcji href="/realizacje/" ikona="images">Zobacz wszystkie realizacje</LinkSekcji>
     </div>
   </section>
 
-  {/* ═══ O FIRMIE ════════════════════════════════════════ */}
-  <section class="bg-brand-section py-10 lg:py-16">
+  {/* ═══ O FIRMIE ════════════════════════════════════════
+      Kolumna obok tekstu pokazuje znak firmowy, nie fotografię - to
+      jedyne miejsce na stronie głównej, gdzie logo stoi w pełnej formie.
+      Pod nim przycisk dalej: sekcja mówi o firmie w trzech akapitach,
+      a cała reszta czeka na /o-nas/ i wcześniej nic tam nie prowadziło.
+  */}
+  <section class="bg-brand-section py-12 lg:py-16">
     <div class="max-w-7xl mx-auto px-5 lg:px-10">
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 items-center">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center">
         <Odslon wariant="left">
           <div>
             <EtykietaSekcji>O firmie</EtykietaSekcji>
             <h2 class="font-display text-2xl lg:text-4xl font-bold text-brand-text mt-2 mb-6">
-              BramBruk - od 5 lat w regionie
+              BramBruk - od {statystyki.lata} lat w regionie
             </h2>
             <p class="text-brand-text-light leading-relaxed mb-4">
               Jesteśmy lokalną firmą z Białej Podlaskiej specjalizującą się w ogrodzeniach, brukarstwie
               i budownictwie lekkim. Każdego roku realizujemy dziesiątki projektów dla klientów
-              indywidualnych i przedsiębiorstw w powiecie bialskim i sąsiednich powiatach.
+              indywidualnych i przedsiębiorstw w województwie lubelskim, podlaskim i mazowieckim.
             </p>
             <p class="text-brand-text-light leading-relaxed mb-6">
               Stawiamy na jakość materiałów, terminowość i transparentną wycenę. Każdy projekt
@@ -256,13 +303,11 @@ const kroki = [
             <PasekStatystyk />
           </div>
         </Odslon>
+
         <Odslon wariant="right">
-          <div class="rounded-2xl overflow-hidden">
-            <Foto
-              klucz="zespol.portret"
-              alt="Zespół BramBruk przy pracy"
-              class="w-full h-[220px] lg:h-[420px] object-contain object-[50%_30%]"
-            />
+          <div class="flex flex-col items-center gap-6">
+            <Logo nazwa="pelne" alt="" sizes="(max-width:1024px) 60vw, 340px" class="w-full max-w-[340px] h-auto" />
+            <Przycisk href="/o-nas/" wariant="outline" rozmiar="md" ikona="building-2">Więcej o firmie</Przycisk>
           </div>
         </Odslon>
       </div>
@@ -270,25 +315,25 @@ const kroki = [
   </section>
 
   {/* ═══ OPINIE ══════════════════════════════════════════ */}
-  <section class="bg-brand-bg py-10 lg:py-16">
+  <section class="bg-brand-bg py-12 lg:py-16">
     <div class="max-w-7xl mx-auto px-5 lg:px-10">
       <Odslon>
         <div class="mb-6">
-          <EtykietaSekcji class="text-fixly-dark">Opinie klientów</EtykietaSekcji>
+          <EtykietaSekcji wariant="fixly">Opinie klientów</EtykietaSekcji>
           <h2 class="font-display text-2xl lg:text-4xl font-bold text-brand-text mt-2 mb-2">
             Co mówią nasi klienci
           </h2>
-          <p class="text-brand-text-light text-sm flex items-center gap-2">
-            <span class="flex text-fixly-main">
+          <p class="text-brand-text-light text-sm flex flex-wrap items-center gap-2">
+            <span class="flex text-fixly-main" role="img" aria-label={`Ocena ${fixly.ocena}`}>
               {Array.from({ length: 5 }).map(() => <Ikona nazwa="star" rozmiar={14} wypelnienie="currentColor" />)}
             </span>
-            {fixly.ocena} średnia ocen na
+            <span>{fixly.ocena} średnia ocen na</span>
             <PrzyciskFixly />
-            · {fixly.opinie} opinii
+            <span>· {fixly.opinie} opinii</span>
           </p>
         </div>
       </Odslon>
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         {
           opinie.map((opinia, i) => (
             <Odslon wariant="up" zwloka={i * 80}>
@@ -306,47 +351,45 @@ const kroki = [
     </div>
   </section>
 
-  {/* ═══ JAK DZIAŁAMY ════════════════════════════════════ */}
-  <section class="bg-brand-section py-10 lg:py-16">
+  {/* ═══ JAK DZIAŁAMY ════════════════════════════════════
+      Nagłówek sekcji stał wcześniej nad obiema kolumnami, a przyciski
+      były zduplikowane: jeden zestaw dla komputera, drugi dla telefonu.
+      Teraz lewa kolumna trzyma wszystko, co mówi (nagłówek, opis,
+      przyciski), a prawa wyłącznie trzy kroki - jedna kolumna, jedna rola.
+      Przycisk cennika jest wariantem `outline`: `secondary` na jasnym tle
+      dawał 1,63:1 i to była uwaga o słabym kontraście.
+  */}
+  <section class="bg-brand-section py-12 lg:py-16">
     <div class="max-w-7xl mx-auto px-5 lg:px-10">
-      <Odslon>
-        <div class="mb-6 lg:mb-14">
-          <EtykietaSekcji class="justify-start">Jak działamy</EtykietaSekcji>
-          <h2 class="font-display text-2xl lg:text-4xl font-bold text-brand-text mt-2">
-            Od zapytania do gotowej realizacji
-          </h2>
-        </div>
-      </Odslon>
-      <div class="grid grid-cols-1 lg:grid-cols-2 lg:gap-16 items-start">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-start">
         <Odslon wariant="left">
-          <div>
+          <div class="lg:sticky lg:top-[calc(var(--naglowek-wysokosc)+2rem)]">
+            <EtykietaSekcji>Jak działamy</EtykietaSekcji>
+            <h2 class="font-display text-2xl lg:text-4xl font-bold text-brand-text mt-2 mb-5">
+              Od zapytania do gotowej realizacji
+            </h2>
             <p class="text-brand-text-light leading-relaxed mb-4">
               Zrealizujemy ogrodzenie, podjazd z kostki lub altanę - niezależnie od wielkości projektu.
               Wystarczy, że opiszesz swoje potrzeby.
-            </p>
-            <p class="text-brand-text-light leading-relaxed mb-4">
-              Wypełnij formularz online lub zadzwoń - nasi specjaliści zadadzą kilka pytań, żeby
-              przygotować wycenę dokładnie dopasowaną do Twojej posesji i budżetu.
             </p>
             <p class="text-brand-text-light leading-relaxed mb-6">
               W ciągu 24 godzin od wysłania zgłoszenia otrzymasz orientacyjną wycenę. Następnie ustalamy
               termin, przyjeżdżamy i realizujemy - bez ukrytych kosztów.
             </p>
-            <div class="hidden lg:flex flex-wrap gap-3">
+            <div class="flex flex-wrap gap-3">
               <Przycisk href="/wycena/" rozmiar="md" ikona="receipt-text">Bezpłatna wycena</Przycisk>
-              <Przycisk href="/uslugi/" wariant="secondary" rozmiar="md" ikona="dollar-sign">
-                Sprawdź cennik
-              </Przycisk>
+              <Przycisk href="/uslugi/" wariant="outline" rozmiar="md" ikona="banknote">Sprawdź cennik</Przycisk>
             </div>
           </div>
         </Odslon>
+
         <div class="space-y-4">
           {
             kroki.map((krok, i) => (
               <Odslon wariant="right" zwloka={i * 100}>
                 <div class="flex gap-5 bg-brand-card border border-brand-border/60 rounded-2xl p-5 shadow-sm shadow-black/[0.04] hover:shadow-md hover:shadow-black/[0.06] transition-shadow duration-300">
-                  <div class="shrink-0 w-11 h-11 rounded-xl bg-brand-olive/10 flex items-center justify-center">
-                    <span class="font-display text-base font-bold text-brand-sage">{krok.numer}</span>
+                  <div class="shrink-0 w-11 h-11 rounded-xl bg-brand-olive/15 flex items-center justify-center">
+                    <span class="font-display text-base font-bold text-brand-olive-text">{krok.numer}</span>
                   </div>
                   <div>
                     <h3 class="font-display text-base font-bold text-brand-text mb-1">{krok.tytul}</h3>
@@ -357,20 +400,11 @@ const kroki = [
             ))
           }
         </div>
-        <div class="lg:hidden flex flex-wrap gap-3 mt-6">
-          <Przycisk href="/wycena/" rozmiar="md" ikona="receipt-text">Bezpłatna wycena</Przycisk>
-          <Przycisk href="/uslugi/" wariant="secondary" rozmiar="md" ikona="dollar-sign">Sprawdź cennik</Przycisk>
-        </div>
       </div>
     </div>
   </section>
 
   <SekcjaFaq pytania={faq} />
 
-  <BanerCta
-    tytul="Chcesz poznać dokładną cenę?"
-    podtytul="Opisz swój projekt - wycenimy go w ciągu 24 godzin, bezpłatnie"
-  >
-    <Przycisk slot="akcja" href="/wycena/" rozmiar="lg" ikona="receipt-text">Bezpłatna wycena</Przycisk>
-  </BanerCta>
+  <BanerCta tytul="Chcesz poznać dokładną cenę?" />
 </Podstrona>

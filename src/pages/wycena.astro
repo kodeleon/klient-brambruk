@@ -66,7 +66,7 @@ const wierszePodsumowania = [
       <div class="max-w-2xl mx-auto px-5 lg:px-10">
         <div class="bg-brand-card border border-brand-border rounded-2xl p-5 lg:p-8 text-center">
           <div
-            class="w-10 h-10 rounded-xl bg-brand-olive/10 flex items-center justify-center text-brand-olive mx-auto mb-3"
+            class="w-10 h-10 rounded-xl bg-brand-olive/10 flex items-center justify-center text-brand-olive-text mx-auto mb-3"
           >
             <Ikona nazwa="check-circle-2" rozmiar={20} />
           </div>
@@ -77,7 +77,7 @@ const wierszePodsumowania = [
           </p>
           <OsCzasuProcesu aktywny="2" etykieta="Co dalej" kompakt />
           <div class="flex flex-wrap justify-center gap-3">
-            <Przycisk href="/" wariant="secondary" ikona="home">Strona główna</Przycisk>
+            <Przycisk href="/" wariant="outline" ikona="home">Strona główna</Przycisk>
           </div>
         </div>
       </div>
@@ -91,7 +91,7 @@ const wierszePodsumowania = [
         <div class="absolute inset-0 bg-gradient-to-b from-brand-dark via-brand-dark/95 to-brand-dark"></div>
       </div>
       <div class="relative max-w-7xl mx-auto px-5 lg:px-10 py-10 lg:py-14 text-center">
-        <EtykietaSekcji class="mb-3">Bezpłatna wycena</EtykietaSekcji>
+        <EtykietaSekcji wariant="ciemne" class="mb-3">Bezpłatna wycena</EtykietaSekcji>
         <h1 class="font-display text-3xl lg:text-[42px] font-bold text-white leading-tight mb-3">
           Bezpłatna wycena w 24h
         </h1>
@@ -175,7 +175,7 @@ const wierszePodsumowania = [
                         <Foto klucz={typ.foto} alt={typ.etykieta} class="w-full h-full object-cover" />
                         <span class="karta-przeslona absolute inset-0 bg-brand-olive/15"></span>
                         <span
-                          class="karta-ikona absolute top-3 right-3 w-9 h-9 rounded-xl flex items-center justify-center transition-colors bg-white/80 text-brand-olive"
+                          class="karta-ikona absolute top-3 right-3 w-9 h-9 rounded-xl flex items-center justify-center transition-colors bg-white/90 text-brand-olive-text"
                         >
                           <Ikona nazwa={typ.ikona as 'shield'} rozmiar={18} />
                         </span>
@@ -336,7 +336,7 @@ const wierszePodsumowania = [
               >
                 <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
                   <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-xl flex items-center justify-center bg-brand-olive/10 text-brand-olive">
+                    <div class="w-10 h-10 rounded-xl flex items-center justify-center bg-brand-olive/10 text-brand-olive-text">
                       <Ikona nazwa="upload" rozmiar={18} />
                     </div>
                     <div>
@@ -461,7 +461,7 @@ const wierszePodsumowania = [
                     <Ikona
                       nazwa="chevron-right"
                       rozmiar={16}
-                      class="text-brand-text-light shrink-0 group-hover:text-brand-olive transition-colors"
+                      class="text-brand-text-light shrink-0 group-hover:text-brand-olive-text transition-colors"
                     />
                   </button>
                 ))
@@ -484,7 +484,7 @@ const wierszePodsumowania = [
 
           <p class="mt-6 text-xs text-brand-text-light" data-wycena-rodo hidden>
             Wysyłając formularz akceptujesz
-            <a href="/polityka-prywatnosci/" class="text-brand-olive underline hover:text-brand-olive-dark">
+            <a href="/polityka-prywatnosci/" class="text-brand-olive-text underline hover:text-brand-text">
               Politykę Prywatności
             </a>.
           </p>

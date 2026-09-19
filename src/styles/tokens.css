@@ -46,13 +46,26 @@
   --color-white: #ffffff;
   --color-black: #000000;
 
-  /* --- paleta marki (z tailwind.config.js starego projektu) --- */
+  /* --- paleta marki ---
+     Wartości bez komentarza są ze starego projektu bez zmian. Trzy pozycje
+     zostały PRZYCIEMNIONE przy przejściu po wyglądzie (18.09.2026), bo
+     w starej wersji nie przechodziły progu czytelności - tabela niżej
+     pokazuje, o ile. Odcień został, zmieniła się jasność. */
   --color-brand-olive: #b5cc1c;
   --color-brand-olive-dark: #8fa316;
-  --color-brand-sage: #89a66f;
+  /* NOWY. Oliwka jako TEKST na jasnym tle. Sam `brand-olive` daje tam 1,63:1,
+     a `brand-olive-dark` 2,55:1 - oba nieczytelne. Ten wariant jest wyłącznie
+     do tekstu i ikon na jasnym tle; do wypełnień służą dwa powyższe. */
+  --color-brand-olive-text: #5f6b0d;
+  /* ZMIENIONE: #89a66f → #5f7347. Kolor etykiet sekcji i odnośników
+     „Zobacz szczegóły" na jasnym tle. ⚠️ Na CIEMNYM tle ten kolor daje 3,20:1
+     i nie wolno go tam używać - tam akcentem jest `brand-olive` (9,22:1). */
+  --color-brand-sage: #5f7347;
   --color-brand-dark: #1e1e1e;
   --color-brand-text: #2d2d2d;
-  --color-brand-text-light: #8a8780;
+  /* ZMIENIONE: #8a8780 → #6e6b64. To jest kolor większości akapitów serwisu,
+     więc jego 3,23:1 było najpoważniejszym z odziedziczonych błędów. */
+  --color-brand-text-light: #6e6b64;
   --color-brand-text-xlight: #c7c7c7;
   --color-brand-bg: #f5f3ee;
   --color-brand-section: #fafaf7;
@@ -62,6 +75,10 @@
   /* --- Fixly (kolory cudzej marki, używane przy odnośniku do profilu) --- */
   --color-fixly-main: #ffd401;
   --color-fixly-dark: #a48802;
+  /* NOWY. Tekst „w kolorystyce Fixly" na jasnym tle serwisu: `fixly-dark`
+     daje tam 3,10:1. Do samej plakietki Fixly ten kolor nie wchodzi -
+     tam napis jest `brand-dark` na żółtym (11,65:1). */
+  --color-fixly-ink: #7a6500;
 
   /* --- szarości: wyłącznie te, których znacznik faktycznie używa ---
      Wartości z domyślnej palety Tailwinda 3, NIE z 4: w v4 paleta jest
@@ -85,41 +102,51 @@
   --color-red-700: #b91c1c;
   --color-amber-700: #b45309;
 
-  /* ⚠️ KONTRAST - policzone, nie oszacowane. Próg WCAG AA: 4,5:1 dla tekstu
-     zwykłego, 3:1 dla tekstu dużego (>=24 px albo >=18,66 px pogrubionego)
-     i elementów nietekstowych.
+  /* ⚠️ KONTRAST - policzone, nie oszacowane. Wartości z 18.09.2026, po
+     przyciemnieniu trzech kolorów. Próg WCAG AA: 4,5:1 dla tekstu zwykłego,
+     3:1 dla tekstu dużego (>=24 px albo >=18,66 px pogrubionego) i elementów
+     nietekstowych.
 
-                    na bg     na section  na card    na dark
-       brand-text     12,42      13,17      13,77      1,21
-       brand-text-light 3,23       3,43       3,58      4,65
-       brand-text-xlight 1,52      1,62       1,69      9,86
-       brand-olive     1,63       1,73       1,81      9,22
-       brand-olive-dark 2,55      2,71       2,83      5,89
-       brand-sage      2,44       2,59       2,71      6,15
-       brand-dark     15,03      15,94      16,67      1,00
-       white           1,11       1,05       1,00     16,67
-       fixly-dark      3,10       3,29       3,44      4,84
-       fixly-main      1,29       1,37       1,43     11,65
-       neutral-400     2,27       2,41       2,52      6,61
-       neutral-500     4,28       4,53       4,74      3,52
+                         na bg  na section   na card    na dark
+       brand-text         12,42      13,17      13,77       1,21
+       brand-text-light    4,79       5,08       5,32       3,14
+       brand-text-xlight   1,52       1,62       1,69       9,86
+       brand-olive         1,63       1,73       1,81       9,22
+       brand-olive-dark    2,55       2,71       2,83       5,89
+       brand-olive-text    5,27       5,59       5,84       2,85
+       brand-sage          4,70       4,98       5,21       3,20
+       brand-dark         15,03      15,94      16,67       1,00
+       white               1,11       1,05       1,00      16,67
+       fixly-ink           5,13       5,44       5,69       2,74
+       fixly-dark          3,10       3,29       3,44       4,84
+       fixly-main          1,29       1,37       1,43      11,65
+       neutral-400         2,27       2,41       2,52       6,61
+       neutral-500         4,28       4,53       4,74       3,52
 
-     CO Z TEGO WYNIKA (stan zastany, do decyzji PO migracji - patrz
-     `MIGRACJA-audyt.md`, sekcja 10, punkt 4):
+     Przyciski i elementy nietekstowe:
+       brand-dark na brand-olive (przycisk główny)          9,22 🟢
+       brand-dark na brand-olive-dark (główny, najechanie)  5,89 🟢
+       brand-dark na fixly-main (plakietka Fixly)          11,65 🟢
 
-       🔴 brand-text-light na jasnych tłach: 3,23-3,58 - PONIŻEJ progu dla
-          tekstu zwykłego, a to jest kolor większości akapitów serwisu,
-       🔴 brand-sage na jasnych tłach: 2,44-2,71 - etykiety sekcji i odnośniki
-          „Zobacz szczegóły",
-       🔴 brand-olive na jasnych tłach: 1,63-1,81 - „Wyczyść filtry", odnośnik
-          do polityki prywatności, ikony w kółkach,
-       🟢 brand-olive na brand-dark: 9,22 - w porządku,
-       🟢 brand-dark na brand-olive (przycisk główny): 9,22 - w porządku,
-       🟢 neutral-400 na brand-dark: 6,61 - nagłówek i stopka w porządku.
+     ZASADA, KTÓRA Z TEGO WYNIKA - jedna i bez wyjątków:
 
-     Naprawa każdego 🔴 to zmiana koloru, czyli zmiana wyglądu - dlatego NIE
-     robimy jej w migracji. Przy pierwszej decyzji o poprawie: `brand-sage`
-     na jasnym tle musi zejść do ok. #5F7347, a `brand-text-light` do ok.
-     #6E6B64, żeby przejść próg 4,5:1. */
+       jasne tło  → tekst: brand-text, brand-text-light, brand-sage,
+                    brand-olive-text, fixly-ink
+       ciemne tło → tekst: white, brand-text-xlight, brand-olive,
+                    neutral-400
+
+     Kolory z jednej kolumny NIE przechodzą do drugiej. `brand-sage` na
+     ciemnym daje 3,20:1, `neutral-500` 3,52:1, `brand-olive-text` 2,85:1 -
+     wszystkie poniżej progu. Odwrotnie tak samo: `brand-olive` na jasnym
+     to 1,63:1.
+
+     CO ZOSTAJE ŚWIADOMIE PONIŻEJ PROGU:
+       · `fixly-main` jako gwiazdki ocen na jasnym tle (1,29-1,43). To jest
+         żółty cudzej marki i konwencja graficzna oceny; sama ocena stoi
+         obok SŁOWEM („5/5"), a gwiazdki mają `role="img"` z opisem, więc
+         żadna informacja nie zależy od tego kontrastu.
+       · `brand-olive` jako obrys i wypełnienie 10% na jasnym tle - to
+         dekoracja pod ikoną, nie nośnik treści. */
 
   /* ==================================================================
      TYPOGRAFIA

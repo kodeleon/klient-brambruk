@@ -37,7 +37,7 @@ const klasaFiltra =
     <div class="relative max-w-7xl mx-auto px-5 lg:px-10 py-16 lg:py-24">
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
         <div>
-          <EtykietaSekcji class="mb-3">Portfolio</EtykietaSekcji>
+          <EtykietaSekcji wariant="ciemne" class="mb-3">Portfolio</EtykietaSekcji>
           <h1 class="font-display text-3xl lg:text-[42px] font-bold text-white leading-tight mb-2">
             Nasze realizacje
           </h1>
@@ -114,7 +114,7 @@ const klasaFiltra =
         <button
           type="button"
           data-filtr-wyczysc
-          class="mt-3 text-brand-olive text-sm font-semibold hover:text-brand-olive-dark transition-colors"
+          class="mt-3 text-brand-olive-text text-sm font-semibold hover:text-brand-text transition-colors"
         >
           Wyczyść filtry
         </button>
@@ -124,8 +124,6 @@ const klasaFiltra =
 
   <BanerCta
     tytul="Chcesz podobną realizację?"
-    podtytul="Opisz swój projekt - wycenimy go w ciągu 24 godzin, bezpłatnie"
-  >
-    <Przycisk slot="akcja" href="/wycena/" rozmiar="lg" ikona="receipt-text">Bezpłatna wycena</Przycisk>
-  </BanerCta>
+    opis="Pokaż nam zdjęcie tego, co Ci się spodobało, albo opisz projekt własnymi słowami. Odeślemy orientacyjną wycenę i powiemy, co da się zrobić na Twoim terenie."
+  />
 </Podstrona>

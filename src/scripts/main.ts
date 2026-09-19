@@ -25,6 +25,7 @@ import { faq } from './faq'
 import { galeria } from './galeria'
 import { karuzela } from './karuzela'
 import { filtry } from './filtry'
+import { cta } from './cta'
 import { formularz } from './formularz'
 import { wycena } from './wycena'
 
@@ -37,6 +38,7 @@ const moduly: Modul[] = [
   { nazwa: 'galeria', start: galeria },
   { nazwa: 'karuzela', start: karuzela },
   { nazwa: 'filtry', start: filtry },
+  { nazwa: 'cta', start: cta },
   { nazwa: 'formularz', start: formularz },
   { nazwa: 'wycena', start: wycena },
 ]

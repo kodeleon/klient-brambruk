@@ -1,0 +1,56 @@
+---
+/**
+ * LOGOTYP - znak firmowy klienta.
+ *
+ *   <Logo nazwa="znak" class="w-12 h-12" sizes="48px" />
+ *   <Logo nazwa="pelne-jasne" class="w-full max-w-md" sizes="(max-width:1024px) 80vw, 420px" />
+ *
+ * Osobny komponent od `<Foto>`, bo logo nie jest fotografią: nie przechodzi
+ * przez kadrowanie, nie ma wariantów AVIF i musi zachować przezroczystość.
+ * Uzasadnienie tej ścieżki siedzi przy `logos` w `media/images.config.mjs`.
+ *
+ * Warianty generuje `npm run logo` (a przez `npm run images` także `predev`
+ * i `prebuild`). Wymiary bierzemy z pliku ŹRÓDŁOWEGO, nie z wyniku - dzięki
+ * temu komponent nie zależy od tego, czy generator zdążył się wykonać,
+ * a `width`/`height` trzymają proporcję i układ nie skacze przy ładowaniu.
+ */
+import { wymiaryLogo } from '../../../tools/media/build-logo.mjs'
+
+interface Props {
+  /** Klucz z `logos` w media/images.config.mjs. */
+  nazwa: 'znak' | 'pelne' | 'pelne-jasne'
+  /** Nadpisuje domyślny opis. Pusty łańcuch = logo dekoracyjne (obok napisu). */
+  alt?: string
+  class?: string
+  /** Realna szerokość elementu w układzie. Bez tego przeglądarka zakłada 100vw. */
+  sizes?: string
+  /** Logo w pierwszym ekranie: bez `loading="lazy"`. */
+  priorytet?: boolean
+}
+
+const { nazwa, alt, class: klasa, sizes = '100vw', priorytet = false } = Astro.props
+
+const ROOT = process.cwd()
+const config = await import('../../../media/images.config.mjs')
+const logo = await wymiaryLogo({ config, root: ROOT, nazwa })
+
+/* `wymiaryLogo` siedzi w module `.mjs`, więc typy przychodzą stąd, nie stamtąd. */
+const szerokosci: number[] = logo.widths
+const url = (w: number) => `/assets/logo/${nazwa}-${w}.png`
+const srcset = szerokosci.map((w) => `${url(w)} ${w}w`).join(', ')
+/** Wariant startowy: średni z dostępnych, nie największy. */
+const domyslny = szerokosci[Math.min(1, szerokosci.length - 1)]
+---
+
+<img
+  src={url(domyslny)}
+  srcset={szerokosci.length > 1 ? srcset : undefined}
+  sizes={szerokosci.length > 1 ? sizes : undefined}
+  width={logo.w}
+  height={logo.h}
+  alt={alt ?? logo.alt}
+  loading={priorytet ? undefined : 'lazy'}
+  fetchpriority={priorytet ? 'high' : undefined}
+  decoding="async"
+  class={klasa}
+/>

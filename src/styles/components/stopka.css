@@ -1,0 +1,24 @@
+/**
+ * STOPKA - faktura tła.
+ *
+ * Jedna rzecz, której nie da się zrobić klasami narzędziowymi: kratka
+ * rysowana gradientami. Krycie linii jest celowo na granicy widoczności -
+ * ma dać wrażenie, że płaszczyzna ma powierzchnię, a nie narysować siatkę.
+ *
+ * ⚠️ Reguła siedzi tutaj, nie w atrybucie `style`: polityka bezpieczeństwa
+ * treści nie ma `'unsafe-inline'` w `style-src`.
+ */
+
+.stopka__siatka {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(to right, rgb(255 255 255 / 0.035) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(255 255 255 / 0.035) 1px, transparent 1px);
+  background-size: 40px 40px;
+
+  /* Kratka gaśnie ku dołowi - inaczej rywalizuje o uwagę z wierszem
+     praw autorskich, czyli z najmniej ważną treścią na stronie. */
+  mask-image: linear-gradient(to bottom, #000 0%, rgb(0 0 0 / 0.35) 55%, transparent 100%);
+}

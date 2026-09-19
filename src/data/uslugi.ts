@@ -27,27 +27,49 @@ export const uslugi = {
     okruszekNadrzedny: { etykieta: 'Ogrodzenia', href: '/ogrodzenia/' },
     etykieta: 'Ogrodzenia panelowe',
     tytul: 'Ogrodzenia panelowe 2D i 3D',
-    podtytul: 'Biała Podlaska i okolice',
+    podtytul: 'Ocynk ogniowy i malowanie proszkowe',
     fotoHero: 'usluga.panelowe',
     wstep:
       'Ogrodzenia panelowe to najpopularniejsze rozwiązanie wśród naszych klientów. Łączą trwałość, estetykę i przystępną cenę. Oferujemy panele 2D i 3D w pełnej gamie kolorów RAL, z montażem na podmurówce lub bezpośrednio w gruncie.',
     cechy: [
-      { emoji: '🛡️', tytul: 'Trwałość', opis: 'Ocynk ogniowy + malowanie proszkowe RAL - ponad 10 lat bez konserwacji' },
-      { emoji: '⚡', tytul: 'Szybki montaż', opis: 'Standardowe ogrodzenie 50–100 mb w 2–5 dni roboczych' },
-      { emoji: '📐', tytul: 'Warianty', opis: 'Panel 2D (płaski, ekonomiczny) i 3D (z przetłoczeniami, sztywniejszy)' },
-      { emoji: '💰', tytul: 'Od ~100 zł/mb', opis: 'Kompletne ogrodzenie z materiałem i montażem, w zależności od parametrów' },
+      { ikona: 'shield-check', tytul: 'Trwałość', opis: 'Ocynk ogniowy + malowanie proszkowe RAL - ponad 10 lat bez konserwacji' },
+      { ikona: 'zap', tytul: 'Szybki montaż', opis: 'Standardowe ogrodzenie 50–100 mb w 2–5 dni roboczych' },
+      { ikona: 'layers', tytul: 'Warianty', opis: 'Panel 2D (płaski, ekonomiczny) i 3D (z przetłoczeniami, sztywniejszy)' },
+      { ikona: 'banknote', tytul: 'Od ~100 zł/mb', opis: 'Kompletne ogrodzenie z materiałem i montażem, w zależności od parametrów' },
     ],
     tresc: {
-      tytul1: 'Ogrodzenia panelowe w Białej Podlaskiej i okolicach',
+      tytul1: 'Gdzie i na jakich posesjach montujemy panele',
       tekst1:
-        'Montujemy ogrodzenia panelowe na terenie Białej Podlaskiej, Międzyrzeca Podlaskiego, Terespola, Janowa Podlaskiego i okolicznych miejscowości powiatu bialskiego. Panele ogrodzeniowe sprawdzają się na posesje, działki budowlane, obiekty firmowe i tereny publiczne. Stosujemy wyłącznie panele ocynkowane ogniowo i malowane proszkowo, co zapewnia odporność na korozję i wieloletnią trwałość bez konserwacji.',
+        'Ogrodzenia panelowe montujemy w promieniu 100 km od Białej Podlaskiej, czyli w województwie lubelskim, podlaskim i mazowieckim - od Międzyrzeca Podlaskiego i Terespola po Siedlce, Łuków i Lublin. Panele ogrodzeniowe sprawdzają się na posesje, działki budowlane, obiekty firmowe i tereny publiczne. Stosujemy wyłącznie panele ocynkowane ogniowo i malowane proszkowo, co zapewnia odporność na korozję i wieloletnią trwałość bez konserwacji.',
       tytul2: 'Panel 2D czy 3D - który wybrać?',
       tekst2:
         'Panel 3D posiada charakterystyczne fałdy (przetłoczenia), które zwiększają jego sztywność i wytrzymałość. Jest bardziej estetyczny i lepiej sprawdza się jako ogrodzenie frontowe. Panel 2D jest płaski i tańszy - idealny na ogrodzenia boczne, tylne lub tymczasowe. Oba typy dostępne w wysokościach od 103 do 203 cm i w pełnej palecie kolorów RAL.',
-      tytul3: 'Montaż i przygotowanie terenu',
+      tytul3: 'Wysokość, kolor i teren pochyły',
       tekst3:
-        'Każdą realizację rozpoczynamy od wizji lokalnej i pomiarów. Przygotowujemy podłoże, wylewamy podmurówkę (jeśli wybrana), osadzamy słupki i montujemy panele. Na terenie pochyłym stosujemy montaż schodkowy - panel za panelem na różnych poziomach. Cały proces dokumentujemy zdjęciami i przekazujemy gotowe ogrodzenie z gwarancją na wykonanie.',
+        'Panele są dostępne w wysokościach od 103 do 203 cm. Do ogrodzenia frontowego najczęściej wybierany jest panel 153 albo 173 cm, na granicę między sąsiadami wystarcza zwykle 123 cm. Kolory dobieramy z pełnej palety RAL, przy czym trzy powtarzają się najczęściej: antracyt (RAL 7016), zielony (RAL 6005) i czarny (RAL 9005). Na terenie pochyłym montujemy panele schodkowo, przęsło po przęśle na różnych poziomach - alternatywą jest wyrównanie gruntu wzdłuż ogrodzenia, co bywa droższe od samego ogrodzenia.',
     },
+        kroki: {
+      tytul: 'Montaż panelu krok po kroku',
+      wstep: 'Panel trzyma się dokładnie tak, jak osadzony jest słupek pod nim. Dlatego kolejność prac jest zawsze ta sama:',
+      lista: [
+        'pomiar i wytyczenie linii ogrodzenia razem z miejscami bram i furtek',
+        'wiercenie otworów pod słupki, poniżej granicy przemarzania gruntu',
+        'osadzenie i wypoziomowanie słupków w betonie',
+        'montaż podmurówki prefabrykowanej albo wylanie jej na miejscu',
+        'mocowanie paneli obejmami, z zachowaniem równego prześwitu nad gruntem',
+        'zabezpieczenie farbą cynkową każdego miejsca cięcia panelu',
+        'montaż kapturków na słupki i uprzątnięcie terenu',
+      ],
+    },
+    sprzet:
+      'Otwory pod słupki wiercimy wiertnicą spalinową: otwór ma wtedy równe ściany, a beton wiąże w pełnym przekroju. Linię i wysokości ustawiamy niwelatorem laserowym, więc przęsła nie falują na długim odcinku. Panele tniemy szlifierką z tarczą do stali nierdzewnej i od razu zabezpieczamy krawędź - to właśnie od niezabezpieczonych cięć zaczyna się rdza na ogrodzeniach panelowych.',
+        cennikCzynniki: [
+      'wysokość i typ panelu: 2D czy 3D',
+      'rodzaj podmurówki albo jej brak',
+      'długość ogrodzenia i wynikająca z niej liczba słupków',
+      'różnice poziomów wzdłuż linii ogrodzenia',
+      'demontaż i wywóz starego ogrodzenia',
+    ],
     nazwaPojedyncza: "ogrodzenie panelowe",
     nazwaMnoga: "ogrodzenia panelowe",
     galeria: [
@@ -77,18 +99,18 @@ export const uslugi = {
     okruszekNadrzedny: { etykieta: 'Ogrodzenia', href: '/ogrodzenia/' },
     etykieta: 'Ogrodzenia murowane',
     tytul: 'Ogrodzenia murowane i podmurówki',
-    podtytul: 'Biała Podlaska i okolice',
+    podtytul: 'Klinkier, bloczki i podmurówki',
     fotoHero: 'usluga.murowane',
     wstep:
       'Ogrodzenia murowane to rozwiązanie premium - trwałe, eleganckie i zapewniające maksymalną prywatność. Wykonujemy ogrodzenia z cegły klinkierowej, bloczków betonowych i kamienia, a także podmurówki pod panele ogrodzeniowe.',
     cechy: [
-      { emoji: '🧱', tytul: 'Solidność', opis: 'Konstrukcja murowana - najtrwalsza forma ogrodzenia, na dziesiątki, a nawet setki lat' },
-      { emoji: '✨', tytul: 'Estetyka', opis: 'Cegła klinkierowa, bloczki łupane, kamień - wiele wariantów wykończenia' },
-      { emoji: '🔒', tytul: 'Prywatność', opis: 'Pełne ogrodzenie murowane zapewnia maksymalną izolację od sąsiedztwa' },
-      { emoji: '🏗️', tytul: 'Podmurówki', opis: 'Betonowe podmurówki pod panele - estetyka i ochrona przed podciekaniem' },
+      { ikona: 'brick-wall', tytul: 'Solidność', opis: 'Konstrukcja murowana - najtrwalsza forma ogrodzenia, na dziesiątki, a nawet setki lat' },
+      { ikona: 'sparkles', tytul: 'Estetyka', opis: 'Cegła klinkierowa, bloczki łupane, kamień - wiele wariantów wykończenia' },
+      { ikona: 'lock', tytul: 'Prywatność', opis: 'Pełne ogrodzenie murowane zapewnia maksymalną izolację od sąsiedztwa' },
+      { ikona: 'hard-hat', tytul: 'Podmurówki', opis: 'Betonowe podmurówki pod panele - estetyka i ochrona przed podciekaniem' },
     ],
     tresc: {
-      tytul1: 'Ogrodzenia murowane i podmurówki - powiat bialski',
+      tytul1: 'Ogrodzenia murowane i podmurówki pod panele',
       tekst1:
         'Realizujemy ogrodzenia murowane z cegły klinkierowej, bloczków betonowych ozdobnych i kamienia naturalnego na terenie Białej Podlaskiej i okolicznych miejscowości. Każde ogrodzenie murowane wymaga solidnego fundamentu - wylewamy ławy betonowe i murkujemy słupki z zachowaniem dylatacji. Efekt końcowy to ogrodzenie, które wygląda reprezentacyjnie i służy przez dziesięciolecia.',
       tytul2: 'Podmurówki betonowe pod panele',
@@ -98,6 +120,27 @@ export const uslugi = {
       tekst3:
         'Popularne rozwiązanie to murowane słupki z wypełnieniem panelowym lub przęsłowym - łączy elegancję muru z lekkością panelu. Wykonujemy zarówno pełne ogrodzenia murowane, jak i kombinacje mur + panel, mur + przęsło kute, mur + gabion.',
     },
+        kroki: {
+      tytul: 'Jak stawiamy mur i podmurówkę',
+      wstep: 'Mur stoi tyle, ile wytrzyma jego fundament, więc pierwsze trzy kroki dzieją się pod ziemią:',
+      lista: [
+        'wykop i wylanie ławy fundamentowej poniżej granicy przemarzania',
+        'zbrojenie ławy i osadzenie prętów startowych pod słupki',
+        'murowanie słupków z dylatacją rozłożoną wzdłuż ogrodzenia',
+        'wykonanie podmurówki: wylewanej na miejscu albo z prefabrykatów',
+        'montaż czapek i daszków, które odprowadzają wodę poza lico muru',
+        'impregnacja klinkieru preparatem hydrofobowym',
+        'montaż przęseł, bramy i furtki w gotowe słupki',
+      ],
+    },
+    sprzet:
+      'Poziom ławy i wysokość słupków ustawiamy niwelatorem laserowym - przy murze każde odchylenie widać z drugiego końca posesji. Beton mieszamy na miejscu, żeby zachować tę samą recepturę na całej długości ławy. Klinkier tniemy piłą z chłodzeniem wodnym: cięcie na sucho przypala krawędź i zostawia jasny ślad, którego nie da się już zmyć.',
+        cennikCzynniki: [
+      'materiał: bloczek betonowy, klinkier czy kamień',
+      'wysokość muru i głębokość ławy fundamentowej',
+      'liczba słupków i sposób wypełnienia przęseł',
+      'stan gruntu i konieczność wymiany go pod ławą',
+    ],
     nazwaPojedyncza: "ogrodzenie murowane",
     nazwaMnoga: "ogrodzenia murowane",
     galeria: [
@@ -127,15 +170,15 @@ export const uslugi = {
     okruszekNadrzedny: { etykieta: 'Ogrodzenia', href: '/ogrodzenia/' },
     etykieta: 'Siatka ogrodzeniowa',
     tytul: 'Ogrodzenia z siatki ogrodzeniowej',
-    podtytul: 'Biała Podlaska i okolice',
+    podtytul: 'Najtańszy sposób na ogrodzenie działki',
     fotoHero: 'usluga.siatka',
     wstep:
       'Siatka ogrodzeniowa to najbardziej ekonomiczne rozwiązanie ogrodzeniowe. Idealna na działki rekreacyjne, ogrody, uprawy i tymczasowe ogrodzenia budowlane. Montujemy siatki plecionki na słupkach stalowych z naciągiem.',
     cechy: [
-      { emoji: '💰', tytul: 'Ekonomiczność', opis: 'Najtańsza forma ogrodzenia - od 40 zł/mb z montażem' },
-      { emoji: '⚡', tytul: 'Szybki montaż', opis: 'Ogrodzenie 100 mb siatką w 1–2 dni robocze' },
-      { emoji: '🛡️', tytul: 'Trwałość', opis: 'Siatka ocynkowana lub powlekana PCV - odporność na korozję' },
-      { emoji: '🌿', tytul: 'Wszechstronność', opis: 'Działki, ogrody, boiska, hodowle, ogrodzenia tymczasowe' },
+      { ikona: 'banknote', tytul: 'Ekonomiczność', opis: 'Najtańsza forma ogrodzenia - od 40 zł/mb z montażem' },
+      { ikona: 'zap', tytul: 'Szybki montaż', opis: 'Ogrodzenie 100 mb siatką w 1–2 dni robocze' },
+      { ikona: 'shield-check', tytul: 'Trwałość', opis: 'Siatka ocynkowana lub powlekana PCV - odporność na korozję' },
+      { ikona: 'leaf', tytul: 'Wszechstronność', opis: 'Działki, ogrody, boiska, hodowle, ogrodzenia tymczasowe' },
     ],
     tresc: {
       tytul1: 'Siatka ogrodzeniowa - ekonomiczne ogrodzenie',
@@ -144,10 +187,31 @@ export const uslugi = {
       tytul2: 'Rodzaje siatek ogrodzeniowych',
       tekst2:
         'Oferujemy siatki o różnych oczkach (50×50, 60×60 mm) i grubościach drutu (2,5–3,5 mm). Siatka ocynkowana jest tańsza, siatka powlekana PCV - bardziej estetyczna i trwalsza. Wysokości standardowe: 100, 125, 150, 175 i 200 cm.',
-      tytul3: 'Montaż i rozciąganie',
+      tytul3: 'Kiedy siatka się nie sprawdzi',
       tekst3:
-        'Montaż siatki wymaga odpowiedniego naciągu - stosujemy druty napinające i napinacze śrubowe, aby siatka nie fałdowała się z czasem. Słupki rozmieszczamy co 2–2,5 m. Na narożnikach i przy furtkach stosujemy słupki wzmocnione z zastrzałami.',
+        'Siatka jest najtańszym ogrodzeniem i to jest jej jedyna przewaga, o której warto pamiętać przy wyborze. Nie daje prywatności, nie zatrzymuje wzroku ani wiatru i nie wygląda reprezentacyjnie od strony drogi. Sprawdza się na granicach działek, w ogrodach, przy uprawach i jako ogrodzenie tymczasowe na czas budowy. Na ogrodzenie frontowe domu odradzamy ją wprost - w tym miejscu lepiej wychodzi panel, nawet w najtańszym wariancie 2D.',
     },
+        kroki: {
+      tytul: 'Jak montujemy ogrodzenie z siatki',
+      wstep: 'Siatka wygląda dobrze tylko wtedy, gdy jest równo naciągnięta, a naciąg trzymają słupki narożne. Stąd ta kolejność:',
+      lista: [
+        'wytyczenie linii i rozstawienie słupków co 2–3 m',
+        'osadzenie słupków narożnych i bramowych razem z zastrzałami',
+        'zabetonowanie słupków pośrednich',
+        'przeciągnięcie drutów naciągowych w trzech poziomach',
+        'rozwinięcie siatki i naciągnięcie jej napinaczami',
+        'przymocowanie siatki do drutów na całej długości',
+        'montaż furtki i bramy, jeżeli są w zakresie',
+      ],
+    },
+    sprzet:
+      'Do naciągu używamy napinaczy dźwigniowych, a nie siły rąk - siatka naciągnięta ręcznie po sezonie zaczyna falować. Słupki ustawiamy na sznurze i poziomicy laserowej, bo przy ogrodzeniu bez przęseł to jedyne, co trzyma linię. Otwory wiercimy wiertnicą, dzięki czemu przy stu metrach ogrodzenia zostaje zdecydowanie mniej urobku do wywiezienia.',
+        cennikCzynniki: [
+      'wysokość i rodzaj siatki: ocynk czy powlekana PCV',
+      'rozstaw słupków i liczba narożników z zastrzałami',
+      'ukształtowanie terenu wzdłuż linii ogrodzenia',
+      'liczba furtek i bram w zakresie',
+    ],
     nazwaPojedyncza: "ogrodzenie z siatki",
     nazwaMnoga: "ogrodzenia z siatki",
     galeria: [
@@ -173,18 +237,18 @@ export const uslugi = {
     okruszekNadrzedny: { etykieta: 'Ogrodzenia', href: '/ogrodzenia/' },
     etykieta: 'Bramy przesuwne',
     tytul: 'Bramy przesuwne i automatyka',
-    podtytul: 'Biała Podlaska i okolice',
+    podtytul: 'Samonośne i na szynie, z automatyką',
     fotoHero: 'usluga.brama-przesuwna',
     wstep:
       'Bramy przesuwne to najwygodniejsze rozwiązanie do wjazdu na posesję - nie wymagają miejsca na otwarcie skrzydeł. Montujemy bramy przesuwne ręczne i automatyczne, samonośne i prowadzone na szynie.',
     cechy: [
-      { emoji: '🚗', tytul: 'Wygoda', opis: 'Otwieranie równoległe do ogrodzenia - bez zajmowania miejsca na podjeździe' },
-      { emoji: '🔧', tytul: 'Automatyka', opis: 'Napędy automatyczne z pilotem, fotokomórkami i lampą sygnalizacyjną' },
-      { emoji: '🏠', tytul: 'Samonośne', opis: 'Bramy bez szyny naziemnej - idealne na podjazdy z kostki brukowej' },
-      { emoji: '📏', tytul: 'Szerokości 3–6 m', opis: 'Standardowe szerokości przejazdowe, możliwość realizacji na wymiar' },
+      { ikona: 'car', tytul: 'Wygoda', opis: 'Otwieranie równoległe do ogrodzenia - bez zajmowania miejsca na podjeździe' },
+      { ikona: 'wrench', tytul: 'Automatyka', opis: 'Napędy automatyczne z pilotem, fotokomórkami i lampą sygnalizacyjną' },
+      { ikona: 'home', tytul: 'Samonośne', opis: 'Bramy bez szyny naziemnej - idealne na podjazdy z kostki brukowej' },
+      { ikona: 'ruler', tytul: 'Szerokości 3–6 m', opis: 'Standardowe szerokości przejazdowe, możliwość realizacji na wymiar' },
     ],
     tresc: {
-      tytul1: 'Bramy przesuwne - montaż w Białej Podlaskiej i powiecie bialskim',
+      tytul1: 'Gdzie brama przesuwna sprawdza się lepiej od dwuskrzydłowej',
       tekst1:
         'Montujemy bramy przesuwne samonośne (bez szyny naziemnej) i prowadzone na szynie. Bramy samonośne sprawdzają się szczególnie przy podjazdach z kostki brukowej, gdzie szyna naziemna utrudniałaby odśnieżanie i koszenie. Każda brama dobierana jest do istniejącego ogrodzenia - panelowego, murowanego lub kutego.',
       tytul2: 'Automatyka bram przesuwnych',
@@ -194,6 +258,29 @@ export const uslugi = {
       tekst3:
         'Standardowe szerokości bram przesuwnych to 3, 4, 5 i 6 metrów. Wysokość dopasowywana do ogrodzenia (120–200 cm). Wypełnienie: panel ogrodzeniowy, przęsło stalowe, drewno kompozytowe. Malowanie proszkowe w wybranym kolorze RAL.',
     },
+        kroki: {
+      tytul: 'Montaż bramy przesuwnej krok po kroku',
+      wstep: 'Brama samonośna waży kilkaset kilogramów i cały ten ciężar stoi na dwóch wózkach, więc fundament jest tu połową roboty:',
+      lista: [
+        'pomiar wjazdu i ustalenie strony, w którą odjeżdża skrzydło',
+        'wykonanie fundamentu pod wózki jezdne, poniżej granicy przemarzania',
+        'zabetonowanie ramy montażowej i wprowadzenie peszla na zasilanie',
+        'ustawienie i wypoziomowanie wózków jezdnych',
+        'osadzenie skrzydła i regulacja rolek prowadzących',
+        'montaż napędu, listwy zębatej i wyłączników krańcowych',
+        'podłączenie fotokomórek, lampy sygnalizacyjnej i pilotów',
+        'próba działania i ustawienie siły napędu',
+      ],
+    },
+    sprzet:
+      'Fundament pod bramę zbroimy i wypoziomowujemy niwelatorem: krzywa rama oznacza bramę, która z czasem zaczyna ocierać i wykańcza napęd. Listwę zębatą ustawiamy z prześwitem względem zębatki, bo listwa oparta na napędzie przenosi na niego ciężar całego skrzydła. Siłę napędu ustawiamy zawsze na najniższą, przy której brama pracuje - to jest zabezpieczenie, a nie ustawienie na jakość.',
+        cennikCzynniki: [
+      'szerokość wjazdu i wynikająca z niej masa skrzydła',
+      'rodzaj wypełnienia i wykończenia',
+      'automatyka: napęd, fotokomórki, piloty, lampa',
+      'doprowadzenie zasilania do miejsca montażu',
+      'zakres prac przy fundamencie pod wózki',
+    ],
     nazwaPojedyncza: "brama przesuwna",
     nazwaMnoga: "bramy przesuwne",
     galeria: [
@@ -223,15 +310,15 @@ export const uslugi = {
     okruszekNadrzedny: { etykieta: 'Ogrodzenia', href: '/ogrodzenia/' },
     etykieta: 'Bramy dwuskrzydłowe',
     tytul: 'Bramy dwuskrzydłowe wjazdowe',
-    podtytul: 'Biała Podlaska i okolice',
+    podtytul: 'Klasyczny wjazd, z napędem lub bez',
     fotoHero: 'usluga.brama-dwuskrzydlowa',
     wstep:
       'Bramy dwuskrzydłowe to klasyczne rozwiązanie wjazdowe - eleganckie i proste w konstrukcji. Montujemy bramy dwuskrzydłowe panelowe, palisadowe, kute i z drewna kompozytowego, z możliwością automatyzacji.',
     cechy: [
-      { emoji: '🏛️', tytul: 'Klasyka', opis: 'Ponadczasowy design, dopasowanie do każdego stylu ogrodzenia' },
-      { emoji: '💰', tytul: 'Ekonomiczność', opis: 'Tańsza od przesuwnej przy wjazdach nawet powyżej 5 m szerokości' },
-      { emoji: '🔧', tytul: 'Automatyka', opis: 'Siłowniki liniowe lub ramionowe - otwieranie na pilota' },
-      { emoji: '🎨', tytul: 'Dopasowanie', opis: 'Panel, przęsło kute, drewno kompozytowe - do wyboru' },
+      { ikona: 'landmark', tytul: 'Klasyka', opis: 'Ponadczasowy design, dopasowanie do każdego stylu ogrodzenia' },
+      { ikona: 'banknote', tytul: 'Ekonomiczność', opis: 'Tańsza od przesuwnej przy wjazdach nawet powyżej 5 m szerokości' },
+      { ikona: 'wrench', tytul: 'Automatyka', opis: 'Siłowniki liniowe lub ramionowe - otwieranie na pilota' },
+      { ikona: 'palette', tytul: 'Dopasowanie', opis: 'Panel, przęsło kute, drewno kompozytowe - do wyboru' },
     ],
     tresc: {
       tytul1: 'Bramy dwuskrzydłowe - klasyczna elegancja',
@@ -244,6 +331,28 @@ export const uslugi = {
       tekst3:
         'Automatyka do bram dwuskrzydłowych opiera się na siłownikach liniowych (ramionowych). Zestaw obejmuje: 2 siłowniki, centralę sterującą, piloty, fotokomórki i lampę. Montaż automatyki jest możliwy zarówno przy nowej bramie, jak i doposażeniu istniejącej.',
     },
+        kroki: {
+      tytul: 'Montaż bramy dwuskrzydłowej krok po kroku',
+      wstep: 'Brama dwuskrzydłowa wisi na słupach, więc to one decydują o tym, czy po roku skrzydła nadal się schodzą:',
+      lista: [
+        'pomiar wjazdu i ustalenie kierunku otwierania skrzydeł',
+        'osadzenie słupów bramowych w betonie, z zapasem na obciążenie',
+        'montaż zawiasów regulowanych i zawieszenie skrzydeł',
+        'ustawienie prześwitu nad gruntem i poziomu obu skrzydeł',
+        'montaż zamka, rygla gruntowego i odbojów',
+        'montaż siłowników albo napędów ramieniowych',
+        'podłączenie fotokomórek i sterowania',
+        'próba działania i regulacja pozycji krańcowych',
+      ],
+    },
+    sprzet:
+      'Słupy bramowe osadzamy głębiej niż słupki ogrodzeniowe i zbroimy fundament - skrzydło działa na słup jak dźwignia. Zawiasy dobieramy regulowane w trzech osiach, żeby po sezonie dało się wyrównać skrzydła bez demontażu. Poziom i prześwit ustawiamy laserem, bo dwa skrzydła, które nie schodzą się równo, widać z ulicy od pierwszego dnia.',
+        cennikCzynniki: [
+      'szerokość wjazdu i wysokość skrzydeł',
+      'rodzaj wypełnienia: panel, blacha, kute elementy',
+      'napędy ramieniowe albo siłowniki z osprzętem',
+      'rygiel gruntowy, odboje i zamek',
+    ],
     nazwaPojedyncza: "brama dwuskrzydłowa",
     nazwaMnoga: "bramy dwuskrzydłowe",
     galeria: [
@@ -268,15 +377,15 @@ export const uslugi = {
     okruszekNadrzedny: { etykieta: 'Ogrodzenia', href: '/ogrodzenia/' },
     etykieta: 'Furtki ogrodzeniowe',
     tytul: 'Furtki ogrodzeniowe i wejściowe',
-    podtytul: 'Biała Podlaska i okolice',
+    podtytul: 'Dopasowane stylem do ogrodzenia',
     fotoHero: 'usluga.furtka',
     wstep:
       'Furtka to wizytówka ogrodzenia - element, który goście widzą jako pierwszy. Montujemy furtki panelowe, kute, z drewna kompozytowego i aluminiowe. Każda furtka dopasowana kolorystycznie i stylistycznie do ogrodzenia i bramy.',
     cechy: [
-      { emoji: '🎨', tytul: 'Dopasowanie', opis: 'Furtka w stylu i kolorze ogrodzenia - spójny wygląd posesji' },
-      { emoji: '📏', tytul: 'Na wymiar', opis: 'Standardowe i niestandardowe wymiary, lewe i prawe otwieranie' },
-      { emoji: '🔑', tytul: 'Zamki i klamki', opis: 'Zamki wpuszczane, elektrozaczepy, samozamykacze, domofony' },
-      { emoji: '💰', tytul: 'Od 800 zł', opis: 'Furtka z montażem - cena zależna od materiału i wymiarów' },
+      { ikona: 'palette', tytul: 'Dopasowanie', opis: 'Furtka w stylu i kolorze ogrodzenia - spójny wygląd posesji' },
+      { ikona: 'ruler', tytul: 'Na wymiar', opis: 'Standardowe i niestandardowe wymiary, lewe i prawe otwieranie' },
+      { ikona: 'key-round', tytul: 'Zamki i klamki', opis: 'Zamki wpuszczane, elektrozaczepy, samozamykacze, domofony' },
+      { ikona: 'banknote', tytul: 'Od 800 zł', opis: 'Furtka z montażem - cena zależna od materiału i wymiarów' },
     ],
     tresc: {
       tytul1: 'Furtki ogrodzeniowe - dopełnienie ogrodzenia',
@@ -289,6 +398,27 @@ export const uslugi = {
       tekst3:
         'Standardowa szerokość furtki to 100–120 cm, wysokość dopasowywana do ogrodzenia. Furtki montujemy na słupkach stalowych lub murowanych. Czas montażu samej furtki to kilka godzin - zazwyczaj realizujemy ją w ramach całego ogrodzenia.',
     },
+        kroki: {
+      tytul: 'Montaż furtki krok po kroku',
+      wstep: 'Furtka jest najczęściej używanym elementem ogrodzenia - otwiera się kilka razy dziennie przez kilkanaście lat. Dlatego montaż wygląda tak:',
+      lista: [
+        'pomiar szerokości przejścia i wysokości ogrodzenia',
+        'osadzenie słupków furtkowych w betonie, wzmocnionych względem pozostałych',
+        'zawieszenie skrzydła na zawiasach regulowanych',
+        'ustawienie pionu, poziomu i prześwitu przy progu',
+        'montaż zamka, klamki i wkładki',
+        'montaż samozamykacza albo elektrozaczepu, jeżeli są w zakresie',
+        'podłączenie domofonu i przycisku wyjścia',
+      ],
+    },
+    sprzet:
+      'Słupki furtkowe osadzamy na większej głębokości niż zwykłe słupki ogrodzeniowe i zawsze w betonie - furtka używana codziennie rozchwieje słupek postawiony na wcisk w ciągu jednego sezonu. Wkładki i zamki montujemy z uszczelnieniem, bo w ogrodzeniu stoją na zewnątrz, bez żadnej osłony przed deszczem.',
+        cennikCzynniki: [
+      'szerokość i wysokość skrzydła',
+      'rodzaj wypełnienia i dopasowanie do ogrodzenia',
+      'okucia: zamek, klamka, samozamykacz, elektrozaczep',
+      'podłączenie domofonu albo wideodomofonu',
+    ],
     nazwaPojedyncza: "furtka",
     nazwaMnoga: "furtki",
     galeria: [
@@ -315,28 +445,49 @@ export const uslugi = {
     okruszekNadrzedny: { etykieta: 'Brukarstwo', href: '/brukarstwo/' },
     etykieta: 'Kostka brukowa',
     tytul: 'Układanie kostki brukowej',
-    podtytul: 'Biała Podlaska i okolice',
+    podtytul: 'Wzory, grubości i solidna podbudowa',
     fotoHero: 'usluga.kostka',
     pozycjaFoto: '0 40%',
     wstep:
       'Kostka brukowa to najpopularniejszy materiał na podjazdy, chodniki i tarasy. Oferujemy profesjonalne układanie kostki brukowej z pełnym przygotowaniem podłoża, doborem materiałów i gwarancją na wykonanie.',
     cechy: [
-      { emoji: '🛡️', tytul: 'Trwałość', opis: 'Kostka betonowa wytrzymuje 25+ lat przy prawidłowym ułożeniu na odpowiedniej podbudowie' },
-      { emoji: '🎨', tytul: 'Estetyka', opis: 'Szeroki wybór kolorów, kształtów i wzorów - od klasycznych po nowoczesne' },
-      { emoji: '✅', tytul: 'Kompleksowo', opis: 'Od korytowania i podbudowy po fugowanie - realizujemy cały zakres prac' },
-      { emoji: '💰', tytul: 'Od 100 zł/m²', opis: 'Robocizna od 100 zł/m², z materiałem od 200 zł/m² w zależności od typu kostki' },
+      { ikona: 'shield-check', tytul: 'Trwałość', opis: 'Kostka betonowa wytrzymuje 25+ lat przy prawidłowym ułożeniu na odpowiedniej podbudowie' },
+      { ikona: 'palette', tytul: 'Estetyka', opis: 'Szeroki wybór kolorów, kształtów i wzorów - od klasycznych po nowoczesne' },
+      { ikona: 'badge-check', tytul: 'Kompleksowo', opis: 'Od korytowania i podbudowy po fugowanie - realizujemy cały zakres prac' },
+      { ikona: 'banknote', tytul: 'Od 100 zł/m²', opis: 'Robocizna od 100 zł/m², z materiałem od 200 zł/m² w zależności od typu kostki' },
     ],
     tresc: {
-      tytul1: 'Kostka brukowa - układanie w Białej Podlaskiej i powiecie bialskim',
+      tytul1: 'Gdzie układamy kostkę i od czego zaczynamy',
       tekst1:
-        'Układamy kostkę brukową na terenie Białej Podlaskiej, Międzyrzeca Podlaskiego, Terespola i okolicznych miejscowości w promieniu 50 km. Realizujemy podjazdy, chodniki, alejki ogrodowe, tarasy i parkingi. Każdy projekt zaczynamy od bezpłatnej wizji lokalnej z pomiarem terenu i doradztwa w doborze kostki - pod kątem obciążenia, estetyki i budżetu klienta.',
+        'Kostkę brukową układamy w promieniu 100 km od Białej Podlaskiej, czyli w województwie lubelskim, podlaskim i mazowieckim - od Międzyrzeca Podlaskiego i Terespola po Siedlce, Łuków i Lublin. Realizujemy podjazdy, chodniki, alejki ogrodowe, tarasy i parkingi. Każdy projekt zaczynamy od bezpłatnej wizji lokalnej z pomiarem terenu i doradztwa w doborze kostki - pod kątem obciążenia, estetyki i budżetu klienta.',
       tytul2: 'Rodzaje kostki brukowej',
       tekst2:
         'Oferujemy układanie kostki betonowej (Holland, Behaton, Starobruk, Cegła) oraz kostki granitowej. Grubość kostki dobieramy do przeznaczenia: 4–6 cm na chodniki i tarasy, 8 cm na podjazdy samochodowe, 10 cm na parkingi i place manewrowe. Dostępne kolory: szary, grafitowy, czerwony, brązowy i mix.',
-      tytul3: 'Proces układania',
+      tytul3: 'Grubość kostki a przeznaczenie nawierzchni',
       tekst3:
-        'Prawidłowe ułożenie kostki wymaga: korytowania (usunięcie humusu 30–60 cm), zagęszczenia gruntu, warstwy podbudowy z kruszywa łamanego (15–25 cm), podsypki cementowo-piaskowej (5–25 cm), montażu krawężników/obrzeży, układania kostki we wzorze, fugowania i zagęszczania wibracyjnego. Każdy etap jest kluczowy dla trwałości nawierzchni.',
+        'Grubość kostki dobiera się do obciążenia, nie do budżetu. Na chodnik i alejkę ogrodową wystarcza 4–6 cm, na podjazd pod samochód osobowy potrzebne jest 8 cm, a na parking pod pojazdy dostawcze i ciężarowe 10 cm. Oszczędność na tym jednym parametrze wraca po dwóch sezonach w postaci pękniętych elementów i kolein - a wymiana oznacza rozebranie nawierzchni razem z podbudową, czyli praktycznie całą robotę od nowa.',
     },
+        kroki: {
+      tytul: 'Jak układamy kostkę krok po kroku',
+      wstep: 'Kostka rozjeżdża się nie dlatego, że jest zła, tylko dlatego, że pod nią czegoś zabrakło. Połowa roboty dzieje się przed położeniem pierwszego elementu:',
+      lista: [
+        'korytowanie terenu na głębokość dobraną do obciążenia',
+        'zagęszczenie gruntu rodzimego',
+        'ułożenie podbudowy z kruszywa, warstwami, z zagęszczeniem każdej warstwy',
+        'montaż krawężników i obrzeży na ławie betonowej',
+        'podsypka cementowo-piaskowa, ściągnięta pod zaplanowany spadek',
+        'układanie kostki w wybranym wzorze, z docinaniem przy krawędziach',
+        'fugowanie i zagęszczanie powierzchni zagęszczarką z matą ochronną',
+      ],
+    },
+    sprzet:
+      'Spadki ustawiamy niwelatorem laserowym - od tego zależy, czy po ulewie woda spływa na trawnik, czy pod drzwi garażu. Kolejne warstwy podbudowy zagęszczamy zagęszczarką płytową, a przy ścianach i słupkach ubijakiem skokowym, do którego zagęszczarka nie sięga. Kostkę tniemy piłą z chłodzeniem wodnym, bo cięcie na sucho wypala krawędź i zostawia jasny ślad na kilka sezonów.',
+        cennikCzynniki: [
+      'rodzaj i grubość kostki',
+      'głębokość korytowania oraz grubość podbudowy',
+      'wzór ułożenia i wynikająca z niego liczba docinek',
+      'obrzeża, krawężniki i obramowanie powierzchni',
+    ],
     nazwaPojedyncza: "kostka brukowa",
     nazwaMnoga: "kostki brukowe",
     galeria: [
@@ -365,16 +516,16 @@ export const uslugi = {
     okruszekNadrzedny: { etykieta: 'Brukarstwo', href: '/brukarstwo/' },
     etykieta: 'Podjazdy i parkingi',
     tytul: 'Podjazdy z kostki brukowej',
-    podtytul: 'Biała Podlaska i okolice',
+    podtytul: 'Nawierzchnia liczona pod obciążenie',
     fotoHero: 'usluga.podjazd',
     pozycjaFoto: '0% 0%',
     wstep:
       'Podjazd to wizytówka posesji - pierwszy element, który widzą goście. Budujemy podjazdy z kostki brukowej, które są trwałe, estetyczne i odporne na obciążenia pojazdów. Kompleksowa realizacja z gwarancją.',
     cechy: [
-      { emoji: '🚗', tytul: 'Wytrzymałość', opis: 'Podbudowa i kostka dobrana pod obciążenie samochodami osobowymi i dostawczymi' },
-      { emoji: '💧', tytul: 'Odwodnienie', opis: 'Projektujemy spadki i odprowadzenie wody, aby uniknąć zastoin i oblodzenia' },
-      { emoji: '🎨', tytul: 'Design', opis: 'Wzory, kolory i obramowania dopasowane do stylu domu i ogrodzenia' },
-      { emoji: '💰', tytul: 'Od 200 zł/m²', opis: 'Podjazd z materiałem i robocizną, w zależności od kostki i zakresu prac' },
+      { ikona: 'car', tytul: 'Wytrzymałość', opis: 'Podbudowa i kostka dobrana pod obciążenie samochodami osobowymi i dostawczymi' },
+      { ikona: 'droplets', tytul: 'Odwodnienie', opis: 'Projektujemy spadki i odprowadzenie wody, aby uniknąć zastoin i oblodzenia' },
+      { ikona: 'palette', tytul: 'Design', opis: 'Wzory, kolory i obramowania dopasowane do stylu domu i ogrodzenia' },
+      { ikona: 'banknote', tytul: 'Od 200 zł/m²', opis: 'Podjazd z materiałem i robocizną, w zależności od kostki i zakresu prac' },
     ],
     tresc: {
       tytul1: 'Podjazdy z kostki brukowej - trwałość i estetyka',
@@ -387,6 +538,28 @@ export const uslugi = {
       tekst3:
         'Krawężniki pełnią funkcję nie tylko estetyczną, ale przede wszystkim konstrukcyjną - utrzymują kostkę na miejscu i zapobiegają rozsuwaniu się nawierzchni. Stosujemy krawężniki betonowe, granitowe i palisadowe. Obramowanie podjazdu kontrastowym kolorem nadaje elegancki, wykończony wygląd.',
     },
+        kroki: {
+      tytul: 'Jak wykonujemy podjazd pod samochód',
+      wstep: 'Podjazd różni się od chodnika wszystkim, czego nie widać: grubością warstw i ich zagęszczeniem, a nie wzorem kostki na wierzchu.',
+      lista: [
+        'korytowanie głębsze niż pod chodnik, dobrane do masy pojazdów',
+        'wymiana gruntu słabonośnego na kruszywo tam, gdzie jest taka potrzeba',
+        'podbudowa układana i zagęszczana warstwami, nie jedną grubą warstwą',
+        'wykonanie spadków od budynku, ustawionych niwelatorem',
+        'montaż odwodnienia liniowego przy garażu albo bramie',
+        'obramowanie krawężnikiem na ławie betonowej z oporem',
+        'układanie kostki o grubości dobranej do obciążenia',
+        'fugowanie i zagęszczanie powierzchni z matą ochronną',
+      ],
+    },
+    sprzet:
+      'Głębokość korytowania i grubość podbudowy liczymy pod konkretny pojazd, a nie „standardowo" - podjazd pod dostawczaka ma inne warstwy niż pod auto osobowe. Zagęszczenie sprawdzamy na bieżąco, warstwa po warstwie, bo po ułożeniu kostki nie da się już tego poprawić inaczej niż przez rozebranie nawierzchni. Spadki i rzędne przy progu garażu ustawiamy laserem.',
+        cennikCzynniki: [
+      'przewidywane obciążenie: auto osobowe czy dostawcze',
+      'powierzchnia i kształt podjazdu',
+      'odwodnienie liniowe i wykonanie spadków',
+      'stan gruntu i konieczność jego wymiany',
+    ],
     nazwaPojedyncza: "podjazd z kostki",
     nazwaMnoga: "podjazdy z kostki",
     galeria: [
@@ -411,16 +584,16 @@ export const uslugi = {
     okruszekNadrzedny: { etykieta: 'Brukarstwo', href: '/brukarstwo/' },
     etykieta: 'Chodniki, alejki i tarasy',
     tytul: 'Chodniki, alejki ogrodowe i tarasy',
-    podtytul: 'Biała Podlaska i okolice',
+    podtytul: 'Alejki, tarasy i schody terenowe',
     fotoHero: 'usluga.chodnik',
     pozycjaFoto: '0% 75%',
     wstep:
       'Chodniki, alejki i tarasy z kostki brukowej to estetyczne i funkcjonalne uzupełnienie posesji. Wykonujemy nawierzchnie ogrodowe w różnych wzorach - od prostych ścieżek po dekoracyjne tarasy z obramowaniem.',
     cechy: [
-      { emoji: '🌿', tytul: 'Ogródek', opis: 'Alejki ogrodowe, ścieżki między rabatami, dojścia do altany' },
-      { emoji: '☀️', tytul: 'Taras', opis: 'Powierzchnia pod meble ogrodowe, grill, strefę wypoczynku' },
-      { emoji: '🪜', tytul: 'Schody', opis: 'Stopnie terenowe z kostki lub kamienia na terenie ze spadkiem' },
-      { emoji: '💰', tytul: 'Od 95 zł/m²', opis: 'Chodnik z materiałem i robocizną, kostka cieńsza niż na podjazd' },
+      { ikona: 'leaf', tytul: 'Ogródek', opis: 'Alejki ogrodowe, ścieżki między rabatami, dojścia do altany' },
+      { ikona: 'sun', tytul: 'Taras', opis: 'Powierzchnia pod meble ogrodowe, grill, strefę wypoczynku' },
+      { ikona: 'square-stack', tytul: 'Schody', opis: 'Stopnie terenowe z kostki lub kamienia na terenie ze spadkiem' },
+      { ikona: 'banknote', tytul: 'Od 95 zł/m²', opis: 'Chodnik z materiałem i robocizną, kostka cieńsza niż na podjazd' },
     ],
     tresc: {
       tytul1: 'Chodniki i alejki ogrodowe',
@@ -433,6 +606,28 @@ export const uslugi = {
       tekst3:
         'Na działkach ze spadkiem terenu budujemy stopnie z kostki brukowej, kamienia lub bloczków betonowych. Schody terenowe muszą być stabilne, antypoślizgowe i dobrze odwodnione. Typowa wysokość stopnia: 15–17 cm, głębokość: 30–35 cm.',
     },
+        kroki: {
+      tytul: 'Jak wykonujemy chodnik, taras i schody terenowe',
+      wstep: 'Ciągi piesze są lżej obciążone od podjazdów, ale mają więcej krawędzi, łuków i styków - i to one decydują o efekcie:',
+      lista: [
+        'wytyczenie przebiegu, szerokości i promieni łuków',
+        'korytowanie i zagęszczenie podłoża',
+        'podbudowa dobrana do ruchu pieszego',
+        'obrzeża na ławie betonowej, wyznaczające linię ciągu',
+        'podsypka ze spadkiem odprowadzającym wodę od budynku',
+        'układanie kostki lub płyt, z docinaniem przy łukach i narożnikach',
+        'przy schodach terenowych: stopnie z palisady albo bloczków oporowych',
+        'fugowanie i zagęszczanie powierzchni',
+      ],
+    },
+    sprzet:
+      'Łuki wytyczamy sznurem i szablonem, a nie na oko - przy alejce ogrodowej to jedyna różnica między „ładnie" a „krzywo". Docinki wykonujemy piłą z chłodzeniem wodnym, żeby styk przy obrzeżu był równy i bez wyszczerbień. Przy schodach każdy stopień poziomujemy osobno, bo różnica wysokości między stopniami jest tym, o co człowiek zaczepia stopą.',
+        cennikCzynniki: [
+      'powierzchnia oraz liczba łuków i narożników',
+      'grubość kostki lub płyt',
+      'schody terenowe, palisady i murki oporowe',
+      'obrzeża i sposób wykończenia krawędzi',
+    ],
     nazwaPojedyncza: "chodnik z kostki",
     nazwaMnoga: "chodniki i tarasy",
     galeria: [

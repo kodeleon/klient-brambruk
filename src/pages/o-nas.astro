@@ -1,189 +1,434 @@
 ---
 /**
- * /o-nas/ - historia firmy, zespół, dane formalne, obszar działania.
+ * /o-nas/ - kim jest firma, na jakim obszarze pracuje, dane rejestrowe.
  *
- * Odpowiednik `code/src/pages/About.jsx`. Jedyna zmiana wobec oryginału:
- * osadzona mapa Google zastąpiona komponentem `MapaKontakt` (statyczny obraz
- * plus odnośnik) - powód opisany w tym komponencie.
+ * Następczyni `code/src/pages/About.jsx`. Po przejściu po wyglądzie
+ * (18.09.2026) podstrona ma inny szkielet niż odziedziczony:
+ *
+ *   · SEKCJA GŁÓWNA. Wcześniej podstrona zaczynała się wprost od akapitów
+ *     na jasnym tle - wyglądała jak dokument, nie jak podstrona serwisu,
+ *     i nie dawała żadnego wyjścia do kontaktu na pierwszym ekranie.
+ *   · SEKCJA „NASZ ZESPÓŁ" USUNIĘTA. Stała na trzech zdjęciach ze stocku
+ *     podpisanych „praca zespołu BramBruk" - sekcja twierdziła coś, co nie
+ *     było prawdą, i to jest ryzyko wizerunkowe niezależne od licencji
+ *     zdjęć. Patrz MIGRACJA-braki.md, punkt 2a.
+ *   · DANE REJESTROWE w schemacie „nazwa → wartość", większym stopniem
+ *     pisma. Wcześniej były listą drobnych wierszy w kolumnie, która
+ *     w połowie świeciła pustką.
+ *   · NOWA SEKCJA „OBSZAR DZIAŁANIA" - w starej wersji zasięg firmy był
+ *     jednym zdaniem przy mapie dojazdu, chociaż to jedna z dwóch rzeczy,
+ *     po które ludzie wchodzą na „O nas".
+ *
+ * ⚠️ Obie mapy są ZAŚLEPKAMI. Klucze `mapa.dojazd` i `mapa.region` celowo
+ * nie istnieją w `uses` - `<Foto>` rysuje wtedy prostokąt o właściwych
+ * wymiarach zamiast przerywać budowanie. Po wgraniu obrazów z narzędzia
+ * `osm-custom-view` w tym pliku nie zmienia się ani jedna linia.
  */
-import Podstrona from '../layouts/Podstrona.astro'
-import { dane, statystyki } from '../config/dane'
-import Okruszki from '../components/ui/Okruszki.astro'
-import EtykietaSekcji from '../components/ui/EtykietaSekcji.astro'
-import Odslon from '../components/ui/Odslon.astro'
-import PasekStatystyk from '../components/ui/PasekStatystyk.astro'
-import PrzyciskFixly from '../components/ui/PrzyciskFixly.astro'
-import MapaKontakt from '../components/ui/MapaKontakt.astro'
-import Ikona from '../components/icons/Ikona.astro'
-import Foto from '../components/media/Foto.astro'
+import Podstrona from "../layouts/Podstrona.astro";
+import { dane, fixly, statystyki } from "../config/dane";
+import Okruszki from "../components/ui/Okruszki.astro";
+import EtykietaSekcji from "../components/ui/EtykietaSekcji.astro";
+import Przycisk from "../components/ui/Przycisk.astro";
+import Odslon from "../components/ui/Odslon.astro";
+import MapaKontakt from "../components/ui/MapaKontakt.astro";
+import Ikona from "../components/icons/Ikona.astro";
+import Foto from "../components/media/Foto.astro";
+import Logo from "../components/media/Logo.astro";
+import type { NazwaIkony } from "../components/icons/ikony";
 
-const wartosci = [
+/** Liczby obok opisu firmy. Wartości z `dane.ts`, ikony z `ikony.ts`. */
+const kluczoweWartosci: {
+  ikona: NazwaIkony;
+  wartosc: string;
+  etykieta: string;
+}[] = [
   {
-    ikona: 'shield' as const,
-    tytul: 'Gwarancja jakości',
-    opis: 'Każda realizacja objęta jest gwarancją. Używamy materiałów najwyższej jakości od sprawdzonych dostawców.',
+    ikona: "calendar-clock",
+    wartosc: `${statystyki.lata} lat`,
+    etykieta: "na rynku, nieprzerwanie od 2021 roku",
   },
   {
-    ikona: 'map-pin' as const,
-    tytul: 'Lokalnie od 5 lat',
-    opis: 'Znamy specyfikę regionu - typy gruntów, warunki pogodowe, lokalne przepisy. To przekłada się na lepszą jakość wykonania.',
+    ikona: "map-pin",
+    wartosc: statystyki.zasieg,
+    etykieta: "promień, w jakim dojeżdżamy do zleceń",
   },
   {
-    ikona: 'award' as const,
-    tytul: 'Kompleksowa obsługa',
-    opis: 'Od bezpłatnej wizji lokalnej, przez dobór materiałów, po realizację i gwarancję - zajmujemy się wszystkim.',
+    ikona: "images",
+    wartosc: statystyki.realizacje,
+    etykieta: "zakończonych realizacji",
   },
-]
+  {
+    ikona: "star",
+    wartosc: fixly.ocena,
+    etykieta: `ocena na Fixly z ${fixly.opinie} opinii`,
+  },
+];
 
-const obszary = [
-  'Biała Podlaska', 'Międzyrzec Podlaski', 'Terespol', 'Radzyń Podlaski',
-  'Parczew', 'Łosice', 'Janów Podlaski', 'Piszczac', 'Kodeń',
-  'Leśna Podlaska', 'Wisznice', 'Sławatycze', 'Drelów', 'Konstantynów',
-]
+const wartosci: { ikona: NazwaIkony; tytul: string; opis: string }[] = [
+  {
+    ikona: "shield-check",
+    tytul: "Gwarancja jakości",
+    opis: "Każda realizacja objęta jest gwarancją na wykonanie. Pracujemy na materiałach od sprawdzonych dostawców - panele ocynkowane ogniowo i malowane proszkowo, kostka z certyfikatem producenta.",
+  },
+  {
+    ikona: "map-pin",
+    tytul: `${statystyki.lata} lat pracy w regionie`,
+    opis: "Znamy grunty, z jakimi mamy tu do czynienia, wiemy, gdzie zimą podnosi się woda, i który wzór kostki rozjeżdża się pod samochodem dostawczym. To wiedza, której nie ma w katalogu.",
+  },
+  {
+    ikona: "handshake",
+    tytul: "Kompleksowa obsługa",
+    opis: "Od bezpłatnej wizji lokalnej, przez dobór materiałów i formalności, po realizację i odbiór. Jedna ekipa i jedna faktura zamiast trzech podwykonawców, którzy zrzucają na siebie opóźnienia.",
+  },
+];
 
-const zdjeciaZespolu = ['zespol.praca-01', 'zespol.praca-02', 'zespol.praca-03']
+/** Dane rejestrowe w schemacie „nazwa → wartość". Tablica = kilka wierszy. */
+const rejestr = [
+  { etykieta: "Nazwa firmy", wartosc: dane.nazwaPelna },
+  { etykieta: "NIP", wartosc: dane.nip },
+  { etykieta: "REGON", wartosc: dane.regon },
+  { etykieta: "Adres", wartosc: dane.adres },
+  { etykieta: "Ubezpieczenie OC", wartosc: "tak" },
+  {
+    etykieta: "Godziny pracy",
+    wartosc: [dane.godzinyTydzien, dane.godzinySobota],
+  },
+];
+
+/**
+ * Miejscowości z województwa lubelskiego. Kolejność od najbliższych -
+ * to lista dla kogoś, kto szuka siebie, nie ranking wielkości.
+ */
+const miejscowosci = [
+  "Biała Podlaska",
+  "Leśna Podlaska",
+  "Łomazy",
+  "Konstantynów",
+  "Janów Podlaski",
+  "Piszczac",
+  "Drelów",
+  "Międzyrzec Podlaski",
+  "Wisznice",
+  "Terespol",
+  "Kodeń",
+  "Sławatycze",
+  "Radzyń Podlaski",
+  "Parczew",
+  "Włodawa",
+  "Kock",
+  "Lubartów",
+  "Świdnik",
+  "Lublin",
+];
 ---
 
 <Podstrona
-  tytul="O nas - BramBruk | Biała Podlaska i okolice"
-  opis="BramBruk - lokalna firma z Białej Podlaskiej. 5 lat doświadczenia, 50+ realizacji, obszar działania do 50 km. Poznaj nasz zespół."
+  tytul="O nas - BramBruk | Ogrodzenia, brukarstwo i budownictwo"
+  opis="BramBruk - lokalna firma z Białej Podlaskiej, na rynku od 2021 roku. Obsługujemy województwo lubelskie, podlaskie i mazowieckie. Dane rejestrowe i obszar działania."
 >
-  <Okruszki pozycje={[{ etykieta: 'Strona główna', sciezka: '/' }, { etykieta: 'O nas' }]} />
+  <Okruszki
+    pozycje={[
+      { etykieta: "Strona główna", sciezka: "/" },
+      { etykieta: "O nas" },
+    ]}
+  />
 
-  <section class="bg-brand-section py-12 lg:py-20">
-    <div class="max-w-7xl mx-auto px-5 lg:px-10">
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center">
+  {/* ═══ SEKCJA GŁÓWNA ═══════════════════════════════════ */}
+  <section class="relative bg-brand-dark overflow-hidden">
+    <div class="relative max-w-7xl mx-auto px-5 lg:px-10 py-14 lg:py-20">
+      <div
+        class="grid grid-cols-1 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] gap-10 lg:gap-16 items-center"
+      >
         <div>
-          <EtykietaSekcji class="mb-3">O nas</EtykietaSekcji>
-          <h1 class="font-display text-3xl lg:text-[42px] font-bold text-brand-text leading-tight mb-6">
+          <EtykietaSekcji wariant="ciemne" class="mb-3">O nas</EtykietaSekcji>
+          <h1
+            class="font-display text-3xl lg:text-[42px] font-bold text-white leading-tight mb-3"
+          >
             Poznaj firmę BramBruk
           </h1>
-          <p class="text-brand-text-light leading-relaxed mb-4">
-            BramBruk to lokalna firma budowlana z Białej Podlaskiej, działająca od 2021 roku.
-            Specjalizujemy się w montażu ogrodzeń, brukarstwie i budownictwie lekkim - obsługujemy
-            klientów indywidualnych i firmy w promieniu 50 km od Białej Podlaskiej.
+          <p
+            class="border-l-2 border-brand-olive pl-4 font-display text-xl lg:text-2xl font-semibold text-brand-olive mb-6"
+          >
+            Lokalnie od 2021 roku
           </p>
-          <p class="text-brand-text-light leading-relaxed mb-4">
-            Zaczynaliśmy jako mała ekipa specjalizująca się w ogrodzeniach panelowych. Dziś oferujemy
-            kompleksową obsługę posesji - od ogrodzenia, przez podjazd z kostki brukowej, po altanę
-            ogrodową. Wszystko z jednej ręki, od jednego wykonawcy.
+          <p class="text-neutral-400 leading-relaxed max-w-xl mb-8">
+            Firma budowlana z Bohukał pod Białą Podlaską. Stawiamy ogrodzenia,
+            układamy kostkę brukową i budujemy altany, garaże oraz domki
+            narzędziowe - dla klientów indywidualnych i firm w województwie
+            lubelskim, podlaskim i mazowieckim.
           </p>
-          <p class="text-brand-text-light leading-relaxed mb-8">
-            Stawiamy na uczciwość, terminowość i transparentność. Każdy projekt wyceniamy bezpłatnie po
-            wizji lokalnej, a nasze ceny orientacyjne podajemy otwarcie - bo wiemy, że klient ceni sobie
-            jasność i konkretne informacje.
-          </p>
-
-          <PasekStatystyk />
+          <div class="flex flex-wrap gap-3">
+            <Przycisk href="/kontakt/" rozmiar="lg" ikona="mail"
+              >Napisz do nas</Przycisk
+            >
+            <Przycisk
+              href={`tel:${dane.telefonHref}`}
+              wariant="secondary"
+              rozmiar="lg"
+              ikona="phone">Zadzwoń</Przycisk
+            >
+          </div>
         </div>
-        <div class="rounded-2xl overflow-hidden">
-          <Foto
-            klucz="zespol.portret"
-            alt="Zespół BramBruk przy pracy"
-            class="w-full h-[220px] lg:h-[450px] object-contain"
+
+        <div class="hidden lg:flex justify-center">
+          <Logo
+            nazwa="pelne-jasne"
+            alt=""
+            priorytet
+            sizes="(max-width:1024px) 60vw, 400px"
+            class="w-full max-w-[400px] h-auto"
           />
         </div>
       </div>
     </div>
   </section>
 
-  <section class="bg-brand-bg py-12 lg:py-20">
-    <div class="max-w-7xl mx-auto px-5 lg:px-10">
-      <div class="mb-6">
-        <EtykietaSekcji>Nasz zespół</EtykietaSekcji>
-        <h2 class="font-display text-2xl lg:text-3xl font-bold text-brand-text mt-2 mb-3">
-          Doświadczeni profesjonaliści
-        </h2>
-        <p class="text-brand-text-light max-w-2xl leading-relaxed">
-          Nasz zespół to doświadczeni fachowcy, którzy od lat pracują w branży budowlanej. Każdy projekt
-          realizujemy z dbałością o detale i terminowość.
-        </p>
-      </div>
-
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {
-          zdjeciaZespolu.map((klucz, i) => (
-            <div class="rounded-2xl overflow-hidden">
-              <Foto
-                klucz={klucz}
-                alt={`BramBruk - praca zespołu ${i + 1}`}
-                class="w-full h-[120px] object-cover hover:scale-105 transition-transform duration-500"
-              />
-            </div>
-          ))
-        }
-      </div>
-    </div>
-  </section>
-
+  {/* ═══ O NAS ═══════════════════════════════════════════ */}
   <section class="bg-brand-section py-12 lg:py-20">
     <div class="max-w-7xl mx-auto px-5 lg:px-10">
+      <div
+        class="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center"
+      >
+        <Odslon wariant="left">
+          <div>
+            <EtykietaSekcji>Kim jesteśmy</EtykietaSekcji>
+            <h2
+              class="font-display text-2xl lg:text-4xl font-bold text-brand-text mt-2 mb-6"
+            >
+              Jedna ekipa, pełen zakres prac
+            </h2>
+            <p class="text-brand-text-light leading-relaxed mb-4">
+              BramBruk to lokalna firma budowlana z okolic Białej Podlaskiej,
+              działająca od 2021 roku. Specjalizujemy się w montażu ogrodzeń,
+              brukarstwie i budownictwie lekkim - obsługujemy klientów
+              indywidualnych i firmy w promieniu {statystyki.zasieg} od Białej Podlaskiej.
+            </p>
+            <p class="text-brand-text-light leading-relaxed mb-4">
+              Zaczynaliśmy jako mała ekipa specjalizująca się w ogrodzeniach
+              panelowych. Dziś oferujemy kompleksową obsługę posesji - od
+              ogrodzenia, przez podjazd z kostki brukowej, po altanę ogrodową.
+              Wszystko z jednej ręki, od jednego wykonawcy.
+            </p>
+            <p class="text-brand-text-light leading-relaxed">
+              Stawiamy na uczciwość, terminowość i transparentność. Każdy
+              projekt wyceniamy bezpłatnie po wizji lokalnej, a nasze ceny
+              orientacyjne podajemy otwarcie - bo wiemy, że klient ceni sobie
+              jasność i konkretne informacje.
+            </p>
+          </div>
+        </Odslon>
+
+        {
+          /* Ikona siedzi WEWNĄTRZ `<dd>`: `<div>` w liście definicji może
+            zawierać wyłącznie `<dt>` i `<dd>`, a luźny `<span>` obok nich
+            łamie strukturę listy (axe: definition-list). */
+        }
+        <Odslon wariant="right">
+          <dl class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {
+              kluczoweWartosci.map((pozycja) => (
+                <div class="rounded-2xl border border-brand-border bg-brand-card p-6">
+                  <dd class="font-display text-3xl font-bold text-brand-text leading-none">
+                    <span class="mb-4 flex h-11 w-11 items-center justify-center rounded-xl bg-brand-olive/15 text-brand-olive-text">
+                      <Ikona nazwa={pozycja.ikona} rozmiar={20} />
+                    </span>
+                    {pozycja.wartosc}
+                  </dd>
+                  <dt class="mt-2 text-sm text-brand-text-light leading-snug">
+                    {pozycja.etykieta}
+                  </dt>
+                </div>
+              ))
+            }
+          </dl>
+        </Odslon>
+      </div>
+    </div>
+  </section>
+
+  {
+    /* ═══ DLACZEGO MY ═════════════════════════════════════
+      Sekcja na ciemnym tle - to jedyny taki blok w środku podstrony
+      i właśnie dlatego zatrzymuje oko na tym, co firma o sobie twierdzi.
+      Kolory tekstu z kolumny „ciemne tło" w tokens.css.
+  */
+  }
+  <section class="bg-brand-dark py-12 lg:py-20">
+    <div class="max-w-7xl mx-auto px-5 lg:px-10">
+      <Odslon>
+        <div class="max-w-2xl mb-8 lg:mb-12">
+          <EtykietaSekcji wariant="ciemne">Dlaczego my</EtykietaSekcji>
+          <h2
+            class="font-display text-2xl lg:text-4xl font-bold text-white mt-2 mb-4"
+          >
+            Trzy wartości, które nas wyróżniają
+          </h2>
+          <p class="text-neutral-400 leading-relaxed">
+            Dziesiątki klientów zaufały nam ze względu na standardy, jakie
+            utrzymujemy przy wykonywanych projektach. Każde zlecenie realizujemy
+            z dbałością o detale, terminowość i długotrwały efekt.
+          </p>
+        </div>
+      </Odslon>
+
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
         {
-          wartosci.map((wartosc) => (
-            <div class="bg-brand-card rounded-2xl border border-brand-border p-7 hover:shadow-lg hover:shadow-black/5 transition-all duration-300">
-              <div class="w-12 h-12 rounded-xl bg-brand-olive/10 flex items-center justify-center mb-5">
-                <Ikona nazwa={wartosc.ikona} rozmiar={22} class="text-brand-olive" />
+          wartosci.map((wartosc, i) => (
+            <Odslon wariant="up" zwloka={i * 80}>
+              <div class="h-full rounded-2xl border border-white/10 bg-white/[0.04] p-7 transition-colors duration-300 hover:border-brand-olive/40">
+                <span class="mb-5 flex h-12 w-12 items-center justify-center rounded-xl bg-brand-olive/15 text-brand-olive">
+                  <Ikona nazwa={wartosc.ikona} rozmiar={22} />
+                </span>
+                <h3 class="font-display text-lg font-bold text-white mb-2">
+                  {wartosc.tytul}
+                </h3>
+                <p class="text-sm text-brand-text-xlight leading-relaxed">
+                  {wartosc.opis}
+                </p>
               </div>
-              <h3 class="font-display text-lg font-bold text-brand-text mb-2">{wartosc.tytul}</h3>
-              <p class="text-sm text-brand-text-light leading-relaxed">{wartosc.opis}</p>
-            </div>
+            </Odslon>
           ))
         }
       </div>
     </div>
   </section>
 
+  {/* ═══ DANE FIRMY ══════════════════════════════════════ */}
   <section class="bg-brand-bg py-12 lg:py-20">
     <div class="max-w-7xl mx-auto px-5 lg:px-10">
-      <div class="mb-6">
-        <EtykietaSekcji>Dane firmy</EtykietaSekcji>
-        <h2 class="font-display text-2xl lg:text-3xl font-bold text-brand-text mt-2">Informacje formalne</h2>
-      </div>
+      <Odslon>
+        <div class="mb-8">
+          <EtykietaSekcji>Dane firmy</EtykietaSekcji>
+          <h2
+            class="font-display text-2xl lg:text-3xl font-bold text-brand-text mt-2"
+          >
+            Informacje formalne
+          </h2>
+        </div>
+      </Odslon>
 
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div class="bg-brand-card rounded-2xl border border-brand-border p-7">
-          <div class="space-y-3 text-sm text-brand-text-light">
-            <p class="text-brand-text font-semibold text-base">{dane.nazwaPelna}</p>
-            <p>NIP: {dane.nip} · REGON: {dane.regon}</p>
-            <p>{dane.adres}</p>
-            <p class="flex items-center gap-2 text-fixly-dark">
-              <Ikona nazwa="shield" rozmiar={14} />
-              Ubezpieczenie OC: ✓
-            </p>
-            <div class="inline-flex items-center gap-2 text-fixly-dark font-medium mt-2">
-              <div class="flex text-fixly-main">
-                {Array.from({ length: 5 }).map(() => <Ikona nazwa="star" rozmiar={12} wypelnienie="currentColor" />)}
-              </div>
-              Sprawdź opinie na <PrzyciskFixly />
-            </div>
-          </div>
-        </div>
+        <div
+          class="bg-brand-card rounded-2xl border border-brand-border p-7 lg:p-8"
+        >
+          <h3 class="font-display text-lg font-bold text-brand-text mb-5">
+            Dane rejestrowe
+          </h3>
 
-        <div class="bg-brand-card rounded-2xl border border-brand-border p-7">
-          <h3 class="font-display text-lg font-bold text-brand-text mb-2">Obszar działania</h3>
-          <p class="text-sm text-brand-text-light mb-4">
-            Biała Podlaska i okolice w promieniu {statystyki.zasieg}
-          </p>
-          <Odslon wariant="right" zwloka={100}>
-            <MapaKontakt class="max-h-[240px] mb-4" />
-          </Odslon>
-          <div class="flex flex-wrap gap-2">
+          {
+            /* Schemat „nazwa → wartość", każda pozycja w osobnym wierszu.
+              Wcześniej NIP i REGON stały w jednym zdaniu oddzielone kropką -
+              nie dawało się ich skopiować pojedynczo ani przeczytać wzrokiem. */
+          }
+          <dl class="divide-y divide-brand-border">
             {
-              obszary.map((obszar) => (
-                <span class="px-3 py-1.5 bg-brand-bg rounded-full text-xs text-brand-text-light border border-brand-border">
-                  {obszar}
-                </span>
+              rejestr.map((pozycja) => (
+                <div class="flex flex-col gap-0.5 py-3 first:pt-0 last:pb-0 sm:flex-row sm:items-baseline sm:gap-4">
+                  <dt class="shrink-0 text-xs font-bold uppercase tracking-[2px] text-brand-text-light sm:w-44">
+                    {pozycja.etykieta}
+                  </dt>
+                  <dd class="text-base font-medium text-brand-text">
+                    {Array.isArray(pozycja.wartosc)
+                      ? pozycja.wartosc.map((linia) => (
+                          <span class="block">{linia}</span>
+                        ))
+                      : pozycja.wartosc}
+                  </dd>
+                </div>
               ))
             }
-            <span
-              class="px-3 py-1.5 bg-brand-olive/10 rounded-full text-xs text-brand-olive font-medium border border-brand-olive/20"
-            >
-              i wiele innych...
-            </span>
-          </div>
+          </dl>
+        </div>
+
+        <div
+          class="bg-brand-card rounded-2xl border border-brand-border p-7 lg:p-8 flex flex-col"
+        >
+          <h3 class="font-display text-lg font-bold text-brand-text mb-5">
+            Gdzie nas znaleźć
+          </h3>
+          <Odslon wariant="right" zwloka={100} class="flex-1">
+            <MapaKontakt class="h-full" />
+          </Odslon>
         </div>
       </div>
+    </div>
+  </section>
+
+  {/* ═══ OBSZAR DZIAŁANIA ════════════════════════════════ */}
+  <section class="bg-brand-section py-12 lg:py-20">
+    <div class="max-w-7xl mx-auto px-5 lg:px-10">
+      <div
+        class="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center"
+      >
+        <Odslon wariant="left">
+          <div>
+            <EtykietaSekcji>Obszar działania</EtykietaSekcji>
+            <h2
+              class="font-display text-2xl lg:text-4xl font-bold text-brand-text mt-2 mb-5"
+            >
+              Obsługujemy 3 województwa
+            </h2>
+            <p class="text-brand-text-light leading-relaxed mb-8">
+              Realizujemy zlecenia głównie w województwie lubelskim, ale nie
+              ograniczamy się do tego regionu. Jesteśmy mobilną ekipą i
+              oferujemy szeroki zakres usług w województwie lubelskim, podlaskim
+              i mazowieckim. Jeżeli mieszkasz nieco dalej, skontaktuj się z
+              nami, żeby sprawdzić czy możemy dojechać też do Ciebie.
+            </p>
+            <div class="flex flex-wrap gap-3">
+              <Przycisk href="/kontakt/" rozmiar="md" ikona="mail"
+                >Napisz do nas</Przycisk
+              >
+              <Przycisk
+                href={`tel:${dane.telefonHref}`}
+                wariant="outline"
+                rozmiar="md"
+                ikona="phone">Zadzwoń</Przycisk
+              >
+            </div>
+          </div>
+        </Odslon>
+
+        <Odslon wariant="right">
+          <div
+            class="overflow-hidden rounded-2xl border border-brand-border bg-brand-card"
+          >
+            <Foto
+              klucz="mapa.region"
+              alt="Mapa obszaru działania BramBruk: województwo lubelskie, podlaskie i mazowieckie"
+              class="w-full h-[320px] lg:h-[380px] object-cover"
+            />
+          </div>
+        </Odslon>
+      </div>
+
+      {
+        /* Tagi przeniesione spod mapy dojazdu - tam odpowiadały na pytanie
+          „gdzie jest siedziba", a odpowiadały na „gdzie dojeżdżacie". */
+      }
+      <Odslon zwloka={120}>
+        <div class="mt-10 lg:mt-12">
+          <p
+            class="text-xs font-bold uppercase tracking-[2px] text-brand-text-light mb-4"
+          >
+            Miejscowości, w których pracujemy najczęściej:
+          </p>
+          <ul class="flex flex-wrap gap-2">
+            {
+              miejscowosci.map((miejscowosc) => (
+                <li class="px-3 py-1.5 bg-brand-card rounded-full text-xs text-brand-text border border-brand-border">
+                  {miejscowosc}
+                </li>
+              ))
+            }
+            <li
+              class="px-3 py-1.5 bg-brand-olive/15 rounded-full text-xs font-medium text-brand-olive-text border border-brand-olive/30"
+            >
+              i wiele innych...
+            </li>
+          </ul>
+        </div>
+      </Odslon>
     </div>
   </section>
 </Podstrona>

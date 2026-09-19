@@ -2,12 +2,23 @@
 /**
  * KARTA USŁUGI - odpowiednik `ServiceCard.jsx`.
  *
- * Karta bez `href` renderuje `<div>` i nie pokazuje strzałki - tak jak
- * poprzednio (huby budownictwa mają karty bez podstron docelowych).
+ * Karta bez `href` renderuje `<div>` i nie pokazuje odnośnika na dole.
  * Odznaka z ceną wchodzi slotem `odznaka`.
+ *
+ * ┌── TAGI NA ZDJĘCIU ──────────────────────────────────────────────────┐
+ * │ Karta typu usługi („Ogrodzenia i bramy") mówiła, czym się zajmujemy, │
+ * │ ale nie mówiła, co konkretnie w tym siedzi. Tagi na dole zdjęcia     │
+ * │ wypisują rodzaje z tego zakresu, więc odwiedzający widzi „bramy      │
+ * │ przesuwne", zanim kliknie.                                          │
+ * │                                                                      │
+ * │ Tło tagów jest ciemne i nieprzezroczyste w 85% - nie da się policzyć │
+ * │ kontrastu napisu wobec zdjęcia, więc napis stoi na własnym tle,      │
+ * │ nie na fotografii.                                                   │
+ * └──────────────────────────────────────────────────────────────────────┘
  */
 import Ikona from '../icons/Ikona.astro'
 import Foto from '../media/Foto.astro'
+import type { NazwaIkony } from '../icons/ikony'
 
 interface Props {
   tytul: string
@@ -15,30 +26,58 @@ interface Props {
   /** Klucz zdjęcia z manifestu mediów. */
   foto: string
   href?: string
+  /** Rodzaje usług z tego zakresu - pasek na dole zdjęcia. */
+  tagi?: readonly string[]
+  /** Napis odnośnika na dole karty. */
+  cta?: string
+  ikonaCta?: NazwaIkony
   class?: string
 }
-const { tytul, opis, foto, href, class: klasa = '' } = Astro.props
+const {
+  tytul,
+  opis,
+  foto,
+  href,
+  tagi = [],
+  cta = 'Zobacz szczegóły',
+  ikonaCta = 'arrow-right',
+  class: klasa = '',
+} = Astro.props
 
-const klasy = `group block relative bg-brand-card rounded-2xl border border-brand-border/60 overflow-hidden shadow-sm shadow-black/[0.04] hover:shadow-md hover:shadow-black/[0.07] hover:border-brand-olive/20 transition-all duration-300 ${klasa}`
+const klasy = `group block relative bg-brand-card rounded-2xl border border-brand-border/60 overflow-hidden shadow-sm shadow-black/[0.04] hover:shadow-md hover:shadow-black/[0.07] hover:border-brand-olive/30 transition-all duration-300 ${klasa}`
 const Znacznik = href ? 'a' : 'div'
 ---
 
 <Znacznik class={klasy} href={href}>
-  <div class="img-hover aspect-[16/10] overflow-hidden">
-    <Foto
-      klucz={foto}
-      alt={tytul}
-      class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-    />
+  <div class="relative">
+    <div class="img-hover aspect-[16/10] overflow-hidden">
+      <Foto
+        klucz={foto}
+        alt={tytul}
+        class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+      />
+    </div>
+    {
+      tagi.length > 0 && (
+        <ul class="absolute inset-x-0 bottom-0 flex flex-wrap gap-1.5 p-3 bg-gradient-to-t from-brand-dark/70 to-transparent">
+          {tagi.map((tag) => (
+            <li class="rounded-full bg-brand-dark/85 px-2.5 py-1 text-[11px] font-medium leading-none text-white">
+              {tag}
+            </li>
+          ))}
+        </ul>
+      )
+    }
   </div>
+
   <div class="p-5 lg:p-6">
     <h3 class="font-display text-lg font-bold text-brand-text mb-1.5">{tytul}</h3>
     <p class="text-sm text-brand-text-light mb-4 leading-relaxed">{opis}</p>
     {
       href && (
         <span class="inline-flex items-center gap-1.5 text-brand-sage text-sm font-semibold group-hover:gap-2.5 transition-all duration-300">
-          Zobacz szczegóły
-          <Ikona nazwa="arrow-right" rozmiar={14} class="transition-transform group-hover:translate-x-1" />
+          {cta}
+          <Ikona nazwa={ikonaCta} rozmiar={14} class="transition-transform group-hover:translate-x-1" />
         </span>
       )
     }

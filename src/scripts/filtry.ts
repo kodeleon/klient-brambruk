@@ -1,18 +1,18 @@
 /**
- * FILTRY I ZAKŁADKI - to, czego nie robi CSS.
+ * FILTR KATEGORII - to, czego nie robi CSS.
  *
- * Wybór kategorii (/realizacje/) i zakładki (/uslugi/) działają bez
- * JavaScriptu: stan trzymają ukryte pola wyboru, a chowaniem zajmuje się
- * `src/styles/components/zakladki.css`. Ten moduł dokłada dwie rzeczy:
+ * Wybór kategorii na /realizacje/ działa bez JavaScriptu: stan trzyma ukryte
+ * pole wyboru, a chowaniem zajmuje się `src/styles/components/zakladki.css`.
+ * Ten moduł dokłada szukajkę i licznik „Wyświetlono X z Y".
  *
- *   1. szukajkę i licznik „Wyświetlono X z Y" na /realizacje/,
- *   2. przewinięcie do listy po kliknięciu w dolny zestaw zakładek
- *      na /uslugi/ - w starym projekcie robił to `scrollIntoView`.
+ * ⚠️ Była tu druga funkcja - przewijanie po kliknięciu w dolny zestaw
+ * zakładek na /uslugi/. Zakładek na tej podstronie już nie ma (wszystkie
+ * karty są widoczne, przyciski typów to kotwice), więc funkcja odpadła
+ * razem z nimi.
  */
 
 export function filtry() {
   szukajka()
-  dolneZakladki()
 }
 
 function szukajka() {
@@ -57,20 +57,4 @@ function szukajka() {
   })
 
   przelicz()
-}
-
-function dolneZakladki() {
-  const dolne = document.querySelectorAll<HTMLLabelElement>('[data-zakladka-dolna]')
-  if (!dolne.length) return
-
-  const cel = document.getElementById('main-content')
-  if (!cel) return
-
-  for (const etykieta of dolne) {
-    etykieta.addEventListener('click', () => {
-      // Kliknięcie w etykietę najpierw przestawia pole wyboru, a dopiero
-      // potem przewijamy - stąd opóźnienie o jedną klatkę.
-      requestAnimationFrame(() => cel.scrollIntoView({ behavior: 'smooth' }))
-    })
-  }
 }

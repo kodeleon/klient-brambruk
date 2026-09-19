@@ -1,0 +1,144 @@
+---
+/**
+ * /credits/ - pochodzenie materiałów użytych w serwisie.
+ *
+ * ┌── TO NIE JEST STRONA GRZECZNOŚCIOWA ───────────────────────────────┐
+ * │ Ikony w obrazie podglądu linku pochodzą z Flaticona na licencji,    │
+ * │ która WYMAGA widocznej atrybucji. Bez tej podstrony serwis łamie     │
+ * │ warunki licencji. Z tego samego powodu odnośnik do niej stoi         │
+ * │ w stopce, na każdej podstronie, obok polityki prywatności.           │
+ * └─────────────────────────────────────────────────────────────────────┘
+ *
+ * Źródłem prawdy dla listy ikon jest `credits.txt` w katalogu projektu -
+ * plik dostarczony razem z materiałami. Po dołożeniu grafiki z nowego
+ * źródła dopisuje się pozycję TUTAJ, nie tylko w tamtym pliku.
+ *
+ * Mapy jeszcze nie ma. Kiedy wejdzie obraz z `osm-custom-view`, atrybucja
+ * OpenStreetMap obowiązuje PRZY MAPIE, nie tutaj - ta sekcja jest wtedy
+ * dopiskiem, nie spełnieniem warunku.
+ */
+import Podstrona from '../layouts/Podstrona.astro'
+import Okruszki from '../components/ui/Okruszki.astro'
+import EtykietaSekcji from '../components/ui/EtykietaSekcji.astro'
+import Odslon from '../components/ui/Odslon.astro'
+import Ikona from '../components/icons/Ikona.astro'
+
+const ikonyFlaticon = [
+  { temat: 'Ogrodzenia (fence)', autor: 'Magnific', url: 'https://www.flaticon.com/free-icons/fence' },
+  { temat: 'Bramy (gate)', autor: 'Magnific', url: 'https://www.flaticon.com/free-icons/gate' },
+  { temat: 'Brukarstwo (pavement)', autor: 'orvipixel', url: 'https://www.flaticon.com/free-icons/pavement' },
+  { temat: 'Budownictwo (brick)', autor: 'Magnific', url: 'https://www.flaticon.com/free-icons/brick' },
+  { temat: 'Gwarancja (shield)', autor: 'Magnific', url: 'https://www.flaticon.com/free-icons/shield' },
+]
+
+const kroje = [
+  { nazwa: 'Audiowide', autor: 'Astigmatic', licencja: 'SIL Open Font License 1.1', plik: '/fonts/LICENCJA-audiowide.txt' },
+  { nazwa: 'Montserrat', autor: 'Julieta Ulanovsky i współautorzy', licencja: 'SIL Open Font License 1.1', plik: '/fonts/LICENCJA-montserrat.txt' },
+  { nazwa: 'Manrope', autor: 'Michael Sharanda', licencja: 'SIL Open Font License 1.1', plik: '/fonts/LICENCJA-manrope.txt' },
+]
+---
+
+<Podstrona
+  tytul="Credits - materiały użyte w serwisie | BramBruk"
+  opis="Pochodzenie grafik, ikon i krojów pisma użytych w serwisie BramBruk: autorzy, licencje i odnośniki do źródeł."
+>
+  <Okruszki pozycje={[{ etykieta: 'Strona główna', sciezka: '/' }, { etykieta: 'Credits' }]} />
+
+  <section class="bg-brand-section py-12 lg:py-20">
+    <div class="max-w-3xl mx-auto px-5 lg:px-10">
+      <Odslon>
+        <EtykietaSekcji>Materiały</EtykietaSekcji>
+        <h1 class="font-display text-3xl lg:text-4xl font-bold text-brand-text mt-2 mb-3">Credits</h1>
+        <p class="text-brand-text-light leading-relaxed mb-10">
+          Poniżej wypisane są materiały, które nie powstały w BramBruk, razem z autorami i licencjami.
+          Lista jest częścią warunków, na jakich z nich korzystamy.
+        </p>
+      </Odslon>
+
+      <div class="bg-brand-card border border-brand-border/60 rounded-2xl shadow-sm shadow-black/[0.04] p-6 lg:p-10">
+        <Odslon>
+          <div class="mb-9">
+            <h2 class="font-display text-lg font-bold text-brand-text mb-2">Fotografie</h2>
+            <p class="text-sm text-brand-text-light leading-relaxed">
+              Wszystkie zdjęcia realizacji w serwisie to materiał własny BramBruk, wykonany na
+              zrealizowanych zleceniach. Serwis nie używa fotografii ze stocku.
+            </p>
+          </div>
+
+          <div class="mb-9">
+            <h2 class="font-display text-lg font-bold text-brand-text mb-2">Grafiki i dodatki do zdjęć</h2>
+            <p class="text-sm text-brand-text-light leading-relaxed mb-4">
+              Ikony użyte w obrazie podglądu linku (widocznym przy udostępnianiu strony w mediach
+              społecznościowych) pochodzą z serwisu Flaticon:
+            </p>
+            <ul class="space-y-2.5">
+              {
+                ikonyFlaticon.map((pozycja) => (
+                  <li class="flex flex-wrap items-baseline gap-x-2 text-sm">
+                    <span class="font-medium text-brand-text">{pozycja.temat}</span>
+                    <span class="text-brand-text-light">
+                      - ikony autorstwa {pozycja.autor},
+                    </span>
+                    <a
+                      href={pozycja.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="inline-flex items-center gap-1 font-medium text-brand-olive-text underline underline-offset-2 hover:text-brand-text transition-colors"
+                    >
+                      Flaticon
+                      <Ikona nazwa="arrow-up-right" rozmiar={12} grubosc={2.5} class="shrink-0" />
+                      <span class="poza-ekranem">(otwiera się w nowej karcie)</span>
+                    </a>
+                  </li>
+                ))
+              }
+            </ul>
+          </div>
+
+          <div class="mb-9">
+            <h2 class="font-display text-lg font-bold text-brand-text mb-2">Kroje pisma</h2>
+            <p class="text-sm text-brand-text-light leading-relaxed mb-4">
+              Kroje są wgrane na serwer serwisu, nie pobierane z zewnątrz. Pełne teksty licencji leżą
+              obok plików z krojami.
+            </p>
+            <ul class="space-y-2.5">
+              {
+                kroje.map((krojPisma) => (
+                  <li class="flex flex-wrap items-baseline gap-x-2 text-sm">
+                    <span class="font-medium text-brand-text">{krojPisma.nazwa}</span>
+                    <span class="text-brand-text-light">- {krojPisma.autor}, {krojPisma.licencja},</span>
+                    <a
+                      href={krojPisma.plik}
+                      class="font-medium text-brand-olive-text underline underline-offset-2 hover:text-brand-text transition-colors"
+                    >
+                      treść licencji
+                    </a>
+                  </li>
+                ))
+              }
+            </ul>
+          </div>
+
+          <div>
+            <h2 class="font-display text-lg font-bold text-brand-text mb-2">Ikony interfejsu</h2>
+            <p class="text-sm text-brand-text-light leading-relaxed">
+              Kształty ikon w interfejsie pochodzą z zestawu{' '}
+              <a
+                href="https://lucide.dev"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="inline-flex items-center gap-1 font-medium text-brand-olive-text underline underline-offset-2 hover:text-brand-text transition-colors"
+              >
+                Lucide
+                <Ikona nazwa="arrow-up-right" rozmiar={12} grubosc={2.5} class="shrink-0" />
+                <span class="poza-ekranem">(otwiera się w nowej karcie)</span>
+              </a>{' '}
+              na licencji ISC. Są wstawiane do dokumentu przy budowaniu serwisu, więc przeglądarka nie
+              pobiera żadnej biblioteki ikon.
+            </p>
+          </div>
+        </Odslon>
+      </div>
+    </div>
+  </section>
+</Podstrona>

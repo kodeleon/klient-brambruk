@@ -20,7 +20,7 @@
 import { dane, nawigacja } from '../../config/dane'
 import Przycisk from '../ui/Przycisk.astro'
 import Ikona from '../icons/Ikona.astro'
-import Foto from '../media/Foto.astro'
+import Logo from '../media/Logo.astro'
 
 const tu = Astro.url.pathname
 /** Stary projekt podświetlał pozycję przez `pathname.startsWith(href)`. */
@@ -38,7 +38,7 @@ const aktywna = (sciezka: string) => tu.startsWith(sciezka.replace(/\/$/, ''))
   <div class="max-w-7xl mx-auto px-2 lg:px-10 min-h-[72px]">
     <div class="flex items-center justify-between h-[72px]">
       <a href="/" class="flex items-center gap-1 group" aria-label="BramBruk - strona główna">
-        <Foto klucz="logo.znak" alt="" class="w-12 h-12 pb-1" />
+        <Logo nazwa="znak" alt="" sizes="48px" class="w-12 h-12 pb-1" />
         <span class="text-brand-bg font-brand text-2xl">BramBruk</span>
       </a>
 

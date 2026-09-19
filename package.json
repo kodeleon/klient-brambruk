@@ -21,6 +21,7 @@
     "images:source:plan": "node tools/media/build-source.mjs --plan",
     "images:crop": "node tools/media/build-crop.mjs",
     "images:crop:all": "node tools/media/build-crop.mjs --all",
+    "logo": "node tools/media/build-logo.mjs",
     "prebuild": "node tools/media/build-images.mjs --profile=full",
     "predev": "node tools/media/build-images.mjs --profile=fast",
     "audit": "node tools/audit/audit.mjs",

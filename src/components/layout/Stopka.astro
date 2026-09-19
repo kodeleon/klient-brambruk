@@ -1,57 +1,154 @@
 ---
 /**
- * STOPKA - odpowiednik `Footer.jsx`.
+ * STOPKA - następca `Footer.jsx`.
  *
  * Trzy kolumny odnośników i dane firmy biorą się z `src/config/dane.ts`.
- * Rok jest liczony, nie wpisany na sztywno (stary projekt miał „© 2026"
- * w kodzie - checklista sprawdza to wprost).
+ * Rok jest liczony, nie wpisany na sztywno.
  *
- * Odnośniki zewnętrzne dostały `rel="noopener noreferrer"`, którego
- * poprzednio brakowało przy `target="_blank"`.
+ * Co się zmieniło przy przejściu po wyglądzie (18.09.2026):
+ *
+ *   · PASEK KONTAKTU nad stopką właściwą. Telefon, e-mail, adres i godziny
+ *     stały wcześniej w jednej kolumnie jako lista drobnych wierszy, przez
+ *     co najczęściej szukana informacja na całej witrynie wyglądała jak
+ *     przypis. Teraz każda z czterech ma własne pole, etykietę i ikonę.
+ *   · SIATKA W TLE. Ciemna płaszczyzna bez faktury sprawiała wrażenie
+ *     pustej - stąd ledwie widoczna kratka (`stopka__siatka`).
+ *   · NIP i REGON jaśniejsze i rozbite na etykietę i wartość.
+ *   · MEDIA SPOŁECZNOŚCIOWE I FIXLY pod danymi rejestrowymi, w kolumnie
+ *     marki, a nie w osobnej kolumnie obok nawigacji.
+ *   · CREDITS obok polityki prywatności - atrybucja ikon z obrazu podglądu
+ *     linku jest warunkiem licencji, a nie dobrą wolą.
+ *   · PODPIS WYKONAWCY po lewej, przy zastrzeżeniu praw.
+ *
+ * Kolory: na `brand-dark` tekstem jest `neutral-400` (6,61:1), nie
+ * `neutral-500` (3,52:1) - patrz tabela w `tokens.css`.
  */
-import { dane, fixly, nawigacjaStopki, rok } from '../../config/dane'
-import Ikona from '../icons/Ikona.astro'
-import IkonaTikTok from '../icons/IkonaTikTok.astro'
-import PrzyciskFixly from '../ui/PrzyciskFixly.astro'
-import Foto from '../media/Foto.astro'
+import { dane, fixly, nawigacjaStopki, rok } from "../../config/dane";
+import Ikona from "../icons/Ikona.astro";
+import IkonaTikTok from "../icons/IkonaTikTok.astro";
+import PrzyciskFixly from "../ui/PrzyciskFixly.astro";
+import Logo from "../media/Logo.astro";
 
 const spolecznosciowe = [
-  { etykieta: 'Facebook', url: dane.facebookUrl, ikona: 'facebook' as const },
-  { etykieta: 'Instagram', url: dane.instagramUrl, ikona: 'instagram' as const },
-].filter((p) => p.url)
+  { etykieta: "Facebook", url: dane.facebookUrl, ikona: "facebook" as const },
+  {
+    etykieta: "Instagram",
+    url: dane.instagramUrl,
+    ikona: "instagram" as const,
+  },
+].filter((p) => p.url);
+
+/** Pasek nad stopką. Kolejność od najczęściej szukanego. */
+const kontakty = [
+  {
+    etykieta: "Zadzwoń",
+    ikona: "phone" as const,
+    tresc: dane.telefon,
+    href: `tel:${dane.telefonHref}`,
+  },
+  {
+    etykieta: "Napisz",
+    ikona: "mail" as const,
+    tresc: dane.email,
+    href: `mailto:${dane.email}`,
+  },
+  {
+    etykieta: "Siedziba",
+    ikona: "map-pin" as const,
+    tresc: dane.adres,
+    href: dane.mapyUrl,
+    zewnetrzny: true,
+  },
+  {
+    etykieta: "Godziny pracy",
+    ikona: "clock" as const,
+    tresc: `${dane.godzinyTydzien} · ${dane.godzinySobota}`,
+  },
+];
+
+const rejestr = [
+  { etykieta: "NIP", wartosc: dane.nip },
+  { etykieta: "REGON", wartosc: dane.regon },
+];
 ---
 
-<footer class="bg-brand-dark text-neutral-400">
-  <div class="max-w-7xl mx-auto px-5 lg:px-10 pt-12 pb-8">
-    <div class="grid grid-cols-1 sm:grid-cols-3 gap-10 lg:gap-8 mb-8">
-      <div class="col-span-2">
-        <a href="/" class="flex items-center gap-2 group" aria-label="BramBruk - strona główna">
-          <Foto klucz="logo.znak" alt="" class="w-12 h-12 pb-1" />
+<footer class="stopka relative overflow-hidden bg-brand-dark text-neutral-400">
+  <div class="stopka__siatka" aria-hidden="true"></div>
+
+  {/* ═══ PASEK KONTAKTU ══════════════════════════════════════ */}
+  <div class="relative border-y border-white/10">
+    <div class="max-w-7xl mx-auto px-5 lg:px-10">
+      <ul
+        class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 divide-y divide-white/10 sm:divide-y-0 sm:divide-x"
+      >
+        {
+          kontakty.map((pozycja) => (
+            <li class="flex items-start gap-3 py-5 sm:px-5 lg:px-6 first:sm:pl-0 last:sm:pr-0">
+              <span class="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-brand-olive/10 text-brand-olive">
+                <Ikona nazwa={pozycja.ikona} rozmiar={16} />
+              </span>
+              <span class="min-w-0">
+                <span class="block text-[10px] font-bold uppercase tracking-[2px] text-neutral-400">
+                  {pozycja.etykieta}
+                </span>
+                {pozycja.href ? (
+                  <a
+                    href={pozycja.href}
+                    target={pozycja.zewnetrzny ? "_blank" : undefined}
+                    rel={pozycja.zewnetrzny ? "noopener noreferrer" : undefined}
+                    class="mt-0.5 block text-sm font-semibold text-white hover:text-brand-olive transition-colors"
+                  >
+                    {pozycja.tresc}
+                    {pozycja.zewnetrzny && (
+                      <span class="poza-ekranem">
+                        (otwiera się w nowej karcie)
+                      </span>
+                    )}
+                  </a>
+                ) : (
+                  <span class="mt-0.5 block text-sm font-semibold text-white">
+                    {pozycja.tresc}
+                  </span>
+                )}
+              </span>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </div>
+
+  {/* ═══ STOPKA WŁAŚCIWA ═════════════════════════════════════ */}
+  <div class="relative max-w-7xl mx-auto px-5 lg:px-10 pt-12 pb-8">
+    <div
+      class="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-[minmax(0,2fr)_repeat(3,minmax(0,1fr))] lg:gap-8"
+    >
+      <div class="sm:col-span-2 lg:col-span-1">
+        <a
+          href="/"
+          class="flex items-center gap-2 group"
+          aria-label="BramBruk - strona główna"
+        >
+          <Logo nazwa="znak" alt="" sizes="48px" class="w-12 h-12 pb-1" />
           <span class="text-brand-bg font-brand text-2xl">BramBruk</span>
         </a>
 
-        <div class="space-y-2 text-sm">
-          <p class="text-neutral-500">{dane.opis}</p>
-          <p class="text-neutral-500">NIP: {dane.nip}</p>
-          <p class="text-neutral-500">REGON: {dane.regon}</p>
-          <div class="flex items-center gap-2 pt-1">
-            <Ikona nazwa="map-pin" rozmiar={14} class="text-brand-olive shrink-0" />
-            <span>{dane.adres}</span>
-          </div>
-          <div class="flex items-center gap-2">
-            <Ikona nazwa="phone" rozmiar={14} class="text-brand-olive shrink-0" />
-            <a href={`tel:${dane.telefonHref}`} class="hover:text-white transition-colors">{dane.telefon}</a>
-          </div>
-          <div class="flex items-center gap-2">
-            <Ikona nazwa="mail" rozmiar={14} class="text-brand-olive shrink-0" />
-            <a href={`mailto:${dane.email}`} class="hover:text-white transition-colors">{dane.email}</a>
-          </div>
-        </div>
-      </div>
+        <p class="mt-3 text-sm text-neutral-400">{dane.opis}</p>
 
-      <div class="flex flex-col h-full justify-center">
-        <h2 class="text-white text-xs font-semibold tracking-wider uppercase mb-4">Social media</h2>
-        <div class="flex gap-3 mb-4">
+        <dl class="mt-4 space-y-1 text-sm">
+          {
+            rejestr.map((pozycja) => (
+              <div class="flex gap-2">
+                <dt class="text-neutral-400">{pozycja.etykieta}</dt>
+                <dd class="font-medium text-brand-text-xlight tabular-nums">
+                  {pozycja.wartosc}
+                </dd>
+              </div>
+            ))
+          }
+        </dl>
+
+        <div class="mt-6 flex flex-wrap items-center gap-3">
           {
             spolecznosciowe.map((p) => (
               <a
@@ -61,7 +158,12 @@ const spolecznosciowe = [
                 class="w-10 h-10 rounded-full bg-white/5 hover:bg-brand-olive/20 flex items-center justify-center transition-colors"
                 aria-label={`${p.etykieta} (otwiera się w nowej karcie)`}
               >
-                <Ikona nazwa={p.ikona} rozmiar={18} wypelnienie={p.ikona === 'facebook' ? 'currentColor' : 'none'} obrys={p.ikona === 'facebook' ? 'none' : 'currentColor'} />
+                <Ikona
+                  nazwa={p.ikona}
+                  rozmiar={18}
+                  wypelnienie={p.ikona === "facebook" ? "currentColor" : "none"}
+                  obrys={p.ikona === "facebook" ? "none" : "currentColor"}
+                />
               </a>
             ))
           }
@@ -78,35 +180,36 @@ const spolecznosciowe = [
               </a>
             )
           }
-        </div>
-
-        <div class="flex items-center gap-2 text-sm">
-          <div class="flex text-fixly-main" role="img" aria-label={`Ocena ${fixly.ocena}`}>
-            {Array.from({ length: 5 }).map(() => <Ikona nazwa="star" rozmiar={14} wypelnienie="currentColor" />)}
-          </div>
-          <span class="flex flex-wrap items-center gap-1.5">
-            <span>{fixly.ocena} na</span>
+          <span class="flex items-center gap-2 text-sm">
+            <span
+              class="flex text-fixly-main"
+              role="img"
+              aria-label={`Ocena ${fixly.ocena}`}
+            >
+              {
+                Array.from({ length: 5 }).map(() => (
+                  <Ikona nazwa="star" rozmiar={14} wypelnienie="currentColor" />
+                ))
+              }
+            </span>
             <PrzyciskFixly />
           </span>
         </div>
-
-        <p class="text-xs text-neutral-500 mt-4">
-          {dane.godzinyTydzien}
-          <br />
-          {dane.godzinySobota}
-        </p>
       </div>
-    </div>
 
-    <div class="grid grid-cols-1 sm:grid-cols-3 gap-10 lg:gap-8">
       {
         nawigacjaStopki.map((kolumna) => (
           <div>
-            <h2 class="text-white text-xs font-semibold tracking-wider uppercase mb-4">{kolumna.tytul}</h2>
+            <h2 class="text-white text-xs font-semibold tracking-wider uppercase mb-4">
+              {kolumna.tytul}
+            </h2>
             <ul class="space-y-2.5">
               {kolumna.pozycje.map((pozycja) => (
                 <li>
-                  <a href={pozycja.sciezka} class="text-sm hover:text-white transition-colors">
+                  <a
+                    href={pozycja.sciezka}
+                    class="text-sm hover:text-white transition-colors"
+                  >
                     {pozycja.etykieta}
                   </a>
                 </li>
@@ -118,12 +221,32 @@ const spolecznosciowe = [
     </div>
 
     <div
-      class="mt-12 pt-6 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-3 text-xs text-neutral-500"
+      class="mt-12 pt-6 border-t border-white/10 flex flex-col gap-3 text-xs text-neutral-400 md:flex-row md:items-center md:justify-between"
     >
-      <span>© {rok} BramBruk · Wszelkie prawa zastrzeżone</span>
-      <div class="flex gap-4">
-        <a href="/polityka-prywatnosci/" class="hover:text-white transition-colors">Polityka Prywatności</a>
-        <span class="text-neutral-700">·</span>
+      <p>
+        © {rok} BramBruk · Wszelkie prawa zastrzeżone · Strona stworzona przez{
+          " "
+        }
+        <a
+          href="https://kodeleon.pl"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="font-semibold text-brand-text-xlight underline underline-offset-2 decoration-brand-olive/60 hover:text-brand-olive transition-colors"
+        >
+          kodeleon.pl
+          <span class="poza-ekranem">(otwiera się w nowej karcie)</span>
+        </a>
+      </p>
+      <div class="flex flex-wrap items-center gap-x-4 gap-y-2">
+        <a
+          href="/polityka-prywatnosci/"
+          class="hover:text-white transition-colors">Polityka prywatności</a
+        >
+        <span class="text-neutral-600" aria-hidden="true">·</span>
+        <a href="/credits/" class="hover:text-white transition-colors"
+          >Credits</a
+        >
+        <span class="text-neutral-600" aria-hidden="true">·</span>
         <span>brambruk.pl</span>
       </div>
     </div>

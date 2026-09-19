@@ -76,7 +76,7 @@ export const statystyki = {
   lata: 5,
   miejscowosci: 15,
   realizacje: '50+',
-  zasieg: '50 km',
+  zasieg: '100 km',
 } as const
 
 /**

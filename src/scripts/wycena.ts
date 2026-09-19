@@ -158,13 +158,25 @@ export function wycena() {
           continue
         }
         if (typeof war !== 'string' || !war) continue
-        const pole = formularz.querySelector<Pole>(`[data-pole="${nazwa}"]`)
-        if (pole) {
-          pole.value = war
+
+        // ⚠️ KOLEJNOŚĆ MA ZNACZENIE i jest odwrotna niż podpowiada intuicja:
+        // NAJPIERW grupa przycisków radiowych, dopiero potem `data-pole`.
+        // Przyciski radiowe (`serviceType`, `subtype`) TEŻ mają `data-pole`,
+        // więc szukanie po nim trafiało w pierwszy przycisk grupy i ustawiało
+        // mu `value` zamiast zaznaczyć właściwy - szkic nie wracał, a pierwszy
+        // przycisk zaczynał wysyłać cudzą wartość. `stan()` czyta w tej samej
+        // kolejności; te dwa miejsca muszą się zgadzać.
+        const wybor = formularz.querySelector<HTMLInputElement>(`input[name="${nazwa}"][value="${war}"]`)
+        if (wybor) {
+          wybor.checked = true
+          // Bez sztucznego zdarzenia `change`: jego obsługa kasuje podtyp przy
+          // zmianie typu usługi, czyli skasowałaby to, co właśnie odtwarzamy.
+          // Listę podtypów odsłania `odswiezPodtypy()` wywoływane zaraz po
+          // `odtworz()` na dole tego modułu.
           continue
         }
-        const wybor = formularz.querySelector<HTMLInputElement>(`input[name="${nazwa}"][value="${war}"]`)
-        if (wybor) wybor.checked = true
+        const pole = formularz.querySelector<Pole>(`[data-pole="${nazwa}"]`)
+        if (pole) pole.value = war
       }
     } catch {
       try {

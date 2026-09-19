@@ -1,16 +1,48 @@
 /**
  * HUBY KATEGORII - treść podstron /ogrodzenia/, /brukarstwo/, /budownictwo/.
  *
- * Przeniesione bez zmian z obiektu `HUBS_DATA` w `code/src/pages/ServiceHub.jsx`.
- * Dane zostały oddzielone od szablonu: układ rysuje `SzablonHubu.astro`,
- * a ten plik mówi wyłącznie, co ma się w nim znaleźć.
+ * Układ rysuje `SzablonHubu.astro`, ten plik mówi wyłącznie, co ma w nim stać.
  *
- * Adresy zdjęć zastąpione kluczami z manifestu mediów.
+ * ┌── CO SIĘ ZMIENIŁO 18.09.2026 ──────────────────────────────────────┐
+ * │ 1. ZASIĘG. Wszędzie było „powiat bialski" i „promień 50 km", przez  │
+ * │    co ktoś z Siedlec albo Lublina czytał ofertę jako nie dla siebie.│
+ * │    Dziś: promień 100 km i trzy województwa, spójnie z `dane.ts`.    │
+ * │                                                                     │
+ * │ 2. SEKCJA „DLACZEGO MY - TAK DZIAŁAMY" zamiast dwóch akapitów       │
+ * │    o niczym. Trzy bloki, każdy odpowiada na inne pytanie:           │
+ * │      zasieg   - gdzie dojeżdżamy (z listą miast, wyróżnionych       │
+ * │                 w tekście, żeby dało się znaleźć swoje),            │
+ * │      metodyka - co dokładnie robimy, KROK PO KROKU, jako lista,     │
+ * │                 nie jako akapit, w którym kroki się zlewają,        │
+ * │      sprzet   - na czym pracujemy i co to daje.                     │
+ * │    To jest jedyna treść na hubie, która tłumaczy, czym ta firma     │
+ * │    różni się od sąsiada z ogłoszenia.                               │
+ * │                                                                     │
+ * │ 3. CENNIK dostał `opis` i `czynniki` - widełki bez wyjaśnienia,     │
+ * │    od czego zależą, czytają się jak unik.                          │
+ * └─────────────────────────────────────────────────────────────────────┘
  *
- * ⚠️ Karta „Siatka ogrodzeniowa" w hubie ogrodzeń pokazywała zdjęcie
- * ze stocku (Unsplash), a nie realizację BramBruk - klucz `karta.siatka-hub`
- * czeka na zdjęcie klienta, patrz MIGRACJA-braki.md.
+ * ⚠️ `miasta` to dziesięć NAJWIĘKSZYCH miejscowości w promieniu 100 km od
+ * Białej Podlaskiej, policzonych w linii prostej ze współrzędnych, nie
+ * dobranych na oko. Odległość drogą jest większa - dlatego w tekście stoi
+ * „w promieniu", a nie konkretna liczba kilometrów przy każdym mieście.
  */
+
+/** Lista wspólna dla trzech hubów - jedna zmiana, trzy podstrony. */
+const MIASTA_100KM = [
+  'Lublin',
+  'Siedlce',
+  'Świdnik',
+  'Łuków',
+  'Bielsk Podlaski',
+  'Lubartów',
+  'Hajnówka',
+  'Sokołów Podlaski',
+  'Międzyrzec Podlaski',
+  'Radzyń Podlaski',
+] as const
+
+const WOJEWODZTWA = 'lubelskiego, podlaskiego i mazowieckiego'
 
 export const huby = {
 
@@ -18,11 +50,11 @@ export const huby = {
     okruszek: 'Ogrodzenia',
     etykieta: 'Ogrodzenia i bramy',
     fotoHero: 'hero.ogrodzenia',
-    tytulHero: ['Ogrodzenia, bramy i furtki -', 'Biała Podlaska i region'],
-    opisHero:
-      'Montujemy ogrodzenia panelowe, bramy przesuwne i dwuskrzydłowe, furtki oraz podmurówki na terenie powiatu bialskiego. Pracujemy z panelami ocynkowanymi i malowanymi proszkowo w wybranym kolorze RAL.',
-    etykietaSekcji: 'Rodzaje ogrodzeń',
-    tytulSekcji: 'Wybierz typ ogrodzenia',
+    fotoHeroObok: 'hero.ogrodzenia-obok',
+    tytulHero: 'Ogrodzenia, bramy i furtki',
+    podtytulHero: 'Montaż, automatyka, gwarancja',
+    opisHero: `Montujemy ogrodzenia panelowe, bramy przesuwne i dwuskrzydłowe, furtki oraz podmurówki na terenie województwa ${WOJEWODZTWA}. Pracujemy z panelami ocynkowanymi i malowanymi proszkowo w wybranym kolorze RAL.`,
+    tytulSekcji: 'Nasze usługi ogrodzeniowe',
     uslugi: [
       {
         tytul: 'Panelowe 2D/3D',
@@ -62,18 +94,58 @@ export const huby = {
       },
     ],
     tresc: {
-      tytul: 'Montaż ogrodzeń w Białej Podlaskiej i powiecie bialskim',
-      tekst: 'Działamy na terenie Białej Podlaskiej i okolic w promieniu 50 km - obsługujemy Międzyrzec Podlaski, Terespol, Janów Podlaski, Radzyń Podlaski, Parczew, Łosice oraz wsie i osiedla podmiejskie powiatu bialskiego. Każdą realizację rozpoczynamy od bezpłatnej wizji lokalnej z pomiarem i doradztwem w doborze materiałów.',
-      podtytul: 'Od panelu do bramy - pełen zakres prac',
-      podtekst:
-        'Stawiamy ogrodzenia panelowe 2D i 3D na podmurówce lub w gruncie, montujemy bramy przesuwne samonośne z automatyką, bramy dwuskrzydłowe, furtki wejściowe z zamkiem i samozamykaczem. Wylewamy podmurówki betonowe i murujemy słupki z cegły klinkierowej. Stosujemy wyłącznie panele ocynkowane ogniowo i malowane proszkowo, co gwarantuje odporność na korozję i wieloletnią trwałość. Kolory dobieramy z pełnej palety RAL - najczęściej wybierane to antracyt (RAL 7016), zielony (RAL 6005) i czarny (RAL 9005).',
+      zasieg: {
+        tytul: 'Dojeżdżamy w promieniu 100 km od Białej Podlaskiej',
+        tekst: `Ogrodzenia montujemy na terenie województwa ${WOJEWODZTWA}. W tym promieniu mieszczą się między innymi`,
+        miasta: MIASTA_100KM,
+        domkniecie:
+          'oraz wszystkie mniejsze miejscowości pomiędzy nimi. Dojazd ekipy i wizja lokalna są bezpłatne w całym tym obszarze, a jeżeli mieszkasz nieco dalej, zadzwoń i sprawdzimy, czy damy radę przyjechać.',
+      },
+      metodyka: {
+        tytul: 'Jak wygląda montaż ogrodzenia krok po kroku',
+        wstep:
+          'Ogrodzenie trzyma się tak długo, jak dobrze osadzone są słupki, więc kolejność prac nie jest u nas kwestią wygody. Każde zlecenie przechodzi przez te same etapy:',
+        kroki: [
+          'wizja lokalna z pomiarem i wytyczeniem linii ogrodzenia',
+          'wiercenie otworów pod słupki wiertnicą, poniżej granicy przemarzania',
+          'osadzenie i wypoziomowanie słupków w betonie',
+          'montaż podmurówki prefabrykowanej albo wylanie jej na miejscu',
+          'montaż paneli lub przęseł, z zabezpieczeniem miejsc cięcia przed korozją',
+          'osadzenie bramy i furtki, regulacja zawiasów i rolek',
+          'podłączenie i próba automatyki: napęd, fotokomórki, piloty',
+          'uprzątnięcie terenu i wywóz odpadów',
+        ],
+        tytulDodatkow: 'W ramach tego samego zlecenia wykonujemy też',
+        dodatki: [
+          'demontaż starego ogrodzenia razem z wywozem gruzu',
+          'montaż schodkowy na terenie pochyłym',
+          'doprowadzenie zasilania i sterowania do bramy',
+          'montaż listew podmurówkowych i blend przeciwwglądowych',
+        ],
+      },
+      sprzet: {
+        tytul: 'Sprzęt, na którym pracujemy',
+        tekst:
+          'Otwory pod słupki wiercimy wiertnicą spalinową, a nie kopiemy łopatą - otwór ma wtedy równe ściany i beton wiąże w pełnym przekroju. Linię ogrodzenia i wysokości ustawiamy niwelatorem laserowym, więc przęsła nie falują na długich odcinkach. Do cięcia paneli używamy szlifierki z tarczą do stali nierdzewnej, a każde miejsce cięcia zabezpieczamy farbą cynkową - to właśnie tam zaczyna się korozja ogrodzeń ciętych na sucho i zostawionych bez zabezpieczenia.',
+      },
       fotoObok: 'karta.murowane',
-      fotoObokAlt: 'Ogrodzenie panelowe 3D z podmurówką - realizacja w powiecie bialskim',
+      fotoObokAlt: 'Ogrodzenie panelowe z betonową podmurówką - realizacja BramBruk',
+    },
+    cennikOpis: {
+      wstep:
+        'Cennik pokazuje widełki cenowe, a nie konkretne ceny, ponieważ ostateczny koszt ogrodzenia zależy od kilku rzeczy, których nie widać na etapie zapytania:',
+      czynniki: [
+        'ukształtowanie terenu i różnice poziomów wzdłuż linii ogrodzenia',
+        'wysokość i typ panelu oraz rodzaj podmurówki',
+        'liczba bram i furtek, a przy nich obecność automatyki',
+        'stan gruntu: piasek, glina czy grunt nasypowy z gruzem',
+        'demontaż i wywóz starego ogrodzenia, jeżeli jest potrzebny',
+      ],
     },
     galeria: [
-      { foto: 'realizacja.01', tytul: 'Ogrodzenie panelowe 3D', lokalizacja: 'Biała Podlaska' },
-      { foto: 'realizacja.07', tytul: 'Brama przesuwna z automatyką', lokalizacja: 'Sławacinek' },
-      { foto: 'realizacja.08', tytul: 'Panel z podmurówką', lokalizacja: 'Cicibór' },
+      { foto: 'realizacja.01', tytul: 'Ogrodzenie panelowe + brama', lokalizacja: 'Biała Podlaska' },
+      { foto: 'realizacja.08', tytul: 'Brama przesuwna', lokalizacja: 'Janów Podlaski' },
+      { foto: 'realizacja.05', tytul: 'Ogrodzenie z podmurówką', lokalizacja: 'Leśna Podlaska' },
     ],
     tytulGalerii: 'Nasze ogrodzenia i bramy',
     etykietaFaq: 'FAQ - Ogrodzenia',
@@ -81,7 +153,7 @@ export const huby = {
     faq: [
       {
         pytanie: 'Ile kosztuje metr bieżący ogrodzenia panelowego?',
-        odpowiedz: 'Ogrodzenie panelowe z montażem w Białej Podlaskiej i okolicach kosztuje orientacyjnie 100–180 zł za metr bieżący. Na cenę wpływa typ panelu (2D lub 3D), wysokość, kolor RAL oraz rodzaj podłoża. Sam materiał to ok. 40–80 zł/mb.',
+        odpowiedz: 'Ogrodzenie panelowe z montażem kosztuje orientacyjnie 100–180 zł za metr bieżący. Na cenę wpływa typ panelu (2D lub 3D), wysokość, kolor RAL oraz rodzaj podłoża. Sam materiał to ok. 40–80 zł/mb.',
       },
       {
         pytanie: 'Jaka jest różnica między panelem 2D a 3D?',
@@ -98,11 +170,11 @@ export const huby = {
     okruszek: 'Brukarstwo',
     etykieta: 'Brukarstwo',
     fotoHero: 'hero.brukarstwo',
-    tytulHero: ['Profesjonalne brukarstwo -', 'Biała Podlaska i okolice'],
-    opisHero:
-      'Układamy kostkę brukową na podjazdy, chodniki, tarasy i parkingi. Kompleksowa realizacja od przygotowania terenu po wykończenie - z doborem materiałów, doradztwem i bezpłatną wyceną na terenie powiatu bialskiego.',
-    etykietaSekcji: 'Usługi brukarskie',
-    tytulSekcji: 'Co oferujemy',
+    fotoHeroObok: 'hero.brukarstwo-obok',
+    tytulHero: 'Profesjonalne brukarstwo',
+    podtytulHero: 'Od korytowania po fugowanie',
+    opisHero: `Układamy kostkę brukową na podjazdy, chodniki, tarasy i parkingi. Kompleksowa realizacja od przygotowania terenu po wykończenie, z doborem materiałów, doradztwem i bezpłatną wyceną na terenie województwa ${WOJEWODZTWA}.`,
+    tytulSekcji: 'Nasze usługi brukarskie',
     uslugi: [
       {
         tytul: 'Kostka brukowa',
@@ -124,18 +196,57 @@ export const huby = {
       },
     ],
     tresc: {
-      tytul: 'Brukarstwo w Białej Podlaskiej i regionie',
-      tekst: 'Realizujemy usługi brukarskie na terenie Białej Podlaskiej i okolic w promieniu 50 km - dojeżdżamy do Międzyrzeca Podlaskiego, Terespola, Janowa Podlaskiego, Radzynia Podlaskiego i Parczewa. Układamy kostkę brukową na podjazdach, chodnikach, alejkach ogrodowych, tarasach i parkingach. Każdy projekt zaczynamy od bezpłatnej wizji lokalnej z pomiarem terenu i doradztwa w doborze materiałów.',
-      podtytul: 'Kompleksowa realizacja',
-      podtekst:
-        'W ramach zlecenia wykonujemy pełen zakres prac: korytowanie terenu, zagęszczenie gruntu, ułożenie podbudowy z kruszywa, montaż krawężników i obrzeży, podsypkę, układanie kostki we wybranym wzorze oraz fugowanie i zagęszczanie powierzchni. Dobieramy kostkę pod kątem obciążenia - inna grubość na chodnik (4–6 cm), inna na podjazd samochodowy (8 cm) czy parking ciężarowy (10 cm). Doradzamy w wyborze koloru, wzoru i materiału, aby efekt końcowy był trwały i estetyczny.',
+      zasieg: {
+        tytul: 'Dojeżdżamy w promieniu 100 km od Białej Podlaskiej',
+        tekst: `Prace brukarskie wykonujemy na terenie województwa ${WOJEWODZTWA}. W tym promieniu mieszczą się między innymi`,
+        miasta: MIASTA_100KM,
+        domkniecie:
+          'oraz wszystkie mniejsze miejscowości pomiędzy nimi. Przy większych powierzchniach dojazd nie wpływa na cenę - liczy się metraż i zakres prac ziemnych, a nie to, ile kilometrów pokonuje ekipa.',
+      },
+      metodyka: {
+        tytul: 'Jak układamy kostkę krok po kroku',
+        wstep:
+          'Kostka rozjeżdża się nie dlatego, że jest zła, tylko dlatego, że pod nią czegoś zabrakło. Dlatego połowa roboty dzieje się zanim położymy pierwszy element:',
+        kroki: [
+          'korytowanie terenu, czyli zebranie humusu na głębokość dobraną do obciążenia',
+          'zagęszczenie gruntu rodzimego',
+          'ułożenie podbudowy z kruszywa, warstwami, z zagęszczeniem każdej warstwy',
+          'montaż krawężników i obrzeży na ławie betonowej',
+          'podsypka cementowo-piaskowa, ściągnięta pod zaplanowany spadek',
+          'układanie kostki w wybranym wzorze, z docinaniem przy krawędziach',
+          'fugowanie i zagęszczanie powierzchni zagęszczarką z matą ochronną',
+        ],
+        tytulDodatkow: 'W ramach tego samego zlecenia wykonujemy też',
+        dodatki: [
+          'odwodnienie liniowe i studzienki przy garażu lub bramie',
+          'schody terenowe, palisady i niskie murki oporowe',
+          'wywóz urobku i gruzu po starej nawierzchni',
+          'obsadzenie studzienek, włazów i skrzynek w nawierzchni',
+        ],
+      },
+      sprzet: {
+        tytul: 'Sprzęt, na którym pracujemy',
+        tekst:
+          'Spadki ustawiamy niwelatorem laserowym, nie „na oko" - od tego zależy, czy woda po ulewie spływa na trawnik, czy pod drzwi garażu. Grunt i kolejne warstwy podbudowy zagęszczamy zagęszczarką płytową, a w wąskich miejscach przy ścianie i słupkach ubijakiem skokowym, do którego zagęszczarka nie sięga. Kostkę tniemy piłą z chłodzeniem wodnym: cięcie na sucho wypala krawędź i zostawia jasny ślad, który widać przez kilka sezonów. Do zagęszczania gotowej powierzchni używamy maty ochronnej, żeby nie zmatowić wierzchniej warstwy kostki.',
+      },
       fotoObok: 'karta.kostka',
-      fotoObokAlt: 'Układanie kostki brukowej na podjeździe - BramBruk powiat bialski',
+      fotoObokAlt: 'Układanie kostki brukowej na podjeździe - realizacja BramBruk',
+    },
+    cennikOpis: {
+      wstep:
+        'Cennik pokazuje widełki cenowe, a nie konkretne ceny, ponieważ ostateczny koszt zależy od kilku rzeczy, których nie widać na etapie zapytania:',
+      czynniki: [
+        'przeznaczenie nawierzchni: chodnik, podjazd osobowy czy parking pod cięższy pojazd',
+        'kształt powierzchni - wąskie alejki i łuki oznaczają więcej docinania',
+        'stan gruntu i głębokość korytowania, jaką trzeba zrobić',
+        'konieczność odwodnienia i wykonania spadków',
+        'wzór ułożenia kostki i rodzaj materiału',
+      ],
     },
     galeria: [
-      { foto: 'realizacja.02', tytul: 'Podjazd z kostki', lokalizacja: 'Biała Podlaska' },
-      { foto: 'realizacja.06', tytul: 'Chodnik ogrodowy', lokalizacja: 'Sławacinek' },
-      { foto: 'realizacja.09', tytul: 'Taras z kostki', lokalizacja: 'Rakowiska' },
+      { foto: 'realizacja.02', tytul: 'Podjazd z kostki', lokalizacja: 'Międzyrzec Podlaski' },
+      { foto: 'realizacja.09', tytul: 'Chodniki i obrzeża', lokalizacja: 'Sławacinek Stary' },
+      { foto: 'realizacja.03', tytul: 'Taras z kostki', lokalizacja: 'Biała Podlaska' },
     ],
     tytulGalerii: 'Nasze prace brukarskie',
     etykietaFaq: 'FAQ - Brukarstwo',
@@ -160,10 +271,10 @@ export const huby = {
     okruszek: 'Budownictwo',
     etykieta: 'Budownictwo',
     fotoHero: 'hero.budownictwo',
-    tytulHero: ['Altany, garaże i domki -', 'Biała Podlaska i okolice'],
-    opisHero:
-      'Budujemy solidne konstrukcje ogrodowe i gospodarcze - altany drewniane i murowane, garaże blaszane, domki narzędziowe i wiaty. Od fundamentu po wykończenie, na terenie powiatu bialskiego i okolic.',
-    etykietaSekcji: 'Co budujemy',
+    fotoHeroObok: 'hero.budownictwo-obok',
+    tytulHero: 'Altany, garaże i domki',
+    podtytulHero: 'Od fundamentu po wykończenie',
+    opisHero: `Budujemy solidne konstrukcje ogrodowe i gospodarcze: altany drewniane i murowane, garaże blaszane, domki narzędziowe i wiaty. Od fundamentu po wykończenie, na terenie województwa ${WOJEWODZTWA}.`,
     tytulSekcji: 'Nasze usługi budowlane',
     uslugi: [
       {
@@ -186,18 +297,57 @@ export const huby = {
       },
     ],
     tresc: {
-      tytul: 'Budownictwo w regionie Białej Podlaskiej',
-      tekst: 'Wykonujemy konstrukcje ogrodowe i gospodarcze na terenie Białej Podlaskiej, Międzyrzeca Podlaskiego, Terespola i okolicznych miejscowości powiatu bialskiego. Specjalizujemy się w altanach ogrodowych z drewna sosnowego i świerkowego, garażach blaszanych i murowanych, domkach narzędziowych oraz wiatach samochodowych.',
-      podtytul: 'Altany ogrodowe na wymiar',
-      podtekst:
-        'Altana to miejsce na relaks, grillowanie i spotkania z rodziną. Budujemy altany drewniane z bali lub desek, z dachem krytym gontem bitumicznym, blachodachówką lub deskami. Na życzenie dobudowujemy grill murowany, ławki wbudowane, stół i oświetlenie. Standardowe wymiary od 3×3 m do 5×5 m, ale realizujemy też projekty niestandardowe. Montujemy również garaże blaszane (szybka realizacja, dobra cena) oraz budujemy garaże murowane z bloczków - każda konstrukcja stawiana na odpowiednio przygotowanym fundamencie.',
+      zasieg: {
+        tytul: 'Dojeżdżamy w promieniu 100 km od Białej Podlaskiej',
+        tekst: `Konstrukcje ogrodowe i gospodarcze stawiamy na terenie województwa ${WOJEWODZTWA}. W tym promieniu mieszczą się między innymi`,
+        miasta: MIASTA_100KM,
+        domkniecie:
+          'oraz wszystkie mniejsze miejscowości pomiędzy nimi. Elementy przygotowujemy w warsztacie i przywozimy na miejsce, więc budowa altany czy garażu nie zamienia posesji w plac budowy na dwa tygodnie.',
+      },
+      metodyka: {
+        tytul: 'Jak stawiamy altanę, garaż lub wiatę',
+        wstep:
+          'Konstrukcja ogrodowa stoi prosto tak długo, jak równe jest to, na czym stoi. Dlatego zaczynamy od podłoża, a nie od ścian:',
+        kroki: [
+          'ustalenie miejsca, wymiarów i sprawdzenie, czy potrzebne jest zgłoszenie',
+          'przygotowanie podłoża: płyta betonowa, bloczki albo kotwy gruntowe',
+          'montaż konstrukcji nośnej z zabezpieczonego drewna lub profili stalowych',
+          'pokrycie dachu wraz z obróbkami i orynnowaniem',
+          'impregnacja lub malowanie elementów drewnianych',
+          'montaż drzwi, okien, bram i zamków',
+          'uprzątnięcie terenu i wywóz odpadów po budowie',
+        ],
+        tytulDodatkow: 'W ramach tego samego zlecenia wykonujemy też',
+        dodatki: [
+          'podłogę na legarach albo wylewkę pod altaną',
+          'instalację elektryczną: oświetlenie i gniazda',
+          'grill murowany i wbudowane ławki w altanie',
+          'utwardzenie dojścia lub podjazdu kostką brukową',
+        ],
+      },
+      sprzet: {
+        tytul: 'Sprzęt, na którym pracujemy',
+        tekst:
+          'Podłoże wypoziomowujemy niwelatorem laserowym, bo kilka milimetrów różnicy na fundamencie zamienia się w kilka centymetrów krzywizny na kalenicy. Kotwy gruntowe osadzamy wiertnicą, co pozwala postawić altanę bez wylewania betonowej płyty i bez rozkopywania połowy ogrodu. Drewno tniemy pilarką z prowadnicą, a nie z ręki - równe cięcie oznacza szczelne połączenia, a te decydują o tym, czy w konstrukcję wchodzi woda. Każdy element drewniany, który dotyka gruntu albo betonu, dostaje przekładkę i impregnat.',
+      },
       fotoObok: 'karta.altana',
-      fotoObokAlt: 'Altana ogrodowa drewniana - realizacja BramBruk okolice Białej Podlaskiej',
+      fotoObokAlt: 'Drewniana altana ogrodowa - realizacja BramBruk',
+    },
+    cennikOpis: {
+      wstep:
+        'Cennik pokazuje widełki cenowe, a nie konkretne ceny, ponieważ ostateczny koszt budowy zależy od kilku rzeczy, których nie widać na etapie zapytania:',
+      czynniki: [
+        'wymiary konstrukcji i rodzaj drewna albo profili',
+        'rodzaj podłoża: kotwy gruntowe, bloczki czy płyta betonowa',
+        'pokrycie dachu i sposób wykończenia elementów',
+        'wyposażenie: podłoga, elektryka, grill murowany, bramy',
+        'dojazd i możliwość wjechania sprzętem na posesję',
+      ],
     },
     galeria: [
-      { foto: 'realizacja.04', tytul: 'Altanka ogrodowa', lokalizacja: 'Biała Podlaska' },
-      { foto: 'realizacja.06', tytul: 'Garaż', lokalizacja: 'Cicibór' },
-      { foto: 'realizacja.09', tytul: 'Domek narzędziowy', lokalizacja: 'Sławacinek' },
+      { foto: 'realizacja.04', tytul: 'Altana ogrodowa', lokalizacja: 'Terespol' },
+      { foto: 'realizacja.06', tytul: 'Garaż blaszany', lokalizacja: 'Łomazy' },
+      { foto: 'realizacja.10', tytul: 'Domek narzędziowy', lokalizacja: 'Cicibór' },
     ],
     tytulGalerii: 'Nasze budowy',
     etykietaFaq: 'FAQ - Budownictwo',
@@ -209,7 +359,7 @@ export const huby = {
       },
       {
         pytanie: 'Czy na budowę altany potrzebne jest pozwolenie?',
-        odpowiedz: 'Altana do 35 m² na działce budowlanej (max 2 altany na 500 m² działki) wymaga jedynie zgłoszenia w starostwie, nie pozwolenia na budowę. Pomożemy ustalić formalności dla Twojej działki w powiecie bialskim.',
+        odpowiedz: 'Altana do 35 m² na działce budowlanej (maksymalnie dwie altany na 500 m² działki) wymaga jedynie zgłoszenia w starostwie, nie pozwolenia na budowę. Pomożemy ustalić formalności dla Twojej działki.',
       },
       {
         pytanie: 'Jak długo trwa budowa altany lub garażu?',

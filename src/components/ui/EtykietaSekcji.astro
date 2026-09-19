@@ -4,13 +4,39 @@
  *
  * Nadtytuł nad nagłówkiem. Jest `<span>`, nie nagłówkiem, i tak ma zostać:
  * hierarchia nagłówków to struktura dokumentu, nie styl.
+ *
+ * ┌── KOLOR JEST WARIANTEM, NIE KLASĄ Z ZEWNĄTRZ ──────────────────────┐
+ * │ Domyślny `brand-sage` jest policzony pod jasne tła (4,70-5,21:1)    │
+ * │ i na ciemnym daje 3,20:1, czyli poniżej progu.                      │
+ * │                                                                     │
+ * │ Kusi, żeby podać `class="text-brand-olive"` i mieć spokój - ale      │
+ * │ wtedy na elemencie stoją DWIE klasy koloru tekstu, a o wyniku       │
+ * │ decyduje kolejność reguł w arkuszu, nie kolejność klas w znaczniku. │
+ * │ Tailwind sortuje je po swojemu i wygrywał `brand-sage`, przez co    │
+ * │ etykieta na ciemnym tle była nieczytelna mimo „poprawki".            │
+ * │ Stąd `wariant`: jedna klasa koloru na element, zawsze.              │
+ * └─────────────────────────────────────────────────────────────────────┘
  */
 interface Props {
+  /**
+   * `jasne`  - na `brand-bg`, `brand-section`, `brand-card` (domyślnie)
+   * `ciemne` - na `brand-dark`
+   * `fixly`  - etykieta sekcji opinii, w kolorystyce Fixly, na jasnym tle
+   */
+  wariant?: 'jasne' | 'ciemne' | 'fixly'
   class?: string
 }
-const { class: klasa = '' } = Astro.props
+const { wariant = 'jasne', class: klasa = '' } = Astro.props
+
+const KOLORY = {
+  jasne: 'text-brand-sage',
+  ciemne: 'text-brand-olive',
+  fixly: 'text-fixly-ink',
+} as const
 ---
 
-<span class:list={['inline-block text-[11px] font-bold tracking-[3px] uppercase text-brand-sage', klasa]}>
+<span
+  class:list={['inline-block text-[11px] font-bold tracking-[3px] uppercase', KOLORY[wariant], klasa]}
+>
   <slot />
 </span>

@@ -77,7 +77,7 @@ const numerAktywny = parseInt(aktywny)
                     aktywnyKrok
                       ? 'bg-brand-olive text-brand-dark shadow-lg shadow-brand-olive/20'
                       : zrobiony
-                        ? 'bg-brand-olive/15 text-brand-olive border-2 border-brand-olive/30'
+                        ? 'bg-brand-olive/15 text-brand-olive-text border-2 border-brand-olive/40'
                         : 'bg-brand-card border-2 border-brand-border text-brand-text-light',
                   ]}
                 >
@@ -89,14 +89,14 @@ const numerAktywny = parseInt(aktywny)
                 class:list={[
                   'font-display font-bold leading-tight',
                   kompakt ? 'text-[11px]' : 'text-lg mb-1',
-                  aktywnyKrok ? 'text-brand-text' : zrobiony ? 'text-brand-olive' : 'text-brand-text-light',
+                  aktywnyKrok ? 'text-brand-text' : zrobiony ? 'text-brand-olive-text' : 'text-brand-text-light',
                 ]}
               >
                 {krok.tytul}
               </h3>
 
               {kompakt && aktywnyKrok && (
-                <span class="mt-0.5 text-[9px] text-brand-olive font-medium animate-pulse">W toku...</span>
+                <span class="mt-0.5 text-[9px] text-brand-olive-text font-medium animate-pulse">W toku...</span>
               )}
 
               {!kompakt && (

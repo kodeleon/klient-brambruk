@@ -1,23 +1,187 @@
 ---
 /**
- * BANER WEZWANIA DO DZIAŁANIA - odpowiednik `CtaBanner.jsx`.
- * Przycisk wchodzi slotem `akcja`, bo w starym projekcie był przekazywany
- * jako element (`btn`), a nie jako zestaw właściwości.
+ * BANER WEZWANIA DO DZIAŁANIA - następca `CtaBanner.jsx`.
+ *
+ * Wcześniej: nagłówek, jedno zdanie i jeden przycisk na płaskim ciemnym tle.
+ * Przy trzech takich banerach na ścieżce odwiedzającego żaden nie dawał
+ * powodu, żeby kliknąć akurat teraz.
+ *
+ * Teraz baner niesie cztery rzeczy naraz:
+ *   · powód (opis plus trzy konkretne zobowiązania),
+ *   · dwie drogi kontaktu - formularz i telefon, bo część ludzi nie zostawi
+ *     danych w formularzu, a część nie zadzwoni,
+ *   · skrócony formularz, który zdejmuje z odwiedzającego pierwszy krok,
+ *   · widoczny koszt wejścia („zajmie 2 minuty").
+ *
+ * ┌── SKRÓCONY FORMULARZ NIE WYSYŁA NICZEGO ───────────────────────────┐
+ * │ Cztery pola tutaj to NIE jest drugi formularz kontaktowy - to wstęp │
+ * │ do kreatora na /wycena/. Przycisk przenosi wpisane wartości do      │
+ * │ szkicu kreatora (`brambruk_wycena-draft` w localStorage, ten sam    │
+ * │ mechanizm, którym kreator zapisuje postęp) i otwiera /wycena/ z już  │
+ * │ uzupełnionymi polami.                                               │
+ * │                                                                     │
+ * │ DLACZEGO NIE PARAMETRY ADRESU: e-mail i telefon w adresie lądują    │
+ * │ w historii przeglądarki, w nagłówku `Referer` przy pierwszym         │
+ * │ kliknięciu poza serwis i w logach każdego pośrednika. Szkic          │
+ * │ w localStorage nie opuszcza urządzenia.                             │
+ * │                                                                     │
+ * │ BEZ JAVASCRIPTU przycisk jest zwykłym odnośnikiem do /wycena/ -      │
+ * │ formularz otworzy się pusty. Dlatego pod przyciskiem stoi zdanie     │
+ * │ o przeniesieniu danych, a nie obietnica wysyłki.                    │
+ * └─────────────────────────────────────────────────────────────────────┘
  */
+import { dane, statystyki } from '../../config/dane'
+import { typyUslug } from '../../data/wycena'
+import EtykietaSekcji from './EtykietaSekcji.astro'
+import Przycisk from './Przycisk.astro'
+import Ikona from '../icons/Ikona.astro'
+
 interface Props {
   tytul?: string
-  podtytul?: string
+  /** Jedno-dwa zdania pod nagłówkiem. */
+  opis?: string
+  /** Konkretne zobowiązania - trzy pozycje z ptaszkiem. */
+  punkty?: readonly string[]
+  /** `false` zostawia sam blok tekstowy, bez skróconego formularza. */
+  zFormularzem?: boolean
 }
+
 const {
-  tytul = 'Potrzebujesz wyceny?',
-  podtytul = 'Bezpłatna wycena · Odpowiedź w 24h · Region Białej Podlaskiej',
+  tytul = 'Chcesz poznać dokładną cenę?',
+  opis = 'Opisz projekt w formularzu - orientacyjną wycenę odsyłamy w ciągu jednego dnia roboczego. Bez zobowiązań i bez ukrytych kosztów.',
+  punkty = [
+    `Bezpłatna wycena i wizja lokalna w promieniu ${statystyki.zasieg}`,
+    'Odpowiedź w 24 h w dni robocze',
+    'Ceny orientacyjne podajemy otwarcie, przed podpisaniem umowy',
+  ],
+  zFormularzem = true,
 } = Astro.props
+
+const klasaPola =
+  'w-full rounded-lg border border-white/15 bg-white/5 px-3 py-2.5 text-sm text-white placeholder:text-neutral-500 focus-visible:border-brand-olive'
 ---
 
-<section class="bg-brand-dark py-10 lg:py-16">
-  <div class="max-w-7xl mx-auto px-5 lg:px-10 text-center">
-    <h2 class="font-display text-2xl lg:text-3xl font-bold text-white mb-3 text-balance">{tytul}</h2>
-    <p class="text-white/60 text-sm lg:text-base mb-8 max-w-xl mx-auto">{podtytul}</p>
-    <slot name="akcja" />
+<section class="cta-baner relative overflow-hidden bg-brand-dark py-12 lg:py-20">
+  <div class="cta-baner__poswiata" aria-hidden="true"></div>
+
+  <div class="relative max-w-7xl mx-auto px-5 lg:px-10">
+    <div class="grid grid-cols-1 lg:grid-cols-[minmax(0,6fr)_minmax(0,5fr)] gap-10 lg:gap-16 items-center">
+      <div>
+        <EtykietaSekcji wariant="ciemne" class="mb-3">Bezpłatna wycena</EtykietaSekcji>
+        <h2 class="font-display text-2xl lg:text-4xl font-bold text-white mb-4 text-balance">{tytul}</h2>
+        <p class="text-neutral-400 text-sm lg:text-base leading-relaxed max-w-xl mb-6">{opis}</p>
+
+        <ul class="space-y-3 mb-8">
+          {
+            punkty.map((punkt) => (
+              <li class="flex items-start gap-3 text-sm text-brand-text-xlight">
+                <Ikona nazwa="check-circle-2" rozmiar={18} class="text-brand-olive shrink-0 mt-px" />
+                <span>{punkt}</span>
+              </li>
+            ))
+          }
+        </ul>
+
+        <div class="flex flex-wrap gap-3">
+          <Przycisk href="/wycena/" rozmiar="lg" ikona="receipt-text">Bezpłatna wycena</Przycisk>
+          <Przycisk href={`tel:${dane.telefonHref}`} wariant="secondary" rozmiar="lg" ikona="phone">
+            {dane.telefon}
+          </Przycisk>
+        </div>
+      </div>
+
+      {
+        zFormularzem && (
+          <div class="rounded-2xl border border-white/10 bg-white/[0.04] p-6 lg:p-7" data-cta-szybkie>
+            <div class="flex items-baseline justify-between gap-4 mb-5">
+              <h3 class="font-display text-base font-bold text-white">Szybkie zapytanie</h3>
+              <span class="text-[10px] font-bold tracking-[2px] uppercase text-brand-olive">Krok 1 z 5</span>
+            </div>
+
+            <fieldset class="mb-4">
+              <legend class="text-[10px] font-bold tracking-[2px] uppercase text-neutral-400 mb-2">
+                Czego dotyczy projekt?
+              </legend>
+              <div class="grid grid-cols-3 gap-2">
+                {typyUslug.map((typ) => (
+                  <div>
+                    <input
+                      type="radio"
+                      name="cta-typ"
+                      id={`cta-typ-${typ.klucz}`}
+                      value={typ.klucz}
+                      class="poza-ekranem cta-pole-wyboru"
+                      data-cta-pole="serviceType"
+                    />
+                    <label
+                      for={`cta-typ-${typ.klucz}`}
+                      class="cta-wybor block cursor-pointer rounded-lg border border-white/15 px-2 py-2 text-center text-xs font-medium text-brand-text-xlight transition-colors hover:border-brand-olive/60"
+                    >
+                      {typ.etykieta}
+                    </label>
+                  </div>
+                ))}
+              </div>
+            </fieldset>
+
+            <div class="space-y-3">
+              <div>
+                <label for="cta-miejscowosc" class="block text-[10px] font-bold tracking-[2px] uppercase text-neutral-400 mb-1.5">
+                  Miejscowość
+                </label>
+                <input
+                  type="text"
+                  id="cta-miejscowosc"
+                  name="cta-miejscowosc"
+                  autocomplete="address-level2"
+                  placeholder="np. Międzyrzec Podlaski"
+                  class={klasaPola}
+                  data-cta-pole="location"
+                />
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label for="cta-email" class="block text-[10px] font-bold tracking-[2px] uppercase text-neutral-400 mb-1.5">
+                    E-mail
+                  </label>
+                  <input
+                    type="email"
+                    id="cta-email"
+                    name="cta-email"
+                    autocomplete="email"
+                    placeholder="jan@przyklad.pl"
+                    class={klasaPola}
+                    data-cta-pole="email"
+                  />
+                </div>
+                <div>
+                  <label for="cta-telefon" class="block text-[10px] font-bold tracking-[2px] uppercase text-neutral-400 mb-1.5">
+                    Telefon
+                  </label>
+                  <input
+                    type="tel"
+                    id="cta-telefon"
+                    name="cta-telefon"
+                    autocomplete="tel"
+                    placeholder="+48 xxx xxx xxx"
+                    class={klasaPola}
+                    data-cta-pole="phone"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <Przycisk href="/wycena/" rozmiar="md" ikona="arrow-right" ikonaPo="prawo" class="mt-5 w-full" data-cta-dalej>
+              Przejdź dalej
+            </Przycisk>
+
+            <p class="mt-3 text-center text-xs text-neutral-500">
+              Wypełnione pola przeniesiemy do formularza. Zajmie Ci to około 2 minut.
+            </p>
+          </div>
+        )
+      }
+    </div>
   </div>
 </section>

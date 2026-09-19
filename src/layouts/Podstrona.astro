@@ -18,6 +18,7 @@
 
 import { site, adres } from '../config/site'
 import Naglowek from '../components/layout/Naglowek.astro'
+import OgImage from '../components/media/OgImage.astro'
 import Stopka from '../components/layout/Stopka.astro'
 import Analityka from '../components/layout/Analityka.astro'
 import '../styles/global.css'
@@ -29,7 +30,14 @@ interface Props {
   opis: string
   /** Wyłącza indeksowanie tej podstrony. Pamiętaj wtedy o `pozaMapaStrony` w site.ts. */
   noindex?: boolean
-  /** Ścieżka do obrazu podglądu linku. Bezwzględna od korzenia. */
+  /**
+   * Ścieżka do obrazu podglądu linku, bezwzględna od korzenia.
+   *
+   * Podana - podstrona dostaje własny obraz. Pominięta - wchodzi obraz
+   * domyślny z manifestu (`og.domyslny`). Wcześniej podstrona bez tego
+   * parametru nie miała `og:image` w ogóle, czyli odnośnik wysłany
+   * w wiadomości pokazywał sam tekst.
+   */
   ogImage?: string
   ogImageRozmiar?: [number, number]
   /** `false` wyłącza `canonical` i `og:url`. Jedyny poprawny przypadek: strona 404. */
@@ -107,15 +115,17 @@ const daneStrukturalne = {
     <meta property="og:locale" content={jezyk === site.jezyk ? site.ogLocale : jezyk} />
     {kanoniczny && <meta property="og:url" content={kanoniczny} />}
     {
-      ogUrl && (
+      ogUrl ? (
         <>
           <meta property="og:image" content={ogUrl} />
           <meta property="og:image:width" content={String(ogImageRozmiar[0])} />
           <meta property="og:image:height" content={String(ogImageRozmiar[1])} />
+          <meta name="twitter:card" content="summary_large_image" />
         </>
+      ) : (
+        <OgImage use="og.domyslny" />
       )
     }
-    <meta name="twitter:card" content="summary_large_image" />
 
     <script type="application/ld+json" set:html={JSON.stringify(daneStrukturalne)} is:inline />
 

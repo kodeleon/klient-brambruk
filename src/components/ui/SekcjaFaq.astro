@@ -13,9 +13,22 @@
  * │ co poprzednio robił `openIndex`. Skrypt `faq.ts` dokłada wyłącznie   │
  * │ płynne rozwijanie.                                                   │
  * └──────────────────────────────────────────────────────────────────────┘
+ *
+ * ┌── DWIE KOLUMNY ─────────────────────────────────────────────────────┐
+ * │ Sekcja stała wcześniej w kontenerze `max-w-4xl`, czyli węższym niż   │
+ * │ każda inna sekcja serwisu - wyglądała jak wklejona z innej strony.   │
+ * │ Teraz kontener jest ten sam co wszędzie, a nagłówek przeniósł się    │
+ * │ do lewej kolumny razem z wyjściem awaryjnym: kto nie znalazł swojego │
+ * │ pytania, ma telefon pod ręką zamiast szukać go w stopce.             │
+ * │                                                                      │
+ * │ Lewa kolumna jest przyklejona przy przewijaniu od 1024 px - przy     │
+ * │ ośmiu pytaniach numer telefonu inaczej ucieka z ekranu.              │
+ * └──────────────────────────────────────────────────────────────────────┘
  */
+import { dane } from '../../config/dane'
 import EtykietaSekcji from './EtykietaSekcji.astro'
 import Odslon from './Odslon.astro'
+import Przycisk from './Przycisk.astro'
 import Ikona from '../icons/Ikona.astro'
 
 interface Props {
@@ -35,39 +48,54 @@ const {
 } = Astro.props
 ---
 
-<section class:list={[tlo, 'py-8 lg:py-14']}>
-  <div class="max-w-4xl mx-auto px-5 lg:px-10">
-    <Odslon>
-      <div class="mb-6">
-        <EtykietaSekcji>{etykieta}</EtykietaSekcji>
-        <h2 class="font-display text-2xl lg:text-3xl font-bold text-brand-text mt-2">{tytul}</h2>
-      </div>
-    </Odslon>
+<section class:list={[tlo, 'py-10 lg:py-16']}>
+  <div class="max-w-7xl mx-auto px-5 lg:px-10">
+    <div class="grid grid-cols-1 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] gap-8 lg:gap-16 items-start">
+      <Odslon wariant="left">
+        <div class="lg:sticky lg:top-[calc(var(--naglowek-wysokosc)+2rem)]">
+          <EtykietaSekcji>{etykieta}</EtykietaSekcji>
+          <h2 class="font-display text-2xl lg:text-3xl font-bold text-brand-text mt-2 mb-5">{tytul}</h2>
 
-    <div class="space-y-3">
-      {
-        pytania.map((pozycja, i) => (
-          <Odslon wariant="up" zwloka={i * 50}>
-            <details
-              name={grupa}
-              class="faq-pozycja bg-brand-card rounded-xl border border-brand-border hover:border-brand-olive/20 transition-all duration-300"
-            >
-              <summary class="faq-przycisk w-full flex items-center justify-between px-6 py-5 text-left group">
-                <span class="text-sm lg:text-[15px] font-medium pr-4 transition-colors text-brand-text">
-                  {pozycja.pytanie}
-                </span>
-                <span class="faq-znak shrink-0 w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300 bg-brand-bg text-brand-text-light group-hover:bg-brand-olive/10">
-                  <Ikona nazwa="plus" rozmiar={16} class="faq-plus" />
-                  <Ikona nazwa="minus" rozmiar={16} class="faq-minus" />
-                </span>
-              </summary>
-              <div class="faq-tresc overflow-hidden">
-                <div class="px-6 pb-5 text-sm text-brand-text-light leading-relaxed">{pozycja.odpowiedz}</div>
-              </div>
-            </details>
-          </Odslon>
-        ))
-      }
+          <div class="rounded-2xl border border-brand-border bg-brand-card p-6">
+            <p class="font-display text-base font-bold text-brand-text mb-2">Nie znalazłeś odpowiedzi?</p>
+            <p class="text-sm text-brand-text-light leading-relaxed mb-5">
+              Zadzwoń - odpowiemy w kilka minut, bez formularzy i bez czekania.
+            </p>
+            <Przycisk href={`tel:${dane.telefonHref}`} rozmiar="md" ikona="phone" class="w-full sm:w-auto">
+              {dane.telefon}
+            </Przycisk>
+            <p class="mt-4 text-xs text-brand-text-light">
+              {dane.godzinyTydzien} · {dane.godzinySobota}
+            </p>
+          </div>
+        </div>
+      </Odslon>
+
+      <div class="space-y-3">
+        {
+          pytania.map((pozycja, i) => (
+            <Odslon wariant="up" zwloka={i * 50}>
+              <details
+                name={grupa}
+                class="faq-pozycja bg-brand-card rounded-xl border border-brand-border hover:border-brand-olive/40 transition-all duration-300"
+              >
+                <summary class="faq-przycisk w-full flex items-center justify-between px-6 py-5 text-left group">
+                  <span class="text-sm lg:text-[15px] font-medium pr-4 transition-colors text-brand-text">
+                    {pozycja.pytanie}
+                  </span>
+                  <span class="faq-znak shrink-0 w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300 bg-brand-bg text-brand-text-light group-hover:bg-brand-olive/15 group-hover:text-brand-olive-text">
+                    <Ikona nazwa="plus" rozmiar={16} class="faq-plus" />
+                    <Ikona nazwa="minus" rozmiar={16} class="faq-minus" />
+                  </span>
+                </summary>
+                <div class="faq-tresc overflow-hidden">
+                  <div class="px-6 pb-5 text-sm text-brand-text-light leading-relaxed">{pozycja.odpowiedz}</div>
+                </div>
+              </details>
+            </Odslon>
+          ))
+        }
+      </div>
     </div>
   </div>
 </section>

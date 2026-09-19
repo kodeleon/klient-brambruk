@@ -16,7 +16,10 @@ interface Props {
 }
 const { pozycje } = Astro.props
 
-const CIEMNE = ['/wycena', '/uslugi', '/realizacje', '/ogrodzenia', '/brukarstwo', '/budownictwo']
+/* Podstrony, których sekcja główna stoi na `brand-dark` - pasek okruszków
+   ma się z nią zlewać, a nie rysować jasnej kreski nad ciemnym blokiem.
+   `/o-nas/` dołączyło tu 18.09.2026 razem z nową sekcją główną. */
+const CIEMNE = ['/wycena', '/uslugi', '/realizacje', '/ogrodzenia', '/brukarstwo', '/budownictwo', '/o-nas']
 const sciezka = Astro.url.pathname
 const ciemne = CIEMNE.some((p) => sciezka.startsWith(p))
 ---
@@ -26,7 +29,7 @@ const ciemne = CIEMNE.some((p) => sciezka.startsWith(p))
     <nav
       class:list={[
         'flex items-center gap-1.5 text-xs py-3',
-        ciemne ? 'text-neutral-500' : 'text-brand-text-light',
+        ciemne ? 'text-neutral-400' : 'text-brand-text-light',
       ]}
       aria-label="Okruszki"
     >
@@ -53,7 +56,7 @@ const ciemne = CIEMNE.some((p) => sciezka.startsWith(p))
             {pozycja.sciezka ? (
               <a
                 href={pozycja.sciezka}
-                class:list={['hover:text-brand-olive transition-colors', ciemne && 'text-neutral-500']}
+                class:list={['transition-colors', ciemne ? 'text-neutral-400 hover:text-brand-olive' : 'hover:text-brand-olive-text']}
               >
                 {pozycja.etykieta}
               </a>

@@ -1,50 +1,32 @@
 /**
- * ZAKŁADKI I FILTRY BEZ JAVASCRIPTU.
+ * FILTR KATEGORII BEZ JAVASCRIPTU (/realizacje/).
  *
- * Stary projekt trzymał aktywną zakładkę (`/uslugi/`) i kategorię
- * (`/realizacje/`) w stanie Reacta. Bez JavaScriptu obie podstrony pokazywały
- * jeden zestaw kart i żadnego sposobu, żeby go zmienić.
+ * Stary projekt trzymał wybraną kategorię w stanie Reacta. Bez JavaScriptu
+ * podstrona pokazywała jeden zestaw kafelków i żadnego sposobu, żeby go
+ * zmienić.
  *
- * Tutaj stan trzymają ukryte przyciski wyboru, a CSS chowa to, co nie pasuje.
+ * Tutaj stan trzyma ukryte pole wyboru, a CSS chowa to, co nie pasuje.
  * Cała treść siedzi w HTML - także ta niewidoczna w danej chwili, więc
  * wyszukiwarka i czytnik ekranu mają komplet.
  *
  * Reguły są wypisane per klucz, bo CSS nie potrafi „dopasuj wartość
  * zaznaczonego pola do atrybutu elementu". Dodajesz kategorię - dopisujesz
  * tutaj dwie linie. Trzeciego miejsca nie ma.
+ *
+ * ⚠️ 18.09.2026 zniknęła stąd druga połowa: zakładki na /uslugi/. Ta
+ * podstrona pokazuje dziś wszystkie karty naraz, a przyciski typów są
+ * kotwicami do grup - patrz komentarz w `src/pages/uslugi.astro`.
  */
 
-/* --- wspólne --- */
-
-[data-zakladki] label,
 [data-filtr] label {
   cursor: pointer;
 }
 
 /* Fokus z klawiatury pada na ukryte pole - obrys musi trafić na etykietę. */
-[data-zakladki] input:focus-visible + label,
 [data-filtr] input:focus-visible + label {
   outline: var(--fokus-grubosc) solid var(--fokus-kolor);
   outline-offset: var(--fokus-odsuniecie);
 }
-
-/* --- /uslugi/: trzy grupy kart --- */
-
-[data-zakladki]:has(#zakladka-ogrodzenia:checked) [data-grupa]:not([data-grupa='ogrodzenia']),
-[data-zakladki]:has(#zakladka-brukarstwo:checked) [data-grupa]:not([data-grupa='brukarstwo']),
-[data-zakladki]:has(#zakladka-budownictwo:checked) [data-grupa]:not([data-grupa='budownictwo']) {
-  display: none;
-}
-
-[data-zakladki]:has(#zakladka-ogrodzenia:checked) label[for='zakladka-ogrodzenia'],
-[data-zakladki]:has(#zakladka-brukarstwo:checked) label[for='zakladka-brukarstwo'],
-[data-zakladki]:has(#zakladka-budownictwo:checked) label[for='zakladka-budownictwo'] {
-  background-color: var(--color-brand-olive);
-  border-color: var(--color-brand-olive);
-  color: var(--color-brand-dark);
-}
-
-/* --- /realizacje/: filtr kategorii --- */
 
 [data-filtr]:has(#kategoria-ogrodzenia:checked) [data-kategoria]:not([data-kategoria='ogrodzenia']),
 [data-filtr]:has(#kategoria-brukarstwo:checked) [data-kategoria]:not([data-kategoria='brukarstwo']),

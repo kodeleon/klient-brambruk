@@ -1,0 +1,58 @@
+---
+/**
+ * ODNOŚNIK „ZOBACZ WSZYSTKO" - jeden układ dla całej witryny.
+ *
+ * Wcześniej każda sekcja miała swój wariant: raz zwykły odnośnik z zanikającą
+ * strzałką, raz wyśrodkowany, raz przyklejony do nagłówka. Efekt był taki,
+ * że ten sam gest wyglądał na czterech podstronach na cztery sposoby,
+ * a na jasnym tle sam napis w kolorze akcentu ledwo się odcinał.
+ *
+ * ┌── UKŁAD: DWA MIEJSCA, JEDNO ZACHOWANIE ────────────────────────────┐
+ * │ `miejsce="naglowek"` - od 1024 px, w wierszu z nagłówkiem sekcji,   │
+ * │                        wyrównany do prawej krawędzi treści.         │
+ * │ `miejsce="pod"`      - poniżej 1024 px, pod zawartością sekcji,     │
+ * │                        na całą szerokość i wyśrodkowany.            │
+ * │                                                                     │
+ * │ Sekcja używa OBU naraz - widoczny jest zawsze dokładnie jeden.      │
+ * │ To układ przeniesiony z sekcji „Realizacje", bo tam sprawdzał się    │
+ * │ najlepiej: na komputerze nie odsuwa treści, na telefonie nie ucieka  │
+ * │ w bok ekranu.                                                       │
+ * └─────────────────────────────────────────────────────────────────────┘
+ */
+import Przycisk from './Przycisk.astro'
+import type { NazwaIkony } from '../icons/ikony'
+
+interface Props {
+  href: string
+  /** Kształt przed napisem. Strzałka „dalej" dokłada się sama, po napisie. */
+  ikona?: NazwaIkony
+  miejsce?: 'naglowek' | 'pod'
+  /** `true` na tle `brand-dark` - obrys zmienia się na wariant dla ciemnego tła. */
+  ciemne?: boolean
+  class?: string
+}
+
+const { href, ikona, miejsce = 'pod', ciemne = false, class: klasa = '' } = Astro.props
+const wariant = ciemne ? 'secondary' : 'outline'
+---
+
+{
+  /* ⚠️ `hidden` NIE MOŻE stać na samym `<Przycisk>`: jego klasa bazowa ma
+     `inline-flex`, czyli drugą regułę `display`, a o wyniku decyduje wtedy
+     kolejność w arkuszu, nie kolejność klas w znaczniku. Przycisk potrafił
+     przez to zostać widoczny na telefonie mimo `hidden`. Widocznością
+     steruje opakowanie - jedna reguła `display` na element. */
+  miejsce === 'naglowek' ? (
+    <div class:list={['hidden lg:block shrink-0', klasa]}>
+      <Przycisk href={href} wariant={wariant} rozmiar="sm" ikona={ikona}>
+        <slot />
+      </Przycisk>
+    </div>
+  ) : (
+    <div class:list={['mt-8 flex justify-center lg:hidden', klasa]}>
+      <Przycisk href={href} wariant={wariant} rozmiar="md" ikona={ikona}>
+        <slot />
+      </Przycisk>
+    </div>
+  )
+}

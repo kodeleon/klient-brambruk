@@ -70,4 +70,10 @@ export const realizacje = [
     lokalizacja: 'Biała Podlaska, 2024',
     foto: 'realizacja.03',
   },
+  {
+    kategoria: 'budownictwo',
+    tytul: 'Domek narzędziowy',
+    lokalizacja: 'Cicibór, 2025',
+    foto: 'realizacja.10',
+  },
 ];

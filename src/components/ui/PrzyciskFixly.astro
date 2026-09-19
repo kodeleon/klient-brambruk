@@ -3,10 +3,18 @@
  * ODNOŚNIK DO PROFILU NA FIXLY - odpowiednik `FixlyButton.jsx`.
  *
  * Logo Fixly leżało w WordPressie klienta (`/wp-content/uploads/2025/11/fixly.png`).
- * Do czasu wgrania pliku do `media/img/_raw/` stoi tu sam napis w kolorystyce
+ * Do czasu wgrania pliku do `media/logo/` stoi tu sam napis w kolorystyce
  * Fixly - patrz `MIGRACJA-braki.md`.
+ *
+ * Dwie zmiany wobec migracji:
+ *   · napis jest `brand-dark`, nie `fixly-dark` - ciemny żółty na żółtym dawał
+ *     2,40:1, czyli plakietka była nieczytelna; `brand-dark` daje 11,65:1,
+ *   · dochodzi kształt linku zewnętrznego, bo odnośnik otwiera się w nowej
+ *     karcie i prowadzi poza serwis. Sam `aria-label` mówił o tym czytnikowi
+ *     ekranu, ale nie widzącemu.
  */
 import { fixly } from '../../config/dane'
+import Ikona from '../icons/Ikona.astro'
 
 interface Props {
   class?: string
@@ -18,9 +26,13 @@ const { class: klasa = '' } = Astro.props
   href={fixly.url}
   target="_blank"
   rel="noopener noreferrer"
-  class:list={['inline-flex items-center rounded-full bg-fixly-main hover:opacity-90 transition h-6 px-2.5 pl-3', klasa]}
+  class:list={[
+    'inline-flex items-center gap-1 rounded-full bg-fixly-main hover:opacity-90 transition h-6 pl-3 pr-2.5',
+    klasa,
+  ]}
   aria-label="Zobacz profil na Fixly (otwiera się w nowej karcie)"
   title="Fixly"
 >
-  <span class="text-[11px] font-bold text-fixly-dark leading-none">Fixly</span>
+  <span class="text-[11px] font-bold text-brand-dark leading-none">Fixly</span>
+  <Ikona nazwa="arrow-up-right" rozmiar={11} grubosc={3} class="text-brand-dark shrink-0" />
 </a>
