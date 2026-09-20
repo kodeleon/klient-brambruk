@@ -1,0 +1,155 @@
+/**
+ * FAKTURA TŁA SEKCJI - to, czego nie da się zrobić klasami narzędziowymi.
+ *
+ * PROBLEM, KTÓRY TO ROZWIĄZUJE: serwis ma kilkanaście sekcji z jednolitym
+ * tłem i niewielką ilością treści. Płaska płaszczyzna czyta się jak miejsce,
+ * w którym czegoś zabrakło, a nie jak oddech między blokami.
+ *
+ * ┌── ZASADY, KTÓRE TU OBOWIĄZUJĄ ──────────────────────────────────────┐
+ * │ 1. MAKSYMALNIE 30% WIDOKU. Każdy efekt jest przycięty maską do rogu │
+ * │    sekcji. Reszta zostaje czystą płaszczyzną - o to chodzi.         │
+ * │ 2. KRYCIE 0,02-0,05. Efekt ma być wyczuwalny, nie widoczny. Kontrast│
+ * │    tekstu liczy się wobec KOLORU SEKCJI i faktura nie ma prawa go   │
+ * │    zmieniać.                                                        │
+ * │ 3. RUCH WYŁĄCZNIE OD PRZEWIJANIA. Zero animacji w czasie. Skrypt    │
+ * │    `src/scripts/tlo.ts` podaje `--tlo-przesuw`, a przesunięcie jest │
+ * │    nieliniowe (wygładzone), żeby nie czytało się jak parallaksa.    │
+ * │ 4. ŻADNYCH MASEK NA GRANICACH SEKCJI. Sekcje stykają się wprost;    │
+ * │    nie ma zanikania jednej w drugą.                                 │
+ * │ 5. SVG W CSS. Wzory są zakodowane jako `data:` - zero żądań,        │
+ * │    kilkadziesiąt bajtów na wzór, nic do zablokowania przez CSP      │
+ * │    (`img-src` ma `data:`, a tu i tak jest to tło CSS).              │
+ * └─────────────────────────────────────────────────────────────────────┘
+ *
+ * UŻYCIE: klasa na `<section>`. Warstwa efektu to `::before` / `::after`
+ * z `z-index: -1` wewnątrz własnego kontekstu nakładania (`isolation`),
+ * więc leży nad tłem sekcji, a pod całą jej treścią - bez dokładania
+ * `relative` do każdego kontenera w znaczniku.
+ */
+
+.tlo-siatka,
+.tlo-ciemne {
+  position: relative;
+  isolation: isolate;
+}
+
+.tlo-siatka::before,
+.tlo-ciemne::before,
+.tlo-ciemne::after {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  pointer-events: none;
+  inset: 0;
+}
+
+/**
+ * ⚠️ RUCH IDZIE PRZEZ `background-position`, NIE PRZEZ `transform`.
+ *
+ * Przesunięcie warstwy `transform`-em wymagałoby wyższej warstwy niż sekcja
+ * i przycięcia jej `overflow`-em. A `overflow: hidden` na sekcji robi z niej
+ * kontener przewijania i ZABIJA `position: sticky` w środku - a na sticky
+ * stoi lewa kolumna w FAQ, w cennikach i w sekcji „Jak działamy".
+ * Przesuwanie powtarzalnego wzoru w jego własnym tle nie wychodzi poza
+ * element, więc nie potrzebuje ani zapasu, ani przycinania.
+ */
+.tlo-siatka::before,
+.tlo-ciemne::after {
+  background-position: 0 var(--tlo-przesuw, 0px);
+}
+
+/* ==================================================================
+   A. SEKCJE JASNE - siatka projektowa
+   Cieniutkie linie w rogu, jak na wydruku z projektu. Wzór 48 px,
+   linie w kolorze tekstu marki z kryciem 4%.
+   ================================================================== */
+
+.tlo-siatka::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48'%3E%3Cpath d='M0 .5H48M.5 0V48' fill='none' stroke='%231e1e1e' stroke-width='1'/%3E%3C/svg%3E");
+  background-size: 48px 48px;
+  opacity: 0.045;
+
+  /* Prawy górny róg. Promień dobrany tak, żeby faktura zajmowała
+     mniej więcej ćwiartkę sekcji, a nie całą jej szerokość. */
+  mask-image: radial-gradient(62% 66% at 100% 0%, #000 0%, transparent 72%);
+}
+
+/** Wariant dla sekcji, w której treść siedzi po prawej - róg po lewej. */
+.tlo-siatka--lewo::before {
+  mask-image: radial-gradient(62% 66% at 0% 0%, #000 0%, transparent 72%);
+}
+
+/** Wariant „stopka sekcji": faktura w dolnym rogu, przy przycisku dalej. */
+.tlo-siatka--dol::before {
+  mask-image: radial-gradient(58% 62% at 100% 100%, #000 0%, transparent 70%);
+}
+
+/* ==================================================================
+   B. SEKCJE CIEMNE I WYRÓŻNIONE - poświata plus faktura
+   Dwie warstwy o różnych rolach: ciepłe światło w prawym dolnym rogu
+   i techniczny akcent w lewym górnym. Razem dają wrażenie oświetlonej
+   płaszczyzny zamiast czarnego prostokąta.
+   ================================================================== */
+
+/* Poświata. Bardzo duże rozmycie, bez ostrej krawędzi. Kryć nie da się
+   tu podać wprost - siłę reguluje udział koloru w `color-mix`. */
+.tlo-ciemne::before {
+  background:
+    radial-gradient(
+      55% 65% at 100% 100%,
+      color-mix(in srgb, var(--color-brand-olive) 12%, transparent) 0%,
+      transparent 68%
+    ),
+    radial-gradient(
+      45% 55% at 100% 85%,
+      color-mix(in srgb, var(--color-brand-olive) 7%, transparent) 0%,
+      transparent 60%
+    );
+  /* Światło nie jeździ po sekcji - jeździ tylko faktura. */
+}
+
+/* Akcent strukturalny: zagęszczona siatka punktów, lewy górny róg. */
+.tlo-ciemne::after {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14'%3E%3Ccircle cx='1' cy='1' r='1' fill='%23ffffff'/%3E%3C/svg%3E");
+  background-size: 14px 14px;
+  opacity: 0.05;
+  mask-image: radial-gradient(48% 58% at 0% 0%, #000 0%, transparent 70%);
+}
+
+/* ==================================================================
+   OGRANICZONY RUCH - faktura zostaje, przesunięcie znika.
+   ================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  .tlo-siatka::before,
+  .tlo-ciemne::after {
+    background-position: 0 0;
+  }
+}
+
+/* ==================================================================
+   C. KAFELEK Z POŚWIATĄ W ROGU
+   Ten sam gest co w sekcjach ciemnych, tylko w skali kafelka: miękkie
+   światło w prawym górnym rogu, pod ikoną. Zastępuje kwadratowe tło
+   pod ikoną - tło rysowało prostokąt, światło tylko wypełnia róg.
+   ================================================================== */
+
+.kafelek-poswiata::before {
+  content: '';
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(
+    62% 70% at 100% 0%,
+    color-mix(in srgb, var(--color-brand-olive) 16%, transparent) 0%,
+    transparent 72%
+  );
+}
+
+/* Treść kafelka musi stać NAD poświatą - inaczej wartość i etykieta
+   chowają się pod gradientem w prawym górnym rogu. */
+.kafelek-poswiata > * {
+  position: relative;
+  z-index: 1;
+}

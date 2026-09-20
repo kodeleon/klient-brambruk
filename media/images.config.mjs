@@ -145,8 +145,18 @@ export const cropVerdicts = {
 /* ------------------------------------------------------------------ */
 
 export const SIZES = {
-  /** Element na pełną szerokość okna (tło sekcji głównej). */
-  pelna: '100vw',
+  /**
+   * Tło sekcji głównej.
+   *
+   * ⚠️ PRÓG 1024 px NIE JEST OPTYMALIZACJĄ, TYLKO OPISEM UKŁADU.
+   * Od 1024 px sekcja główna nie ma zdjęcia w tle - fotografia stoi obok
+   * treści, a tłem jest czysta płaszczyzna (`SekcjaHero.astro`). Zdjęcie
+   * zostaje w dokumencie, bo opakowanie chowa je regułą `lg:hidden`,
+   * a przeglądarka i tak pobiera obraz ukrytego elementu. Deklaracja
+   * `1px` powyżej progu każe jej sięgnąć po NAJMNIEJSZY wariant kadru
+   * zamiast po plik na pełną szerokość ekranu.
+   */
+  pelna: '(min-width:1024px) 1px, 100vw',
 
   /** Treść w kontenerze: pełna szerokość minus marginesy, sufit 1200 px. */
   tresc: '(max-width:1024px) calc(100vw - 40px), min(1200px, calc(100vw - 80px))',
@@ -281,7 +291,10 @@ const crop = (source, ratio, { widths, preset, lightbox = false, note } = {}) =>
    o podwójnej gęstości, a 1200 px zostaje na powiększenie w galerii. */
 const W_KAFELEK = [420, 820, 1200]
 const W_KARTA = [420, 820]
-const W_HERO_TLO = [1200, 1440, 1920]
+/* Kadr tła sekcji głównej pracuje wyłącznie poniżej 1024 px, więc 420
+   i 820 px to warianty, które faktycznie trafiają na telefon i tablet;
+   1200-1920 px zostaje dla ekranów o podwójnej gęstości. */
+const W_HERO_TLO = [420, 820, 1200, 1440, 1920]
 const W_HERO_OBOK = [640, 1200]
 const W_KOLAZ = [420, 820]
 

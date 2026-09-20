@@ -11,13 +11,13 @@ import Podstrona from '../layouts/Podstrona.astro'
 import { kategorieRealizacji, realizacje } from '../data/realizacje'
 import { statystyki } from '../config/dane'
 import Okruszki from '../components/ui/Okruszki.astro'
-import EtykietaSekcji from '../components/ui/EtykietaSekcji.astro'
 import Przycisk from '../components/ui/Przycisk.astro'
 import Odslon from '../components/ui/Odslon.astro'
 import GaleriaSiatka from '../components/ui/GaleriaSiatka.astro'
 import BanerCta from '../components/ui/BanerCta.astro'
 import Ikona from '../components/icons/Ikona.astro'
 import Foto from '../components/media/Foto.astro'
+import SekcjaHero from '../components/ui/SekcjaHero.astro'
 
 const klasaFiltra =
   'inline-flex px-5 py-2.5 rounded-full text-sm font-semibold border transition-all duration-200 bg-brand-card text-brand-text border-brand-border/60 hover:border-brand-olive/40'
@@ -29,38 +29,27 @@ const klasaFiltra =
 >
   <Okruszki pozycje={[{ etykieta: 'Strona główna', sciezka: '/' }, { etykieta: 'Realizacje' }]} />
 
-  <section class="relative bg-brand-dark overflow-hidden">
-    <div class="absolute inset-0">
-      <Foto klucz="realizacja.01" alt="" class="w-full h-full object-cover opacity-20" />
-      <div class="absolute inset-0 bg-gradient-to-r from-brand-dark via-brand-dark/90 to-brand-dark/60"></div>
-    </div>
-    <div class="relative max-w-7xl mx-auto px-5 lg:px-10 py-16 lg:py-24">
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
-        <div>
-          <EtykietaSekcji wariant="ciemne" class="mb-3">Portfolio</EtykietaSekcji>
-          <h1 class="font-display text-3xl lg:text-[42px] font-bold text-white leading-tight mb-2">
-            Nasze realizacje
-          </h1>
-          <p class="font-display text-xl lg:text-2xl font-semibold text-brand-olive leading-tight mb-6">
-            {statystyki.realizacje} projektów w regionie
-          </p>
-          <p class="text-neutral-400 leading-relaxed max-w-lg mb-8">
-            Ogrodzenia, brukarstwo i budownictwo - wybrane realizacje z Białej Podlaskiej i okolic.
-            Filtruj według kategorii, aby znaleźć projekty podobne do Twojego.
-          </p>
-          <div class="flex flex-wrap gap-4">
-            <Przycisk href="/wycena/" rozmiar="lg" ikona="receipt-text">Bezpłatna wycena</Przycisk>
-            <Przycisk href="/uslugi/" wariant="secondary" rozmiar="lg">Nasze usługi</Przycisk>
-          </div>
-        </div>
-        <div class="hidden lg:block">
-          <Foto klucz="realizacja.02" alt="Realizacje BramBruk" class="w-full h-[340px] object-cover rounded-2xl" />
-        </div>
-      </div>
-    </div>
-  </section>
+  <SekcjaHero
+    etykieta="Portfolio"
+    tytul="Nasze realizacje"
+    podtytul={`${statystyki.realizacje} projektów w regionie`}
+    opis="Ogrodzenia, brukarstwo i budownictwo - wybrane realizacje z Białej Podlaskiej i okolic. Filtruj według kategorii, aby znaleźć projekty podobne do Twojego."
+    foto="realizacja.01"
+  >
+    <Fragment slot="akcje">
+      <Przycisk href="/wycena/" rozmiar="lg" ikona="receipt-text">Bezpłatna wycena</Przycisk>
+      <Przycisk href="/uslugi/" wariant="secondary" rozmiar="lg" ikona="banknote">Nasze usługi</Przycisk>
+    </Fragment>
 
-  <section class="bg-brand-bg py-12 lg:py-16">
+    <Foto
+      slot="obok"
+      klucz="realizacja.02"
+      alt="Realizacje BramBruk"
+      class="w-full h-[340px] object-cover rounded-2xl shadow-2xl shadow-black/50"
+    />
+  </SekcjaHero>
+
+  <section class="tlo-siatka bg-brand-bg py-12 lg:py-16">
     <div class="max-w-7xl mx-auto px-5 lg:px-10" data-filtr>
       {
         kategorieRealizacji.map((kategoria, i) => (

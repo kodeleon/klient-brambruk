@@ -10,14 +10,40 @@
   box-shadow: var(--shadow-lg);
 }
 
-/* --- menu mobilne: stan trzyma ukryte pole wyboru --- */
+/* ------------------------------------------------------------------
+   MENU MOBILNE - stan trzyma ukryte pole wyboru.
+
+   `:has()` na `.naglowek`, a NIE selektor rodzeństwa `~`. Wersja z `~`
+   wymagała, żeby pole wyboru stało jako pierwsze dziecko `<header>`,
+   czyli PRZED logo - a kolejność fokusu idzie za kolejnością w dokumencie:
+   pierwszy Tab na stronie lądował na hamburgerze po prawej, drugi cofał
+   się do logo po lewej. Z `:has()` pole wyboru może stać tam, gdzie
+   należy - tuż przed swoją etykietą - a kolejność jest ta, którą widać:
+   logo → nawigacja → telefon → wycena → hamburger → panel.
+
+   `visibility`, a nie samo `max-height: 0`. Zwinięcie wysokością plus
+   `overflow-hidden` ukrywa panel dla oka, ale NIE wyjmuje odnośników
+   z kolejności fokusu - zwinięte menu łapało Tab na każdej szerokości
+   poniżej 768 px. `visibility: hidden` wyjmuje je i z fokusu, i z drzewa
+   dostępności.
+
+   Przejście `visibility` bierze się z `transition-all` na elemencie panelu
+   (znacznik w `Naglowek.astro`) i jest tam potrzebne: bez niego odnośniki
+   znikają natychmiast, zanim panel zdąży się zwinąć. `all` obejmuje
+   `visibility`, a przeglądarka przełącza ją na końcu przejścia przy
+   chowaniu i na początku przy pokazywaniu - dokładnie w tej kolejności,
+   o którą chodzi. Zamiana `transition-all` na listę wybranych właściwości
+   wymaga dopisania tam `visibility`.
+   ------------------------------------------------------------------ */
 
 .naglowek__panel {
   max-height: 0;
+  visibility: hidden;
 }
 
-#menu-mobilne:checked ~ .naglowek__panel {
+.naglowek:has(#menu-mobilne:checked) .naglowek__panel {
   max-height: 500px;
+  visibility: visible;
   border-top: 1px solid rgb(255 255 255 / 0.1);
 }
 
@@ -25,17 +51,56 @@
   display: none;
 }
 
-#menu-mobilne:checked ~ div .naglowek__ikona-menu {
+.naglowek:has(#menu-mobilne:checked) .naglowek__ikona-menu {
   display: none;
 }
 
-#menu-mobilne:checked ~ div .naglowek__ikona-zamknij {
+.naglowek:has(#menu-mobilne:checked) .naglowek__ikona-zamknij {
   display: block;
 }
 
 /* Pole wyboru jest poza ekranem, ale nadal łapie fokus z klawiatury -
    obrys musi wtedy pojawić się na przełączniku, nie w pustce. */
-#menu-mobilne:focus-visible ~ div .naglowek__przelacznik {
+.naglowek:has(#menu-mobilne:focus-visible) .naglowek__przelacznik {
   outline: var(--fokus-grubosc) solid var(--color-brand-olive);
   outline-offset: var(--fokus-odsuniecie);
+}
+
+/* ------------------------------------------------------------------
+   PODMENU „USŁUGI" - bez JavaScriptu.
+
+   Stan otwarcia to `:hover` na opakowaniu albo `:focus-within` - to
+   drugie obsługuje klawiaturę: po wejściu Tabem w odnośnik „Usługi"
+   lista rozwija się sama i można przejść do jej pozycji.
+
+   `padding-top` na opakowaniu listy, nie `margin`: między odnośnikiem
+   a listą nie może być szczeliny, w której kursor gubi najechanie.
+   ------------------------------------------------------------------ */
+
+.naglowek__podmenu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  padding-top: 0.75rem;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-4px);
+  transition:
+    opacity 180ms var(--ease-out),
+    transform 180ms var(--ease-out),
+    visibility 180ms;
+}
+
+.naglowek__zakres:hover .naglowek__podmenu,
+.naglowek__zakres:focus-within .naglowek__podmenu {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+/* Chevron obraca się razem z otwarciem - to jedyny sygnał, że lista
+   jest rozwinięta, a nie że odnośnik prowadzi gdzieś w bok. */
+.naglowek__zakres:hover .naglowek__chevron,
+.naglowek__zakres:focus-within .naglowek__chevron {
+  transform: rotate(180deg);
 }

@@ -31,6 +31,23 @@
   }
 
   /* ------------------------------------------------------------------
+     <picture> ZNIKA Z UKŁADU.
+
+     `<picture>` jest domyślnie elementem liniowym, więc stawał między
+     kontenerem a `<img>` jako dodatkowe pudełko: `absolute inset-0`,
+     `h-full` albo `object-cover` podane przy zdjęciu odnosiły się wtedy
+     do tego pudełka, a nie do sekcji czy kafelka. Stąd tła sekcji
+     głównych utrzymujące własne proporcje zamiast wypełniać sekcję
+     i jasne pasy nad kafelkami galerii.
+
+     `display: contents` wyjmuje `<picture>` z układu w całości - element
+     układu to `<img>`, dokładnie tak, jak zapisano w znaczniku.
+     ------------------------------------------------------------------ */
+  picture {
+    display: contents;
+  }
+
+  /* ------------------------------------------------------------------
      FOKUS - jedna reguła na cały serwis.
 
      Stary projekt miał `focus:outline-none` w ośmiu miejscach BEZ

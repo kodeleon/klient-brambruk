@@ -57,10 +57,17 @@
      a `brand-olive-dark` 2,55:1 - oba nieczytelne. Ten wariant jest wyłącznie
      do tekstu i ikon na jasnym tle; do wypełnień służą dwa powyższe. */
   --color-brand-olive-text: #5f6b0d;
-  /* ZMIENIONE: #89a66f → #5f7347. Kolor etykiet sekcji i odnośników
-     „Zobacz szczegóły" na jasnym tle. ⚠️ Na CIEMNYM tle ten kolor daje 3,20:1
-     i nie wolno go tam używać - tam akcentem jest `brand-olive` (9,22:1). */
+  /* ZMIENIONE: #89a66f → #5f7347. Kolor odnośników „Zobacz szczegóły"
+     w kafelkach i liczb w pasku statystyk. ⚠️ Na CIEMNYM tle ten kolor daje
+     3,20:1 i nie wolno go tam używać - tam akcentem jest `brand-olive`. */
   --color-brand-sage: #5f7347;
+  /* PRZYWRÓCONY oryginał ze starego projektu. Wyłącznie etykiety sekcji
+     (nadtytuł nad H2/H1) na jasnym tle - decyzja Marka z 19.09.2026:
+     przyciemniony wariant był „brzydszy i nie pasował do kolorystyki",
+     więc etykieta wraca do tego odcienia, a czytelność ratuje mocniejsze
+     pogrubienie. ⚠️ ŚWIADOMIE PONIŻEJ PROGU: 2,44:1 na `brand-bg`.
+     Ten token nie ma prawa pojawić się nigdzie poza `EtykietaSekcji`. */
+  --color-brand-sage-jasny: #89a66f;
   --color-brand-dark: #1e1e1e;
   --color-brand-text: #2d2d2d;
   /* ZMIENIONE: #8a8780 → #6e6b64. To jest kolor większości akapitów serwisu,
@@ -115,6 +122,7 @@
        brand-olive-dark    2,55       2,71       2,83       5,89
        brand-olive-text    5,27       5,59       5,84       2,85
        brand-sage          4,70       4,98       5,21       3,20
+       brand-sage-jasny    2,44       2,59       2,71       6,15
        brand-dark         15,03      15,94      16,67       1,00
        white               1,11       1,05       1,00      16,67
        fixly-ink           5,13       5,44       5,69       2,74
@@ -141,6 +149,12 @@
      to 1,63:1.
 
      CO ZOSTAJE ŚWIADOMIE PONIŻEJ PROGU:
+       · `brand-sage-jasny` w etykietach sekcji na jasnym tle (2,44-2,71)
+         i `brand-olive` w przyciskach `outline` na jasnym tle (1,63).
+         Obie pozycje to decyzja właściciela serwisu z 19.09.2026, podjęta
+         po przedstawieniu liczb: wygląd przed progiem WCAG. Poprawka jest
+         jednoliniowa i siedzi w tym pliku oraz w `Przycisk.astro` -
+         wystarczy zamienić token, nie trzeba ruszać znaczników.
        · `fixly-main` jako gwiazdki ocen na jasnym tle (1,29-1,43). To jest
          żółty cudzej marki i konwencja graficzna oceny; sama ocena stoi
          obok SŁOWEM („5/5"), a gwiazdki mają `role="img"` z opisem, więc

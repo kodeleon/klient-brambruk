@@ -15,34 +15,36 @@
  * │ jedyna widoczna zmiana i jest ceną za działanie bez JavaScriptu.     │
  * └──────────────────────────────────────────────────────────────────────┘
  */
-import Ikona from '../icons/Ikona.astro'
-import Foto from '../media/Foto.astro'
+import Ikona from "../icons/Ikona.astro";
+import Foto from "../media/Foto.astro";
 
 interface Pozycja {
-  foto: string
-  tytul?: string
-  lokalizacja?: string
+  foto: string;
+  tytul?: string;
+  lokalizacja?: string;
 }
 interface Props {
-  pozycje: readonly Pozycja[]
-  class?: string
+  pozycje: readonly Pozycja[];
+  class?: string;
 }
-const { pozycje, class: klasa = '' } = Astro.props
+const { pozycje, class: klasa = "" } = Astro.props;
 ---
 
 <div
   class:list={[
-    'rounded-2xl overflow-hidden bg-brand-card border border-brand-border/60 shadow-md shadow-black/[0.07] select-none',
+    "rounded-2xl overflow-hidden bg-brand-card border border-brand-border/60 shadow-md shadow-black/[0.07] select-none",
     klasa,
   ]}
   data-karuzela
 >
   <div class="relative aspect-[16/10] overflow-hidden bg-brand-bg">
-    {/*
+    {
+      /*
       `tabindex` i `role` są wymagane, bo pas przewija się w poziomie:
       bez nich klawiatura nie ma jak dojść do dalszych zdjęć
       (axe: scrollable-region-focusable).
-    */}
+    */
+    }
     <div
       class="karuzela-tor flex h-full w-full overflow-x-auto snap-x snap-mandatory"
       data-karuzela-tor
@@ -52,17 +54,22 @@ const { pozycje, class: klasa = '' } = Astro.props
     >
       {
         pozycje.map((pozycja, i) => (
-          <figure class="relative shrink-0 w-full h-full snap-center" data-karuzela-slajd={i}>
+          <figure
+            class="relative shrink-0 w-full h-full snap-center"
+            data-karuzela-slajd={i}
+          >
             <Foto
               klucz={pozycja.foto}
-              alt={pozycja.tytul ?? 'Realizacja BramBruk'}
+              alt={pozycja.tytul ?? "Realizacja BramBruk"}
               class="w-full h-full object-cover"
             />
             <div class="absolute inset-0 bg-gradient-to-t from-black/55 via-black/0 to-transparent pointer-events-none" />
             {(pozycja.tytul || pozycja.lokalizacja) && (
               <figcaption class="absolute bottom-0 left-0 right-0 px-5 py-4 flex items-end justify-between pointer-events-none">
                 {pozycja.tytul && (
-                  <span class="text-white font-display font-semibold text-sm drop-shadow">{pozycja.tytul}</span>
+                  <span class="text-white font-display font-semibold text-sm drop-shadow">
+                    {pozycja.tytul}
+                  </span>
                 )}
                 {pozycja.lokalizacja && (
                   <span class="flex items-center gap-1 text-white/70 text-xs">
@@ -99,14 +106,20 @@ const { pozycje, class: klasa = '' } = Astro.props
   </div>
 </div>
 
-<div class:list={['flex items-center justify-center gap-2 py-3 px-4', klasa]} data-karuzela-kropki hidden>
+<div
+  class:list={["flex items-center justify-center gap-2 py-3 px-4", klasa]}
+  data-karuzela-kropki
+  hidden
+>
   {
     pozycje.map((_, i) => (
       <button
         type="button"
         class:list={[
-          'rounded-full transition-all duration-300',
-          i === 0 ? 'w-5 h-2 bg-brand-sage' : 'w-2 h-2 bg-brand-text-xlight hover:bg-brand-text-light',
+          "rounded-full transition-all duration-300",
+          i === 0
+            ? "w-5 h-2 bg-brand-sage-jasny"
+            : "w-2 h-2 bg-brand-text-xlight hover:bg-brand-text-light",
         ]}
         data-karuzela-kropka={i}
         aria-label={`Zdjęcie ${i + 1}`}

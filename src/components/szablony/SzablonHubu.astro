@@ -5,16 +5,17 @@
  * Trzy podstrony (/ogrodzenia/, /brukarstwo/, /budownictwo/) dzielą ten
  * układ i różnią się wyłącznie danymi z `src/data/huby.ts`.
  *
- * Zmiany z przejścia po wyglądzie (18.09.2026) - powody przy sekcjach:
- *   · sekcja główna bez myślnika w nagłówku i bez podpisu zawężającego
- *     ofertę do jednego miasta,
- *   · sekcja treści przebudowana na „DLACZEGO MY - Tak działamy": trzy
- *     bloki z nagłówkami h3 zamiast dwóch akapitów bez tezy,
- *   · cennik w dwóch kolumnach na ciemnym tle, z wyjaśnieniem widełek,
- *   · FAQ na jaśniejszym tle, żeby odciąć je od cennika nad nim.
- *
- * Karta usługi bez `href` (budownictwo nie ma podstron rodzajów) dostaje
- * odnośnik do wyceny zamiast martwego „Zobacz szczegóły".
+ * ┌── CO TU ZOSTAŁO PO PRZEJŚCIU Z 19.09.2026 ─────────────────────────┐
+ * │ Sekcja główna, sekcja „Dlaczego my" i cennik wyprowadziły się do     │
+ * │ wspólnych komponentów (`SekcjaHero`, `SekcjaDlaczegoMy`,             │
+ * │ `SekcjaCennika`), bo dokładnie te same bloki stoją na podstronach    │
+ * │ rodzajów usług. Trzymanie dwóch kopii tego samego układu było        │
+ * │ powodem, dla którego podstrony z jednej grupy wyglądały inaczej      │
+ * │ mimo że miały wyglądać tak samo.                                     │
+ * │                                                                      │
+ * │ Tutaj zostaje to, co jest właściwe hubowi: siatka kart rodzajów      │
+ * │ usług i galeria realizacji z tej kategorii.                          │
+ * └──────────────────────────────────────────────────────────────────────┘
  */
 import Podstrona from '../../layouts/Podstrona.astro'
 import { huby } from '../../data/huby'
@@ -26,9 +27,11 @@ import LinkSekcji from '../ui/LinkSekcji.astro'
 import Odslon from '../ui/Odslon.astro'
 import KartaUslugi from '../ui/KartaUslugi.astro'
 import SekcjaFaq from '../ui/SekcjaFaq.astro'
+import SekcjaHero from '../ui/SekcjaHero.astro'
+import SekcjaDlaczegoMy from './SekcjaDlaczegoMy.astro'
+import SekcjaCennika from './SekcjaCennika.astro'
 import GaleriaSiatka from '../ui/GaleriaSiatka.astro'
 import GaleriaKaruzela from '../ui/GaleriaKaruzela.astro'
-import Ikona from '../icons/Ikona.astro'
 import Foto from '../media/Foto.astro'
 
 interface Props {
@@ -49,38 +52,27 @@ const { zasieg, metodyka, sprzet } = dane.tresc
 <Podstrona tytul={tytul} opis={opis}>
   <Okruszki pozycje={[{ etykieta: 'Strona główna', sciezka: '/' }, { etykieta: dane.okruszek }]} />
 
-  {/* ═══ SEKCJA GŁÓWNA ═══════════════════════════════════ */}
-  <section class="relative bg-brand-dark overflow-hidden">
-    <div class="absolute inset-0">
-      <Foto klucz={dane.fotoHero} alt="" class="w-full h-full object-cover opacity-20" />
-      <div class="absolute inset-0 bg-gradient-to-r from-brand-dark via-brand-dark/90 to-brand-dark/60"></div>
-    </div>
+  <SekcjaHero
+    etykieta={dane.etykieta}
+    tytul={dane.tytulHero}
+    podtytul={dane.podtytulHero}
+    opis={dane.opisHero}
+    foto={dane.fotoHero}
+  >
+    <Fragment slot="akcje">
+      <Przycisk href="/wycena/" rozmiar="lg" ikona="receipt-text">Bezpłatna wycena</Przycisk>
+      <Przycisk href="/realizacje/" wariant="secondary" rozmiar="lg" ikona="images">Nasze realizacje</Przycisk>
+    </Fragment>
 
-    <div class="relative max-w-7xl mx-auto px-5 lg:px-10 py-16 lg:py-24">
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
-        <div>
-          <EtykietaSekcji wariant="ciemne" class="mb-3">{dane.etykieta}</EtykietaSekcji>
-          <h1 class="font-display text-3xl lg:text-[42px] font-bold text-white leading-tight mb-3">
-            {dane.tytulHero}
-          </h1>
-          <p class="border-l-2 border-brand-olive pl-4 font-display text-xl lg:text-2xl font-semibold text-brand-olive mb-6">
-            {dane.podtytulHero}
-          </p>
-          <p class="text-neutral-400 leading-relaxed max-w-lg mb-8">{dane.opisHero}</p>
-          <div class="flex flex-wrap gap-3">
-            <Przycisk href="/wycena/" rozmiar="lg" ikona="receipt-text">Bezpłatna wycena</Przycisk>
-            <Przycisk href="/realizacje/" wariant="secondary" rozmiar="lg" ikona="images">Nasze realizacje</Przycisk>
-          </div>
-        </div>
-        <div class="hidden lg:block">
-          <Foto klucz={dane.fotoHeroObok} class="w-full h-[340px] object-cover rounded-2xl" />
-        </div>
-      </div>
-    </div>
-  </section>
+    <Foto
+      slot="obok"
+      klucz={dane.fotoHeroObok}
+      class="w-full h-[340px] object-cover rounded-2xl shadow-2xl shadow-black/50"
+    />
+  </SekcjaHero>
 
   {/* ═══ CO OFERUJEMY ════════════════════════════════════ */}
-  <section class="bg-brand-section py-14 lg:py-20">
+  <section class="tlo-siatka bg-brand-section py-14 lg:py-20">
     <div class="max-w-7xl mx-auto px-5 lg:px-10">
       <Odslon>
         <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4 mb-6">
@@ -102,7 +94,6 @@ const { zasieg, metodyka, sprzet } = dane.tresc
                 foto={usluga.foto}
                 href={usluga.href ?? '/wycena/'}
                 cta={usluga.href ? 'Zobacz szczegóły' : 'Zapytaj o wycenę'}
-                ikonaCta={usluga.href ? 'arrow-right' : 'receipt-text'}
               />
             </Odslon>
           ))
@@ -113,157 +104,36 @@ const { zasieg, metodyka, sprzet } = dane.tresc
     </div>
   </section>
 
-  {/* ═══ DLACZEGO MY - TAK DZIAŁAMY ══════════════════════
-      Trzy bloki: zasięg, metodyka, sprzęt. Każdy ma własny h3, bo każdy
-      odpowiada na inne pytanie, a wcześniej zlewały się w dwa akapity,
-      z których nie dało się niczego wyjąć wzrokiem.
-  */}
-  <section class="bg-brand-bg py-14 lg:py-20">
-    <div class="max-w-7xl mx-auto px-5 lg:px-10">
-      <Odslon>
-        <div class="mb-8 lg:mb-12">
-          <EtykietaSekcji>Dlaczego my</EtykietaSekcji>
-          <h2 class="font-display text-2xl lg:text-4xl font-bold text-brand-text mt-2">Tak działamy</h2>
-        </div>
-      </Odslon>
+  <SekcjaDlaczegoMy
+    tytulGorny={zasieg.tytul}
+    foto={dane.tresc.fotoObok}
+    fotoAlt={dane.tresc.fotoObokAlt}
+    kroki={{ tytul: metodyka.tytul, wstep: metodyka.wstep, lista: metodyka.kroki }}
+    dodatki={{ tytul: metodyka.tytulDodatkow, wstep: metodyka.wstepDodatkow, lista: metodyka.dodatki }}
+    bloki={[{ tytul: sprzet.tytul, tekst: sprzet.tekst }]}
+    tlo="bg-brand-bg"
+  >
+    <p slot="gorny">
+      {zasieg.tekst}{' '}
+      {
+        zasieg.miasta.map((miasto, i) => (
+          <>
+            <strong class="font-semibold text-brand-text">{miasto}</strong>
+            {i < zasieg.miasta.length - 1 ? ', ' : ' '}
+          </>
+        ))
+      }
+      {zasieg.domkniecie}
+    </p>
+  </SekcjaDlaczegoMy>
 
-      <div class="grid grid-cols-1 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] gap-10 lg:gap-14 items-start">
-        <div class="space-y-10">
-          <Odslon wariant="left">
-            <div>
-              <h3 class="font-display text-lg lg:text-xl font-bold text-brand-text mb-3">{zasieg.tytul}</h3>
-              <p class="text-brand-text-light leading-relaxed">
-                {zasieg.tekst}{' '}
-                {
-                  zasieg.miasta.map((miasto, i) => (
-                    <>
-                      <strong class="font-semibold text-brand-text">{miasto}</strong>
-                      {i < zasieg.miasta.length - 1 ? ', ' : ' '}
-                    </>
-                  ))
-                }
-                {zasieg.domkniecie}
-              </p>
-            </div>
-          </Odslon>
-
-          <Odslon wariant="left" zwloka={80}>
-            <div>
-              <h3 class="font-display text-lg lg:text-xl font-bold text-brand-text mb-3">{metodyka.tytul}</h3>
-              <p class="text-brand-text-light leading-relaxed mb-4">{metodyka.wstep}</p>
-
-              {/* Lista, nie akapit: kroki mają być policzalne wzrokiem.
-                  Kropka jest elementem `<span>` z tłem w kolorze marki,
-                  bo znacznik listy przeglądarki nie przyjmuje koloru
-                  niezależnie od tekstu. */}
-              <ol class="space-y-2.5 mb-6">
-                {
-                  metodyka.kroki.map((krok) => (
-                    <li class="flex gap-3 text-brand-text-light leading-relaxed">
-                      <span class="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-brand-olive" aria-hidden="true"></span>
-                      <span>{krok}</span>
-                    </li>
-                  ))
-                }
-              </ol>
-
-              <p class="font-display text-base font-bold text-brand-text mb-3">{metodyka.tytulDodatkow}</p>
-              <ul class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2.5">
-                {
-                  metodyka.dodatki.map((dodatek) => (
-                    <li class="flex gap-2.5 text-sm text-brand-text-light leading-relaxed">
-                      <Ikona nazwa="check" rozmiar={16} class="mt-0.5 shrink-0 text-brand-olive-text" />
-                      <span>{dodatek}</span>
-                    </li>
-                  ))
-                }
-              </ul>
-            </div>
-          </Odslon>
-
-          <Odslon wariant="left" zwloka={160}>
-            <div>
-              <h3 class="font-display text-lg lg:text-xl font-bold text-brand-text mb-3">{sprzet.tytul}</h3>
-              <p class="text-brand-text-light leading-relaxed">{sprzet.tekst}</p>
-            </div>
-          </Odslon>
-        </div>
-
-        <Odslon wariant="right">
-          <div class="lg:sticky lg:top-[calc(var(--naglowek-wysokosc)+2rem)]">
-            <Foto
-              klucz={dane.tresc.fotoObok}
-              alt={dane.tresc.fotoObokAlt}
-              class="w-full h-[380px] object-cover rounded-2xl"
-            />
-          </div>
-        </Odslon>
-      </div>
-    </div>
-  </section>
-
-  {/* ═══ CENNIK ══════════════════════════════════════════
-      Ciemne tło i dwie kolumny. Wcześniej była to wąska tabela na jasnym
-      tle, bez ani jednego zdania o tym, skąd biorą się widełki - a to jest
-      pierwsze pytanie, jakie stawia każdy, kto je widzi.
-  */}
-  <section class="bg-brand-dark py-14 lg:py-20">
-    <div class="max-w-7xl mx-auto px-5 lg:px-10">
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-start">
-        <Odslon wariant="left">
-          <div class="lg:sticky lg:top-[calc(var(--naglowek-wysokosc)+2rem)]">
-            <EtykietaSekcji wariant="ciemne">Orientacyjne ceny</EtykietaSekcji>
-            <h2 class="font-display text-2xl lg:text-3xl font-bold text-white mt-2 mb-4">{cennik.tytul}</h2>
-            <p class="text-neutral-400 leading-relaxed mb-5">{dane.cennikOpis.wstep}</p>
-
-            <ul class="space-y-2.5 mb-8">
-              {
-                dane.cennikOpis.czynniki.map((czynnik) => (
-                  <li class="flex gap-3 text-sm text-brand-text-xlight leading-relaxed">
-                    <Ikona nazwa="check-circle-2" rozmiar={17} class="mt-px shrink-0 text-brand-olive" />
-                    <span>{czynnik}</span>
-                  </li>
-                ))
-              }
-            </ul>
-
-            <div class="flex flex-wrap gap-3">
-              <Przycisk href="/wycena/" rozmiar="md" ikona="receipt-text">Bezpłatna wycena</Przycisk>
-              <Przycisk href="/uslugi/" wariant="secondary" rozmiar="md" ikona="banknote">Inne usługi</Przycisk>
-            </div>
-          </div>
-        </Odslon>
-
-        <Odslon wariant="right">
-          <div>
-            <div class="overflow-hidden rounded-2xl border border-white/10 bg-white/[0.04]">
-              {
-                cennik.pozycje.map((wiersz, i) => (
-                  <div
-                    class:list={[
-                      'flex items-center justify-between gap-4 px-6 py-4',
-                      i !== cennik.pozycje.length - 1 && 'border-b border-white/10',
-                    ]}
-                  >
-                    <span class="text-sm text-brand-text-xlight">{wiersz.usluga}</span>
-                    <span class="text-sm font-bold text-brand-olive whitespace-nowrap">{wiersz.cena}</span>
-                  </div>
-                ))
-              }
-            </div>
-
-            <p class="mt-4 flex items-start gap-2 text-xs text-neutral-400 leading-relaxed">
-              <Ikona nazwa="alert-circle" rozmiar={14} class="mt-0.5 shrink-0" />
-              <span>
-                Ceny orientacyjne, aktualne na 2026 r. Nie stanowią oferty w rozumieniu Kodeksu cywilnego -
-                dokładną kwotę podajemy po bezpłatnej wizji lokalnej.
-              </span>
-            </p>
-          </div>
-        </Odslon>
-      </div>
-    </div>
-  </section>
+  <SekcjaCennika
+    etykieta="Orientacyjne ceny"
+    tytul={cennik.tytul}
+    wstep={dane.cennikOpis.wstep}
+    czynniki={dane.cennikOpis.czynniki}
+    pozycje={cennik.pozycje}
+  />
 
   {/* ═══ REALIZACJE ══════════════════════════════════════ */}
   <section class="bg-brand-section py-14 lg:py-20">
@@ -278,8 +148,8 @@ const { zasieg, metodyka, sprzet } = dane.tresc
         </div>
       </Odslon>
 
-      <GaleriaSiatka pozycje={dane.galeria} class="hidden lg:grid" />
-      <GaleriaKaruzela pozycje={dane.galeria} class="lg:hidden" />
+      <GaleriaSiatka pozycje={dane.galeria} class="hidden md:grid" />
+      <GaleriaKaruzela pozycje={dane.galeria} class="md:hidden" />
 
       <LinkSekcji href="/realizacje/" ikona="images">Zobacz wszystkie realizacje</LinkSekcji>
     </div>

@@ -38,31 +38,38 @@ const spolecznosciowe = [
   },
 ].filter((p) => p.url);
 
-/** Pasek nad stopką. Kolejność od najczęściej szukanego. */
+/**
+ * Pasek nad stopką. Kolejność od najczęściej szukanego.
+ *
+ * `tresc` jest TABLICĄ WIERSZY, nie jednym łańcuchem: adres i godziny
+ * niosą po dwie informacje każde, a sklejone przecinkiem albo kropką
+ * łamały się w przypadkowym miejscu - „woj." zostawało na końcu wiersza,
+ * a „lubelskie" schodziło niżej.
+ */
 const kontakty = [
   {
     etykieta: "Zadzwoń",
     ikona: "phone" as const,
-    tresc: dane.telefon,
+    tresc: [dane.telefon],
     href: `tel:${dane.telefonHref}`,
   },
   {
     etykieta: "Napisz",
     ikona: "mail" as const,
-    tresc: dane.email,
+    tresc: [dane.email],
     href: `mailto:${dane.email}`,
   },
   {
     etykieta: "Siedziba",
     ikona: "map-pin" as const,
-    tresc: dane.adres,
+    tresc: dane.adresLinie,
     href: dane.mapyUrl,
     zewnetrzny: true,
   },
   {
     etykieta: "Godziny pracy",
     ikona: "clock" as const,
-    tresc: `${dane.godzinyTydzien} · ${dane.godzinySobota}`,
+    tresc: [dane.godzinyTydzien, dane.godzinySobota],
   },
 ];
 
@@ -75,44 +82,50 @@ const rejestr = [
 <footer class="stopka relative overflow-hidden bg-brand-dark text-neutral-400">
   <div class="stopka__siatka" aria-hidden="true"></div>
 
-  {/* ═══ PASEK KONTAKTU ══════════════════════════════════════ */}
+  {/* ═══ PASEK KONTAKTU ══════════════════════════════════════
+      Celem kliknięcia jest CAŁY kafelek - ikona, etykieta i wartość
+      razem, z marginesem wokół. Wcześniej klikalna była sama wartość,
+      czyli jeden wiersz tekstu: na telefonie trzeba było w niego trafić
+      palcem, a najechanie na resztę kafelka nie dawało żadnego sygnału,
+      że to w ogóle odnośnik.
+  */}
   <div class="relative border-y border-white/10">
-    <div class="max-w-7xl mx-auto px-5 lg:px-10">
-      <ul
-        class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 divide-y divide-white/10 sm:divide-y-0 sm:divide-x"
-      >
+    <div class="max-w-7xl mx-auto px-5 lg:px-10 py-3">
+      <ul class="grid grid-cols-1 gap-1 sm:grid-cols-2 lg:grid-cols-4">
         {
-          kontakty.map((pozycja) => (
-            <li class="flex items-start gap-3 py-5 sm:px-5 lg:px-6 first:sm:pl-0 last:sm:pr-0">
-              <span class="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-brand-olive/10 text-brand-olive">
-                <Ikona nazwa={pozycja.ikona} rozmiar={16} />
-              </span>
-              <span class="min-w-0">
-                <span class="block text-[10px] font-bold uppercase tracking-[2px] text-neutral-400">
-                  {pozycja.etykieta}
-                </span>
-                {pozycja.href ? (
-                  <a
-                    href={pozycja.href}
-                    target={pozycja.zewnetrzny ? "_blank" : undefined}
-                    rel={pozycja.zewnetrzny ? "noopener noreferrer" : undefined}
-                    class="mt-0.5 block text-sm font-semibold text-white hover:text-brand-olive transition-colors"
-                  >
-                    {pozycja.tresc}
-                    {pozycja.zewnetrzny && (
-                      <span class="poza-ekranem">
-                        (otwiera się w nowej karcie)
-                      </span>
-                    )}
-                  </a>
-                ) : (
-                  <span class="mt-0.5 block text-sm font-semibold text-white">
-                    {pozycja.tresc}
+          kontakty.map((pozycja) => {
+            const Znacznik = pozycja.href ? 'a' : 'div'
+            return (
+              <li>
+                <Znacznik
+                  href={pozycja.href}
+                  target={pozycja.zewnetrzny ? '_blank' : undefined}
+                  rel={pozycja.zewnetrzny ? 'noopener noreferrer' : undefined}
+                  class:list={[
+                    'flex h-full items-start gap-3 rounded-xl p-4 transition-colors',
+                    pozycja.href && 'group hover:bg-white/5',
+                  ]}
+                >
+                  <span class="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-brand-olive/10 text-brand-olive">
+                    <Ikona nazwa={pozycja.ikona} rozmiar={16} />
                   </span>
-                )}
-              </span>
-            </li>
-          ))
+                  <span class="min-w-0">
+                    <span class="block text-[10px] font-bold uppercase tracking-[2px] text-neutral-400">
+                      {pozycja.etykieta}
+                    </span>
+                    <span class="mt-0.5 block text-sm font-semibold text-white transition-colors group-hover:text-brand-olive">
+                      {pozycja.tresc.map((wiersz) => (
+                        <span class="block">{wiersz}</span>
+                      ))}
+                      {pozycja.zewnetrzny && (
+                        <span class="poza-ekranem">(otwiera się w nowej karcie)</span>
+                      )}
+                    </span>
+                  </span>
+                </Znacznik>
+              </li>
+            )
+          })
         }
       </ul>
     </div>
@@ -130,7 +143,7 @@ const rejestr = [
           aria-label="BramBruk - strona główna"
         >
           <Logo nazwa="znak" alt="" sizes="48px" class="w-12 h-12 pb-1" />
-          <span class="text-brand-bg font-brand text-2xl">BramBruk</span>
+          <span class="text-brand-bg font-brand text-2xl">BRAMBRUK</span>
         </a>
 
         <p class="mt-3 text-sm text-neutral-400">{dane.opis}</p>
@@ -180,19 +193,23 @@ const rejestr = [
               </a>
             )
           }
-          <span class="flex items-center gap-2 text-sm">
-            <span
-              class="flex text-fixly-main"
-              role="img"
-              aria-label={`Ocena ${fixly.ocena}`}
-            >
-              {
-                Array.from({ length: 5 }).map(() => (
-                  <Ikona nazwa="star" rozmiar={14} wypelnienie="currentColor" />
-                ))
-              }
-            </span>
-            <PrzyciskFixly />
+        </div>
+
+        {/* Fixly stoi POD mediami społecznościowymi, nie obok nich: to
+            inna rzecz niż profil na Facebooku - ocena, nie kanał. Najpierw
+            plakietka, gwiazdki po jej prawej. */}
+        <div class="mt-4 flex items-center gap-2">
+          <PrzyciskFixly />
+          <span
+            class="flex text-fixly-main"
+            role="img"
+            aria-label={`Ocena ${fixly.ocena}`}
+          >
+            {
+              Array.from({ length: 5 }).map(() => (
+                <Ikona nazwa="star" rozmiar={14} wypelnienie="currentColor" />
+              ))
+            }
           </span>
         </div>
       </div>
@@ -234,6 +251,12 @@ const rejestr = [
           class="font-semibold text-brand-text-xlight underline underline-offset-2 decoration-brand-olive/60 hover:text-brand-olive transition-colors"
         >
           kodeleon.pl
+          <Ikona
+            nazwa="arrow-up-right"
+            rozmiar={12}
+            grubosc={2.5}
+            class="ml-0.5 inline-block align-[-1px]"
+          />
           <span class="poza-ekranem">(otwiera się w nowej karcie)</span>
         </a>
       </p>
@@ -243,9 +266,7 @@ const rejestr = [
           class="hover:text-white transition-colors">Polityka prywatności</a
         >
         <span class="text-neutral-600" aria-hidden="true">·</span>
-        <a href="/credits/" class="hover:text-white transition-colors"
-          >Credits</a
-        >
+        <a href="/credits/" class="hover:text-white transition-colors">Źródła</a>
         <span class="text-neutral-600" aria-hidden="true">·</span>
         <span>brambruk.pl</span>
       </div>

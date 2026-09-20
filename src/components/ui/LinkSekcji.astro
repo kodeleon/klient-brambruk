@@ -17,23 +17,33 @@
  * │ To układ przeniesiony z sekcji „Realizacje", bo tam sprawdzał się    │
  * │ najlepiej: na komputerze nie odsuwa treści, na telefonie nie ucieka  │
  * │ w bok ekranu.                                                       │
+ * │                                                                     │
+ * │ Oba miejsca stoją na rozmiarze `sm`: napis 14 px (o 2 px większy niż │
+ * │ poprzednio) i niższy padding pionowy, żeby na telefonie nie robiło  │
+ * │ się pustego pasa nad i pod napisem.                                 │
  * └─────────────────────────────────────────────────────────────────────┘
  */
-import Przycisk from './Przycisk.astro'
-import type { NazwaIkony } from '../icons/ikony'
+import Przycisk from "./Przycisk.astro";
+import type { NazwaIkony } from "../icons/ikony";
 
 interface Props {
-  href: string
+  href: string;
   /** Kształt przed napisem. Strzałka „dalej" dokłada się sama, po napisie. */
-  ikona?: NazwaIkony
-  miejsce?: 'naglowek' | 'pod'
+  ikona?: NazwaIkony;
+  miejsce?: "naglowek" | "pod";
   /** `true` na tle `brand-dark` - obrys zmienia się na wariant dla ciemnego tła. */
-  ciemne?: boolean
-  class?: string
+  ciemne?: boolean;
+  class?: string;
 }
 
-const { href, ikona, miejsce = 'pod', ciemne = false, class: klasa = '' } = Astro.props
-const wariant = ciemne ? 'secondary' : 'outline'
+const {
+  href,
+  ikona,
+  miejsce = "pod",
+  ciemne = false,
+  class: klasa = "",
+} = Astro.props;
+const wariant = ciemne ? "secondary" : "outline";
 ---
 
 {
@@ -42,15 +52,15 @@ const wariant = ciemne ? 'secondary' : 'outline'
      kolejność w arkuszu, nie kolejność klas w znaczniku. Przycisk potrafił
      przez to zostać widoczny na telefonie mimo `hidden`. Widocznością
      steruje opakowanie - jedna reguła `display` na element. */
-  miejsce === 'naglowek' ? (
-    <div class:list={['hidden lg:block shrink-0', klasa]}>
+  miejsce === "naglowek" ? (
+    <div class:list={["hidden lg:block shrink-0", klasa]}>
       <Przycisk href={href} wariant={wariant} rozmiar="sm" ikona={ikona}>
         <slot />
       </Przycisk>
     </div>
   ) : (
-    <div class:list={['mt-8 flex justify-center lg:hidden', klasa]}>
-      <Przycisk href={href} wariant={wariant} rozmiar="md" ikona={ikona}>
+    <div class:list={["mt-5 flex justify-center lg:hidden", klasa]}>
+      <Przycisk href={href} wariant={wariant} rozmiar="sm" ikona={ikona}>
         <slot />
       </Przycisk>
     </div>

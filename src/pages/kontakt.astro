@@ -33,7 +33,7 @@ const klasaPola =
 >
   <Okruszki pozycje={[{ etykieta: 'Strona główna', sciezka: '/' }, { etykieta: 'Kontakt' }]} />
 
-  <section class="bg-brand-section py-10 lg:py-16">
+  <section class="tlo-siatka bg-brand-section py-10 lg:py-16">
     <div class="max-w-7xl mx-auto px-5 lg:px-10">
       <Odslon>
         <div class="mb-6">
@@ -47,13 +47,13 @@ const klasaPola =
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
         <Odslon wariant="left">
           <div
-            class="bg-brand-card rounded-2xl border border-brand-border/60 shadow-sm shadow-black/[0.04] p-6 lg:p-8"
+            class="bg-brand-card rounded-2xl border border-brand-border/60 shadow-sm shadow-black/[0.04] px-3 py-5 lg:px-4 lg:py-6"
           >
             {/* Stan „wysłano" - odsłania go skrypt po udanej wysyłce. */}
             <div data-formularz-sukces hidden>
               <div class="text-center py-6">
                 <div
-                  class="w-16 h-16 rounded-2xl bg-brand-olive/10 flex items-center justify-center text-brand-olive-text mx-auto mb-6"
+                  class="w-16 h-16 rounded-2xl bg-brand-olive/10 flex items-center justify-center text-brand-sage-jasny mx-auto mb-6"
                 >
                   <Ikona nazwa="send" rozmiar={28} />
                 </div>
@@ -178,8 +178,8 @@ const klasaPola =
               </button>
 
               <p class="text-[10px] text-brand-text-light text-center">
-                Wysyłając wiadomość akceptujesz
-                <a href="/polityka-prywatnosci/" class="text-brand-olive-text underline">Politykę Prywatności</a>.
+                Wysyłając wiadomość akceptujesz&nbsp;
+                <a href="/polityka-prywatnosci/" class="text-brand-sage-jasny underline">Politykę Prywatności</a>.
                 Podst. prawna: art. 6 ust. 1 lit. f RODO.
               </p>
             </form>
@@ -188,30 +188,50 @@ const klasaPola =
 
         <div class="space-y-6 flex flex-col justify-between mb-6">
           <Odslon wariant="right">
-            <div class="bg-brand-card rounded-2xl border border-brand-border/60 shadow-sm shadow-black/[0.04] p-6">
+            <div class="bg-brand-card rounded-2xl border border-brand-border/60 shadow-sm shadow-black/[0.04] px-3 py-5">
               <h2 class="font-display text-lg font-bold text-brand-text mb-4">Dane kontaktowe</h2>
-              <div class="space-y-3 text-sm">
-                <a
-                  href={`tel:${dane.telefonHref}`}
-                  class="flex items-center gap-3 text-brand-text-light hover:text-brand-olive-text transition-colors"
-                >
-                  <Ikona nazwa="phone" rozmiar={16} class="text-brand-olive-text shrink-0" />
-                  {dane.telefon}
-                </a>
-                <a
-                  href={`mailto:${dane.email}`}
-                  class="flex items-center gap-3 text-brand-text-light hover:text-brand-olive-text transition-colors"
-                >
-                  <Ikona nazwa="mail" rozmiar={16} class="text-brand-olive-text shrink-0" />
-                  {dane.email}
-                </a>
-                <div class="flex items-center gap-3 text-brand-text-light">
-                  <Ikona nazwa="map-pin" rozmiar={16} class="text-brand-olive-text shrink-0" />
-                  {dane.adres}
+              {/* Dwie kolumny: kontakt bezpośredni po lewej, „gdzie i kiedy"
+                  po prawej. Najdłuższa pozycja (adres e-mail) z ikoną
+                  potrzebuje ok. 170 px, więc poniżej `sm` karta nie mieści
+                  dwóch kolumn - tam wszystkie cztery pozycje wracają
+                  do jednej kolumny w tej samej kolejności. */}
+              <div class="grid grid-cols-1 gap-x-6 gap-y-3 text-sm sm:grid-cols-2">
+                <div class="space-y-3">
+                  
+                  <a
+                    href={`mailto:${dane.email}`}
+                    class="flex items-center gap-3 text-brand-text-light hover:text-brand-sage-jasny transition-colors"
+                  >
+                    <Ikona nazwa="mail" rozmiar={16} class="text-brand-sage-jasny shrink-0" />
+                    {dane.email}
+                  </a>
+                  <div class="flex items-start gap-3 text-brand-text-light">
+                    <Ikona nazwa="map-pin" rozmiar={16} class="mt-0.5 text-brand-sage-jasny shrink-0" />
+                    <span>
+                      {dane.adresLinie.map((wiersz) => <span class="block">{wiersz}</span>)}
+                    </span>
+                  </div>
                 </div>
-                <div class="flex items-center gap-3 text-brand-text-light">
-                  <Ikona nazwa="clock" rozmiar={16} class="text-brand-olive-text shrink-0" />
-                  <span>{dane.godzinyTydzien} · {dane.godzinySobota}</span>
+
+                {/* Adres i godziny w dwóch wierszach każde - w kolumnie
+                    jest na to miejsce, a sklejone w jeden wiersz łamały
+                    się w przypadkowym punkcie. */}
+                <div class="space-y-3">
+                  <a
+                    href={`tel:${dane.telefonHref}`}
+                    class="flex items-center gap-3 text-brand-text-light hover:text-brand-sage-jasny transition-colors"
+                  >
+                    <Ikona nazwa="phone" rozmiar={16} class="text-brand-sage-jasny shrink-0" />
+                    {dane.telefon}
+                  </a>
+                  
+                  <div class="flex items-start gap-3 text-brand-text-light">
+                    <Ikona nazwa="clock" rozmiar={16} class="mt-0.5 text-brand-sage-jasny shrink-0" />
+                    <span>
+                      <span class="block">{dane.godzinyTydzien}</span>
+                      <span class="block">{dane.godzinySobota}</span>
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>

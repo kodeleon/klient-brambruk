@@ -59,6 +59,18 @@ export function galeria() {
       // Zdjęcie w oknie nie jest już leniwe - jest jedyną rzeczą na ekranie.
       miejsceObrazu.querySelector('img')?.removeAttribute('loading')
 
+      /* ⚠️ `sizes` PRZEPISANY NA `100vw`.
+         Kafelek galerii deklaruje szerokość ~389 px, więc przeglądarka
+         dobiera z `srcset` najmniejszy wariant. Skopiowany do okna
+         powiększenia ten sam `<picture>` zachowywał tamtą deklarację
+         i okno na pełnym ekranie pokazywało MINIATURĘ rozciągniętą do
+         1200 px. Tutaj element zajmuje całą szerokość okna i dokładnie
+         to musi mówić `sizes` - wtedy przeglądarka sięga po największy
+         dostępny wariant kadru. */
+      for (const el of miejsceObrazu.querySelectorAll<HTMLElement>('source, img')) {
+        if (el.hasAttribute('srcset')) el.setAttribute('sizes', '100vw')
+      }
+
       if (tytul) tytul.textContent = kafelek.tytul
       if (lokalizacja && lokalizacjaTekst) {
         lokalizacjaTekst.textContent = kafelek.lokalizacja

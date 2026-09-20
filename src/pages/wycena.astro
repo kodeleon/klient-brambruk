@@ -64,7 +64,7 @@ const wierszePodsumowania = [
   <div data-wycena-sukces hidden>
     <section class="bg-brand-section py-4 lg:py-10">
       <div class="max-w-2xl mx-auto px-5 lg:px-10">
-        <div class="bg-brand-card border border-brand-border rounded-2xl p-5 lg:p-8 text-center">
+        <div class="bg-brand-card border border-brand-border rounded-2xl px-3 py-5 lg:px-4 lg:py-6 text-center">
           <div
             class="w-10 h-10 rounded-xl bg-brand-olive/10 flex items-center justify-center text-brand-olive-text mx-auto mb-3"
           >
@@ -85,11 +85,18 @@ const wierszePodsumowania = [
   </div>
 
   <div data-wycena>
+    {/* Sekcja główna kreatora jest wyśrodkowana - to jedyna taka na
+        serwisie i tak ma zostać, bo kreator nie ma drugiej kolumny.
+        Tło jest jednak liczone tak samo jak wszędzie: na szerokim ekranie
+        czysta płaszczyzna z siatką techniczną, na wąskim zdjęcie pod
+        gradientem. Mechanizm: `styles/components/hero.css`. */}
     <section class="relative bg-brand-dark overflow-hidden">
-      <div class="absolute inset-0">
-        <Foto klucz="hero.ogrodzenia" alt="" class="w-full h-full object-cover opacity-15" />
-        <div class="absolute inset-0 bg-gradient-to-b from-brand-dark via-brand-dark/95 to-brand-dark"></div>
+      <div class="absolute inset-0 lg:hidden" aria-hidden="true">
+        <Foto klucz="hero.ogrodzenia" alt="" class="absolute inset-0 h-full w-full object-cover" />
+        <div class="sekcja-hero__maska absolute inset-0"></div>
       </div>
+      <div class="sekcja-hero__siatka absolute inset-0 hidden lg:block" aria-hidden="true"></div>
+      <div class="sekcja-hero__swiatlo absolute inset-0 hidden lg:block" aria-hidden="true"></div>
       <div class="relative max-w-7xl mx-auto px-5 lg:px-10 py-10 lg:py-14 text-center">
         <EtykietaSekcji wariant="ciemne" class="mb-3">Bezpłatna wycena</EtykietaSekcji>
         <h1 class="font-display text-3xl lg:text-[42px] font-bold text-white leading-tight mb-3">
@@ -140,7 +147,7 @@ const wierszePodsumowania = [
     <section class="bg-brand-bg py-10 lg:py-14 scroll-mt-[72px]" data-wycena-formularz>
       <div class="max-w-4xl mx-auto px-5 lg:px-10">
         <form
-          class="bg-brand-card rounded-2xl border border-brand-border/60 shadow-sm shadow-black/[0.04] p-6 lg:p-8"
+          class="bg-brand-card rounded-2xl border border-brand-border/60 shadow-sm shadow-black/[0.04] px-3 py-5 lg:px-4 lg:py-6"
           novalidate
           data-formularz="wycena"
         >
@@ -483,7 +490,7 @@ const wierszePodsumowania = [
           </div>
 
           <p class="mt-6 text-xs text-brand-text-light" data-wycena-rodo hidden>
-            Wysyłając formularz akceptujesz
+            Wysyłając formularz akceptujesz&nbsp;
             <a href="/polityka-prywatnosci/" class="text-brand-olive-text underline hover:text-brand-text">
               Politykę Prywatności
             </a>.

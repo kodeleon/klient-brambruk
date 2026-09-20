@@ -1,0 +1,130 @@
+---
+/**
+ * SEKCJA „DLACZEGO MY - TAK DZIAŁAMY" - jeden układ dla hubów i dla podstron
+ * rodzajów usług. Dwanaście podstron, jeden wzorzec.
+ *
+ * ┌── DLACZEGO NIE DWIE KOLUMNY NA CAŁĄ SEKCJĘ ────────────────────────┐
+ * │ Wcześniej cała treść siedziała w lewej kolumnie o szerokości 7/12,  │
+ * │ a prawa trzymała jedno zdjęcie przyklejone przy przewijaniu. Zdjęcie│
+ * │ kończy się po pierwszym ekranie, więc pod nim zostawał pionowy pas  │
+ * │ pustki na całą wysokość sekcji, a tekst - wciśnięty w 7/12 - łamał  │
+ * │ się co kilka słów.                                                   │
+ * │                                                                      │
+ * │ Teraz dwie kolumny obejmują WYŁĄCZNIE górny blok: tam, gdzie zdjęcie │
+ * │ faktycznie stoi obok tekstu. Wszystko poniżej idzie na pełną         │
+ * │ szerokość, a listy rozbijają się na dwie kolumny - czyli pustka      │
+ * │ znika, bo treść ma czym ją wypełnić.                                 │
+ * └──────────────────────────────────────────────────────────────────────┘
+ *
+ * ┌── KROKI SĄ NUMEROWANE I ŁAMIĄ SIĘ W DÓŁ ───────────────────────────┐
+ * │ Kropka nie niesie kolejności, a przy ośmiu etapach montażu kolejność│
+ * │ JEST treścią. Stąd numery. Kolumny robi `columns-2`, nie siatka:    │
+ * │ siatka układa elementy wierszami (1-2, 3-4), więc czyta się je      │
+ * │ w poprzek. `columns-2` zostawia 1-4 po lewej i 5-8 po prawej.       │
+ * └──────────────────────────────────────────────────────────────────────┘
+ */
+import EtykietaSekcji from '../ui/EtykietaSekcji.astro'
+import Odslon from '../ui/Odslon.astro'
+import Ikona from '../icons/Ikona.astro'
+import Foto from '../media/Foto.astro'
+
+interface Blok {
+  tytul: string
+  tekst: string
+}
+
+interface Props {
+  /** Nagłówek h3 górnego bloku - treść wchodzi gniazdem `gorny`. */
+  tytulGorny: string
+  foto: string
+  fotoAlt: string
+  kroki: { tytul: string; wstep: string; lista: readonly string[] }
+  /** Prace towarzyszące. Nagłówek, dwa-trzy zdania, lista z ptaszkami. */
+  dodatki?: { tytul: string; wstep: string; lista: readonly string[] }
+  /** Akapity pod listami: „Sprzęt, na którym pracujemy" i podobne. */
+  bloki?: readonly Blok[]
+  tlo?: string
+}
+
+const { tytulGorny, foto, fotoAlt, kroki, dodatki, bloki = [], tlo = 'bg-brand-bg' } = Astro.props
+
+const klasaH3 = 'font-display text-lg lg:text-xl font-bold text-brand-text mb-3'
+---
+
+<section class:list={['tlo-siatka py-14 lg:py-20', tlo]}>
+  <div class="max-w-7xl mx-auto px-5 lg:px-10">
+    {/* Etykieta stoi NAD kolumnami i zajmuje pełną szerokość - inaczej
+        zdjęcie po prawej zaczyna się wizualnie wyżej niż nagłówek sekcji
+        i to ono łapie wzrok jako pierwsze. */}
+    <Odslon>
+      <EtykietaSekcji>Dlaczego my</EtykietaSekcji>
+    </Odslon>
+
+    <div class="mt-2 grid grid-cols-1 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] gap-8 lg:gap-14 items-start">
+      <Odslon wariant="left">
+        <div>
+          <h2 class="font-display text-2xl lg:text-4xl font-bold text-brand-text mb-6">Tak działamy</h2>
+          <h3 class={klasaH3}>{tytulGorny}</h3>
+          <div class="text-brand-text-light leading-relaxed">
+            <slot name="gorny" />
+          </div>
+        </div>
+      </Odslon>
+
+      <Odslon wariant="right">
+        <Foto klucz={foto} alt={fotoAlt} class="w-full h-[240px] lg:h-[340px] object-cover rounded-2xl" />
+      </Odslon>
+    </div>
+
+    <div class="mt-10 lg:mt-14 space-y-10">
+      <Odslon wariant="up">
+        <div>
+          <h3 class={klasaH3}>{kroki.tytul}</h3>
+          <p class="text-brand-text-light leading-relaxed mb-5">{kroki.wstep}</p>
+          <ol class="sm:columns-2 sm:gap-x-12">
+            {
+              kroki.lista.map((krok, i) => (
+                <li class="mb-3 flex gap-3 break-inside-avoid text-brand-text-light leading-relaxed">
+                  <span class="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-brand-olive/15 font-display text-[11px] font-bold text-brand-olive-text tabular-nums">
+                    {i + 1}
+                  </span>
+                  <span>{krok}</span>
+                </li>
+              ))
+            }
+          </ol>
+        </div>
+      </Odslon>
+
+      {
+        dodatki && (
+          <Odslon wariant="up">
+            <div>
+              <h3 class={klasaH3}>{dodatki.tytul}</h3>
+              <p class="text-brand-text-light leading-relaxed mb-5">{dodatki.wstep}</p>
+              <ul class="grid grid-cols-1 sm:grid-cols-2 gap-x-12 gap-y-3">
+                {dodatki.lista.map((pozycja) => (
+                  <li class="flex gap-2.5 text-brand-text-light leading-relaxed">
+                    <Ikona nazwa="check" rozmiar={17} class="mt-1 shrink-0 text-brand-olive-text" />
+                    <span>{pozycja}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </Odslon>
+        )
+      }
+
+      {
+        bloki.map((blok) => (
+          <Odslon wariant="up">
+            <div>
+              <h3 class={klasaH3}>{blok.tytul}</h3>
+              <p class="text-brand-text-light leading-relaxed">{blok.tekst}</p>
+            </div>
+          </Odslon>
+        ))
+      }
+    </div>
+  </div>
+</section>

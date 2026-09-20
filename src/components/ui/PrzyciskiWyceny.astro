@@ -1,0 +1,52 @@
+---
+/**
+ * PARA PRZYCISKÓW „wycena + coś obok" - jedna para na cały serwis.
+ *
+ * Pierwszy przycisk jest zawsze ten sam: bezpłatna wycena. Drugi zmienia
+ * cel i napis zależnie od tego, gdzie para stoi - w sekcji „Jak działamy"
+ * prowadzi do cennika, w samej sekcji cennika do listy usług, bo odsyłanie
+ * do cennika ze środka cennika jest bez sensu.
+ *
+ * ┌── DLACZEGO PROPY, A NIE DRUGI KOMPONENT ────────────────────────────┐
+ * │ Para w cenniku różni się od pary na stronie głównej dwiema rzeczami:│
+ * │ tłem (ciemne zamiast jasnego) i celem drugiego przycisku. Dwa       │
+ * │ prawie identyczne komponenty różniące się szczegółem to antywzorzec │
+ * │ #9 z README - sygnał niedomkniętego systemu wizualnego, nie powód   │
+ * │ do drugiego pliku. Propy: `ciemne` i `drugi`.                       │
+ * └──────────────────────────────────────────────────────────────────────┘
+ *
+ * `ciemne` działa tak samo jak w `LinkSekcji`: na jasnym tle drugi przycisk
+ * jest obrysem (`outline`), na `brand-dark` wariantem dla ciemnego tła
+ * (`secondary`) - obrys w kolorze tekstu zlewałby się z tłem.
+ *
+ * Para stoi w dwóch miejscach siatki zależnie od szerokości ekranu.
+ * Widocznością i wyśrodkowaniem steruje `Przenoszony` po stronie sekcji;
+ * ten komponent nie wie nic o układzie.
+ */
+import Przycisk from "./Przycisk.astro";
+import type { NazwaIkony } from "../icons/ikony";
+
+interface Props {
+  /** `true` na tle `brand-dark`. */
+  ciemne?: boolean;
+  /** Drugi przycisk pary. Domyślnie odsyła do cennika. */
+  drugi?: { href: string; ikona: NazwaIkony; etykieta: string };
+}
+
+const {
+  ciemne = false,
+  drugi = { href: "/uslugi/", ikona: "banknote", etykieta: "Sprawdź cennik" },
+} = Astro.props;
+---
+
+<div class="flex flex-wrap gap-3">
+  <Przycisk href="/wycena/" rozmiar="md" ikona="receipt-text"
+    >Bezpłatna wycena</Przycisk
+  >
+  <Przycisk
+    href={drugi.href}
+    wariant={ciemne ? "secondary" : "outline"}
+    rozmiar="md"
+    ikona={drugi.ikona}>{drugi.etykieta}</Przycisk
+  >
+</div>

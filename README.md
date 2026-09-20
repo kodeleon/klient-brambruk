@@ -17,17 +17,18 @@ pliku, nie Twój - zgłoś to zamiast wymyślać własną konwencję.
 3. [Stack i dlaczego taki](#stack-i-dlaczego-taki)
 4. [Gdzie ląduje jaki plik](#gdzie-ląduje-jaki-plik)
 5. [Kiedy coś jest komponentem, a kiedy zostaje w podstronie](#kiedy-coś-jest-komponentem-a-kiedy-zostaje-w-podstronie)
-6. [Od zatwierdzonego projektu do pierwszej podstrony](#od-zatwierdzonego-projektu-do-pierwszej-podstrony)
-7. [Dane powtarzalne](#dane-powtarzalne)
-8. [Jak dodać podstronę](#jak-dodać-podstronę)
-9. [SEO: gdzie i co się stanie, jeśli zapomnisz](#seo-gdzie-i-co-się-stanie-jeśli-zapomnisz)
-10. [Zdjęcia](#zdjęcia)
-11. [Moduły](#moduły)
-12. [Sekrety i zmienne środowiskowe](#sekrety-i-zmienne-środowiskowe)
-13. [Migracja istniejącego projektu React](#migracja-istniejącego-projektu-react) - audyt przedmigracyjny i dopiero potem migracja
-14. [Co jest obowiązkowe, a czego wolno nie użyć](#co-jest-obowiązkowe-a-czego-wolno-nie-użyć)
-15. [Antywzorce](#antywzorce)
-16. [Wdrożenie](#wdrożenie)
+6. [Przenoszenie treści przy zejściu do jednej kolumny](#przenoszenie-treści-przy-zejściu-do-jednej-kolumny)
+7. [Od zatwierdzonego projektu do pierwszej podstrony](#od-zatwierdzonego-projektu-do-pierwszej-podstrony)
+8. [Dane powtarzalne](#dane-powtarzalne)
+9. [Jak dodać podstronę](#jak-dodać-podstronę)
+10. [SEO: gdzie i co się stanie, jeśli zapomnisz](#seo-gdzie-i-co-się-stanie-jeśli-zapomnisz)
+11. [Zdjęcia](#zdjęcia)
+12. [Moduły](#moduły)
+13. [Sekrety i zmienne środowiskowe](#sekrety-i-zmienne-środowiskowe)
+14. [Migracja istniejącego projektu React](#migracja-istniejącego-projektu-react) - audyt przedmigracyjny i dopiero potem migracja
+15. [Co jest obowiązkowe, a czego wolno nie użyć](#co-jest-obowiązkowe-a-czego-wolno-nie-użyć)
+16. [Antywzorce](#antywzorce)
+17. [Wdrożenie](#wdrożenie)
 
 ---
 
@@ -466,6 +467,80 @@ Trzy konsekwencje, których nie wolno mylić:
 Test na pograniczu: napisz, jakie parametry weźmie ten komponent. Jeśli lista
 ma więcej niż cztery pozycje albo któraś to „czy to jest wariant X", blok
 jeszcze nie dojrzał do wyniesienia.
+
+---
+
+## Przenoszenie treści przy zejściu do jednej kolumny
+
+Sekcja dwukolumnowa trzyma po lewej to, co mówi, po prawej treść właściwą.
+Po zejściu do jednej kolumny część bloków z lewej musi wylądować na KOŃCU
+sekcji - inaczej stoją przed treścią, która dopiero nadaje im sens.
+
+### Kiedy blok się przenosi
+
+Oba warunki muszą być spełnione naraz:
+
+1. **Zdanie bezpośrednio nad blokiem nie wskazuje na niego.** „Skontaktuj się
+   z nami, żeby sprawdzić…" wskazuje - taki blok jest częścią swojego zdania
+   i zostaje przy nim.
+2. **Treść prawej kolumny jest warunkiem sensowności bloku.** „Masz więcej
+   pytań?" zakłada, że lista pytań została przeczytana. Przycisk „Bezpłatna
+   wycena" w cenniku zakłada, że widziało się widełki.
+
+Nigdy nie wędruje: etykieta sekcji, nagłówek `<h2>`, tekst wprowadzający,
+zdjęcie ani ilustracja. Nagłówek przed treścią to nie jest to samo co wezwanie
+do działania przed treścią.
+
+### Trzy mechanizmy, które w kodzie wyglądają podobnie
+
+| Co chcesz zrobić | Czym | Jak to wygląda |
+|---|---|---|
+| Blok jedzie na koniec sekcji przy jednej kolumnie | `<Przenoszony>` | dwa wystąpienia, `miejsce="kolumna"` i `miejsce="pod"` |
+| Przycisk „zobacz wszystko" z wiersza nagłówka | `<LinkSekcji>` | dwa wystąpienia, `miejsce="naglowek"` i `miejsce="pod"` |
+| Treści po prostu nie ma na wąskim ekranie | `hidden lg:block` wprost w znaczniku | jedno wystąpienie |
+
+Przeniesienie i zaniknięcie dają w kodzie te same klasy. **Rozróżnia je
+wyłącznie nazwa komponentu** - i dlatego zaniknięcia nie wolno opakowywać
+w `Przenoszony`, nawet gdy „działa tak samo". Rok później ktoś zmieni próg
+w `Przenoszony` i zabierze ze sobą decyzję, której ten komponent nie dotyczy.
+
+`LinkSekcji` ma własny prop `miejsce` i celowo nie przechodzi na `Przenoszony`:
+to przycisk w wierszu nagłówka, nie dowolna treść w kolumnie. Jego kilkanaście
+wystąpień i tak mają sterowanie zamknięte w jednym pliku - czyli dokładnie to,
+co `Przenoszony` daje reszcie.
+
+### Progi - wzorcem jest strona główna
+
+| Intencja | Próg | Gdzie |
+|---|---|---|
+| Przeniesienie bloku przy zejściu do jednej kolumny | `lg` (1024) | FAQ, „Jak działamy", cennik, `LinkSekcji`, hero |
+| Podmiana galerii siatka ↔ karuzela | `md` (768) | strona główna, `SzablonUslugi`, `SzablonHubu` |
+
+Dwa progi w jednym serwisie to nie niekonsekwencja: przenoszony blok potrzebuje
+pełnej szerokości kolumny, a galeria zmienia się wtedy, gdy siatka przestaje
+mieścić dwie kolumny kafelków. Ale **jeden próg na intencję** - trzeci wariant
+znaczy, że ktoś rozwiązywał lokalny problem lokalną klasą.
+
+### Wyśrodkowanie należy do opakowania
+
+Kopia dolna jest wyśrodkowana, kopia w kolumnie wyrównana do lewej - i decyduje
+o tym `Przenoszony`, nie przenoszony blok. Blok nie ma wiedzieć, że jest
+przenoszony; gdyby wiedział, ta sama informacja siedziałaby w dwóch miejscach.
+
+Wyśrodkowanie kopii dolnej to trzy klasy, nie jedna: `text-center` na tekst,
+`items-center` na blok, który sam jest kontenerem układu (pasek przycisków we
+własnym `flex`), oraz `[&>*]:justify-center` na ten sam pasek, **gdy się
+zawija**. Zawinięty kontener `flex` nie ścieśnia się do treści, tylko wypełnia
+szerokość - i wtedy każdy jego wiersz startuje od lewej mimo `items-center`
+na rodzicu. To jest dokładnie ten przypadek, który widać na telefonie i nie
+widać na komputerze.
+
+### Czego pilnować przy dwóch kopiach w DOM
+
+Przenoszony blok nie może nieść `id` ani `aria-controls` - dwie kopie w DOM
+to duplikat identyfikatora, nawet gdy jedna jest ukryta. Kopia ukryta przez
+`display: none` nie istnieje dla czytników ekranu ani dla kolejności fokusu,
+więc treść jest ogłaszana raz - ale `id` żyje w dokumencie niezależnie od tego.
 
 ---
 
@@ -986,9 +1061,22 @@ Stan domyślny elementu jest WIDOCZNY. Skrypt dopiero go chowa i odsłania.
 Odwrotna kolejność zostawia treść niewidoczną na zawsze, gdy skrypt nie
 wystartuje - a to jest bloker, nie drobiazg.
 
-**3. `opacity: 0` albo `pointer-events: none` jako sposób ukrywania.**
-Element niewidoczny, a łapiący fokus, to pułapka dla klawiatury. Używaj
-`[hidden]`, `.poza-ekranem` albo `inert` - i niczego innego.
+**3. `opacity: 0`, `pointer-events: none` albo samo `max-height: 0` jako
+sposób ukrywania.** Element niewidoczny, a łapiący fokus, to pułapka dla
+klawiatury. Dopuszczalne formy są cztery: `[hidden]`, `.poza-ekranem`, `inert`
+i `visibility: hidden`.
+
+Czwarta jest tam, gdzie trzy pierwsze nie wchodzą: przy panelu zwijanym
+`max-height` z przejściem. `inert` wymaga JavaScriptu, a `[hidden]` się nie
+animuje - zostaje `visibility`, bo jako jedyna wyjmuje treść z fokusu I daje
+się przełączyć przejściem. Warunek: `visibility` musi być objęta `transition`
+na tym samym elemencie (`transition-all` ją obejmuje). Bez tego odnośniki
+znikają, zanim panel zdąży się zwinąć. Wzór: `.naglowek__panel`
+w `src/styles/components/naglowek.css`.
+
+Samo `max-height: 0` plus `overflow-hidden` **nie** wyjmuje odnośników
+z kolejności fokusu - zwinięte menu łapie wtedy Tab i nie widać tego
+na żadnym zrzucie.
 
 **4. `outline: 0` bez zamiennika.**
 Jeśli zdejmujesz obrys fokusu, musisz w tej samej regule dać coś równie

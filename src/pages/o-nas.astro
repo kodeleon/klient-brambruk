@@ -34,6 +34,7 @@ import MapaKontakt from "../components/ui/MapaKontakt.astro";
 import Ikona from "../components/icons/Ikona.astro";
 import Foto from "../components/media/Foto.astro";
 import Logo from "../components/media/Logo.astro";
+import SekcjaHero from "../components/ui/SekcjaHero.astro";
 import type { NazwaIkony } from "../components/icons/ikony";
 
 /** Liczby obok opisu firmy. Wartości z `dane.ts`, ikony z `ikony.ts`. */
@@ -45,12 +46,12 @@ const kluczoweWartosci: {
   {
     ikona: "calendar-clock",
     wartosc: `${statystyki.lata} lat`,
-    etykieta: "na rynku, nieprzerwanie od 2021 roku",
+    etykieta: "nieprzerwanie na rynku",
   },
   {
     ikona: "map-pin",
     wartosc: statystyki.zasieg,
-    etykieta: "promień, w jakim dojeżdżamy do zleceń",
+    etykieta: "zasięgu działania",
   },
   {
     ikona: "images",
@@ -60,7 +61,7 @@ const kluczoweWartosci: {
   {
     ikona: "star",
     wartosc: fixly.ocena,
-    etykieta: `ocena na Fixly z ${fixly.opinie} opinii`,
+    etykieta: `gwiazdek na Fixly`,
   },
 ];
 
@@ -124,7 +125,7 @@ const miejscowosci = [
 
 <Podstrona
   tytul="O nas - BramBruk | Ogrodzenia, brukarstwo i budownictwo"
-  opis="BramBruk - lokalna firma z Białej Podlaskiej, na rynku od 2021 roku. Obsługujemy województwo lubelskie, podlaskie i mazowieckie. Dane rejestrowe i obszar działania."
+  opis="BramBruk - lokalna firma z Białej Podlaskiej, na rynku od 2020 roku. Obsługujemy województwo lubelskie, podlaskie i mazowieckie. Dane rejestrowe i obszar działania."
 >
   <Okruszki
     pozycje={[
@@ -133,73 +134,67 @@ const miejscowosci = [
     ]}
   />
 
-  {/* ═══ SEKCJA GŁÓWNA ═══════════════════════════════════ */}
-  <section class="relative bg-brand-dark overflow-hidden">
-    <div class="relative max-w-7xl mx-auto px-5 lg:px-10 py-14 lg:py-20">
-      <div
-        class="grid grid-cols-1 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] gap-10 lg:gap-16 items-center"
+  <SekcjaHero
+    etykieta="O nas"
+    tytul="Poznaj firmę BramBruk"
+    podtytul="Lokalnie od 2020 roku"
+    opis="Firma budowlana z Bohukał pod Białą Podlaską. Stawiamy ogrodzenia, układamy kostkę brukową i budujemy altany, garaże oraz domki narzędziowe - dla klientów indywidualnych i firm w województwie lubelskim, podlaskim i mazowieckim."
+  >
+    <Fragment slot="akcje">
+      <Przycisk href="/kontakt/" rozmiar="lg" ikona="mail"
+        >Napisz do nas</Przycisk
       >
-        <div>
-          <EtykietaSekcji wariant="ciemne" class="mb-3">O nas</EtykietaSekcji>
-          <h1
-            class="font-display text-3xl lg:text-[42px] font-bold text-white leading-tight mb-3"
-          >
-            Poznaj firmę BramBruk
-          </h1>
-          <p
-            class="border-l-2 border-brand-olive pl-4 font-display text-xl lg:text-2xl font-semibold text-brand-olive mb-6"
-          >
-            Lokalnie od 2021 roku
-          </p>
-          <p class="text-neutral-400 leading-relaxed max-w-xl mb-8">
-            Firma budowlana z Bohukał pod Białą Podlaską. Stawiamy ogrodzenia,
-            układamy kostkę brukową i budujemy altany, garaże oraz domki
-            narzędziowe - dla klientów indywidualnych i firm w województwie
-            lubelskim, podlaskim i mazowieckim.
-          </p>
-          <div class="flex flex-wrap gap-3">
-            <Przycisk href="/kontakt/" rozmiar="lg" ikona="mail"
-              >Napisz do nas</Przycisk
-            >
-            <Przycisk
-              href={`tel:${dane.telefonHref}`}
-              wariant="secondary"
-              rozmiar="lg"
-              ikona="phone">Zadzwoń</Przycisk
-            >
-          </div>
-        </div>
+      <Przycisk
+        href={`tel:${dane.telefonHref}`}
+        wariant="secondary"
+        rozmiar="lg"
+        ikona="phone">Zadzwoń</Przycisk
+      >
+    </Fragment>
 
-        <div class="hidden lg:flex justify-center">
-          <Logo
-            nazwa="pelne-jasne"
-            alt=""
-            priorytet
-            sizes="(max-width:1024px) 60vw, 400px"
-            class="w-full max-w-[400px] h-auto"
-          />
-        </div>
-      </div>
+    <div slot="obok" class="flex justify-center">
+      <Logo
+        nazwa="pelne-jasne"
+        alt=""
+        priorytet
+        sizes="(max-width:1024px) 60vw, 420px"
+        class="w-full max-w-[420px] h-auto"
+      />
     </div>
-  </section>
+  </SekcjaHero>
 
-  {/* ═══ O NAS ═══════════════════════════════════════════ */}
-  <section class="bg-brand-section py-12 lg:py-20">
+  {
+    /* ═══ KIM JESTEŚMY ═══════════════════════════════════
+      Etykieta nad kolumnami, H2 pierwszy w lewej kolumnie - zasada
+      obowiązująca w całym serwisie.
+
+      KAFELKI LICZB: ikona stoi w prawym górnym rogu i jest bez tła.
+      Wcześniej siedziała nad wartością, w kwadraciku z wypełnieniem,
+      przez co prawa górna ćwiartka każdego kafelka świeciła pustką -
+      najbardziej na telefonie, gdzie kafelki są szerokie. Teraz ikona
+      zajmuje dokładnie to miejsce, tekst ma pełną szerokość, a róg
+      dostaje delikatną poświatę zamiast prostokąta.
+  */
+  }
+  <section class="tlo-siatka bg-brand-section py-12 lg:py-20">
     <div class="max-w-7xl mx-auto px-5 lg:px-10">
+      <Odslon>
+        <EtykietaSekcji>Kim jesteśmy</EtykietaSekcji>
+      </Odslon>
+
       <div
-        class="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center"
+        class="mt-2 grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-start"
       >
         <Odslon wariant="left">
           <div>
-            <EtykietaSekcji>Kim jesteśmy</EtykietaSekcji>
             <h2
-              class="font-display text-2xl lg:text-4xl font-bold text-brand-text mt-2 mb-6"
+              class="font-display text-2xl lg:text-4xl font-bold text-brand-text mb-6"
             >
               Jedna ekipa, pełen zakres prac
             </h2>
             <p class="text-brand-text-light leading-relaxed mb-4">
               BramBruk to lokalna firma budowlana z okolic Białej Podlaskiej,
-              działająca od 2021 roku. Specjalizujemy się w montażu ogrodzeń,
+              działająca od 2020 roku. Specjalizujemy się w montażu ogrodzeń,
               brukarstwie i budownictwie lekkim - obsługujemy klientów
               indywidualnych i firmy w promieniu {statystyki.zasieg} od Białej Podlaskiej.
             </p>
@@ -227,14 +222,14 @@ const miejscowosci = [
           <dl class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {
               kluczoweWartosci.map((pozycja) => (
-                <div class="rounded-2xl border border-brand-border bg-brand-card p-6">
-                  <dd class="font-display text-3xl font-bold text-brand-text leading-none">
-                    <span class="mb-4 flex h-11 w-11 items-center justify-center rounded-xl bg-brand-olive/15 text-brand-olive-text">
-                      <Ikona nazwa={pozycja.ikona} rozmiar={20} />
+                <div class="kafelek-poswiata relative overflow-hidden rounded-2xl border border-brand-border bg-brand-card px-3 py-5 lg:px-4 lg:py-6">
+                  <dd class="font-display text-3xl font-bold text-brand-sage-jasny leading-none">
+                    <span class="absolute right-0 top-0 text-brand-olive/85">
+                      <Ikona nazwa={pozycja.ikona} rozmiar={34} />
                     </span>
                     {pozycja.wartosc}
                   </dd>
-                  <dt class="mt-2 text-sm text-brand-text-light leading-snug">
+                  <dt class="mt-3 text-sm text-brand-text-light leading-snug">
                     {pozycja.etykieta}
                   </dt>
                 </div>
@@ -253,7 +248,7 @@ const miejscowosci = [
       Kolory tekstu z kolumny „ciemne tło" w tokens.css.
   */
   }
-  <section class="bg-brand-dark py-12 lg:py-20">
+  <section class="tlo-ciemne bg-brand-dark py-12 lg:py-20">
     <div class="max-w-7xl mx-auto px-5 lg:px-10">
       <Odslon>
         <div class="max-w-2xl mb-8 lg:mb-12">
@@ -275,7 +270,7 @@ const miejscowosci = [
         {
           wartosci.map((wartosc, i) => (
             <Odslon wariant="up" zwloka={i * 80}>
-              <div class="h-full rounded-2xl border border-white/10 bg-white/[0.04] p-7 transition-colors duration-300 hover:border-brand-olive/40">
+              <div class="h-full rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-6 lg:px-5 lg:py-7 transition-colors duration-300 hover:border-brand-olive/40">
                 <span class="mb-5 flex h-12 w-12 items-center justify-center rounded-xl bg-brand-olive/15 text-brand-olive">
                   <Ikona nazwa={wartosc.ikona} rozmiar={22} />
                 </span>
@@ -294,7 +289,7 @@ const miejscowosci = [
   </section>
 
   {/* ═══ DANE FIRMY ══════════════════════════════════════ */}
-  <section class="bg-brand-bg py-12 lg:py-20">
+  <section class="tlo-siatka tlo-siatka--lewo bg-brand-bg py-12 lg:py-20">
     <div class="max-w-7xl mx-auto px-5 lg:px-10">
       <Odslon>
         <div class="mb-8">
@@ -309,7 +304,7 @@ const miejscowosci = [
 
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div
-          class="bg-brand-card rounded-2xl border border-brand-border p-7 lg:p-8"
+          class="bg-brand-card rounded-2xl border border-brand-border px-3.5 py-6 lg:px-4 lg:py-7"
         >
           <h3 class="font-display text-lg font-bold text-brand-text mb-5">
             Dane rejestrowe
@@ -341,7 +336,7 @@ const miejscowosci = [
         </div>
 
         <div
-          class="bg-brand-card rounded-2xl border border-brand-border p-7 lg:p-8 flex flex-col"
+          class="bg-brand-card rounded-2xl border border-brand-border px-3.5 py-6 lg:px-4 lg:py-7 flex flex-col"
         >
           <h3 class="font-display text-lg font-bold text-brand-text mb-5">
             Gdzie nas znaleźć
@@ -355,16 +350,18 @@ const miejscowosci = [
   </section>
 
   {/* ═══ OBSZAR DZIAŁANIA ════════════════════════════════ */}
-  <section class="bg-brand-section py-12 lg:py-20">
+  <section class="tlo-siatka bg-brand-section py-12 lg:py-20">
     <div class="max-w-7xl mx-auto px-5 lg:px-10">
+      <Odslon>
+        <EtykietaSekcji>Obszar działania</EtykietaSekcji>
+      </Odslon>
       <div
-        class="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center"
+        class="mt-2 grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-start"
       >
         <Odslon wariant="left">
           <div>
-            <EtykietaSekcji>Obszar działania</EtykietaSekcji>
             <h2
-              class="font-display text-2xl lg:text-4xl font-bold text-brand-text mt-2 mb-5"
+              class="font-display text-2xl lg:text-4xl font-bold text-brand-text mb-5"
             >
               Obsługujemy 3 województwa
             </h2>
@@ -396,7 +393,7 @@ const miejscowosci = [
             <Foto
               klucz="mapa.region"
               alt="Mapa obszaru działania BramBruk: województwo lubelskie, podlaskie i mazowieckie"
-              class="w-full h-[320px] lg:h-[380px] object-cover"
+              class="w-full h-[320px] lg:h-[380px] object-cover rounded-2xl"
             />
           </div>
         </Odslon>

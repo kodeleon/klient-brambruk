@@ -4,11 +4,17 @@
  *
  *   npm run zachowania
  *
- * Stary projekt trzymał w Reakcie osiem rzeczy: zakładki cennika, filtr
- * i szukajkę realizacji, akordeon FAQ, powiększanie zdjęć, karuzelę, menu
- * mobilne, kreator wyceny i walidację formularza. Po migracji robi to CSS
+ * Stary projekt trzymał w Reakcie filtr i szukajkę realizacji, akordeon FAQ,
+ * powiększanie zdjęć, karuzelę, menu mobilne, kreator wyceny i walidację
+ * formularza (zakładki cennika odpadły razem z przebudową `/uslugi/`, więc
+ * odpadł też ich test). Po migracji robi to CSS
  * plus moduły w `src/scripts/` - a to znaczy, że każdą z tych rzeczy da się
  * zepsuć jedną literówką i nikt tego nie zobaczy przy przeglądaniu kodu.
+ *
+ * Od menu mobilnego doszła tu jeszcze jedna rzecz, której nie widać nawet
+ * na zrzucie: KOLEJNOŚĆ FOKUSU. Zamknięte menu wygląda tak samo wtedy, gdy
+ * działa, i wtedy, gdy jego odnośniki nadal łapią Tab albo wypadają z fokusu
+ * przed zwinięciem panelu. Różnicę widać wyłącznie klikając - czyli tutaj.
  *
  * Ten skrypt klika po nich w prawdziwej przeglądarce, na wyniku builda,
  * przez ten sam serwer podglądu, co audyt. Uruchamiaj po każdej zmianie
@@ -57,19 +63,9 @@ const ok = (nazwa, wynik) => {
   console.log(wynik === true ? '✓' : '✗ BŁĄD', nazwa, wynik === true ? '' : JSON.stringify(wynik))
 }
 
-// --- 1. Zakładki na /uslugi/ ---
-await p.goto(adres + '/uslugi/', { waitUntil: 'networkidle0' })
-let stan = await p.evaluate(() => {
-  const widoczne = () => [...document.querySelectorAll('[data-grupa]')].filter((g) => g.offsetParent !== null).map((g) => g.dataset.grupa)
-  const przed = widoczne()
-  document.querySelector('label[for="zakladka-brukarstwo"]').click()
-  return { przed, po: widoczne() }
-})
-ok('zakładki /uslugi (ogrodzenia → brukarstwo)', JSON.stringify(stan) === JSON.stringify({ przed: ['ogrodzenia'], po: ['brukarstwo'] }) || stan)
-
-// --- 2. Filtr + szukajka na /realizacje/ ---
+// --- 1. Filtr + szukajka na /realizacje/ ---
 await p.goto(adres + '/realizacje/', { waitUntil: 'networkidle0' })
-stan = await p.evaluate(() => {
+let stan = await p.evaluate(() => {
   const ile = () => [...document.querySelectorAll('[data-kategoria]')].filter((k) => k.offsetParent !== null).length
   const wszystkie = ile()
   document.querySelector('label[for="kategoria-brukarstwo"]').click()
@@ -77,7 +73,10 @@ stan = await p.evaluate(() => {
   document.querySelector('label[for="kategoria-all"]').click()
   return { wszystkie, poFiltrze, licznik: document.querySelector('[data-filtr-widoczne]')?.textContent }
 })
-ok('filtr kategorii /realizacje', stan.wszystkie === 9 && stan.poFiltrze === 3 ? true : stan)
+ok(
+  'filtr kategorii /realizacje',
+  stan.wszystkie === 10 && stan.poFiltrze === 3 ? true : stan
+)
 
 stan = await p.evaluate(async () => {
   const pole = document.querySelector('[data-filtr-szukaj]')
@@ -92,7 +91,7 @@ stan = await p.evaluate(async () => {
 })
 ok('szukajka /realizacje (terespol)', stan.widoczne === 1 && stan.licznik === '1' ? true : stan)
 
-// --- 3. FAQ ---
+// --- 2. FAQ ---
 await p.goto(adres + '/', { waitUntil: 'networkidle0' })
 stan = await p.evaluate(async () => {
   const pierwszy = document.querySelector('.faq-pozycja')
@@ -106,7 +105,7 @@ stan = await p.evaluate(async () => {
 })
 ok('FAQ: otwiera i zamyka poprzednie', stan.otwarty && !stan.pierwszyPoDrugim && stan.drugiOtwarty ? true : stan)
 
-// --- 4. Lightbox ---
+// --- 3. Lightbox ---
 stan = await p.evaluate(async () => {
   const kafelek = document.querySelector('[data-galeria-kafelek]')
   kafelek.click()
@@ -124,7 +123,7 @@ stan = await p.evaluate(async () => {
 })
 ok('galeria: otwarcie, następne, zamknięcie', stan.otwarte && stan.maObraz && stan.licznik === '1 / 6' && stan.licznik2 === '2 / 6' && stan.zamkniete ? true : stan)
 
-// --- 5. Menu mobilne ---
+// --- 4. Menu mobilne ---
 await p.setViewport({ width: 390, height: 844 })
 await p.goto(adres + '/', { waitUntil: 'networkidle0' })
 stan = await p.evaluate(async () => {
@@ -135,6 +134,67 @@ stan = await p.evaluate(async () => {
   return { przed, po: panel.getBoundingClientRect().height }
 })
 ok('menu mobilne rozwija się', stan.przed === 0 && stan.po > 100 ? true : stan)
+
+// --- 5. Nagłówek: kolejność fokusu i zwinięte menu ---
+// `max-height: 0` plus `overflow-hidden` ukrywa panel dla oka, ale zostawia
+// jego odnośniki w kolejności fokusu - zwinięte menu łapie wtedy Tab i nie
+// widać tego na żadnym zrzucie. Stąd ten test.
+const kolejnoscFokusu = async (ile = 25) => {
+  await p.evaluate(() => {
+    window.scrollTo(0, 0)
+    document.activeElement?.blur()
+  })
+  const trafione = []
+  for (let i = 0; i < ile; i += 1) {
+    await p.keyboard.press('Tab')
+    const opis = await p.evaluate(() => {
+      const el = document.activeElement
+      if (!el || el === document.body) return null
+      return {
+        id: el.id || null,
+        wPanelu: Boolean(el.closest('.naglowek__panel')),
+        tekst: (el.textContent || '').trim().replace(/\s+/g, ' ').slice(0, 24),
+      }
+    })
+    if (!opis) break
+    trafione.push(opis)
+  }
+  return trafione
+}
+
+for (const szerokosc of [390, 767]) {
+  await p.setViewport({ width: szerokosc, height: 844 })
+  await p.goto(adres + '/', { waitUntil: 'networkidle0' })
+
+  const zamkniete = await kolejnoscFokusu()
+  ok(
+    `nagłówek ${szerokosc}px: zwinięte menu nie łapie Tab`,
+    zamkniete.length && !zamkniete.some((w) => w.wPanelu)
+      ? true
+      : zamkniete.map((w) => w.tekst || w.id)
+  )
+  ok(
+    `nagłówek ${szerokosc}px: hamburger osiągalny Tabem`,
+    zamkniete.some((w) => w.id === 'menu-mobilne') ? true : zamkniete.map((w) => w.tekst || w.id)
+  )
+  // Hamburger po wycenie, nie przed logo: sprawdzamy, że coś go poprzedza.
+  const pozycjaHamburgera = zamkniete.findIndex((w) => w.id === 'menu-mobilne')
+  ok(
+    `nagłówek ${szerokosc}px: hamburger nie jest pierwszy w kolejności`,
+    pozycjaHamburgera > 0 ? true : zamkniete.map((w) => w.tekst || w.id)
+  )
+
+  // Druga połowa tej samej reguły: po otwarciu panel MUSI wracać do fokusu.
+  await p.evaluate(() => document.querySelector('label[for="menu-mobilne"]').click())
+  await new Promise((r) => setTimeout(r, 400))
+  await p.focus('#menu-mobilne')
+  await p.keyboard.press('Tab')
+  const poOtwarciu = await p.evaluate(() => {
+    const el = document.activeElement
+    return { wPanelu: Boolean(el?.closest('.naglowek__panel')), tekst: (el?.textContent || '').trim().slice(0, 24) }
+  })
+  ok(`nagłówek ${szerokosc}px: otwarty panel wraca do kolejności fokusu`, poOtwarciu.wPanelu ? true : poOtwarciu)
+}
 
 // --- 6. Kreator wyceny ---
 await p.setViewport({ width: 1280, height: 900 })

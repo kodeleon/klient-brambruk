@@ -112,6 +112,14 @@ export function renderUse(useKey, { config, manifest, strict = true }, overrides
   const fallback = jpeg.find((v) => v.w >= 800) ?? jpeg[jpeg.length - 1]
   const largest = jpeg[jpeg.length - 1] ?? Object.values(entry.formats).find((l) => l?.length)?.slice(-1)[0]
 
+  /* Klasy z miejsca użycia jadą na <img>, nie na opakowanie: `<picture>`
+     ma `display: contents` (base.css), więc to OBRAZ jest elementem układu.
+     Bez tego `w-full h-full object-cover` i `rounded-2xl` podane przy
+     `<Foto>` ginęły po cichu - stąd tła sekcji głównych, które nie
+     wypełniały sekcji, jasne pasy w kafelkach galerii i zdjęcia bez
+     zaokrąglonych rogów. */
+  const klasy = use.as === 'figure' ? null : [use.class, overrides.class].filter(Boolean).join(' ')
+
   const imgAttrs = [
     `src="${fallback?.url ?? largest.url}"`,
     jpeg.length > 1 ? `srcset="${srcset(jpeg)}"` : null,
@@ -120,6 +128,7 @@ export function renderUse(useKey, { config, manifest, strict = true }, overrides
     `height="${largest.h}"`,
     use.priority ? 'fetchpriority="high"' : 'loading="lazy"',
     'decoding="async"',
+    klasy ? `class="${esc(klasy)}"` : null,
     `alt="${esc(alt)}"`
   ].filter(Boolean)
 

@@ -20,6 +20,7 @@
  */
 
 import { ruch } from './ruch'
+import { tlo } from './tlo'
 import { naglowek } from './naglowek'
 import { faq } from './faq'
 import { galeria } from './galeria'
@@ -33,6 +34,7 @@ type Modul = { nazwa: string; start: () => void | Promise<void> }
 
 const moduly: Modul[] = [
   { nazwa: 'ruch', start: ruch },
+  { nazwa: 'tlo', start: tlo },
   { nazwa: 'naglowek', start: naglowek },
   { nazwa: 'faq', start: faq },
   { nazwa: 'galeria', start: galeria },

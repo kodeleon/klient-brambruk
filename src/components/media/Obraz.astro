@@ -24,7 +24,7 @@ import { renderUse } from '../../../tools/media/markup.mjs'
 interface Props {
   /** Klucz z `uses` w media/images.config.mjs. */
   use: string
-  /** Dodatkowe klasy elementu opakowującego (tylko przy `as: 'figure'`). */
+  /** Klasy elementu obrazu. Przy `as: 'figure'` jadą na `<figure>`, inaczej na `<img>`. */
   class?: string
   /** Nadpisuje `alt` z konfiguracji dla tego jednego miejsca. */
   alt?: string

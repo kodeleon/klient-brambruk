@@ -1,0 +1,94 @@
+---
+/**
+ * BLOK PRZENOSZONY PRZY ZEJŚCIU DO JEDNEJ KOLUMNY.
+ *
+ * Sekcja dwukolumnowa trzyma po lewej to, co mówi, po prawej treść właściwą.
+ * Po zejściu do jednej kolumny część bloków z lewej musi wylądować NA KOŃCU
+ * sekcji, bo dopiero wtedy mają sens. Blok stoi wtedy w siatce dwa razy,
+ * a widoczny jest zawsze dokładnie jeden - ten komponent trzyma obie połowy
+ * tej decyzji w jednym miejscu.
+ *
+ * ┌── KIEDY BLOK SIĘ PRZENOSI - REGUŁA DWÓCH WARUNKÓW ──────────────────┐
+ * │ Oba muszą być spełnione naraz:                                      │
+ * │                                                                      │
+ * │  1. zdanie bezpośrednio nad blokiem NIE wskazuje na niego            │
+ * │     („skontaktuj się z nami, żeby sprawdzić…" wskazuje - taki blok   │
+ * │     zostaje przyklejony do swojego zdania i nigdzie nie jedzie),     │
+ * │  2. treść prawej kolumny jest WARUNKIEM SENSOWNOŚCI bloku            │
+ * │     („Masz więcej pytań?" zakłada, że lista pytań została            │
+ * │     przeczytana, więc przed listą to pytanie jest bez sensu).        │
+ * │                                                                      │
+ * │ Nigdy nie wędruje: etykieta sekcji, nagłówek H2, tekst wprowadzający,│
+ * │ zdjęcie ani ilustracja.                                             │
+ * └──────────────────────────────────────────────────────────────────────┘
+ *
+ * ┌── DWA MIEJSCA, JEDNA PARA ─────────────────────────────────────────┐
+ * │ `miejsce="kolumna"` - od 1024 px, na swoim miejscu w lewej kolumnie.│
+ * │ `miejsce="pod"`     - poniżej 1024 px, na końcu siatki sekcji.      │
+ * │                                                                      │
+ * │ Sekcja wstawia OBA wystąpienia, z tą samą zawartością. Kopia ukryta  │
+ * │ przez `display:none` nie istnieje dla czytników ekranu ani dla       │
+ * │ kolejności fokusu, więc treść jest ogłaszana raz.                   │
+ * └──────────────────────────────────────────────────────────────────────┘
+ *
+ * ┌── DLACZEGO KAŻDE MIEJSCE INACZEJ TRAKTUJE ODSŁANIANIE ─────────────┐
+ * │ `kolumna` NIE dostaje własnego `Odslon`: jest częścią lewej kolumny │
+ * │ i ma jechać razem z nią, na jej odsłonięciu (`wariant="left"`).     │
+ * │ Własne odsłonięcie rozjechałoby blok z resztą kolumny.              │
+ * │                                                                      │
+ * │ `pod` jest osobnym elementem siatki, więc dostaje własny `Odslon`   │
+ * │ od dołu - tak jak każdy inny element w tej siatce.                  │
+ * └──────────────────────────────────────────────────────────────────────┘
+ *
+ * ┌── DLACZEGO KOPIA DOLNA MA TRZY KLASY NA WYŚRODKOWANIE ─────────────┐
+ * │ Wyśrodkowanie należy do tego komponentu, a nie do każdego bloku,    │
+ * │ który przez niego przechodzi - blok nie ma wiedzieć, że jest         │
+ * │ przenoszony. Żeby to wyszło, potrzebne są wszystkie trzy:            │
+ * │                                                                      │
+ * │  `text-center`         - zwykły tekst,                               │
+ * │  `items-center`        - blok, który sam jest kontenerem układu      │
+ * │                          (pasek przycisków we własnym `flex`);       │
+ * │                          `text-center` go nie rusza,                 │
+ * │  `[&>*]:justify-center` - TEN SAM pasek, gdy się zawija. Zawinięty    │
+ * │                          kontener `flex` nie ścieśnia się do treści, │
+ * │                          tylko wypełnia szerokość, a wtedy każdy     │
+ * │                          wiersz startuje od lewej mimo `items-center`│
+ * │                          na rodzicu. Na dzieciach, które nie są      │
+ * │                          kontenerami układu, ta klasa nic nie robi.  │
+ * └──────────────────────────────────────────────────────────────────────┘
+ *
+ * ⚠️ TO NIE JEST TO SAMO CO ZANIKANIE. `hidden lg:block` wpisane wprost
+ * w znaczniku (np. prawa kolumna `SekcjaHero`) znaczy „poniżej 1024 px tego
+ * po prostu nie ma". Kod wygląda podobnie, intencja jest inna i rozróżnia je
+ * wyłącznie nazwa komponentu. Przycisk w wierszu nagłówka sekcji ma własny
+ * komponent - `LinkSekcji`.
+ */
+import Odslon from "./Odslon.astro";
+
+interface Props {
+  miejsce: "kolumna" | "pod";
+  /** Kaskada odsłonięcia kopii dolnej, w ms. Kopia w kolumnie jej nie używa. */
+  zwloka?: number;
+  class?: string;
+}
+const { miejsce, zwloka = 0, class: klasa = "" } = Astro.props;
+
+const klasyPod = [
+  "lg:hidden flex flex-col items-center text-center [&>*]:justify-center",
+  klasa,
+]
+  .filter(Boolean)
+  .join(" ");
+---
+
+{
+  miejsce === "kolumna" ? (
+    <div class:list={["hidden lg:block", klasa]}>
+      <slot />
+    </div>
+  ) : (
+    <Odslon wariant="up" zwloka={zwloka} class={klasyPod}>
+      <slot />
+    </Odslon>
+  )
+}

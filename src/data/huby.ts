@@ -115,7 +115,9 @@ export const huby = {
           'podłączenie i próba automatyki: napęd, fotokomórki, piloty',
           'uprzątnięcie terenu i wywóz odpadów',
         ],
-        tytulDodatkow: 'W ramach tego samego zlecenia wykonujemy też',
+        tytulDodatkow: 'Prace towarzyszące, które bierzemy na siebie',
+        wstepDodatkow:
+          'Na efekt końcowy nie składa się samo ogrodzenie. Równie często decyduje o nim to, co dzieje się wokół: stara siatka do zdjęcia, spadek terenu wzdłuż linii, brak zasilania przy bramie. Wszystkie te prace bierzemy na siebie w ramach tego samego zlecenia - bez szukania drugiej ekipy, godzenia dwóch terminów i przerzucania odpowiedzialności za to, co nie wyszło.',
         dodatki: [
           'demontaż starego ogrodzenia razem z wywozem gruzu',
           'montaż schodkowy na terenie pochyłym',
@@ -126,7 +128,7 @@ export const huby = {
       sprzet: {
         tytul: 'Sprzęt, na którym pracujemy',
         tekst:
-          'Otwory pod słupki wiercimy wiertnicą spalinową, a nie kopiemy łopatą - otwór ma wtedy równe ściany i beton wiąże w pełnym przekroju. Linię ogrodzenia i wysokości ustawiamy niwelatorem laserowym, więc przęsła nie falują na długich odcinkach. Do cięcia paneli używamy szlifierki z tarczą do stali nierdzewnej, a każde miejsce cięcia zabezpieczamy farbą cynkową - to właśnie tam zaczyna się korozja ogrodzeń ciętych na sucho i zostawionych bez zabezpieczenia.',
+          'Metodę osadzenia słupków dobieramy do gruntu, bo to ona decyduje o trwałości, a nie sam sprzęt. Tam, gdzie grunt na to pozwala, otwory wiercimy wiertnicą - otwór ma wtedy równe ściany i beton wiąże w pełnym przekroju. W gruncie nasypowym, kamienistym albo przy ciasnym dojściu do budynku wiertnica nie wejdzie; wtedy kopiemy ręcznie i odpowiednio poszerzamy otwór, żeby efekt był ten sam. Linię ogrodzenia i wysokości ustawiamy niwelatorem laserowym, więc przęsła nie falują na długich odcinkach. Do cięcia paneli używamy szlifierki z tarczą do stali nierdzewnej, a każde miejsce cięcia zabezpieczamy farbą cynkową - to właśnie tam zaczyna się korozja ogrodzeń ciętych na sucho i zostawionych bez zabezpieczenia.',
       },
       fotoObok: 'karta.murowane',
       fotoObokAlt: 'Ogrodzenie panelowe z betonową podmurówką - realizacja BramBruk',
@@ -216,7 +218,9 @@ export const huby = {
           'układanie kostki w wybranym wzorze, z docinaniem przy krawędziach',
           'fugowanie i zagęszczanie powierzchni zagęszczarką z matą ochronną',
         ],
-        tytulDodatkow: 'W ramach tego samego zlecenia wykonujemy też',
+        tytulDodatkow: 'Prace towarzyszące, które bierzemy na siebie',
+        wstepDodatkow:
+          'Nawierzchnia to nie tylko kostka. O tym, jak posesja wygląda i działa po naszym wyjeździe, decydują też odwodnienie, obrzeża, poziomy przy garażu i to, co zostało po starym podjeździe. Te prace wykonujemy w ramach tego samego zlecenia, w tym samym terminie i na tej samej fakturze - bo to one najczęściej przesądzają o efekcie końcowym.',
         dodatki: [
           'odwodnienie liniowe i studzienki przy garażu lub bramie',
           'schody terenowe, palisady i niskie murki oporowe',
@@ -317,7 +321,9 @@ export const huby = {
           'montaż drzwi, okien, bram i zamków',
           'uprzątnięcie terenu i wywóz odpadów po budowie',
         ],
-        tytulDodatkow: 'W ramach tego samego zlecenia wykonujemy też',
+        tytulDodatkow: 'Prace towarzyszące, które bierzemy na siebie',
+        wstepDodatkow:
+          'Altana ani garaż rzadko kończą się na samej konstrukcji. O tym, czy zaczniesz z nich korzystać od razu, decydują drobiazgi wokół: dojście, światło, podłoga, miejsce na grill. Obejmujemy je tym samym zleceniem, żeby nie okazało się po odbiorze, że do zamknięcia tematu potrzebny jest jeszcze jeden wykonawca.',
         dodatki: [
           'podłogę na legarach albo wylewkę pod altaną',
           'instalację elektryczną: oświetlenie i gniazda',
@@ -328,7 +334,7 @@ export const huby = {
       sprzet: {
         tytul: 'Sprzęt, na którym pracujemy',
         tekst:
-          'Podłoże wypoziomowujemy niwelatorem laserowym, bo kilka milimetrów różnicy na fundamencie zamienia się w kilka centymetrów krzywizny na kalenicy. Kotwy gruntowe osadzamy wiertnicą, co pozwala postawić altanę bez wylewania betonowej płyty i bez rozkopywania połowy ogrodu. Drewno tniemy pilarką z prowadnicą, a nie z ręki - równe cięcie oznacza szczelne połączenia, a te decydują o tym, czy w konstrukcję wchodzi woda. Każdy element drewniany, który dotyka gruntu albo betonu, dostaje przekładkę i impregnat.',
+          'Podłoże wypoziomowujemy niwelatorem laserowym, bo kilka milimetrów różnicy na fundamencie zamienia się w kilka centymetrów krzywizny na kalenicy. Tam, gdzie grunt na to pozwala, kotwy osadzamy wiertnicą - altana staje wtedy bez wylewania betonowej płyty i bez rozkopywania połowy ogrodu. Przy gruncie kamienistym albo nasypowym schodzimy na bloczki lub płytę, bo kotwa w takim podłożu nie trzyma. Drewno tniemy pilarką z prowadnicą, a nie z ręki - równe cięcie oznacza szczelne połączenia, a te decydują o tym, czy w konstrukcję wchodzi woda. Każdy element drewniany, który dotyka gruntu albo betonu, dostaje przekładkę i impregnat.',
       },
       fotoObok: 'karta.altana',
       fotoObokAlt: 'Drewniana altana ogrodowa - realizacja BramBruk',

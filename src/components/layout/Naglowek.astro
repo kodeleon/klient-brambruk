@@ -11,97 +11,215 @@
  * │ panel pod nim, oba w `<header>`. Dzięki temu panel rozsuwa nagłówek, │
  * │ a nie przykrywa treść - tak jak działało to wcześniej.               │
  * │                                                                      │
+ * │ Zwinięty panel jest `visibility: hidden`, nie tylko `max-height: 0` -│
+ * │ inaczej jego odnośniki nadal łapią Tab. Uzasadnienie i przejście:    │
+ * │ `src/styles/components/naglowek.css`.                                │
+ * │                                                                      │
  * │ Przyklejenie po przewinięciu (`bg-brand-dark/95` + rozmycie + cień)  │
  * │ dokłada moduł `src/scripts/naglowek.ts`. Bez skryptu pasek jest      │
  * │ po prostu zawsze nieprzezroczysty - czyli stan, który stary projekt  │
  * │ pokazywał na górze strony.                                          │
  * └──────────────────────────────────────────────────────────────────────┘
  */
-import { dane, nawigacja } from '../../config/dane'
-import Przycisk from '../ui/Przycisk.astro'
-import Ikona from '../icons/Ikona.astro'
-import Logo from '../media/Logo.astro'
+import { dane, nawigacja } from "../../config/dane";
+import Przycisk from "../ui/Przycisk.astro";
+import Ikona from "../icons/Ikona.astro";
+import Logo from "../media/Logo.astro";
 
-const tu = Astro.url.pathname
+const tu = Astro.url.pathname;
 /** Stary projekt podświetlał pozycję przez `pathname.startsWith(href)`. */
-const aktywna = (sciezka: string) => tu.startsWith(sciezka.replace(/\/$/, ''))
+const aktywna = (sciezka: string) => tu.startsWith(sciezka.replace(/\/$/, ""));
 ---
 
-<header class="naglowek sticky top-0 left-0 right-0 z-50 transition-all duration-300 bg-brand-dark" data-naglowek>
-  {/*
-    `md:hidden` na samym polu wyboru, nie tylko na przełączniku: od 768 px
-    menu mobilnego nie ma, a pole bez widocznej etykiety zostawało w drzewie
-    dostępności jako kontrolka bez nazwy (axe: label).
-  */}
-  <input type="checkbox" id="menu-mobilne" class="poza-ekranem md:hidden" />
-
+<header
+  class="naglowek sticky top-0 left-0 right-0 z-50 transition-all duration-300 bg-brand-dark"
+  data-naglowek
+>
   <div class="max-w-7xl mx-auto px-2 lg:px-10 min-h-[72px]">
     <div class="flex items-center justify-between h-[72px]">
-      <a href="/" class="flex items-center gap-1 group" aria-label="BramBruk - strona główna">
+      <a
+        href="/"
+        class="flex items-center gap-1 group"
+        aria-label="BramBruk - strona główna"
+      >
         <Logo nazwa="znak" alt="" sizes="48px" class="w-12 h-12 pb-1" />
-        <span class="text-brand-bg font-brand text-2xl">BramBruk</span>
+        <span class="text-brand-bg font-brand text-2xl">BRAMBRUK</span>
       </a>
 
-      <nav class="hidden md:flex items-center gap-8" aria-label="Nawigacja główna">
+      <nav
+        class="hidden md:flex items-center gap-8"
+        aria-label="Nawigacja główna"
+      >
         {
-          nawigacja.map((pozycja) => (
-            <a
-              href={pozycja.sciezka}
-              aria-current={aktywna(pozycja.sciezka) ? 'page' : undefined}
-              class:list={[
-                'text-[13px] font-medium transition-colors duration-200',
-                aktywna(pozycja.sciezka) ? 'text-brand-olive' : 'text-neutral-400 hover:text-white',
-              ]}
-            >
-              {pozycja.etykieta}
-            </a>
-          ))
+          nawigacja.map((pozycja) => {
+            const podmenu = "podmenu" in pozycja ? pozycja.podmenu : undefined;
+            const klasaOdnosnika = [
+              "text-[13px] font-medium transition-colors duration-200",
+              aktywna(pozycja.sciezka)
+                ? "text-brand-olive"
+                : "text-neutral-400 hover:text-white",
+            ];
+
+            /* Pozycja bez podmenu to zwykły odnośnik - bez opakowania,
+               bez chevronu, bez niczego więcej. */
+            if (!podmenu) {
+              return (
+                <a
+                  href={pozycja.sciezka}
+                  aria-current={aktywna(pozycja.sciezka) ? "page" : undefined}
+                  class:list={klasaOdnosnika}
+                >
+                  {pozycja.etykieta}
+                </a>
+              );
+            }
+
+            return (
+              <div class="naglowek__zakres relative">
+                {/* Napis i chevron to JEDEN odnośnik: kliknięcie prowadzi
+                    na /uslugi/, najechanie rozwija listę typów. Dwa osobne
+                    elementy zmuszałyby do trafiania w połowę celu. */}
+                <a
+                  href={pozycja.sciezka}
+                  aria-current={aktywna(pozycja.sciezka) ? "page" : undefined}
+                  class:list={[
+                    ...klasaOdnosnika,
+                    "inline-flex items-center gap-1 py-2",
+                  ]}
+                >
+                  {pozycja.etykieta}
+                  <Ikona
+                    nazwa="chevron-down"
+                    rozmiar={14}
+                    class="naglowek__chevron shrink-0 transition-transform duration-200"
+                  />
+                </a>
+
+                <div class="naglowek__podmenu">
+                  <ul class="min-w-[220px] rounded-xl border border-white/10 bg-brand-dark py-2 shadow-xl shadow-black/40">
+                    {podmenu.map((pod) => (
+                      <li>
+                        <a
+                          href={pod.sciezka}
+                          aria-current={
+                            aktywna(pod.sciezka) ? "page" : undefined
+                          }
+                          class:list={[
+                            "block px-4 py-2.5 text-[13px] font-medium transition-colors",
+                            aktywna(pod.sciezka)
+                              ? "text-brand-olive"
+                              : "text-neutral-400 hover:bg-white/5 hover:text-white",
+                          ]}
+                        >
+                          {pod.etykieta}
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            );
+          })
         }
       </nav>
 
       <div class="flex items-center gap-4 px-4">
         <div class="hidden sm:flex items-center gap-2">
-          <Przycisk href={`tel:${dane.telefonHref}`} wariant="custom-dark" rozmiar="sm">
+          <Przycisk
+            href={`tel:${dane.telefonHref}`}
+            wariant="custom-dark"
+            rozmiar="sm"
+          >
             <Ikona nazwa="phone" rozmiar={14} />
-            <span class="hidden xl:inline text-sm font-normal">{dane.telefon}</span>
+            <span class="hidden xl:inline text-sm font-normal"
+              >{dane.telefon}</span
+            >
           </Przycisk>
-          <Przycisk href="/wycena/" rozmiar="sm" ikona="receipt-text">Bezpłatna wycena</Przycisk>
+          <Przycisk href="/wycena/" rozmiar="sm" ikona="receipt-text"
+            >Bezpłatna wycena</Przycisk
+          >
         </div>
+
+        {
+          /*
+          Pole wyboru stoi TUŻ PRZED swoją etykietą, bo kolejność fokusu idzie
+          za kolejnością w dokumencie: hamburger ma być ostatni w pasku, po
+          wycenie, a nie pierwszy na całej stronie, przed logo. Stan czyta CSS
+          przez `:has()` na `.naglowek` - selektor rodzeństwa `~` wymuszałby
+          z powrotem pierwsze miejsce w `<header>`.
+
+          `md:hidden` na samym polu wyboru, nie tylko na przełączniku: od 768 px
+          menu mobilnego nie ma, a pole bez widocznej etykiety zostawało
+          w drzewie dostępności jako kontrolka bez nazwy (axe: label).
+        */
+        }
+        <input type="checkbox" id="menu-mobilne" class="poza-ekranem md:hidden" />
 
         <label
           for="menu-mobilne"
           class="naglowek__przelacznik flex md:hidden text-white p-2 hover:bg-white/10 rounded-lg transition-colors cursor-pointer"
         >
-          {/*
+          {
+            /*
             Nazwa przełącznika idzie TREŚCIĄ etykiety, nie atrybutem `aria-label`:
             na `<label>` ten atrybut jest zabroniony (axe: aria-prohibited-attr),
             a pole wyboru zostawało wtedy bez nazwy (axe: label).
-          */}
+          */
+          }
           <span class="poza-ekranem">Menu</span>
           <Ikona nazwa="menu" rozmiar={24} class="naglowek__ikona-menu" />
           <Ikona nazwa="x" rozmiar={24} class="naglowek__ikona-zamknij" />
         </label>
       </div>
     </div>
-  </div>
+  </div>  
 
-  <div class="naglowek__panel lg:hidden overflow-hidden transition-all duration-300">
+  <div
+    class="naglowek__panel md:hidden overflow-hidden transition-all duration-300"
+  >
     <div class="px-5 py-4 bg-brand-dark space-y-1">
       {
-        nawigacja.map((pozycja) => (
-          <a
-            href={pozycja.sciezka}
-            aria-current={aktywna(pozycja.sciezka) ? 'page' : undefined}
-            class:list={[
-              'block px-4 py-3 rounded-lg text-sm font-medium transition-colors',
-              aktywna(pozycja.sciezka)
-                ? 'text-brand-olive bg-brand-olive/10'
-                : 'text-neutral-300 hover:bg-white/5',
-            ]}
-          >
-            {pozycja.etykieta}
-          </a>
-        ))
+        nawigacja.map((pozycja) => {
+          const podmenu = "podmenu" in pozycja ? pozycja.podmenu : undefined;
+          return (
+            <>
+              <a
+                href={pozycja.sciezka}
+                aria-current={aktywna(pozycja.sciezka) ? "page" : undefined}
+                class:list={[
+                  "block px-4 py-3 rounded-lg text-sm font-medium transition-colors",
+                  aktywna(pozycja.sciezka)
+                    ? "text-brand-olive bg-brand-olive/10"
+                    : "text-neutral-300 hover:bg-white/5",
+                ]}
+              >
+                {pozycja.etykieta}
+              </a>
+              {/* Na telefonie nie ma najechania, więc podmenu stoi otwarte
+                  i wcięte - te same trzy odnośniki, ta sama kolejność. */}
+              {podmenu && (
+                <ul class="border-l border-white/10 ml-4 pl-2">
+                  {podmenu.map((pod) => (
+                    <li>
+                      <a
+                        href={pod.sciezka}
+                        aria-current={aktywna(pod.sciezka) ? "page" : undefined}
+                        class:list={[
+                          "block px-4 py-2.5 rounded-lg text-sm transition-colors",
+                          aktywna(pod.sciezka)
+                            ? "text-brand-olive bg-brand-olive/10"
+                            : "text-neutral-400 hover:bg-white/5",
+                        ]}
+                      >
+                        {pod.etykieta}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </>
+          );
+        })
       }
       <div class="pt-3 flex flex-col gap-2">
         <Przycisk
@@ -112,7 +230,9 @@ const aktywna = (sciezka: string) => tu.startsWith(sciezka.replace(/\/$/, ''))
           <Ikona nazwa="phone" rozmiar={16} />
           Zadzwoń
         </Przycisk>
-        <Przycisk href="/wycena/" class="w-full" ikona="receipt-text">Bezpłatna wycena</Przycisk>
+        <Przycisk href="/wycena/" class="w-full" ikona="receipt-text"
+          >Bezpłatna wycena</Przycisk
+        >
       </div>
     </div>
   </div>

@@ -30,72 +30,113 @@
  * │ o przeniesieniu danych, a nie obietnica wysyłki.                    │
  * └─────────────────────────────────────────────────────────────────────┘
  */
-import { dane, statystyki } from '../../config/dane'
-import { typyUslug } from '../../data/wycena'
-import EtykietaSekcji from './EtykietaSekcji.astro'
-import Przycisk from './Przycisk.astro'
-import Ikona from '../icons/Ikona.astro'
+import { dane, statystyki } from "../../config/dane";
+import { typyUslug } from "../../data/wycena";
+import EtykietaSekcji from "./EtykietaSekcji.astro";
+import Przycisk from "./Przycisk.astro";
+import Ikona from "../icons/Ikona.astro";
 
 interface Props {
-  tytul?: string
+  tytul?: string;
   /** Jedno-dwa zdania pod nagłówkiem. */
-  opis?: string
+  opis?: string;
   /** Konkretne zobowiązania - trzy pozycje z ptaszkiem. */
-  punkty?: readonly string[]
+  punkty?: readonly string[];
   /** `false` zostawia sam blok tekstowy, bez skróconego formularza. */
-  zFormularzem?: boolean
+  zFormularzem?: boolean;
 }
 
 const {
-  tytul = 'Chcesz poznać dokładną cenę?',
-  opis = 'Opisz projekt w formularzu - orientacyjną wycenę odsyłamy w ciągu jednego dnia roboczego. Bez zobowiązań i bez ukrytych kosztów.',
+  tytul = "Chcesz poznać dokładną cenę?",
+  opis = "Opisz projekt w formularzu - orientacyjną wycenę odsyłamy w ciągu jednego dnia roboczego. Bez zobowiązań i bez ukrytych kosztów.",
   punkty = [
     `Bezpłatna wycena i wizja lokalna w promieniu ${statystyki.zasieg}`,
-    'Odpowiedź w 24 h w dni robocze',
-    'Ceny orientacyjne podajemy otwarcie, przed podpisaniem umowy',
+    "Odpowiedź w 24 h w dni robocze",
+    "Ceny orientacyjne podajemy otwarcie, przed podpisaniem umowy",
   ],
   zFormularzem = true,
-} = Astro.props
+} = Astro.props;
 
 const klasaPola =
-  'w-full rounded-lg border border-white/15 bg-white/5 px-3 py-2.5 text-sm text-white placeholder:text-neutral-500 focus-visible:border-brand-olive'
+  "w-full rounded-lg border border-white/15 bg-white/5 px-3 py-2.5 text-sm text-white placeholder:text-neutral-500 focus-visible:border-brand-olive";
 ---
 
-<section class="cta-baner relative overflow-hidden bg-brand-dark py-12 lg:py-20">
+<section
+  class="cta-baner relative overflow-hidden bg-brand-dark py-12 lg:py-20"
+>
   <div class="cta-baner__poswiata" aria-hidden="true"></div>
 
   <div class="relative max-w-7xl mx-auto px-5 lg:px-10">
-    <div class="grid grid-cols-1 lg:grid-cols-[minmax(0,6fr)_minmax(0,5fr)] gap-10 lg:gap-16 items-center">
+    <div
+      class="grid grid-cols-1 lg:grid-cols-[minmax(0,6fr)_minmax(0,5fr)] gap-10 lg:gap-16 items-center"
+    >
       <div>
-        <EtykietaSekcji wariant="ciemne" class="mb-3">Bezpłatna wycena</EtykietaSekcji>
-        <h2 class="font-display text-2xl lg:text-4xl font-bold text-white mb-4 text-balance">{tytul}</h2>
-        <p class="text-neutral-400 text-sm lg:text-base leading-relaxed max-w-xl mb-6">{opis}</p>
+        <EtykietaSekcji wariant="ciemne" class="mb-3"
+          >Bezpłatna wycena</EtykietaSekcji
+        >
+        <h2
+          class="font-display text-2xl lg:text-4xl font-bold text-white mb-4 text-balance"
+        >
+          {tytul}
+        </h2>
+        <p
+          class="text-neutral-400 text-sm lg:text-base leading-relaxed max-w-xl mb-6"
+        >
+          {opis}
+        </p>
 
         <ul class="space-y-3 mb-8">
           {
             punkty.map((punkt) => (
               <li class="flex items-start gap-3 text-sm text-brand-text-xlight">
-                <Ikona nazwa="check-circle-2" rozmiar={18} class="text-brand-olive shrink-0 mt-px" />
+                <Ikona
+                  nazwa="check-circle-2"
+                  rozmiar={18}
+                  class="text-brand-olive shrink-0 mt-px"
+                />
                 <span>{punkt}</span>
               </li>
             ))
           }
         </ul>
 
-        <div class="flex flex-wrap gap-3">
-          <Przycisk href="/wycena/" rozmiar="lg" ikona="receipt-text">Bezpłatna wycena</Przycisk>
-          <Przycisk href={`tel:${dane.telefonHref}`} wariant="secondary" rozmiar="lg" ikona="phone">
-            {dane.telefon}
-          </Przycisk>
+        <div
+          class="flex flex-wrap items-end justify-center gap-3 sm:justify-start"
+        >
+          <Przycisk href="/wycena/" rozmiar="lg" ikona="receipt-text"
+            >Wypełnij formularz</Przycisk
+          >
+          <div class="flex flex-col items-center gap-0.5">
+            <span
+              class="text-[14px] mb-1 font-medium uppercase tracking-[2px] leading-[10px] text-neutral-300"
+            >
+              lub zadzwoń
+            </span>
+            <Przycisk
+              href={`tel:${dane.telefonHref}`}
+              wariant="secondary"
+              rozmiar="sm"
+              ikona="phone"
+            >
+              {dane.telefon}
+            </Przycisk>
+          </div>
         </div>
       </div>
 
       {
         zFormularzem && (
-          <div class="rounded-2xl border border-white/10 bg-white/[0.04] p-6 lg:p-7" data-cta-szybkie>
+          <div
+            class="rounded-2xl border border-white/10 bg-white/[0.04] px-3 py-5 lg:px-4 lg:py-6"
+            data-cta-szybkie
+          >
             <div class="flex items-baseline justify-between gap-4 mb-5">
-              <h3 class="font-display text-base font-bold text-white">Szybkie zapytanie</h3>
-              <span class="text-[10px] font-bold tracking-[2px] uppercase text-brand-olive">Krok 1 z 5</span>
+              <h3 class="font-display text-base font-bold text-white">
+                Szybkie zapytanie
+              </h3>
+              <span class="text-[10px] font-bold tracking-[2px] uppercase text-brand-olive">
+                Krok 1 z 5
+              </span>
             </div>
 
             <fieldset class="mb-4">
@@ -126,7 +167,10 @@ const klasaPola =
 
             <div class="space-y-3">
               <div>
-                <label for="cta-miejscowosc" class="block text-[10px] font-bold tracking-[2px] uppercase text-neutral-400 mb-1.5">
+                <label
+                  for="cta-miejscowosc"
+                  class="block text-[10px] font-bold tracking-[2px] uppercase text-neutral-400 mb-1.5"
+                >
                   Miejscowość
                 </label>
                 <input
@@ -142,7 +186,10 @@ const klasaPola =
 
               <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label for="cta-email" class="block text-[10px] font-bold tracking-[2px] uppercase text-neutral-400 mb-1.5">
+                  <label
+                    for="cta-email"
+                    class="block text-[10px] font-bold tracking-[2px] uppercase text-neutral-400 mb-1.5"
+                  >
                     E-mail
                   </label>
                   <input
@@ -156,7 +203,10 @@ const klasaPola =
                   />
                 </div>
                 <div>
-                  <label for="cta-telefon" class="block text-[10px] font-bold tracking-[2px] uppercase text-neutral-400 mb-1.5">
+                  <label
+                    for="cta-telefon"
+                    class="block text-[10px] font-bold tracking-[2px] uppercase text-neutral-400 mb-1.5"
+                  >
                     Telefon
                   </label>
                   <input
@@ -172,12 +222,20 @@ const klasaPola =
               </div>
             </div>
 
-            <Przycisk href="/wycena/" rozmiar="md" ikona="arrow-right" ikonaPo="prawo" class="mt-5 w-full" data-cta-dalej>
+            <Przycisk
+              href="/wycena/"
+              rozmiar="md"
+              ikona="arrow-right"
+              ikonaPo="prawo"
+              class="mt-5 w-full"
+              data-cta-dalej
+            >
               Przejdź dalej
             </Przycisk>
 
             <p class="mt-3 text-center text-xs text-neutral-500">
-              Wypełnione pola przeniesiemy do formularza. Zajmie Ci to około 2 minut.
+              Wartości przeniesiemy do formularza. Wypełnienie całego zajmie
+              około 2 minut.
             </p>
           </div>
         )

@@ -62,7 +62,7 @@ export const uslugi = {
       ],
     },
     sprzet:
-      'Otwory pod słupki wiercimy wiertnicą spalinową: otwór ma wtedy równe ściany, a beton wiąże w pełnym przekroju. Linię i wysokości ustawiamy niwelatorem laserowym, więc przęsła nie falują na długim odcinku. Panele tniemy szlifierką z tarczą do stali nierdzewnej i od razu zabezpieczamy krawędź - to właśnie od niezabezpieczonych cięć zaczyna się rdza na ogrodzeniach panelowych.',
+      'Metodę osadzenia słupków dobieramy do gruntu. Tam, gdzie grunt na to pozwala, otwory wiercimy wiertnicą: otwór ma wtedy równe ściany, a beton wiąże w pełnym przekroju. W gruncie nasypowym albo kamienistym wiertnica nie wejdzie - wtedy kopiemy ręcznie i poszerzamy otwór tak, żeby osadzenie było równie mocne. Linię i wysokości ustawiamy niwelatorem laserowym, więc przęsła nie falują na długim odcinku. Panele tniemy szlifierką z tarczą do stali nierdzewnej i od razu zabezpieczamy krawędź - to właśnie od niezabezpieczonych cięć zaczyna się rdza na ogrodzeniach panelowych.',
         cennikCzynniki: [
       'wysokość i typ panelu: 2D czy 3D',
       'rodzaj podmurówki albo jej brak',
@@ -205,7 +205,7 @@ export const uslugi = {
       ],
     },
     sprzet:
-      'Do naciągu używamy napinaczy dźwigniowych, a nie siły rąk - siatka naciągnięta ręcznie po sezonie zaczyna falować. Słupki ustawiamy na sznurze i poziomicy laserowej, bo przy ogrodzeniu bez przęseł to jedyne, co trzyma linię. Otwory wiercimy wiertnicą, dzięki czemu przy stu metrach ogrodzenia zostaje zdecydowanie mniej urobku do wywiezienia.',
+      'Do naciągu używamy napinaczy dźwigniowych, a nie siły rąk - siatka naciągnięta ręcznie po sezonie zaczyna falować. Słupki ustawiamy na sznurze i poziomicy laserowej, bo przy ogrodzeniu bez przęseł to jedyne, co trzyma linię. Otwory wiercimy wiertnicą wszędzie tam, gdzie grunt to umożliwia - przy stu metrach ogrodzenia zostaje wtedy zdecydowanie mniej urobku do wywiezienia niż przy kopaniu.',
         cennikCzynniki: [
       'wysokość i rodzaj siatki: ocynk czy powlekana PCV',
       'rozstaw słupków i liczba narożników z zastrzałami',

@@ -28,6 +28,12 @@ export const dane = {
 
   // --- lokalizacja ---
   adres: 'Bohukały 1, 21-550, woj. lubelskie',
+  /**
+   * Ten sam adres rozbity na wiersze. Wszędzie, gdzie jest na to miejsce,
+   * województwo idzie do drugiego wiersza - inaczej łamanie wypada
+   * w przypadkowym miejscu i rozdziela „woj." od „lubelskie".
+   */
+  adresLinie: ['Bohukały 1, 21-550', 'woj. lubelskie'],
 
   // --- rejestr ---
   nip: '5372685534',
@@ -73,8 +79,8 @@ export const fixly = {
 
 /** Liczby używane w pasku statystyk i w treści. */
 export const statystyki = {
-  lata: 5,
-  miejscowosci: 15,
+  lata: 6,
+  miejscowosci: 25,
   realizacje: '50+',
   zasieg: '100 km',
 } as const
@@ -87,7 +93,22 @@ export const statystyki = {
  * bez ukośnika kosztuje przekierowanie przy każdym kliknięciu.
  */
 export const nawigacja = [
-  { etykieta: 'Usługi', sciezka: '/uslugi/' },
+  {
+    etykieta: 'Usługi',
+    sciezka: '/uslugi/',
+    /**
+     * Rozwijane podmenu w nagłówku. Trzy typy usług to trzy najgłębiej
+     * schowane podstrony serwisu: dotąd prowadziła do nich wyłącznie
+     * stopka albo kafelek w środku treści. Podmenu jest czystym CSS-em
+     * (`:hover` i `:focus-within` - patrz `styles/components/naglowek.css`),
+     * więc działa też przy wyłączonym JavaScripcie i z klawiatury.
+     */
+    podmenu: [
+      { etykieta: 'Ogrodzenia i bramy', sciezka: '/ogrodzenia/' },
+      { etykieta: 'Brukarstwo', sciezka: '/brukarstwo/' },
+      { etykieta: 'Budownictwo', sciezka: '/budownictwo/' },
+    ],
+  },
   { etykieta: 'Realizacje', sciezka: '/realizacje/' },
   { etykieta: 'O nas', sciezka: '/o-nas/' },
   { etykieta: 'Kontakt', sciezka: '/kontakt/' },

@@ -22,70 +22,82 @@
  * dalej („Wszystkie usługi", „Zobacz realizacje"), gdzie strzałka przed
  * napisem czytałaby się jak powrót.
  */
-import Ikona from '../icons/Ikona.astro'
-import type { NazwaIkony } from '../icons/ikony'
+import Ikona from "../icons/Ikona.astro";
+import type { NazwaIkony } from "../icons/ikony";
 
 interface Props {
-  href?: string
-  wariant?: 'primary' | 'secondary' | 'outline' | 'dark' | 'custom-dark' | 'ghost'
-  rozmiar?: 'sm' | 'md' | 'lg'
-  class?: string
-  ikona?: NazwaIkony
-  ikonaPo?: 'lewo' | 'prawo'
-  typ?: 'button' | 'submit'
-  [klucz: string]: unknown
+  href?: string;
+  wariant?:
+    "primary" | "secondary" | "outline" | "dark" | "custom-dark" | "ghost";
+  rozmiar?: "sm" | "md" | "lg";
+  class?: string;
+  ikona?: NazwaIkony;
+  ikonaPo?: "lewo" | "prawo";
+  typ?: "button" | "submit";
+  [klucz: string]: unknown;
 }
 
 const {
   href,
-  wariant = 'primary',
-  rozmiar = 'md',
-  class: klasa = '',
+  wariant = "primary",
+  rozmiar = "md",
+  class: klasa = "",
   ikona,
-  ikonaPo = 'lewo',
-  typ = 'button',
+  ikonaPo = "lewo",
+  typ = "button",
   ...reszta
-} = Astro.props
+} = Astro.props;
 
 const baza =
-  'inline-flex items-center justify-center gap-2 font-semibold transition-all duration-300 rounded-full whitespace-nowrap'
+  "inline-flex items-center justify-center gap-2 font-semibold transition-all duration-300 rounded-full whitespace-nowrap";
 
 const warianty = {
   primary:
-    'bg-brand-olive text-brand-dark hover:bg-brand-olive-dark hover:shadow-lg hover:shadow-brand-olive/20 active:scale-[0.97]',
+    "bg-brand-olive text-brand-dark hover:bg-brand-olive-dark hover:shadow-lg hover:shadow-brand-olive/20 active:scale-[0.97]",
   /** Obrys na CIEMNYM tle. */
   secondary:
-    'border-2 border-brand-olive text-brand-olive hover:bg-brand-olive hover:text-brand-dark active:scale-[0.97]',
-  /** Obrys na JASNYM tle - ten sam gest, przyciemniona oliwka. */
+    "border-2 border-brand-olive text-brand-olive hover:bg-brand-olive hover:text-brand-dark active:scale-[0.97]",
+  /**
+   * Obrys na JASNYM tle.
+   *
+   * ⚠️ 19.09.2026 wrócił tu `brand-olive` zamiast przyciemnionego
+   * `brand-olive-text` - decyzja właściciela serwisu, podjęta po
+   * przedstawieniu liczb: przyciemniona oliwka „nie pasowała do
+   * kolorystyki strony". Na jasnym tle daje to 1,63:1, czyli napis
+   * i obrys są na granicy widoczności. Powrót to jedna linia poniżej.
+   */
   outline:
-    'border-2 border-brand-olive-text/45 text-brand-olive-text hover:border-brand-olive-text hover:bg-brand-olive-text hover:text-white active:scale-[0.97]',
-  dark: 'bg-brand-dark text-white hover:bg-neutral-800 active:scale-[0.97]',
-  'custom-dark':
-    'flex bg-brand-dark hover:bg-neutral-800 active:scale-[0.97] items-center text-neutral-400 hover:text-white text-sm transition-colors',
-  ghost: 'text-brand-olive-text hover:bg-brand-olive/10 hover:text-brand-dark',
-}
+    "border-2 border-brand-olive text-brand-sage hover:bg-brand-olive hover:border-brand-olive hover:text-brand-dark active:scale-[0.97]",
+  dark: "bg-brand-dark text-white hover:bg-neutral-800 active:scale-[0.97]",
+  "custom-dark":
+    "flex bg-brand-dark hover:bg-neutral-800 active:scale-[0.97] items-center text-neutral-400 hover:text-white text-sm transition-colors",
+  ghost: "text-brand-olive-text hover:bg-brand-olive/10 hover:text-brand-dark",
+};
 
 /** Wysokość mieści próg celu dotykowego (44 px, WCAG 2.5.5) od rozmiaru `md`. */
 const rozmiary = {
-  sm: 'px-5 py-2 text-xs tracking-wide',
-  md: 'px-7 py-3 text-sm tracking-wide',
-  lg: 'px-9 py-4 text-base',
-}
+  sm: "px-5 py-2 text-sm tracking-wide",
+  md: "px-7 py-3 text-sm tracking-wide",
+  lg: "px-9 py-4 text-base",
+};
 
-const rozmiaryIkon = { sm: 14, md: 16, lg: 18 } as const
+const rozmiaryIkon = { sm: 14, md: 16, lg: 18 } as const;
 
-const klasy = `${baza} ${warianty[wariant]} ${rozmiary[rozmiar]} ${klasa}`
-const znacznik = href ? 'a' : 'button'
-const Znacznik = znacznik as 'a'
+const klasy = `${baza} ${warianty[wariant]} ${rozmiary[rozmiar]} ${klasa}`;
+const znacznik = href ? "a" : "button";
+const Znacznik = znacznik as "a";
 ---
 
-<Znacznik
-  href={href}
-  type={href ? undefined : typ}
-  class={klasy}
-  {...reszta}
->
-  {ikona && ikonaPo === 'lewo' && <Ikona nazwa={ikona} rozmiar={rozmiaryIkon[rozmiar]} class="shrink-0" />}
+<Znacznik href={href} type={href ? undefined : typ} class={klasy} {...reszta}>
+  {
+    ikona && ikonaPo === "lewo" && (
+      <Ikona nazwa={ikona} rozmiar={rozmiaryIkon[rozmiar]} class="shrink-0" />
+    )
+  }
   <slot />
-  {ikona && ikonaPo === 'prawo' && <Ikona nazwa={ikona} rozmiar={rozmiaryIkon[rozmiar]} class="shrink-0" />}
+  {
+    ikona && ikonaPo === "prawo" && (
+      <Ikona nazwa={ikona} rozmiar={rozmiaryIkon[rozmiar]} class="shrink-0" />
+    )
+  }
 </Znacznik>

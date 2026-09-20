@@ -1,0 +1,141 @@
+---
+/**
+ * SEKCJA GŁÓWNA PODSTRONY - jeden wzór dla całego serwisu.
+ *
+ * ┌── PO CO TEN KOMPONENT ──────────────────────────────────────────────┐
+ * │ Każda podstrona miała wcześniej własną sekcję główną, przepisaną     │
+ * │ ręcznie: raz etykieta stała wyżej, raz niżej, raz podpis miał        │
+ * │ pionową kreskę, raz nie, zdjęcie obok miało za każdym razem inną     │
+ * │ wysokość i inne zaokrąglenie, a podstrony usług startowały na        │
+ * │ jasnym tle zamiast ciemnego. Przy dwudziestu podstronach to nie jest │
+ * │ różnorodność, tylko brak wzorca.                                     │
+ * │                                                                      │
+ * │ Od teraz wzorzec jest jeden i siedzi tutaj. Podstrona podaje treść,  │
+ * │ nie układ. Zmiana odstępu w sekcji głównej to zmiana w tym pliku,    │
+ * │ nie w dwudziestu.                                                    │
+ * └──────────────────────────────────────────────────────────────────────┘
+ *
+ * TŁO ZALEŻY OD SZEROKOŚCI EKRANU - mechanizm i liczby: `styles/components/hero.css`.
+ *
+ * GNIAZDA:
+ *   akcje    - przyciski pod opisem (wymagane w praktyce)
+ *   dodatek  - cokolwiek pod przyciskami: liczby, spis treści, filtry
+ *   obok     - prawa kolumna, WYŁĄCZNIE od 1024 px (zdjęcie albo kolaż)
+ *   stopka   - pas na dole sekcji, w jej szerokości
+ */
+import EtykietaSekcji from './EtykietaSekcji.astro'
+import Foto from '../media/Foto.astro'
+
+interface Props {
+  /** Nadtytuł. Tablica renderuje części rozdzielone kropką. */
+  etykieta: string | readonly string[]
+  /** Nagłówek H1. `\n` łamie wiersz. */
+  tytul: string
+  /** Podpis przy pionowej kresce w kolorze akcentu. */
+  podtytul?: string
+  /** Akapit pod podpisem. */
+  opis?: string
+  /**
+   * Klucz zdjęcia z manifestu mediów. Zdjęcie wchodzi w TŁO sekcji
+   * wyłącznie poniżej 1024 px; wyżej tłem jest czysta płaszczyzna.
+   */
+  foto?: string
+  /** Strona główna: nagłówek o stopień większy. Pozostałe podstrony - nie. */
+  duzyTytul?: boolean
+  class?: string
+}
+
+const {
+  etykieta,
+  tytul,
+  podtytul,
+  opis,
+  foto,
+  duzyTytul = false,
+  class: klasa = '',
+} = Astro.props
+
+const czesciEtykiety = Array.isArray(etykieta) ? etykieta : [etykieta as string]
+const wierszeTytulu = tytul.split('\n')
+---
+
+<section class:list={['relative overflow-hidden bg-brand-dark', klasa]}>
+  {
+    /* WĄSKI EKRAN: zdjęcie w tle pod gradientem. `lg:hidden` na opakowaniu,
+       nie na samym zdjęciu - jedna reguła `display` na element. */
+    foto && (
+      <div class="absolute inset-0 lg:hidden" aria-hidden="true">
+        <Foto klucz={foto} alt="" class="absolute inset-0 h-full w-full object-cover" />
+        <div class="sekcja-hero__maska absolute inset-0"></div>
+      </div>
+    )
+  }
+
+  {/* SZEROKI EKRAN: siatka techniczna i punkt światła zamiast fotografii. */}
+  <div class="sekcja-hero__siatka absolute inset-0 hidden lg:block" aria-hidden="true"></div>
+  <div class="sekcja-hero__swiatlo absolute inset-0 hidden lg:block" aria-hidden="true"></div>
+
+  <div class="relative max-w-7xl mx-auto px-5 lg:px-10 py-14 lg:py-20">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center">
+      <div>
+        <EtykietaSekcji wariant="ciemne" class="mb-3">
+          {
+            czesciEtykiety.map((czesc, i) => (
+              <>
+                {/* Odstępy są ZNAKAMI SPACJI, nie paddingiem: przy trzech
+                    częściach etykiety na telefonie musi być gdzie złamać
+                    wiersz, a między `</span><span>` nie ma takiego miejsca
+                    i etykieta wychodziła poza ekran. */}
+                {i > 0 && <span aria-hidden="true"> · </span>}
+                {czesc}
+              </>
+            ))
+          }
+        </EtykietaSekcji>
+
+        <h1
+          class:list={[
+            'font-display font-bold text-white leading-[1.1] mb-4',
+            duzyTytul ? 'text-4xl md:text-5xl lg:text-[52px]' : 'text-3xl md:text-4xl lg:text-[42px]',
+          ]}
+        >
+          {
+            wierszeTytulu.map((wiersz, i) => (
+              <>
+                {i > 0 && <br />}
+                {wiersz}
+              </>
+            ))
+          }
+        </h1>
+
+        {
+          /* Pionowa kreska przed podpisem: oddziela go od nagłówka bez
+             dokładania kolejnego odstępu i wiąże go kolorem z akcentem.
+             Stoi na KAŻDEJ podstronie - wcześniej raz była, raz nie. */
+          podtytul && (
+            <p class="mb-6 border-l-2 border-brand-olive pl-4 font-display text-xl lg:text-2xl font-semibold text-brand-olive">
+              {podtytul}
+            </p>
+          )
+        }
+
+        {opis && <p class="mb-8 max-w-lg text-base leading-relaxed text-neutral-400">{opis}</p>}
+
+        <div class="flex flex-wrap gap-3">
+          <slot name="akcje" />
+        </div>
+
+        <slot name="dodatek" />
+      </div>
+
+      {/* Prawa kolumna istnieje wyłącznie na szerokim ekranie - niżej jej
+          treść zastępuje zdjęcie w tle sekcji. */}
+      <div class="hidden lg:block">
+        <slot name="obok" />
+      </div>
+    </div>
+
+    <slot name="stopka" />
+  </div>
+</section>

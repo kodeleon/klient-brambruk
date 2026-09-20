@@ -51,7 +51,7 @@ export function karuzela() {
       przyciski.forEach((przycisk, i) => {
         const aktywna = i === biezacy
         przycisk.classList.toggle('w-5', aktywna)
-        przycisk.classList.toggle('bg-brand-sage', aktywna)
+        przycisk.classList.toggle('bg-brand-sage-jasny', aktywna)
         przycisk.classList.toggle('w-2', !aktywna)
         przycisk.classList.toggle('bg-brand-text-xlight', !aktywna)
         przycisk.classList.toggle('hover:bg-brand-text-light', !aktywna)

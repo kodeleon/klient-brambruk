@@ -22,52 +22,66 @@
  * │ pytania, ma telefon pod ręką zamiast szukać go w stopce.             │
  * │                                                                      │
  * │ Lewa kolumna jest przyklejona przy przewijaniu od 1024 px - przy     │
- * │ ośmiu pytaniach numer telefonu inaczej ucieka z ekranu.              │
+ * │ ośmiu pytaniach numer telefonu inaczej ucieka z ekranu. Poniżej      │
+ * │ 1024 px kolumny zwijają się do jednej i wyjście awaryjne wędruje     │
+ * │ pod listę pytań - nad listą zostaje sam nagłówek.                    │
  * └──────────────────────────────────────────────────────────────────────┘
  */
-import { dane } from '../../config/dane'
-import EtykietaSekcji from './EtykietaSekcji.astro'
-import Odslon from './Odslon.astro'
-import Przycisk from './Przycisk.astro'
-import Ikona from '../icons/Ikona.astro'
+import EtykietaSekcji from "./EtykietaSekcji.astro";
+import Odslon from "./Odslon.astro";
+import FaqPomoc from "./FaqPomoc.astro";
+import Przenoszony from "./Przenoszony.astro";
+import Ikona from "../icons/Ikona.astro";
 
 interface Props {
-  etykieta?: string
-  tytul?: string
-  pytania: readonly { pytanie: string; odpowiedz: string }[]
-  tlo?: string
+  etykieta?: string;
+  tytul?: string;
+  pytania: readonly { pytanie: string; odpowiedz: string }[];
+  tlo?: string;
   /** Nazwa grupy - decyduje o tym, że otwarcie jednej pozycji zamyka pozostałe. */
-  grupa?: string
+  grupa?: string;
 }
 const {
-  etykieta = 'FAQ',
-  tytul = 'Najczęściej zadawane pytania',
+  etykieta = "FAQ",
+  tytul = "Najczęściej zadawane pytania",
   pytania,
-  tlo = 'bg-brand-bg',
-  grupa = 'faq',
-} = Astro.props
+  tlo = "bg-brand-bg",
+  grupa = "faq",
+} = Astro.props;
 ---
 
-<section class:list={[tlo, 'py-10 lg:py-16']}>
+<section class:list={["tlo-siatka py-10 lg:py-16", tlo]}>
   <div class="max-w-7xl mx-auto px-5 lg:px-10">
-    <div class="grid grid-cols-1 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] gap-8 lg:gap-16 items-start">
+    {
+      /* Etykieta nad kolumnami i na pełną szerokość - inaczej lista pytań
+        po prawej startuje wyżej niż nagłówek sekcji po lewej. */
+    }
+    <Odslon>
+      <EtykietaSekcji>{etykieta}</EtykietaSekcji>
+    </Odslon>
+
+    {
+      /* Wyjście awaryjne (`FaqPomoc`) stoi w dwóch miejscach siatki, ale
+        renderuje się zawsze jedno: przy dwóch kolumnach pod nagłówkiem
+        po lewej, przy jednej - pod listą pytań. Po telefon sięga ten, kto
+        przeczytał listę i swojego pytania nie znalazł, więc nad listą
+        tylko odsuwałby pytania w dół. Przełączaniem steruje `Przenoszony`,
+        nie klasy w tym pliku - reguła i próg są tam. */
+    }
+    <div
+      class="mt-2 grid grid-cols-1 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] gap-8 lg:gap-16 items-start"
+    >
       <Odslon wariant="left">
         <div class="lg:sticky lg:top-[calc(var(--naglowek-wysokosc)+2rem)]">
-          <EtykietaSekcji>{etykieta}</EtykietaSekcji>
-          <h2 class="font-display text-2xl lg:text-3xl font-bold text-brand-text mt-2 mb-5">{tytul}</h2>
+          <h2
+            class="font-display text-2xl lg:text-3xl font-bold text-brand-text mb-0 lg:mb-5"
+          >
+            {tytul}
+          </h2>
 
-          <div class="rounded-2xl border border-brand-border bg-brand-card p-6">
-            <p class="font-display text-base font-bold text-brand-text mb-2">Nie znalazłeś odpowiedzi?</p>
-            <p class="text-sm text-brand-text-light leading-relaxed mb-5">
-              Zadzwoń - odpowiemy w kilka minut, bez formularzy i bez czekania.
-            </p>
-            <Przycisk href={`tel:${dane.telefonHref}`} rozmiar="md" ikona="phone" class="w-full sm:w-auto">
-              {dane.telefon}
-            </Przycisk>
-            <p class="mt-4 text-xs text-brand-text-light">
-              {dane.godzinyTydzien} · {dane.godzinySobota}
-            </p>
-          </div>
+          <Przenoszony miejsce="kolumna">
+            <FaqPomoc />
+          </Przenoszony>
         </div>
       </Odslon>
 
@@ -79,7 +93,7 @@ const {
                 name={grupa}
                 class="faq-pozycja bg-brand-card rounded-xl border border-brand-border hover:border-brand-olive/40 transition-all duration-300"
               >
-                <summary class="faq-przycisk w-full flex items-center justify-between px-6 py-5 text-left group">
+                <summary class="faq-przycisk w-full flex items-center justify-between px-3 py-4 text-left group">
                   <span class="text-sm lg:text-[15px] font-medium pr-4 transition-colors text-brand-text">
                     {pozycja.pytanie}
                   </span>
@@ -89,13 +103,19 @@ const {
                   </span>
                 </summary>
                 <div class="faq-tresc overflow-hidden">
-                  <div class="px-6 pb-5 text-sm text-brand-text-light leading-relaxed">{pozycja.odpowiedz}</div>
+                  <div class="px-3 pb-4 text-sm text-brand-text-light leading-relaxed">
+                    {pozycja.odpowiedz}
+                  </div>
                 </div>
               </details>
             </Odslon>
           ))
         }
       </div>
+
+      <Przenoszony miejsce="pod">
+        <FaqPomoc />
+      </Przenoszony>
     </div>
   </div>
 </section>

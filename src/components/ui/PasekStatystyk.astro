@@ -2,27 +2,40 @@
 /**
  * PASEK STATYSTYK - odpowiednik `StatBar.jsx`.
  * Liczby biorą się z `src/config/dane.ts`, nie z kodu komponentu.
+ *
+ * `kolumny` istnieje, bo ten sam pasek stoi raz na pełnej szerokości sekcji,
+ * a raz w kolumnie o połowie tej szerokości. Cztery pozycje w wąskiej
+ * kolumnie zlewają się w rząd liczb bez etykiet - stąd wariant dwukolumnowy.
  */
-import { statystyki, fixly } from '../../config/dane'
+import { statystyki, fixly } from "../../config/dane";
 
 interface Props {
-  class?: string
+  /** 4 = jeden rząd na szerokiej sekcji, 2 = siatka 2x2 w wąskiej kolumnie. */
+  kolumny?: 2 | 4;
+  class?: string;
 }
-const { class: klasa = '' } = Astro.props
+const { kolumny = 4, class: klasa = "" } = Astro.props;
 
 const pozycje = [
-  { wartosc: String(statystyki.lata), etykieta: 'lat doświadczenia' },
-  { wartosc: String(statystyki.miejscowosci), etykieta: 'miejscowości' },
-  { wartosc: statystyki.realizacje, etykieta: 'realizacji' },
-  { wartosc: fixly.ocena, etykieta: 'ocena na Fixly' },
-]
+  { wartosc: String(statystyki.lata), etykieta: "lat doświadczenia" },
+  { wartosc: String(statystyki.miejscowosci), etykieta: "miejscowości" },
+  { wartosc: statystyki.realizacje, etykieta: "realizacji" },
+  { wartosc: fixly.ocena, etykieta: "ocena na Fixly" },
+];
+
+const SIATKA = {
+  4: "grid grid-cols-2 lg:grid-cols-4 gap-4",
+  2: "grid grid-cols-2 gap-4",
+} as const;
 ---
 
-<div class:list={['grid grid-cols-2 lg:grid-cols-4 gap-4', klasa]}>
+<div class:list={[SIATKA[kolumny], klasa]}>
   {
     pozycje.map((p) => (
-      <div class="text-center lg:text-left">
-        <div class="font-display text-3xl lg:text-4xl font-bold text-brand-sage">{p.wartosc}</div>
+      <div>
+        <div class="font-display text-3xl lg:text-4xl font-bold text-brand-sage-jasny">
+          {p.wartosc}
+        </div>
         <div class="text-xs text-brand-text-light mt-1">{p.etykieta}</div>
       </div>
     ))

@@ -19,140 +19,163 @@
  * │ ma `scroll-padding-top` liczone z `--naglowek-wysokosc`.            │
  * └─────────────────────────────────────────────────────────────────────┘
  */
-import Podstrona from '../layouts/Podstrona.astro'
-import { kartyUslug } from '../data/cennik'
-import Okruszki from '../components/ui/Okruszki.astro'
-import EtykietaSekcji from '../components/ui/EtykietaSekcji.astro'
-import Przycisk from '../components/ui/Przycisk.astro'
-import Odslon from '../components/ui/Odslon.astro'
-import KartaUslugi from '../components/ui/KartaUslugi.astro'
-import BanerCta from '../components/ui/BanerCta.astro'
-import Ikona from '../components/icons/Ikona.astro'
-import Foto from '../components/media/Foto.astro'
+import Podstrona from "../layouts/Podstrona.astro";
+import { kartyUslug } from "../data/cennik";
+import Okruszki from "../components/ui/Okruszki.astro";
+import EtykietaSekcji from "../components/ui/EtykietaSekcji.astro";
+import Przycisk from "../components/ui/Przycisk.astro";
+import Odslon from "../components/ui/Odslon.astro";
+import KartaUslugi from "../components/ui/KartaUslugi.astro";
+import BanerCta from "../components/ui/BanerCta.astro";
+import Foto from "../components/media/Foto.astro";
+import SekcjaHero from "../components/ui/SekcjaHero.astro";
+import Ikona from "../components/icons/Ikona.astro";
 
 const grupy = [
   {
-    klucz: 'ogrodzenia',
-    etykieta: 'Ogrodzenia i bramy',
-    opis: 'Panele 2D i 3D, bramy przesuwne i dwuskrzydłowe, furtki, siatka, podmurówki.',
-    podstrona: '/ogrodzenia/',
+    klucz: "ogrodzenia",
+    ikona: "fence",
+    przycisk: "ogrodzeniach",
+    etykieta: "Ogrodzenia i bramy",
+    podstrona: "/ogrodzenia/",
   },
   {
-    klucz: 'brukarstwo',
-    etykieta: 'Brukarstwo',
-    opis: 'Podjazdy, chodniki, alejki ogrodowe, tarasy i schody terenowe z kostki.',
-    podstrona: '/brukarstwo/',
+    klucz: "brukarstwo",
+    ikona: "pavement",
+    przycisk: "brukarstwie",
+    etykieta: "Brukarstwo",
+    podstrona: "/brukarstwo/",
   },
   {
-    klucz: 'budownictwo',
-    etykieta: 'Budownictwo',
-    opis: 'Altany, garaże blaszane i drewniane, domki narzędziowe, wiaty.',
-    podstrona: '/budownictwo/',
+    klucz: "budownictwo",
+    ikona: "brick-wall",
+    przycisk: "budownictwie",
+    etykieta: "Budownictwo",
+    podstrona: "/budownictwo/",
   },
-] as const
+] as const;
 ---
 
 <Podstrona
   tytul="Usługi i cennik - BramBruk | Biała Podlaska i okolice"
   opis="Pełna oferta i cennik BramBruk: ogrodzenia panelowe i murowane, bramy, furtki, kostka brukowa, podjazdy, budownictwo. Biała Podlaska i okolice."
 >
-  <Okruszki pozycje={[{ etykieta: 'Strona główna', sciezka: '/' }, { etykieta: 'Usługi i cennik' }]} />
+  <Okruszki
+    pozycje={[
+      { etykieta: "Strona główna", sciezka: "/" },
+      { etykieta: "Usługi i cennik" },
+    ]}
+  />
 
-  {/* ═══ SEKCJA GŁÓWNA ═══════════════════════════════════ */}
-  <section class="relative bg-brand-dark overflow-hidden">
-    <div class="absolute inset-0">
-      <Foto klucz="hero.ogrodzenia" alt="" class="w-full h-full object-cover opacity-20" />
-      <div class="absolute inset-0 bg-gradient-to-r from-brand-dark via-brand-dark/90 to-brand-dark/60"></div>
-    </div>
-    <div class="relative max-w-7xl mx-auto px-5 lg:px-10 py-16 lg:py-24">
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
-        <div>
-          <EtykietaSekcji wariant="ciemne" class="mb-3">Usługi i cennik</EtykietaSekcji>
-          <h1 class="font-display text-3xl lg:text-[42px] font-bold text-white leading-tight mb-3">
-            Zakres usług BramBruk
-          </h1>
-          <p class="border-l-2 border-brand-olive pl-4 font-display text-xl lg:text-2xl font-semibold text-brand-olive mb-6">
-            Orientacyjne widełki cenowe
-          </p>
-          <p class="text-neutral-400 leading-relaxed max-w-lg mb-8">
-            Poniżej znajdziesz przegląd wszystkich usług wraz z orientacyjnymi cenami. Dokładna wycena
-            zawsze zależy od zakresu, materiałów i lokalizacji - opisz swój projekt w formularzu.
-          </p>
+  <SekcjaHero
+    etykieta="Usługi i cennik"
+    tytul="Zakres usług BramBruk"
+    podtytul="Orientacyjne widełki cenowe"
+    opis="Poniżej znajdziesz przegląd wszystkich usług wraz z orientacyjnymi cenami. Dokładna wycena zawsze zależy od zakresu, materiałów i lokalizacji - opisz swój projekt w formularzu."
+    foto="hero.ogrodzenia"
+  >
+    <Fragment slot="akcje">
+      <Przycisk href="/wycena/" rozmiar="lg" ikona="receipt-text"
+        >Bezpłatna wycena</Przycisk
+      >
+      <Przycisk
+        href="/realizacje/"
+        wariant="secondary"
+        rozmiar="lg"
+        ikona="images">Nasze realizacje</Przycisk
+      >
+    </Fragment>
 
-          <div class="flex flex-wrap gap-3 mb-8">
-            <Przycisk href="/wycena/" rozmiar="lg" ikona="receipt-text">Bezpłatna wycena</Przycisk>
-            <Przycisk href="/realizacje/" wariant="secondary" rozmiar="lg" ikona="images">Nasze realizacje</Przycisk>
-          </div>
+    {
+      /* Typy usług są jednocześnie spisem treści podstrony i skrótem do
+        właściwej grupy. Bez chevronów: to odnośniki do miejsca niżej
+        na stronie, a nie przyciski czegoś, co się rozwija. */
+    }
+    <nav slot="dodatek" class="mt-8" aria-label="Przejdź do typu usługi">
+      <p
+        class="text-[10px] font-bold uppercase tracking-[2px] text-neutral-400 mb-3"
+      >
+        Typ usługi
+      </p>
+      <ul class="flex flex-wrap gap-2">
+        {
+          grupy.map((grupa) => (
+            <li>
+              <a
+                href={`#${grupa.klucz}`}
+                class="inline-flex items-center rounded-full border border-white/20 px-4 py-2 gap-2 text-sm font-semibold text-brand-text-xlight transition-colors hover:border-brand-olive hover:text-brand-olive"
+              >
+                <Ikona nazwa={grupa.ikona} rozmiar={14} class="shrink-0" />
+                {grupa.etykieta}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
 
-          {/* Typy usług przeniesione tutaj spod listy: są jednocześnie
-              spisem treści podstrony i skrótem do właściwej grupy. */}
-          <nav aria-label="Przejdź do typu usługi">
-            <p class="text-[10px] font-bold uppercase tracking-[2px] text-neutral-400 mb-3">Typ usługi</p>
-            <ul class="flex flex-wrap gap-2">
-              {
-                grupy.map((grupa) => (
-                  <li>
-                    <a
-                      href={`#${grupa.klucz}`}
-                      class="inline-flex items-center gap-2 rounded-full border border-white/20 px-4 py-2 text-sm font-semibold text-brand-text-xlight transition-colors hover:border-brand-olive hover:text-brand-olive"
-                    >
-                      {grupa.etykieta}
-                      <Ikona nazwa="chevron-down" rozmiar={14} class="shrink-0" />
-                    </a>
-                  </li>
-                ))
-              }
-            </ul>
-          </nav>
-        </div>
+    <Foto
+      slot="obok"
+      klucz="hero.uslugi-obok"
+      class="w-full h-[340px] object-cover rounded-2xl shadow-2xl shadow-black/50"
+    />
+  </SekcjaHero>
 
-        <div class="hidden lg:block">
-          <Foto klucz="hero.uslugi-obok" class="w-full h-[320px] object-cover rounded-2xl" />
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section id="main-content" class="bg-brand-bg py-12 lg:py-16">
+  <section id="main-content" class="tlo-siatka bg-brand-bg py-12 lg:py-16">
     <div class="max-w-7xl mx-auto px-5 lg:px-10">
       <div
-        class="mb-10 px-5 py-4 rounded-xl bg-brand-section border border-brand-border/60 text-sm text-brand-text-light"
+        class="mb-10 px-3 py-4 rounded-xl bg-brand-section border border-brand-border/60 text-sm text-brand-text-light"
       >
-        <div class="font-display text-base font-bold text-brand-text pb-1">Uwaga!</div>
-        Ceny są wyłącznie orientacyjne i nie stanowią oferty sprzedażowej. Ostateczna kwota zależy od
-        zakresu prac, użytych materiałów i specyfiki terenu.
+        <div class="font-display text-base font-bold text-brand-text pb-1">
+          Uwaga!
+        </div>
+        Ceny są wyłącznie orientacyjne i nie stanowią oferty sprzedażowej. Ostateczna
+        kwota zależy od zakresu prac, użytych materiałów i specyfiki terenu.
         <div class="mt-2"></div>
-        <a href="/wycena/" class="text-brand-sage font-medium hover:underline">Zapytaj o dokładną wycenę →</a>
+        <a href="/wycena/" class="text-brand-sage font-medium hover:underline"
+          >Zapytaj o dokładną wycenę →</a
+        >
       </div>
 
       {
         grupy.map((grupa, indeks) => (
-          <div id={grupa.klucz} class:list={['scroll-mt-24', indeks > 0 && 'mt-14 lg:mt-20']}>
+          <div
+            id={grupa.klucz}
+            class:list={["scroll-mt-24", indeks > 0 && "mt-14 lg:mt-20"]}
+          >
             {/* Nazwa typu i przycisk do jego podstrony stoją w jednym
                 wierszu, po przeciwnych stronach - ten sam układ, co przy
                 „Zobacz wszystkie realizacje" na pozostałych podstronach. */}
             <div class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between mb-6">
               <div>
                 <EtykietaSekcji>Co oferujemy</EtykietaSekcji>
-                <h2 class="font-display text-2xl lg:text-3xl font-bold text-brand-text mt-2">{grupa.etykieta}</h2>
-                <p class="text-sm text-brand-text-light mt-2 max-w-xl">{grupa.opis}</p>
+                <h2 class="font-display text-2xl lg:text-3xl font-bold text-brand-text mt-2">
+                  {grupa.etykieta}
+                </h2>
               </div>
+              {/* Opis grupy stał tu wcześniej jednym zdaniem i powtarzał
+                  to, co widać w kartach pod nim - dwa razy to samo, raz
+                  prozą, raz konkretem. Zostaje konkret. */}
               <Przycisk
                 href={grupa.podstrona}
                 wariant="outline"
                 rozmiar="sm"
-                ikona="arrow-right"
-                ikonaPo="prawo"
+                ikona={grupa.ikona}
                 class="self-start sm:self-end shrink-0"
               >
-                Zobacz {grupa.etykieta.toLowerCase()}
+                Szczegóły o {grupa.przycisk}
               </Przycisk>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
               {kartyUslug[grupa.klucz].map((karta, i) => (
                 <Odslon wariant="up" zwloka={i * 60}>
-                  <KartaUslugi tytul={karta.tytul} opis={karta.opis} foto={karta.foto} href={karta.href}>
+                  <KartaUslugi
+                    tytul={karta.tytul}
+                    opis={karta.opis}
+                    foto={karta.foto}
+                    href={karta.href}
+                  >
                     {/* Odznaka ceny: pełna oliwka z ciemnym napisem (9,22:1).
                         Wcześniej był to oliwkowy napis na przyciemnionym
                         zdjęciu - czyli kontrast zależny od tego, co akurat
@@ -161,8 +184,14 @@ const grupy = [
                       slot="odznaka"
                       class="absolute top-3 right-3 z-10 rounded-lg bg-brand-olive px-3 py-1.5 text-right shadow-md shadow-black/20"
                     >
-                      <span class="block text-sm font-bold leading-tight text-brand-dark">{karta.cena}</span>
-                      {karta.nota && <span class="block text-[11px] leading-tight text-brand-dark/80">{karta.nota}</span>}
+                      <span class="block text-sm font-bold leading-tight text-brand-dark">
+                        {karta.cena}
+                      </span>
+                      {karta.nota && (
+                        <span class="block text-[11px] leading-tight text-brand-dark/80">
+                          {karta.nota}
+                        </span>
+                      )}
                     </div>
                   </KartaUslugi>
                 </Odslon>
@@ -175,7 +204,7 @@ const grupy = [
   </section>
 
   <BanerCta
-    tytul="Widełki to nie wycena. Chcesz konkret?"
+    tytul="Widełki to nie wycena. Potrzebujesz konkretów?"
     opis="Ceny wyżej pokazują rząd wielkości. Dokładna kwota zależy od wymiarów, terenu i materiału - opisz projekt, a policzymy go dla Twojej posesji."
   />
 </Podstrona>

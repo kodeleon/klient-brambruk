@@ -1,0 +1,46 @@
+/**
+ * SEKCJA GŁÓWNA - tło, które zależy od szerokości ekranu.
+ *
+ * ┌── DWA RÓŻNE TŁA, NIE JEDNO SKALOWANE ──────────────────────────────┐
+ * │ SZEROKI EKRAN: zdjęcia w tle NIE MA w ogóle. Fotografia stoi obok   │
+ * │ treści, w prawej kolumnie, gdzie widać ją w całości. Tłem jest      │
+ * │ czysta płaszczyzna `brand-dark` z siatką techniczną i jednym        │
+ * │ punktem światła - statycznie, bez ruchu.                            │
+ * │                                                                     │
+ * │ WĄSKI EKRAN: prawa kolumna znika, więc zdjęcie przenosi się na tło  │
+ * │ całej sekcji, a efekty z szerokiego ekranu są wyłączone. Nad        │
+ * │ zdjęciem stoi gradient w kolorze sekcji: po lewej, pod tekstem,     │
+ * │ całkowicie kryjący, po prawej schodzący do 85%.                     │
+ * │                                                                     │
+ * │ ⚠️ 85%, NIE MNIEJ. Fotografii nie da się wybrać kontrastu z góry -  │
+ * │ jasne niebo za tekstem to 2,4:1 przy gradiencie schodzącym do 60%.  │
+ * │ Przy 85% biały napis ma ~5:1 nawet nad białą plamą, więc treść jest │
+ * │ czytelna niezależnie od tego, jakie zdjęcie wejdzie w to miejsce.   │
+ * └─────────────────────────────────────────────────────────────────────┘
+ */
+
+.sekcja-hero__maska {
+  background: linear-gradient(100deg,
+      var(--color-brand-dark) 0%,
+      var(--color-brand-dark) 38%,
+      color-mix(in srgb, var(--color-brand-dark) 92%, transparent) 62%,
+      color-mix(in srgb, var(--color-brand-dark) 35%, transparent) 100%);
+}
+
+/**
+ * Siatka architektoniczna na szerokim ekranie. Statyczna - to jest rysunek
+ * techniczny pod treścią, a nie element, który ma się ruszać.
+ */
+.sekcja-hero__siatka {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64'%3E%3Cpath d='M0 .5H64M.5 0V64' fill='none' stroke='%23ffffff' stroke-width='1'/%3E%3C/svg%3E");
+  background-size: 64px 64px;
+  opacity: 0.05;
+  mask-image: radial-gradient(70% 90% at 100% 40%, #000 0%, transparent 78%);
+}
+
+/** Jeden punkt światła w prawym górnym rogu - ten sam gest, co w cennikach. */
+.sekcja-hero__swiatlo {
+  background: radial-gradient(50% 60% at 92% 10%,
+      color-mix(in srgb, var(--color-brand-olive) 11%, transparent) 0%,
+      transparent 70%);
+}

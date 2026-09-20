@@ -1,0 +1,39 @@
+---
+/**
+ * WYJŚCIE AWARYJNE POD FAQ - „nie znalazłeś odpowiedzi, zadzwoń".
+ *
+ * Wydzielone z `SekcjaFaq.astro`, bo ten sam blok stoi w dwóch miejscach
+ * siatki zależnie od szerokości ekranu: przy dwóch kolumnach pod nagłówkiem
+ * po lewej, przy jednej - pod listą pytań, na końcu sekcji. O tym, która
+ * kopia się pokazuje, decyduje `Przenoszony` po stronie sekcji; tutaj
+ * komponent nie wie nic o układzie - także o tym, że jest wyśrodkowany.
+ *
+ * Kopia ukryta przez `display:none` nie istnieje dla czytników ekranu ani
+ * dla kolejności fokusu, więc numer telefonu jest ogłaszany raz.
+ */
+import { dane } from "../../config/dane";
+import Przycisk from "./Przycisk.astro";
+---
+
+<p class="font-display text-base font-bold text-brand-text mb-1">
+  Masz więcej pytań?
+</p>
+<p class="text-sm text-brand-text-light leading-relaxed mb-5">
+  Zadzwoń - odpowiemy w kilka minut, bez formularzy i bez czekania.
+</p>
+<Przycisk
+  href={`tel:${dane.telefonHref}`}
+  rozmiar="md"
+  ikona="phone"
+  class="w-auto"
+>
+  {dane.telefon}
+</Przycisk>
+{
+  /* Godziny w dwóch wierszach: tydzień i sobota to dwie różne
+      informacje, a sklejone kropką czytają się jak jedna. */
+}
+<p class="mt-4 text-xs text-brand-text-light">
+  <span class="block">{dane.godzinyTydzien}</span>
+  <span class="block">{dane.godzinySobota}</span>
+</p>

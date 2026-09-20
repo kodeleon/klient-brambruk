@@ -16,22 +16,22 @@
  * │ nie na fotografii.                                                   │
  * └──────────────────────────────────────────────────────────────────────┘
  */
-import Ikona from '../icons/Ikona.astro'
-import Foto from '../media/Foto.astro'
-import type { NazwaIkony } from '../icons/ikony'
+import Ikona from "../icons/Ikona.astro";
+import Foto from "../media/Foto.astro";
+import type { NazwaIkony } from "../icons/ikony";
 
 interface Props {
-  tytul: string
-  opis: string
+  tytul: string;
+  opis: string;
   /** Klucz zdjęcia z manifestu mediów. */
-  foto: string
-  href?: string
+  foto: string;
+  href?: string;
   /** Rodzaje usług z tego zakresu - pasek na dole zdjęcia. */
-  tagi?: readonly string[]
+  tagi?: readonly string[];
   /** Napis odnośnika na dole karty. */
-  cta?: string
-  ikonaCta?: NazwaIkony
-  class?: string
+  cta?: string;
+  ikonaCta?: NazwaIkony;
+  class?: string;
 }
 const {
   tytul,
@@ -39,13 +39,13 @@ const {
   foto,
   href,
   tagi = [],
-  cta = 'Zobacz szczegóły',
-  ikonaCta = 'arrow-right',
-  class: klasa = '',
-} = Astro.props
+  cta = "Zobacz szczegóły",
+  ikonaCta = "arrow-right",
+  class: klasa = "",
+} = Astro.props;
 
-const klasy = `group block relative bg-brand-card rounded-2xl border border-brand-border/60 overflow-hidden shadow-sm shadow-black/[0.04] hover:shadow-md hover:shadow-black/[0.07] hover:border-brand-olive/30 transition-all duration-300 ${klasa}`
-const Znacznik = href ? 'a' : 'div'
+const klasy = `group block relative bg-brand-card rounded-2xl border border-brand-border/60 overflow-hidden shadow-sm shadow-black/[0.04] hover:shadow-md hover:shadow-black/[0.07] hover:border-brand-olive/30 transition-all duration-300 ${klasa}`;
+const Znacznik = href ? "a" : "div";
 ---
 
 <Znacznik class={klasy} href={href}>
@@ -70,14 +70,20 @@ const Znacznik = href ? 'a' : 'div'
     }
   </div>
 
-  <div class="p-5 lg:p-6">
-    <h3 class="font-display text-lg font-bold text-brand-text mb-1.5">{tytul}</h3>
+  <div class="px-3 py-4 lg:px-3.5 lg:py-5">
+    <h3 class="font-display text-lg font-bold text-brand-text mb-1.5">
+      {tytul}
+    </h3>
     <p class="text-sm text-brand-text-light mb-4 leading-relaxed">{opis}</p>
     {
       href && (
         <span class="inline-flex items-center gap-1.5 text-brand-sage text-sm font-semibold group-hover:gap-2.5 transition-all duration-300">
           {cta}
-          <Ikona nazwa={ikonaCta} rozmiar={14} class="transition-transform group-hover:translate-x-1" />
+          <Ikona
+            nazwa={ikonaCta}
+            rozmiar={14}
+            class="transition-transform group-hover:translate-x-1"
+          />
         </span>
       )
     }
