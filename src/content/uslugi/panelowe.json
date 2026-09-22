@@ -1,0 +1,100 @@
+{
+  "meta": {
+    "tytul": "Ogrodzenia panelowe 2D i 3D - BramBruk | Biała Podlaska i okolice",
+    "opis": "Ogrodzenia panelowe 2D i 3D z montażem. Dobór, widełki cenowe i realizacja w Białej Podlaskiej, Międzyrzecu Podlaskim, Terespolu i okolicach."
+  },
+  "okruszek": "Panelowe",
+  "okruszekNadrzedny": {
+    "etykieta": "Ogrodzenia",
+    "trasa": "ogrodzenia"
+  },
+  "etykieta": "Ogrodzenia panelowe",
+  "tytul": "Ogrodzenia panelowe 2D i 3D",
+  "podtytul": "Ocynk ogniowy i malowanie proszkowe",
+  "nazwaPojedyncza": "ogrodzenie panelowe",
+  "nazwaMnoga": "ogrodzenia panelowe",
+  "fotoHero": "usluga.panelowe",
+  "wstep": "Ogrodzenia panelowe to najpopularniejsze rozwiązanie wśród naszych klientów. Łączą trwałość, estetykę i przystępną cenę. Oferujemy panele 2D i 3D w pełnej gamie kolorów RAL, z montażem na podmurówce lub bezpośrednio w gruncie.",
+  "cechy": [
+    {
+      "ikona": "shield-check",
+      "tytul": "Trwałość",
+      "opis": "Ocynk ogniowy + malowanie proszkowe RAL - ponad 10 lat bez konserwacji"
+    },
+    {
+      "ikona": "zap",
+      "tytul": "Szybki montaż",
+      "opis": "Standardowe ogrodzenie 50–100 mb w 2–5 dni roboczych"
+    },
+    {
+      "ikona": "layers",
+      "tytul": "Warianty",
+      "opis": "Panel 2D (płaski, ekonomiczny) i 3D (z przetłoczeniami, sztywniejszy)"
+    },
+    {
+      "ikona": "banknote",
+      "tytul": "Od {cena.panel-2d.min}",
+      "opis": "Panel 2D z materiałem i robocizną; panel 3D od {cena.panel-3d.min}"
+    }
+  ],
+  "tresc": {
+    "tytul1": "Gdzie i na jakich posesjach montujemy panele",
+    "tekst1": "Ogrodzenia panelowe montujemy w promieniu 100 km od Białej Podlaskiej, czyli w województwie lubelskim, podlaskim i mazowieckim - od Międzyrzeca Podlaskiego i Terespola po Siedlce, Łuków i Lublin. Panele ogrodzeniowe sprawdzają się na posesje, działki budowlane, obiekty firmowe i tereny publiczne. Stosujemy wyłącznie panele ocynkowane ogniowo i malowane proszkowo, co zapewnia odporność na korozję i wieloletnią trwałość bez konserwacji.",
+    "tytul2": "Panel 2D czy 3D - który wybrać?",
+    "tekst2": "Panel 3D posiada charakterystyczne fałdy (przetłoczenia), które zwiększają jego sztywność i wytrzymałość. Jest bardziej estetyczny i lepiej sprawdza się jako ogrodzenie frontowe. Panel 2D jest płaski i tańszy - idealny na ogrodzenia boczne, tylne lub tymczasowe. Oba typy dostępne w wysokościach od 103 do 203 cm i w pełnej palecie kolorów RAL.",
+    "tytul3": "Wysokość, kolor i teren pochyły",
+    "tekst3": "Panele są dostępne w wysokościach od 103 do 203 cm. Do ogrodzenia frontowego najczęściej wybierany jest panel 153 albo 173 cm, na granicę między sąsiadami wystarcza zwykle 123 cm. Kolory dobieramy z pełnej palety RAL, przy czym trzy powtarzają się najczęściej: antracyt (RAL 7016), zielony (RAL 6005) i czarny (RAL 9005). Na terenie pochyłym montujemy panele schodkowo, przęsło po przęśle na różnych poziomach - alternatywą jest wyrównanie gruntu wzdłuż ogrodzenia, co bywa droższe od samego ogrodzenia."
+  },
+  "kroki": {
+    "tytul": "Montaż panelu krok po kroku",
+    "wstep": "Panel trzyma się dokładnie tak, jak osadzony jest słupek pod nim. Dlatego kolejność prac jest zawsze ta sama:",
+    "lista": [
+      "pomiar i wytyczenie linii ogrodzenia razem z miejscami bram i furtek",
+      "wiercenie otworów pod słupki, poniżej granicy przemarzania gruntu",
+      "osadzenie i wypoziomowanie słupków w betonie",
+      "montaż podmurówki prefabrykowanej albo wylanie jej na miejscu",
+      "mocowanie paneli obejmami, z zachowaniem równego prześwitu nad gruntem",
+      "zabezpieczenie farbą cynkową każdego miejsca cięcia panelu",
+      "montaż kapturków na słupki i uprzątnięcie terenu"
+    ]
+  },
+  "sprzet": "Metodę osadzenia słupków dobieramy do gruntu. Tam, gdzie grunt na to pozwala, otwory wiercimy wiertnicą: otwór ma wtedy równe ściany, a beton wiąże w pełnym przekroju. W gruncie nasypowym albo kamienistym wiertnica nie wejdzie - wtedy kopiemy ręcznie i poszerzamy otwór tak, żeby osadzenie było równie mocne. Linię i wysokości ustawiamy niwelatorem laserowym, więc przęsła nie falują na długim odcinku. Panele tniemy szlifierką z tarczą do stali nierdzewnej i od razu zabezpieczamy krawędź - to właśnie od niezabezpieczonych cięć zaczyna się rdza na ogrodzeniach panelowych.",
+  "cennikCzynniki": [
+    "wysokość i typ panelu: 2D czy 3D",
+    "rodzaj podmurówki albo jej brak",
+    "długość ogrodzenia i wynikająca z niej liczba słupków",
+    "różnice poziomów wzdłuż linii ogrodzenia",
+    "demontaż i wywóz starego ogrodzenia"
+  ],
+  "galeria": [
+    {
+      "foto": "realizacja.01",
+      "tytul": "Ogrodzenie panelowe 3D",
+      "lokalizacja": "Biała Podlaska"
+    },
+    {
+      "foto": "realizacja.07",
+      "tytul": "Panel z podmurówką",
+      "lokalizacja": "Sławacinek"
+    },
+    {
+      "foto": "realizacja.08",
+      "tytul": "Ogrodzenie panelowe 2D",
+      "lokalizacja": "Cicibór"
+    }
+  ],
+  "faq": [
+    {
+      "pytanie": "Ile kosztuje metr bieżący panelu z montażem?",
+      "odpowiedz": "Ogrodzenie panelowe 2D to {cena.panel-2d.zakres}, a 3D {cena.panel-3d.zakres} - materiał plus robocizna. Sam materiał to {cena.panel-2d.material} (2D) i {cena.panel-3d.material} (3D), sama robocizna {cena.panel-2d.montaz}. Na cenę wpływa wysokość, kolor RAL i rodzaj podłoża."
+    },
+    {
+      "pytanie": "Jak długo trwa montaż na działce 1000 m²?",
+      "odpowiedz": "Przy typowej działce o obwodzie ~130 mb, montaż ogrodzenia panelowego (bez podmurówki) zajmuje ok. 3–5 dni roboczych. Z podmurówką należy doliczyć dodatkowe 2–3 dni na wylanie i wiązanie betonu."
+    },
+    {
+      "pytanie": "Czy panel 3D jest lepszy od 2D?",
+      "odpowiedz": "Panel 3D jest sztywniejszy i bardziej estetyczny dzięki przetłoczeniom - lepszy na ogrodzenie frontowe. Panel 2D jest tańszy i płaski - sprawdza się na ogrodzenia boczne i tylne. Oba typy są ocynkowane i malowane proszkowo."
+    }
+  ]
+}

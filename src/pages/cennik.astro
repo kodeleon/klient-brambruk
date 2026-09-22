@@ -2,195 +2,199 @@
 /**
  * /cennik/ - widok administracyjny: wszystkie ceny używane w serwisie.
  *
- * Odpowiednik `code/src/pages/Cennik.jsx`. Podstrona nie jest linkowana
- * z nawigacji ani ze stopki i nie ma jej w mapie strony (`pozaMapaStrony`
- * w `src/config/site.ts`). Dostaje `noindex` - tak jak w starym serwisie,
- * gdzie wypadała poza `ROUTES_SEO` i dostawała `noindex` z fallbacku.
+ * Podstrona nie jest linkowana z nawigacji ani ze stopki i nie ma jej w mapie
+ * strony (`pozaMapaStrony` w `src/config/site.ts`). Dostaje `noindex` - tak
+ * jak w starym serwisie.
+ *
+ * ┌── CO POKAZUJE PO PRZEBUDOWIE CENNIKA ──────────────────────────────┐
+ * │ Jedną sekcję NA PODSTRONĘ, w kolejności z pliku. To jest cały sens  │
+ * │ podziału po adresach: klient otwiera /ogrodzenia/panelowe/, widzi   │
+ * │ tabelę, wraca tutaj i ma dokładnie te same wiersze pod nagłówkiem   │
+ * │ „panelowe". Podział typ → rodzaj, który tu był wcześniej, nie       │
+ * │ odpowiadał żadnemu adresowi - nie było jak sprawdzić, gdzie na      │
+ * │ stronie stoi kwota, którą się właśnie zmienia.                      │
+ * │                                                                     │
+ * │ Kolumna RAZEM jest liczona, nie przechowywana. Nie da się jej       │
+ * │ poprawić wprost i to jest cel: rozjazd sumy ze składowymi siedział  │
+ * │ tu w sześciu pozycjach naraz.                                       │
+ * │                                                                     │
+ * │ Kolumna „widoczna też na" mówi, które INNE podstrony pokazują tę    │
+ * │ pozycję przez `przeglad`. Zmiana kwoty rusza je wszystkie naraz.    │
+ * └─────────────────────────────────────────────────────────────────────┘
  *
  * ⚠️ To nadal jest strona PUBLICZNA, tylko nielinkowana. Zestawienie cen
- * zakupu obok sprzedażowych pod zgadywalnym adresem to pozycja do decyzji
- * po migracji (MIGRACJA-audyt.md, sekcja 10).
+ * pod zgadywalnym adresem to pozycja do decyzji po migracji
+ * (MIGRACJA-audyt.md, sekcja 10).
  */
 import Podstrona from '../layouts/Podstrona.astro'
-import { cennikHubow, cennikUslug, kartyUslug } from '../data/cennik'
+import { cennikPelny, cena, pozycja } from '../lib/cennik'
+import { wpis } from '../lib/tresc'
+import { trasa, trasy } from '../config/routes'
 import EtykietaSekcji from '../components/ui/EtykietaSekcji.astro'
 import Ikona from '../components/icons/Ikona.astro'
 
-const opisyUslug: Record<string, { etykieta: string; adres: string }> = {
-  panelowe: { etykieta: 'Ogrodzenia panelowe 2D/3D', adres: '/ogrodzenia/panelowe/' },
-  murowane: { etykieta: 'Ogrodzenia murowane', adres: '/ogrodzenia/murowane/' },
-  siatka: { etykieta: 'Siatka ogrodzeniowa', adres: '/ogrodzenia/siatka/' },
-  'bramy-przesuwne': { etykieta: 'Bramy przesuwne', adres: '/ogrodzenia/bramy-przesuwne/' },
-  'bramy-dwuskrzydlowe': { etykieta: 'Bramy dwuskrzydłowe', adres: '/ogrodzenia/bramy-dwuskrzydlowe/' },
-  furtki: { etykieta: 'Furtki ogrodzeniowe', adres: '/ogrodzenia/furtki/' },
-  'kostka-brukowa': { etykieta: 'Kostka brukowa', adres: '/brukarstwo/kostka-brukowa/' },
-  podjazdy: { etykieta: 'Podjazdy z kostki', adres: '/brukarstwo/podjazdy/' },
-  'chodniki-tarasy': { etykieta: 'Chodniki, alejki i tarasy', adres: '/brukarstwo/chodniki-tarasy/' },
+const strona = await wpis('strony', 'cennik')
+const zrodlo = cennikPelny()
+
+/**
+ * Odwrotność `przeglad`: która pozycja pokazuje się jeszcze gdzie indziej.
+ * Zbierane raz, bo inaczej każda sekcja przeglądałaby cały plik od nowa.
+ */
+const doklejona = new Map<string, string[]>()
+for (const { klucz, strona: rekord } of zrodlo) {
+  for (const id of rekord.przeglad ?? []) {
+    doklejona.set(id, [...(doklejona.get(id) ?? []), klucz])
+  }
 }
 
-const opisyHubow: Record<string, { etykieta: string; adres: string }> = {
-  ogrodzenia: { etykieta: 'Ogrodzenia i bramy', adres: '/ogrodzenia/' },
-  brukarstwo: { etykieta: 'Brukarstwo', adres: '/brukarstwo/' },
-  budownictwo: { etykieta: 'Budownictwo', adres: '/budownictwo/' },
-}
+const skladnik = (id: string, ktory: 'material' | 'montaz'): string =>
+  pozycja(id)[ktory] ? cena(id, ktory) : '—'
+
+const strony = zrodlo.map(({ klucz, strona: rekord }) => ({
+  klucz,
+  etykieta: rekord.etykieta,
+  tytulPrzegladu: rekord.tytulPrzegladu ?? null,
+  sciezka: trasa(klucz),
+  przeglad: rekord.przeglad ?? [],
+  pozycje: rekord.pozycje.map((p) => ({
+    id: p.id,
+    usluga: p.usluga,
+    wyliczenie: p.wyliczenie ? `${p.wyliczenie.z} × ${p.wyliczenie.mnoznik}` : null,
+    material: skladnik(p.id, 'material'),
+    montaz: skladnik(p.id, 'montaz'),
+    razem: cena(p.id),
+    gdzie: (doklejona.get(p.id) ?? []).filter((gdzie) => gdzie !== klucz),
+  })),
+}))
+
+const liczbaWyliczanych = strony.reduce(
+  (suma, s) => suma + s.pozycje.filter((p) => p.wyliczenie).length,
+  0
+)
+const liczbaEdytowalnych =
+  strony.reduce((suma, s) => suma + s.pozycje.length, 0) - liczbaWyliczanych
 ---
 
-<Podstrona
-  tytul="Cennik - widok administracyjny - BramBruk"
-  opis="Zestawienie wszystkich cen używanych w serwisie BramBruk. Widok roboczy, nielinkowany z nawigacji."
-  noindex
->
-  <div class="max-w-4xl mx-auto px-5 lg:px-10 py-10 space-y-16">
+<Podstrona tytul={strona.meta.tytul} opis={strona.meta.opis} noindex>
+  <div class="max-w-5xl mx-auto px-5 lg:px-10 py-10 space-y-14">
     <div>
-      <EtykietaSekcji class="mb-2">Widok administracyjny</EtykietaSekcji>
+      <EtykietaSekcji class="mb-2">{strona.etykieta}</EtykietaSekcji>
       <h1 class="font-display text-2xl lg:text-3xl font-bold text-brand-text mb-2">
-        Wszystkie ceny używane na stronie
+        {strona.tytul}
       </h1>
       <p class="text-sm text-brand-text-light">
-        Źródło: <code class="bg-brand-section px-1.5 py-0.5 rounded text-brand-text font-mono text-xs"
-          >src/data/cennik.ts</code
+        {strona.zrodloPrzed}
+        <code class="bg-brand-section px-1.5 py-0.5 rounded text-brand-text font-mono text-xs"
+          >src/content/cennik.json</code
         >
-        · Trzy eksporty odpowiadają trzem miejscom na stronie.
+        · {`${strony.length} ${strona.zrodloStron}`} ·
+        {` ${liczbaEdytowalnych} ${strona.zrodloPo}`} ·
+        {` ${liczbaWyliczanych} ${strona.zrodloWyliczanych}`}
       </p>
+      <p class="mt-2 text-xs text-brand-text-light">{strona.legenda}</p>
     </div>
 
-    <section>
-      <div class="flex items-center gap-4 mb-6">
-        <div class="h-px flex-1 bg-brand-border"></div>
-        <div class="text-center">
-          <div class="text-[10px] uppercase tracking-widest text-brand-text-light font-semibold mb-0.5">
-            eksport kartyUslug
-          </div>
-          <div class="font-display text-sm font-bold text-brand-text">Karty usług ze znacznikami cen</div>
-        </div>
-        <div class="h-px flex-1 bg-brand-border"></div>
-      </div>
-      <p class="text-xs text-brand-text-light mb-5">
-        Wyświetlane jako kafelki z ceną w prawym górnym rogu na stronie
-        <a href="/uslugi/" class="inline-flex items-center gap-1 text-xs text-brand-sage font-medium hover:underline">
-          /uslugi/ <Ikona nazwa="external-link" rozmiar={11} />
-        </a>.
-      </p>
-
-      {
-        Object.entries(kartyUslug).map(([kategoria, karty]) => (
-          <div class="mb-6">
-            <div class="text-xs font-bold uppercase tracking-wider text-brand-text mb-2 px-1">{kategoria}</div>
-            <div class="bg-brand-card rounded-lg border border-brand-border overflow-hidden text-sm">
-              <div class="grid grid-cols-[1fr_auto_auto] text-[11px] uppercase tracking-wider text-brand-text-light font-semibold px-4 py-2 border-b border-brand-border bg-brand-section">
-                <span>Nazwa karty</span>
-                <span class="text-right pr-6">Cena</span>
-                <span class="text-right">Nota</span>
+    {
+      strony.map((s) => (
+        <section>
+          <div class="flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between mb-3">
+            <div>
+              <div class="text-[10px] uppercase tracking-widest text-brand-text-light font-semibold mb-0.5">
+                {strona.etykietaStrony} · {s.klucz}
               </div>
-              {karty.map((karta, i) => (
-                <div
-                  class:list={[
-                    'grid grid-cols-[1fr_auto_auto] items-center px-4 py-3',
-                    i !== karty.length - 1 && 'border-b border-brand-border',
-                    i % 2 === 0 ? 'bg-brand-card' : 'bg-brand-section',
-                  ]}
-                >
-                  <span class="text-brand-text">{karta.tytul}</span>
-                  <span class="font-semibold text-brand-olive-text whitespace-nowrap pr-6">{karta.cena}</span>
-                  <span class="text-brand-text-light text-xs whitespace-nowrap">{karta.nota || '—'}</span>
+              <div class="font-display text-base font-bold text-brand-text">{s.etykieta}</div>
+              {s.tytulPrzegladu && (
+                <div class="text-xs text-brand-text-light mt-0.5">
+                  {strona.tytulPrzegladuPrzed} „{s.tytulPrzegladu}"
                 </div>
+              )}
+            </div>
+            <a
+              href={s.sciezka}
+              class="inline-flex items-center gap-1 text-xs text-brand-sage font-medium hover:underline"
+            >
+              {s.sciezka} <Ikona nazwa="external-link" rozmiar={11} />
+            </a>
+          </div>
+
+          {/* Przewijanie w poziomie, nie `overflow-hidden`: pięć kolumn nie
+              mieści się na telefonie, a ucinanie ich po cichu zabiera akurat
+              tę ostatnią - „widoczna też na" - czyli jedyną, której nie da
+              się odtworzyć z drugiej strony. To widok roboczy: lepiej, żeby
+              tabela się przesuwała, niż żeby dane zniknęły.
+
+              `tabindex="0"` jest obowiązkowe przy przewijanym obszarze bez
+              własnych elementów aktywnych: bez niego do prawej części tabeli
+              nie da się dostać z klawiatury (axe: scrollable-region-focusable). */}
+          <div
+            role="region"
+            aria-label={s.etykieta}
+            tabindex="0"
+            class="bg-brand-card rounded-lg border border-brand-border overflow-x-auto"
+          >
+            <table class="w-full min-w-[34rem] text-sm">
+              <thead>
+                <tr class="text-[11px] uppercase tracking-wider text-brand-text-light bg-brand-section border-b border-brand-border">
+                  <th class="px-4 py-2 text-left font-semibold">{strona.naglowkiTabeli.pozycja}</th>
+                  <th class="px-2 py-2 text-right font-semibold">{strona.naglowkiTabeli.material}</th>
+                  <th class="px-2 py-2 text-right font-semibold">{strona.naglowkiTabeli.robocizna}</th>
+                  <th class="px-2 py-2 text-right font-semibold">{strona.naglowkiTabeli.razem}</th>
+                  <th class="px-4 py-2 text-right font-semibold">{strona.naglowkiTabeli.gdzie}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {s.pozycje.map((p, i) => (
+                  <tr
+                    class:list={[
+                      i !== s.pozycje.length - 1 && 'border-b border-brand-border',
+                      i % 2 === 0 ? 'bg-brand-card' : 'bg-brand-section',
+                    ]}
+                  >
+                    <td class="px-4 py-3 align-top">
+                      <span class="text-brand-text">{p.usluga}</span>
+                      <code class="block font-mono text-[11px] text-brand-text-light">{p.id}</code>
+                      {p.wyliczenie && (
+                        <code class="block font-mono text-[11px] text-brand-text-light">
+                          = {p.wyliczenie}
+                        </code>
+                      )}
+                    </td>
+                    <td class="px-2 py-3 text-right align-top text-xs text-brand-text-light whitespace-nowrap">
+                      {p.material}
+                    </td>
+                    <td class="px-2 py-3 text-right align-top text-xs text-brand-text-light whitespace-nowrap">
+                      {p.montaz}
+                    </td>
+                    <td class="px-2 py-3 text-right align-top font-semibold text-brand-olive-text whitespace-nowrap">
+                      {p.razem}
+                    </td>
+                    <td class="px-4 py-3 text-right align-top text-[11px] text-brand-text-light">
+                      {p.gdzie.length ? p.gdzie.join(' · ') : '—'}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          {s.przeglad.length > 0 && (
+            <p class="mt-2 text-[11px] text-brand-text-light">
+              {strona.doklejonePrzed}{' '}
+              {s.przeglad.map((id, i) => (
+                <>
+                  <code class="font-mono text-brand-text">{id}</code>
+                  {i < s.przeglad.length - 1 ? ', ' : ''}
+                </>
               ))}
-            </div>
-          </div>
-        ))
-      }
-    </section>
+            </p>
+          )}
+        </section>
+      ))
+    }
 
-    <section>
-      <div class="flex items-center gap-4 mb-6">
-        <div class="h-px flex-1 bg-brand-border"></div>
-        <div class="text-center">
-          <div class="text-[10px] uppercase tracking-widest text-brand-text-light font-semibold mb-0.5">
-            eksport cennikHubow
-          </div>
-          <div class="font-display text-sm font-bold text-brand-text">Tabele cennika na stronach kategorii</div>
-        </div>
-        <div class="h-px flex-1 bg-brand-border"></div>
-      </div>
-
-      <div class="space-y-6">
-        {
-          Object.entries(cennikHubow).map(([klucz, hub]) => (
-            <div>
-              <div class="flex items-center justify-between mb-2">
-                <span class="text-sm font-bold text-brand-text font-display">{opisyHubow[klucz].etykieta}</span>
-                <a
-                  href={opisyHubow[klucz].adres}
-                  class="inline-flex items-center gap-1 text-xs text-brand-sage font-medium hover:underline"
-                >
-                  {opisyHubow[klucz].adres} <Ikona nazwa="external-link" rozmiar={11} />
-                </a>
-              </div>
-              <div class="bg-brand-card rounded-lg border border-brand-border overflow-hidden text-sm">
-                {hub.pozycje.map((wiersz, i) => (
-                  <div
-                    class:list={[
-                      'flex items-center justify-between px-4 py-3',
-                      i !== hub.pozycje.length - 1 && 'border-b border-brand-border',
-                      i % 2 === 0 ? 'bg-brand-card' : 'bg-brand-section',
-                    ]}
-                  >
-                    <span class="text-brand-text-light">{wiersz.usluga}</span>
-                    <span class="font-semibold text-brand-olive-text whitespace-nowrap ml-6">{wiersz.cena}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          ))
-        }
-      </div>
-    </section>
-
-    <section class="pb-16">
-      <div class="flex items-center gap-4 mb-6">
-        <div class="h-px flex-1 bg-brand-border"></div>
-        <div class="text-center">
-          <div class="text-[10px] uppercase tracking-widest text-brand-text-light font-semibold mb-0.5">
-            eksport cennikUslug
-          </div>
-          <div class="font-display text-sm font-bold text-brand-text">
-            Tabele cennika na stronach szczegółowych usług
-          </div>
-        </div>
-        <div class="h-px flex-1 bg-brand-border"></div>
-      </div>
-
-      <div class="space-y-6">
-        {
-          Object.entries(cennikUslug).map(([klucz, pozycje]) => (
-            <div>
-              <div class="flex items-center justify-between mb-2">
-                <span class="text-sm font-bold text-brand-text font-display">{opisyUslug[klucz].etykieta}</span>
-                <a
-                  href={opisyUslug[klucz].adres}
-                  class="inline-flex items-center gap-1 text-xs text-brand-sage font-medium hover:underline"
-                >
-                  {opisyUslug[klucz].adres} <Ikona nazwa="external-link" rozmiar={11} />
-                </a>
-              </div>
-              <div class="bg-brand-card rounded-lg border border-brand-border overflow-hidden text-sm">
-                {pozycje.map((wiersz, i) => (
-                  <div
-                    class:list={[
-                      'flex items-center justify-between px-4 py-3',
-                      i !== pozycje.length - 1 && 'border-b border-brand-border',
-                      i % 2 === 0 ? 'bg-brand-card' : 'bg-brand-section',
-                    ]}
-                  >
-                    <span class="text-brand-text-light">{wiersz.usluga}</span>
-                    <span class="font-semibold text-brand-olive-text whitespace-nowrap ml-6">{wiersz.cena}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          ))
-        }
-      </div>
-    </section>
+    <p class="text-xs text-brand-text-light">
+      {strona.stopkaPrzed}
+      <a href={trasy.uslugi} class="text-brand-sage font-medium hover:underline">/uslugi/</a>.
+    </p>
   </div>
 </Podstrona>

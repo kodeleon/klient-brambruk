@@ -26,7 +26,11 @@ import {
   komunikatBrakBackendu,
   type Pole,
 } from './formularz'
-import { typyUslug, podtypy, opcjeTerenu, opcjeTerminu, opcjeBudzetu } from '../data/wycena'
+// Słowniki wprost z pliku treści: to moduł przeglądarki, więc nie może
+// przejść przez kolekcje Astro.
+import slowniki from '../content/wycena.json'
+
+const { typy: typyUslug, podtypy, teren: opcjeTerenu, termin: opcjeTerminu, budzet: opcjeBudzetu } = slowniki
 import { endpointy } from '../config/site'
 
 const KLUCZ_ZAPISU = 'brambruk_wycena-draft'

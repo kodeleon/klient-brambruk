@@ -1,0 +1,24 @@
+{
+  "meta": {
+    "tytul": "Cennik - widok administracyjny - BramBruk",
+    "opis": "Zestawienie wszystkich cen używanych w serwisie BramBruk. Widok roboczy, nielinkowany z nawigacji."
+  },
+  "etykieta": "Widok administracyjny",
+  "tytul": "Wszystkie ceny używane na stronie",
+  "zrodloPrzed": "Źródło:",
+  "zrodloStron": "podstron",
+  "zrodloPo": "pozycji do edycji",
+  "zrodloWyliczanych": "pozycje wyliczane",
+  "legenda": "Jedna sekcja na podstronę, w kolejności z pliku - te same wiersze, które stoją w tabeli cennika pod tym adresem. Kolumna Razem jest liczona z materiału i robocizny, nie da się jej wpisać wprost. Kolumna Widoczna też na mówi, które inne podstrony pokazują tę samą pozycję - zmiana kwoty rusza je wszystkie naraz.",
+  "etykietaStrony": "podstrona",
+  "naglowkiTabeli": {
+    "pozycja": "Pozycja",
+    "material": "Materiał",
+    "robocizna": "Robocizna",
+    "razem": "Razem",
+    "gdzie": "Widoczna też na"
+  },
+  "tytulPrzegladuPrzed": "Nagłówek tabeli na hubie -",
+  "doklejonePrzed": "Dokleja do swojej tabeli pozycje z innych podstron:",
+  "stopkaPrzed": "Pełna lista miejsc, w których stoi dana kwota, powstaje przy budowaniu w .build-state/znaczniki.json. Kafelki z cenami stoją dodatkowo na"
+}

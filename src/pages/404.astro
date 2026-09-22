@@ -13,12 +13,16 @@
 import Podstrona from '../layouts/Podstrona.astro'
 import Przycisk from '../components/ui/Przycisk.astro'
 import Ikona from '../components/icons/Ikona.astro'
-import { nawigacja } from '../config/dane'
+import nawigacja from '../content/nawigacja.json'
+import { trasa } from '../config/routes'
+import { wpis } from '../lib/tresc'
+
+const strona = await wpis('strony', '404')
 ---
 
 <Podstrona
-  tytul="Strona nie znaleziona - BramBruk"
-  opis="Pod tym adresem nic nie ma. Poniżej jest wszystko, czego zwykle się tutaj szuka."
+  tytul={strona.meta.tytul}
+  opis={strona.meta.opis}
   noindex
   kanoniczny={false}
 >
@@ -27,31 +31,36 @@ import { nawigacja } from '../config/dane'
       <div class="w-20 h-20 rounded-2xl bg-brand-olive/10 flex items-center justify-center mx-auto mb-6">
         <Ikona nazwa="construction" rozmiar={36} class="text-brand-olive-text" />
       </div>
-      <h1 class="font-display text-3xl font-bold text-brand-text mb-3">Strona nie znaleziona</h1>
+      <h1 class="font-display text-3xl font-bold text-brand-text mb-3">{strona.tytul}</h1>
       <p class="text-brand-text-light mb-8 leading-relaxed">
-        Adres mógł się zmienić albo zawiera literówkę.
-        <br />
-        Tymczasem zapraszamy do kontaktu lub skorzystania z bezpłatnej wyceny.
+        {
+          strona.opis.map((wiersz, i) => (
+            <>
+              {i > 0 && <br />}
+              {wiersz}
+            </>
+          ))
+        }
       </p>
       <div class="flex flex-wrap justify-center gap-4">
-        <Przycisk href="/wycena/" ikona="receipt-text">Bezpłatna wycena</Przycisk>
-        <Przycisk href="/" wariant="outline" ikona="home">Strona główna</Przycisk>
+        <Przycisk href={trasa('wycena')} ikona="receipt-text">{strona.przyciski.wycena}</Przycisk>
+        <Przycisk href={trasa('glowna')} wariant="outline" ikona="home">{strona.przyciski.glowna}</Przycisk>
       </div>
 
-      <nav class="mt-10" aria-label="Pozostałe podstrony">
+      <nav class="mt-10" aria-label={strona.nawigacja.etykieta}>
         <ul class="flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm">
           {
-            nawigacja.map((pozycja) => (
+            nawigacja.glowna.map((pozycja) => (
               <li>
-                <a href={pozycja.sciezka} class="text-brand-sage font-medium hover:underline">
+                <a href={trasa(pozycja.trasa)} class="text-brand-sage font-medium hover:underline">
                   {pozycja.etykieta}
                 </a>
               </li>
             ))
           }
           <li>
-            <a href="/polityka-prywatnosci/" class="text-brand-sage font-medium hover:underline">
-              Polityka prywatności
+            <a href={trasa('polityka-prywatnosci')} class="text-brand-sage font-medium hover:underline">
+              {strona.nawigacja.polityka}
             </a>
           </li>
         </ul>

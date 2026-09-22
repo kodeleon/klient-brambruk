@@ -1,0 +1,162 @@
+{
+  "meta": {
+    "tytul": "Ogrodzenia, bramy i brukarstwo - BramBruk | Biała Podlaska i okolice",
+    "opis": "Ogrodzenia panelowe, bramy, furtki i kostka brukowa w Białej Podlaskiej i okolicach. 50+ realizacji, na rynku od 2020 roku. Bezpłatna wycena w 24h."
+  },
+  "hero": {
+    "etykiety": [
+      "Ogrodzenia",
+      "Brukarstwo",
+      "Budownictwo"
+    ],
+    "tytul": "Ogrodzenia, bramy\ni brukarstwo",
+    "podtytul": "Lubelskie, podlaskie i mazowieckie",
+    "opis": "Montaż ogrodzeń panelowych, bram wjazdowych i furtek. Układanie kostki brukowej na podjazdy, chodniki i tarasy. Pracujemy w promieniu {firma.zasieg} od Białej Podlaskiej.",
+    "foto": "hero.glowna",
+    "kolaz": [
+      "hero.glowna-kolaz-1",
+      "hero.glowna-kolaz-2",
+      "hero.glowna-kolaz-3"
+    ],
+    "liczby": [
+      {
+        "wartosc": "{firma.ocenaFixly}",
+        "etykieta": "ocena na Fixly"
+      },
+      {
+        "wartosc": "{firma.realizacje}",
+        "etykieta": "realizacji"
+      },
+      {
+        "wartosc": "{firma.lata}",
+        "etykieta": "w regionie"
+      }
+    ]
+  },
+  "uslugi": {
+    "etykieta": "Nasze usługi",
+    "tytul": "Kompleksowa obsługa Twojej posesji",
+    "karty": [
+      {
+        "tytul": "Ogrodzenia i bramy",
+        "opis": "Montaż ogrodzeń panelowych, murowanych i z siatki. Bramy przesuwne, dwuskrzydłowe, furtki. Automatyka i sterowanie.",
+        "foto": "karta.glowna-ogrodzenia",
+        "trasa": "ogrodzenia"
+      },
+      {
+        "tytul": "Brukarstwo",
+        "opis": "Układanie kostki brukowej na podjazdy, chodniki, alejki ogrodowe i tarasy. Pełna realizacja z podbudową.",
+        "foto": "karta.glowna-brukarstwo",
+        "trasa": "brukarstwo"
+      },
+      {
+        "tytul": "Budownictwo",
+        "opis": "Altany ogrodowe, garaże blaszane i drewniane, domki narzędziowe, wiaty. Solidna konstrukcja, terminowy montaż.",
+        "foto": "karta.glowna-budownictwo",
+        "trasa": "budownictwo"
+      }
+    ]
+  },
+  "realizacje": {
+    "etykieta": "Realizacje",
+    "tytul": "Nasze ostatnie projekty",
+    "galeria": [
+      {
+        "foto": "realizacja.01",
+        "tytul": "Ogrodzenie panelowe + brama",
+        "lokalizacja": "Biała Podlaska"
+      },
+      {
+        "foto": "realizacja.02",
+        "tytul": "Podjazd z kostki",
+        "lokalizacja": "Międzyrzec Podlaski"
+      },
+      {
+        "foto": "realizacja.08",
+        "tytul": "Brama przesuwna",
+        "lokalizacja": "Janów Podlaski"
+      },
+      {
+        "foto": "realizacja.04",
+        "tytul": "Altana ogrodowa",
+        "lokalizacja": "Terespol"
+      },
+      {
+        "foto": "realizacja.07",
+        "tytul": "Furtka i przęsła",
+        "lokalizacja": "Radzyń Podlaski"
+      },
+      {
+        "foto": "realizacja.09",
+        "tytul": "Chodniki i obrzeża",
+        "lokalizacja": "Sławacinek Stary"
+      }
+    ]
+  },
+  "oFirmie": {
+    "etykieta": "O firmie",
+    "tytul": "{firma.nazwa} - od {firma.lata} w regionie",
+    "akapity": [
+      "Jesteśmy lokalną firmą z Białej Podlaskiej specjalizującą się w ogrodzeniach, brukarstwie i budownictwie lekkim. Każdego roku realizujemy dziesiątki projektów dla klientów indywidualnych i przedsiębiorstw w województwie lubelskim, podlaskim i mazowieckim.",
+      "Stawiamy na jakość materiałów, terminowość i transparentną wycenę. Każdy projekt poprzedzamy bezpłatną wizją lokalną - tak żebyście Państwo dokładnie wiedzieli, co i za ile zostanie wykonane."
+    ],
+    "przycisk": "Więcej o firmie"
+  },
+  "opinie": {
+    "etykieta": "Opinie klientów",
+    "tytul": "Co mówią nasi klienci",
+    "podpisPrzed": "{firma.ocenaFixly} średnia ocen na",
+    "podpisPo": "· {firma.opinieFixly} opinii"
+  },
+  "proces": {
+    "etykieta": "Jak działamy",
+    "tytul": "Od zapytania do gotowej realizacji",
+    "akapity": [
+      "Zrealizujemy ogrodzenie, podjazd z kostki lub altanę - niezależnie od wielkości projektu. Wystarczy, że opiszesz swoje potrzeby.",
+      "Wypełnij formularz online lub zadzwoń - zadamy kilka pytań, żeby przygotować wycenę dokładnie dopasowaną do Twojej posesji i budżetu.",
+      "W ciągu 24 godzin od wysłania zgłoszenia otrzymasz orientacyjną wycenę. Następnie ustalamy termin, przyjeżdżamy i realizujemy - bez ukrytych kosztów."
+    ],
+    "kroki": [
+      {
+        "numer": "01",
+        "tytul": "Kontakt i opis projektu",
+        "opis": "Wypełnij formularz wyceny - opisz co chcesz zrealizować, podaj orientacyjne wymiary i lokalizację. Możesz też zadzwonić lub napisać e-mail."
+      },
+      {
+        "numer": "02",
+        "tytul": "Bezpłatna wycena w 24h",
+        "opis": "Na podstawie Twojego opisu przygotujemy orientacyjną wycenę i odeślemy ją w ciągu jednego dnia roboczego. W razie potrzeby umówimy wizję lokalną."
+      },
+      {
+        "numer": "03",
+        "tytul": "Realizacja i odbiór",
+        "opis": "Ekipa przyjeżdża w ustalonym terminie. Pracujemy sprawnie i zostawiamy posesję w porządku. Po zakończeniu odbierasz gotową realizację z gwarancją."
+      }
+    ]
+  },
+  "faq": [
+    {
+      "pytanie": "Czy wycena jest bezpłatna?",
+      "odpowiedz": "Tak, wycena jest całkowicie bezpłatna i niezobowiązująca. Wystarczy opisać projekt przez formularz lub zadzwonić - odpowiemy w ciągu 24 godzin."
+    },
+    {
+      "pytanie": "Jak długo trwa realizacja ogrodzenia?",
+      "odpowiedz": "Standardowe ogrodzenie panelowe (50–100 mb) montujemy w 2–5 dni roboczych. Bardziej złożone projekty z podmurówką i bramami mogą zająć 1–2 tygodnie."
+    },
+    {
+      "pytanie": "Jaki jest obszar działania firmy?",
+      "odpowiedz": "Pracujemy w promieniu około {firma.zasieg} od Białej Podlaskiej, czyli w województwie lubelskim, podlaskim i mazowieckim. Najczęściej jeździmy do Międzyrzeca Podlaskiego, Radzynia Podlaskiego, Łukowa, Siedlec, Łosic, Terespola, Janowa Podlaskiego i Parczewa. Mieszkasz dalej - zadzwoń, sprawdzimy, czy damy radę dojechać."
+    },
+    {
+      "pytanie": "Co wpływa na cenę ogrodzenia?",
+      "odpowiedz": "Na cenę wpływa typ ogrodzenia, długość, wysokość, rodzaj podmurówki, kolor RAL, typ gruntu i nachylenie terenu. Dokładną wycenę przygotujemy po poznaniu szczegółów."
+    },
+    {
+      "pytanie": "Czy potrzebuję pozwolenia na budowę ogrodzenia?",
+      "odpowiedz": "Ogrodzenie do 2,2 m wysokości co do zasady nie wymaga pozwolenia, ale budowę należy zgłosić do starostwa. Pomożemy ustalić formalności dla Twojego projektu."
+    }
+  ],
+  "baner": {
+    "tytul": "Chcesz poznać dokładną cenę?"
+  }
+}

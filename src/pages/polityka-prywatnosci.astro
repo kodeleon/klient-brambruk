@@ -12,9 +12,23 @@
  * faktyczny. Nie trzeba go było zmieniać; trzeba było zmienić serwis.
  *
  * Podstrona ZOSTAJE w mapie strony i jest indeksowana - tak jak poprzednio.
+ *
+ * ┌── [decyzja] PROZA ZOSTAJE W TYM PLIKU ──────────────────────────────┐
+ * │ To treść prawna, nie treść klienta: klient jej nie edytuje, a       │
+ * │ wyniesienie jej do warstwy treści oznaczałoby drugi format dla      │
+ * │ jednego pliku. Z podstrony wychodzą WYŁĄCZNIE dane firmy - wstawiane│
+ * │ znacznikami, czyli z tego samego źródła co reszta serwisu.          │
+ * │                                                                      │
+ * │ W szablonie `.astro` klamry należą do Astro, więc literalne         │
+ * │ `{firma.email}` zostałoby potraktowane jak wyrażenie JavaScriptu.   │
+ * │ Stąd zapis `znacznik('firma.email')` - ten sam rejestr, ten sam     │
+ * │ indeks użyć, ten sam błąd budowania przy nieznanym kluczu.          │
+ * └──────────────────────────────────────────────────────────────────────┘
  */
 import Podstrona from '../layouts/Podstrona.astro'
-import { dane } from '../config/dane'
+import { znacznik } from '../lib/znaczniki'
+
+const gdzie = 'src/pages/polityka-prywatnosci.astro'
 import Okruszki from '../components/ui/Okruszki.astro'
 import EtykietaSekcji from '../components/ui/EtykietaSekcji.astro'
 import Odslon from '../components/ui/Odslon.astro'
@@ -46,9 +60,9 @@ import Odslon from '../components/ui/Odslon.astro'
             <h2 class="font-display text-lg font-bold text-brand-text mb-3">1. Administrator danych osobowych</h2>
             <div class="text-brand-text-light leading-relaxed space-y-2 text-sm">
               <p>
-                Administratorem Twoich danych osobowych jest <strong>{dane.nazwaPelna}</strong>, NIP:
-                <strong>{dane.nip}</strong>, REGON: <strong>{dane.regon}</strong>, z siedzibą pod adresem:
-                <strong>{dane.adres}</strong>, e-mail: <strong>{dane.email}</strong> (dalej: „Administrator"
+                Administratorem Twoich danych osobowych jest <strong>{znacznik('firma.nazwaPelna', gdzie)}</strong>, NIP:
+                <strong>{znacznik('firma.nip', gdzie)}</strong>, REGON: <strong>{znacznik('firma.regon', gdzie)}</strong>, z siedzibą pod adresem:
+                <strong>{znacznik('firma.adres', gdzie)}</strong>, e-mail: <strong>{znacznik('firma.emailRodo', gdzie)}</strong> (dalej: „Administrator"
                 lub „BramBruk").
               </p>
             </div>
@@ -123,7 +137,7 @@ import Odslon from '../components/ui/Odslon.astro'
                 </li>
               </ul>
               <p>
-                Aby skorzystać z powyższych praw, skontaktuj się pod adresem e-mail: <strong>{dane.email}</strong>.
+                Aby skorzystać z powyższych praw, skontaktuj się pod adresem e-mail: <strong>{znacznik('firma.emailRodo', gdzie)}</strong>.
               </p>
             </div>
           </div>
@@ -177,8 +191,8 @@ import Odslon from '../components/ui/Odslon.astro'
                 z Administratorem:
               </p>
               <ul class="list-disc pl-5">
-                <li>e-mail: <strong>{dane.email}</strong></li>
-                <li>adres korespondencyjny: <strong>{dane.adres}</strong></li>
+                <li>e-mail: <strong>{znacznik('firma.emailRodo', gdzie)}</strong></li>
+                <li>adres korespondencyjny: <strong>{znacznik('firma.adres', gdzie)}</strong></li>
               </ul>
             </div>
           </div>

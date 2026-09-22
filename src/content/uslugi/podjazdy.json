@@ -1,0 +1,97 @@
+{
+  "meta": {
+    "tytul": "Podjazdy i parkingi z kostki brukowej - BramBruk | Biała Podlaska i okolice",
+    "opis": "Podjazdy i miejsca parkingowe z kostki brukowej. Trwała podbudowa, doradztwo w doborze materiału. Realizacje w Białej Podlaskiej i okolicach."
+  },
+  "okruszek": "Podjazdy",
+  "okruszekNadrzedny": {
+    "etykieta": "Brukarstwo",
+    "trasa": "brukarstwo"
+  },
+  "etykieta": "Podjazdy i parkingi",
+  "tytul": "Podjazdy z kostki brukowej",
+  "podtytul": "Nawierzchnia liczona pod obciążenie",
+  "nazwaPojedyncza": "podjazd z kostki",
+  "nazwaMnoga": "podjazdy z kostki",
+  "fotoHero": "usluga.podjazd",
+  "pozycjaFoto": "0% 0%",
+  "wstep": "Podjazd to wizytówka posesji - pierwszy element, który widzą goście. Budujemy podjazdy z kostki brukowej, które są trwałe, estetyczne i odporne na obciążenia pojazdów. Kompleksowa realizacja z gwarancją.",
+  "cechy": [
+    {
+      "ikona": "car",
+      "tytul": "Wytrzymałość",
+      "opis": "Podbudowa i kostka dobrana pod obciążenie samochodami osobowymi i dostawczymi"
+    },
+    {
+      "ikona": "droplets",
+      "tytul": "Odwodnienie",
+      "opis": "Projektujemy spadki i odprowadzenie wody, aby uniknąć zastoin i oblodzenia"
+    },
+    {
+      "ikona": "palette",
+      "tytul": "Design",
+      "opis": "Wzory, kolory i obramowania dopasowane do stylu domu i ogrodzenia"
+    },
+    {
+      "ikona": "banknote",
+      "tytul": "Od {cena.podjazd.min}",
+      "opis": "Podjazd z materiałem i robocizną, w zależności od kostki i zakresu prac"
+    }
+  ],
+  "tresc": {
+    "tytul1": "Podjazdy z kostki brukowej - trwałość i estetyka",
+    "tekst1": "Podjazd z kostki brukowej to inwestycja na lata. Projektujemy i budujemy podjazdy dopasowane do kształtu posesji, stylu domu i potrzeb domowników. Uwzględniamy miejsce na parkowanie, manewrowanie i dojście do drzwi. Każdy podjazd wykonujemy na solidnej podbudowie z kruszywa łamanego, która zapewnia stabilność nawet przy codziennym najeżdżaniu samochodem.",
+    "tytul2": "Odwodnienie i spadki",
+    "tekst2": "Prawidłowe odprowadzenie wody to klucz do trwałości podjazdu. Projektujemy spadki (min. 1–2%) w kierunku ogrodu, odwodnienia liniowego lub studzienki. Zapobiega to tworzeniu kałuż, podmywaniu podbudowy i oblodzeniu zimą. Przy większych podjazdach stosujemy odwodnienie liniowe z korytkami.",
+    "tytul3": "Krawężniki i obramowanie",
+    "tekst3": "Krawężniki pełnią funkcję nie tylko estetyczną, ale przede wszystkim konstrukcyjną - utrzymują kostkę na miejscu i zapobiegają rozsuwaniu się nawierzchni. Stosujemy krawężniki betonowe, granitowe i palisadowe. Obramowanie podjazdu kontrastowym kolorem nadaje elegancki, wykończony wygląd."
+  },
+  "kroki": {
+    "tytul": "Jak wykonujemy podjazd pod samochód",
+    "wstep": "Podjazd różni się od chodnika wszystkim, czego nie widać: grubością warstw i ich zagęszczeniem, a nie wzorem kostki na wierzchu.",
+    "lista": [
+      "korytowanie głębsze niż pod chodnik, dobrane do masy pojazdów",
+      "wymiana gruntu słabonośnego na kruszywo tam, gdzie jest taka potrzeba",
+      "podbudowa układana i zagęszczana warstwami, nie jedną grubą warstwą",
+      "wykonanie spadków od budynku, ustawionych niwelatorem",
+      "montaż odwodnienia liniowego przy garażu albo bramie",
+      "obramowanie krawężnikiem na ławie betonowej z oporem",
+      "układanie kostki o grubości dobranej do obciążenia",
+      "fugowanie i zagęszczanie powierzchni z matą ochronną"
+    ]
+  },
+  "sprzet": "Głębokość korytowania i grubość podbudowy liczymy pod konkretny pojazd, a nie „standardowo\" - podjazd pod dostawczaka ma inne warstwy niż pod auto osobowe. Zagęszczenie sprawdzamy na bieżąco, warstwa po warstwie, bo po ułożeniu kostki nie da się już tego poprawić inaczej niż przez rozebranie nawierzchni. Spadki i rzędne przy progu garażu ustawiamy laserem.",
+  "cennikCzynniki": [
+    "przewidywane obciążenie: auto osobowe czy dostawcze",
+    "powierzchnia i kształt podjazdu",
+    "odwodnienie liniowe i wykonanie spadków",
+    "stan gruntu i konieczność jego wymiany"
+  ],
+  "galeria": [
+    {
+      "foto": "realizacja.02",
+      "tytul": "Podjazd z kostki",
+      "lokalizacja": "Biała Podlaska"
+    },
+    {
+      "foto": "realizacja.09",
+      "tytul": "Podjazd dwukolorowy",
+      "lokalizacja": "Cicibór"
+    },
+    {
+      "foto": "realizacja.06",
+      "tytul": "Parking z kostki",
+      "lokalizacja": "Sławacinek"
+    }
+  ],
+  "faq": [
+    {
+      "pytanie": "Ile kosztuje podjazd z kostki brukowej?",
+      "odpowiedz": "Podjazd z kostki to {cena.podjazd.zakres} - materiał {cena.podjazd.material} plus robocizna {cena.podjazd.montaz}. Typowy podjazd 40 m² wychodzi na {cena.podjazd-typowy-40m2.zakres}. Podbudowa ({cena.podbudowa.zakres}), krawężniki ({cena.krawezniki.zakres}) i odwodnienie liniowe ({cena.podjazd-odwodnienie.zakres}) liczymy osobno."
+    },
+    {
+      "pytanie": "Jak duży powinien być podjazd?",
+      "odpowiedz": "Minimum na jedno miejsce parkingowe: 2,5 × 5 m (12,5 m²). Wygodny podjazd na 2 samochody z manewrem: ok. 40–60 m². Przy projektowaniu uwzględniamy szerokość bramy, kąt wjazdu i dojście do drzwi wejściowych."
+    }
+  ]
+}

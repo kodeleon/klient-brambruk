@@ -1,0 +1,32 @@
+{
+  "meta": {
+    "tytul": "Realizacje - galeria projektów - BramBruk | Biała Podlaska i okolice",
+    "opis": "Galeria realizacji BramBruk: ogrodzenia, bramy, kostka brukowa, budownictwo. Ponad 100 projektów w Białej Podlaskiej i okolicach."
+  },
+  "hero": {
+    "etykieta": "Portfolio",
+    "tytul": "Nasze realizacje",
+    "podtytul": "{firma.realizacje} projektów w regionie",
+    "opis": "Ogrodzenia, brukarstwo i budownictwo - wybrane realizacje z Białej Podlaskiej i okolic. Filtruj według kategorii, aby znaleźć projekty podobne do Twojego.",
+    "foto": "realizacja.01",
+    "fotoObok": "realizacja.02",
+    "fotoObokAlt": "Realizacje BramBruk"
+  },
+  "filtr": {
+    "tytul": "Typ usługi:",
+    "etykietaGrupy": "Kategoria realizacji",
+    "etykietaSzukania": "Szukaj realizacji",
+    "placeholder": "Szukaj po typie usługi lub lokalizacji...",
+    "licznikPrzed": "Wyświetlono",
+    "licznikMiedzy": "z",
+    "licznikPo": "realizacji"
+  },
+  "pusto": {
+    "tekst": "Brak realizacji pasujących do wybranych filtrów.",
+    "przycisk": "Wyczyść filtry"
+  },
+  "baner": {
+    "tytul": "Chcesz podobną realizację?",
+    "opis": "Pokaż nam zdjęcie tego, co Ci się spodobało, albo opisz projekt własnymi słowami. Odeślemy orientacyjną wycenę i powiemy, co da się zrobić na Twoim terenie."
+  }
+}

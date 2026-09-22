@@ -29,6 +29,8 @@
     "manifest:compare": "node tools/build/manifest.mjs compare",
     "no-js": "node tools/audit/no-js.mjs",
     "zachowania": "node tools/audit/zachowania.mjs",
+    "korekta:push": "node tools/korekta/r2.mjs push",
+    "korekta:pull": "node tools/korekta/r2.mjs pull",
     "preview:astro": "astro preview"
   },
   "dependencies": {

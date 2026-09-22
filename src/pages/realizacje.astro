@@ -8,8 +8,7 @@
  * niego po prostu nie zawężają widoku. Wszystkie kafelki są w HTML.
  */
 import Podstrona from '../layouts/Podstrona.astro'
-import { kategorieRealizacji, realizacje } from '../data/realizacje'
-import { statystyki } from '../config/dane'
+import { wpis } from '../lib/tresc'
 import Okruszki from '../components/ui/Okruszki.astro'
 import Przycisk from '../components/ui/Przycisk.astro'
 import Odslon from '../components/ui/Odslon.astro'
@@ -19,22 +18,26 @@ import Ikona from '../components/icons/Ikona.astro'
 import Foto from '../components/media/Foto.astro'
 import SekcjaHero from '../components/ui/SekcjaHero.astro'
 
+const { kategorie, pozycje: realizacje } = await wpis('realizacje', 'realizacje')
+const strona = await wpis('strony', 'realizacje')
+const { hero, filtr, pusto, baner } = strona
+
 const klasaFiltra =
   'inline-flex px-5 py-2.5 rounded-full text-sm font-semibold border transition-all duration-200 bg-brand-card text-brand-text border-brand-border/60 hover:border-brand-olive/40'
 ---
 
 <Podstrona
-  tytul="Realizacje - galeria projektów - BramBruk | Biała Podlaska i okolice"
-  opis="Galeria realizacji BramBruk: ogrodzenia, bramy, kostka brukowa, budownictwo. Ponad 100 projektów w Białej Podlaskiej i okolicach."
+  tytul={strona.meta.tytul}
+  opis={strona.meta.opis}
 >
   <Okruszki pozycje={[{ etykieta: 'Strona główna', sciezka: '/' }, { etykieta: 'Realizacje' }]} />
 
   <SekcjaHero
-    etykieta="Portfolio"
-    tytul="Nasze realizacje"
-    podtytul={`${statystyki.realizacje} projektów w regionie`}
-    opis="Ogrodzenia, brukarstwo i budownictwo - wybrane realizacje z Białej Podlaskiej i okolic. Filtruj według kategorii, aby znaleźć projekty podobne do Twojego."
-    foto="realizacja.01"
+    etykieta={hero.etykieta}
+    tytul={hero.tytul}
+    podtytul={hero.podtytul}
+    opis={hero.opis}
+    foto={hero.foto}
   >
     <Fragment slot="akcje">
       <Przycisk href="/wycena/" rozmiar="lg" ikona="receipt-text">Bezpłatna wycena</Przycisk>
@@ -43,8 +46,8 @@ const klasaFiltra =
 
     <Foto
       slot="obok"
-      klucz="realizacja.02"
-      alt="Realizacje BramBruk"
+      klucz={hero.fotoObok}
+      alt={hero.fotoObokAlt}
       class="w-full h-[340px] object-cover rounded-2xl shadow-2xl shadow-black/50"
     />
   </SekcjaHero>
@@ -52,7 +55,7 @@ const klasaFiltra =
   <section class="tlo-siatka bg-brand-bg py-12 lg:py-16">
     <div class="max-w-7xl mx-auto px-5 lg:px-10" data-filtr>
       {
-        kategorieRealizacji.map((kategoria, i) => (
+        kategorie.map((kategoria, i) => (
           <input
             type="radio"
             name="kategoria-realizacji"
@@ -64,11 +67,11 @@ const klasaFiltra =
       }
 
       <Odslon>
-        <div class="font-display text-base font-bold text-brand-text mb-2">Typ usługi:</div>
+        <div class="font-display text-base font-bold text-brand-text mb-2">{filtr.tytul}</div>
         <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between mb-4">
-          <div class="flex flex-wrap gap-2 mb-2" role="group" aria-label="Kategoria realizacji">
+          <div class="flex flex-wrap gap-2 mb-2" role="group" aria-label={filtr.etykietaGrupy}>
             {
-              kategorieRealizacji.map((kategoria) => (
+              kategorie.map((kategoria) => (
                 <label for={`kategoria-${kategoria.klucz}`} class={klasaFiltra}>
                   {kategoria.etykieta}
                 </label>
@@ -81,38 +84,36 @@ const klasaFiltra =
               rozmiar={16}
               class="absolute left-4 top-1/2 -translate-y-1/2 text-brand-text-light"
             />
-            <label class="poza-ekranem" for="szukaj-realizacji">Szukaj realizacji</label>
+            <label class="poza-ekranem" for="szukaj-realizacji">{filtr.etykietaSzukania}</label>
             <input
               id="szukaj-realizacji"
               type="search"
-              placeholder="Szukaj po typie usługi lub lokalizacji..."
+              placeholder={filtr.placeholder}
               data-filtr-szukaj
               class="w-full bg-brand-card border border-brand-border/60 rounded-full pl-11 pr-4 py-3 text-sm text-brand-text placeholder:text-brand-text-light focus:outline-none focus:ring-2 focus:ring-brand-olive/20 focus:border-brand-olive/40 transition-all"
             />
           </div>
         </div>
         <p class="text-xs text-brand-text-light mb-6">
-          Wyświetlono <span data-filtr-widoczne>{realizacje.length}</span> z {realizacje.length} realizacji
+          {filtr.licznikPrzed} <span data-filtr-widoczne>{realizacje.length}</span>{' '}
+          {filtr.licznikMiedzy} {realizacje.length} {filtr.licznikPo}
         </p>
       </Odslon>
 
       <GaleriaSiatka pozycje={realizacje} />
 
       <div class="text-center py-16" data-filtr-pusto hidden>
-        <p class="text-brand-text-light text-sm">Brak realizacji pasujących do wybranych filtrów.</p>
+        <p class="text-brand-text-light text-sm">{pusto.tekst}</p>
         <button
           type="button"
           data-filtr-wyczysc
           class="mt-3 text-brand-olive-text text-sm font-semibold hover:text-brand-text transition-colors"
         >
-          Wyczyść filtry
+          {pusto.przycisk}
         </button>
       </div>
     </div>
   </section>
 
-  <BanerCta
-    tytul="Chcesz podobną realizację?"
-    opis="Pokaż nam zdjęcie tego, co Ci się spodobało, albo opisz projekt własnymi słowami. Odeślemy orientacyjną wycenę i powiemy, co da się zrobić na Twoim terenie."
-  />
+  <BanerCta tytul={baner.tytul} opis={baner.opis} />
 </Podstrona>

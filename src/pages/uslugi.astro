@@ -20,7 +20,8 @@
  * └─────────────────────────────────────────────────────────────────────┘
  */
 import Podstrona from "../layouts/Podstrona.astro";
-import { kartyUslug } from "../data/cennik";
+import { wpis } from "../lib/tresc";
+import { trasa } from "../config/routes";
 import Okruszki from "../components/ui/Okruszki.astro";
 import EtykietaSekcji from "../components/ui/EtykietaSekcji.astro";
 import Przycisk from "../components/ui/Przycisk.astro";
@@ -31,34 +32,19 @@ import Foto from "../components/media/Foto.astro";
 import SekcjaHero from "../components/ui/SekcjaHero.astro";
 import Ikona from "../components/icons/Ikona.astro";
 
-const grupy = [
-  {
-    klucz: "ogrodzenia",
-    ikona: "fence",
-    przycisk: "ogrodzeniach",
-    etykieta: "Ogrodzenia i bramy",
-    podstrona: "/ogrodzenia/",
-  },
-  {
-    klucz: "brukarstwo",
-    ikona: "pavement",
-    przycisk: "brukarstwie",
-    etykieta: "Brukarstwo",
-    podstrona: "/brukarstwo/",
-  },
-  {
-    klucz: "budownictwo",
-    ikona: "brick-wall",
-    przycisk: "budownictwie",
-    etykieta: "Budownictwo",
-    podstrona: "/budownictwo/",
-  },
-] as const;
+/* Kafelki NIE TRZYMAJĄ KWOT. W treści stoi znacznik `{cena.<id>.zakres}`,
+   rozwijany przy budowaniu z `src/content/cennik.json` - ta sama kwota, co
+   w tabeli na podstronie rodzaju usługi. Wcześniej kafelek miał własną
+   liczbę i to on pokazywał bramę przesuwną za 8 500 zł, gdy podstrona
+   usługi mówiła 12 000 zł. */
+const strona = await wpis("strony", "uslugi");
+const { hero, uwaga, etykietaGrupy, przyciskGrupy, baner } = strona;
+const grupy = strona.grupy ?? [];
 ---
 
 <Podstrona
-  tytul="Usługi i cennik - BramBruk | Biała Podlaska i okolice"
-  opis="Pełna oferta i cennik BramBruk: ogrodzenia panelowe i murowane, bramy, furtki, kostka brukowa, podjazdy, budownictwo. Biała Podlaska i okolice."
+  tytul={strona.meta.tytul}
+  opis={strona.meta.opis}
 >
   <Okruszki
     pozycje={[
@@ -68,11 +54,11 @@ const grupy = [
   />
 
   <SekcjaHero
-    etykieta="Usługi i cennik"
-    tytul="Zakres usług BramBruk"
-    podtytul="Orientacyjne widełki cenowe"
-    opis="Poniżej znajdziesz przegląd wszystkich usług wraz z orientacyjnymi cenami. Dokładna wycena zawsze zależy od zakresu, materiałów i lokalizacji - opisz swój projekt w formularzu."
-    foto="hero.ogrodzenia"
+    etykieta={hero.etykieta}
+    tytul={hero.tytul}
+    podtytul={hero.podtytul}
+    opis={hero.opis}
+    foto={hero.foto}
   >
     <Fragment slot="akcje">
       <Przycisk href="/wycena/" rozmiar="lg" ikona="receipt-text"
@@ -91,11 +77,11 @@ const grupy = [
         właściwej grupy. Bez chevronów: to odnośniki do miejsca niżej
         na stronie, a nie przyciski czegoś, co się rozwija. */
     }
-    <nav slot="dodatek" class="mt-8" aria-label="Przejdź do typu usługi">
+    <nav slot="dodatek" class="mt-8" aria-label={hero.etykietaNawigacji}>
       <p
         class="text-[10px] font-bold uppercase tracking-[2px] text-neutral-400 mb-3"
       >
-        Typ usługi
+        {hero.etykietaTypow}
       </p>
       <ul class="flex flex-wrap gap-2">
         {
@@ -116,7 +102,7 @@ const grupy = [
 
     <Foto
       slot="obok"
-      klucz="hero.uslugi-obok"
+      klucz={hero.fotoObok}
       class="w-full h-[340px] object-cover rounded-2xl shadow-2xl shadow-black/50"
     />
   </SekcjaHero>
@@ -127,13 +113,12 @@ const grupy = [
         class="mb-10 px-3 py-4 rounded-xl bg-brand-section border border-brand-border/60 text-sm text-brand-text-light"
       >
         <div class="font-display text-base font-bold text-brand-text pb-1">
-          Uwaga!
+          {uwaga.tytul}
         </div>
-        Ceny są wyłącznie orientacyjne i nie stanowią oferty sprzedażowej. Ostateczna
-        kwota zależy od zakresu prac, użytych materiałów i specyfiki terenu.
+        {uwaga.tekst}
         <div class="mt-2"></div>
-        <a href="/wycena/" class="text-brand-sage font-medium hover:underline"
-          >Zapytaj o dokładną wycenę →</a
+        <a href={trasa("wycena")} class="text-brand-sage font-medium hover:underline"
+          >{uwaga.link}</a
         >
       </div>
 
@@ -148,7 +133,7 @@ const grupy = [
                 „Zobacz wszystkie realizacje" na pozostałych podstronach. */}
             <div class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between mb-6">
               <div>
-                <EtykietaSekcji>Co oferujemy</EtykietaSekcji>
+                <EtykietaSekcji>{etykietaGrupy}</EtykietaSekcji>
                 <h2 class="font-display text-2xl lg:text-3xl font-bold text-brand-text mt-2">
                   {grupa.etykieta}
                 </h2>
@@ -157,24 +142,24 @@ const grupy = [
                   to, co widać w kartach pod nim - dwa razy to samo, raz
                   prozą, raz konkretem. Zostaje konkret. */}
               <Przycisk
-                href={grupa.podstrona}
+                href={trasa(grupa.trasa)}
                 wariant="outline"
                 rozmiar="sm"
                 ikona={grupa.ikona}
                 class="self-start sm:self-end shrink-0"
               >
-                Szczegóły o {grupa.przycisk}
+                {`${przyciskGrupy} ${grupa.przycisk}`}
               </Przycisk>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-              {kartyUslug[grupa.klucz].map((karta, i) => (
+              {grupa.karty.map((karta, i) => (
                 <Odslon wariant="up" zwloka={i * 60}>
                   <KartaUslugi
                     tytul={karta.tytul}
                     opis={karta.opis}
                     foto={karta.foto}
-                    href={karta.href}
+                    href={trasa(karta.trasa)}
                   >
                     {/* Odznaka ceny: pełna oliwka z ciemnym napisem (9,22:1).
                         Wcześniej był to oliwkowy napis na przyciemnionym
@@ -203,8 +188,5 @@ const grupy = [
     </div>
   </section>
 
-  <BanerCta
-    tytul="Widełki to nie wycena. Potrzebujesz konkretów?"
-    opis="Ceny wyżej pokazują rząd wielkości. Dokładna kwota zależy od wymiarów, terenu i materiału - opisz projekt, a policzymy go dla Twojej posesji."
-  />
+  <BanerCta tytul={baner.tytul} opis={baner.opis} />
 </Podstrona>

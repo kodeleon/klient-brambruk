@@ -1,0 +1,124 @@
+{
+  "meta": {
+    "tytul": "O nas - BramBruk | Ogrodzenia, brukarstwo i budownictwo",
+    "opis": "BramBruk - lokalna firma z Białej Podlaskiej, na rynku od 2020 roku. Obsługujemy województwo lubelskie, podlaskie i mazowieckie. Dane rejestrowe i obszar działania."
+  },
+  "hero": {
+    "etykieta": "O nas",
+    "tytul": "Poznaj firmę BramBruk",
+    "podtytul": "Lokalnie od {firma.rokZalozenia} roku",
+    "opis": "Firma budowlana z Bohukał pod Białą Podlaską. Stawiamy ogrodzenia, układamy kostkę brukową i budujemy altany, garaże oraz domki narzędziowe - dla klientów indywidualnych i firm w województwie lubelskim, podlaskim i mazowieckim."
+  },
+  "kimJestesmy": {
+    "etykieta": "Kim jesteśmy",
+    "tytul": "Jedna ekipa, pełen zakres prac",
+    "akapity": [
+      "BramBruk to lokalna firma budowlana z okolic Białej Podlaskiej, działająca od {firma.rokZalozenia} roku. Specjalizujemy się w montażu ogrodzeń, brukarstwie i budownictwie lekkim - obsługujemy klientów indywidualnych i firmy w promieniu {firma.zasieg} od Białej Podlaskiej.",
+      "Zaczynaliśmy jako mała ekipa specjalizująca się w ogrodzeniach panelowych. Dziś oferujemy kompleksową obsługę posesji - od ogrodzenia, przez podjazd z kostki brukowej, po altanę ogrodową. Wszystko z jednej ręki, od jednego wykonawcy.",
+      "Stawiamy na uczciwość, terminowość i transparentność. Każdy projekt wyceniamy bezpłatnie po wizji lokalnej, a nasze ceny orientacyjne podajemy otwarcie - bo wiemy, że klient ceni sobie jasność i konkretne informacje."
+    ],
+    "liczby": [
+      {
+        "ikona": "calendar-clock",
+        "wartosc": "{firma.lata}",
+        "etykieta": "nieprzerwanie na rynku"
+      },
+      {
+        "ikona": "map-pin",
+        "wartosc": "{firma.zasieg}",
+        "etykieta": "zasięgu działania"
+      },
+      {
+        "ikona": "images",
+        "wartosc": "{firma.realizacje}",
+        "etykieta": "zakończonych realizacji"
+      },
+      {
+        "ikona": "star",
+        "wartosc": "{firma.ocenaFixly}",
+        "etykieta": "gwiazdek na Fixly"
+      }
+    ]
+  },
+  "dlaczegoMy": {
+    "etykieta": "Dlaczego my",
+    "tytul": "Trzy wartości, które nas wyróżniają",
+    "opis": "Dziesiątki klientów zaufały nam ze względu na standardy, jakie utrzymujemy przy wykonywanych projektach. Każde zlecenie realizujemy z dbałością o detale, terminowość i długotrwały efekt.",
+    "wartosci": [
+      {
+        "ikona": "shield-check",
+        "tytul": "Gwarancja jakości",
+        "opis": "Każda realizacja objęta jest gwarancją na wykonanie. Pracujemy na materiałach od sprawdzonych dostawców - panele ocynkowane ogniowo i malowane proszkowo, kostka z certyfikatem producenta."
+      },
+      {
+        "ikona": "map-pin",
+        "tytul": "{firma.lata} pracy w regionie",
+        "opis": "Znamy grunty, z jakimi mamy tu do czynienia, wiemy, gdzie zimą podnosi się woda, i który wzór kostki rozjeżdża się pod samochodem dostawczym. To wiedza, której nie ma w katalogu."
+      },
+      {
+        "ikona": "handshake",
+        "tytul": "Kompleksowa obsługa",
+        "opis": "Od bezpłatnej wizji lokalnej, przez dobór materiałów i formalności, po realizację i odbiór. Jedna ekipa i jedna faktura zamiast trzech podwykonawców, którzy zrzucają na siebie opóźnienia."
+      }
+    ]
+  },
+  "daneFirmy": {
+    "etykieta": "Dane firmy",
+    "tytul": "Informacje formalne",
+    "tytulRejestru": "Dane rejestrowe",
+    "tytulMapy": "Gdzie nas znaleźć",
+    "rejestr": [
+      {
+        "etykieta": "Nazwa firmy",
+        "wartosc": "{firma.nazwaPelna}"
+      },
+      {
+        "etykieta": "NIP",
+        "wartosc": "{firma.nip}"
+      },
+      {
+        "etykieta": "REGON",
+        "wartosc": "{firma.regon}"
+      },
+      {
+        "etykieta": "Adres",
+        "wartosc": "{firma.adres}"
+      },
+      {
+        "etykieta": "Ubezpieczenie OC",
+        "wartosc": "tak"
+      }
+    ],
+    "etykietaGodzin": "Godziny pracy"
+  },
+  "obszar": {
+    "etykieta": "Obszar działania",
+    "tytul": "Obsługujemy 3 województwa",
+    "opis": "Realizujemy zlecenia głównie w województwie lubelskim, ale nie ograniczamy się do tego regionu. Jesteśmy mobilną ekipą i oferujemy szeroki zakres usług w województwie lubelskim, podlaskim i mazowieckim. Jeżeli mieszkasz nieco dalej, skontaktuj się z nami, żeby sprawdzić czy możemy dojechać też do Ciebie.",
+    "foto": "mapa.region",
+    "fotoAlt": "Mapa obszaru działania BramBruk: województwo lubelskie, podlaskie i mazowieckie",
+    "tytulListy": "Miejscowości, w których pracujemy najczęściej:",
+    "miejscowosci": [
+      "Biała Podlaska",
+      "Leśna Podlaska",
+      "Łomazy",
+      "Konstantynów",
+      "Janów Podlaski",
+      "Piszczac",
+      "Drelów",
+      "Międzyrzec Podlaski",
+      "Wisznice",
+      "Terespol",
+      "Kodeń",
+      "Sławatycze",
+      "Radzyń Podlaski",
+      "Parczew",
+      "Włodawa",
+      "Kock",
+      "Lubartów",
+      "Świdnik",
+      "Lublin"
+    ],
+    "domkniecie": "i wiele innych..."
+  }
+}

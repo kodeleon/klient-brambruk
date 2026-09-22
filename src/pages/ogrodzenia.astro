@@ -2,15 +2,16 @@
 /**
  * /ogrodzenia/ - hub kategorii.
  *
- * Układ w `SzablonHubu.astro`, treść w `src/data/huby.ts`. Tutaj tylko
- * adres (z nazwy pliku) oraz tytuł i opis dla wyszukiwarki, przeniesione
- * bez zmian z `code/src/seo/seoMap.js`.
+ * Plik trasy niesie JEDNĄ informację: który rekord treści tutaj stoi.
+ * Adres wynika z nazwy pliku, układ z `SzablonHubu.astro`, a treść razem
+ * z tytułem i opisem dla wyszukiwarki - z `src/content/huby/ogrodzenia.json`.
+ *
+ * Tytuł i opis stały tu wcześniej jako parametry. Wyprowadzenie ich do
+ * rekordu treści zamyka ostatnie miejsce, w którym słowa klienta mieszkały
+ * w pliku technicznym - i sprawia, że schemat kolekcji może ich pilnować
+ * (żadnych znaczników liczonych przy budowaniu w polach indeksowanych).
  */
 import SzablonHubu from '../components/szablony/SzablonHubu.astro'
 ---
 
-<SzablonHubu
-  klucz="ogrodzenia"
-  tytul="Ogrodzenia i bramy - BramBruk | Biała Podlaska i okolice"
-  opis="Ogrodzenia panelowe, murowane, siatka, bramy przesuwne i dwuskrzydłowe, furtki. Montaż w Białej Podlaskiej i okolicach - bezpłatna wycena."
-/>
+<SzablonHubu klucz="ogrodzenia" />

@@ -1,17 +1,12 @@
 ---
 /**
- * /ogrodzenia/panelowe/ - podstrona usługi.
+ * /ogrodzenia/panelowe/ - podstrona rodzaju usługi.
  *
- * Cały układ siedzi w `SzablonUslugi.astro`, treść w `src/data/uslugi.ts`.
- * Tutaj zostaje to, co jest właściwe TEJ podstronie: adres (wynika z nazwy
- * pliku) oraz tytuł i opis dla wyszukiwarki. Oba przeniesione bez zmian
- * z `code/src/seo/seoMap.js`.
+ * Plik trasy niesie JEDNĄ informację: który rekord treści tutaj stoi.
+ * Adres wynika z nazwy pliku, układ z `SzablonUslugi.astro`, a treść razem
+ * z tytułem i opisem dla wyszukiwarki - z `src/content/uslugi/panelowe.json`.
  */
 import SzablonUslugi from '../../components/szablony/SzablonUslugi.astro'
 ---
 
-<SzablonUslugi
-  klucz="panelowe"
-  tytul="Ogrodzenia panelowe 2D i 3D - BramBruk | Biała Podlaska i okolice"
-  opis="Ogrodzenia panelowe 2D i 3D z montażem od 100 zł/mb. Dobór, wycena i realizacja w Białej Podlaskiej, Międzyrzecu Podlaskim, Terespolu i okolicach."
-/>
+<SzablonUslugi klucz="panelowe" />

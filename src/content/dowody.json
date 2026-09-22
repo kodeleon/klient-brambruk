@@ -1,0 +1,28 @@
+{
+  "fixly": {
+    "ocena": "5/5",
+    "opinie": 2,
+    "url": "https://fixly.pl/profil/fg4bbrrn"
+  },
+  "statystyki": {
+    "miejscowosci": 25,
+    "realizacje": "50+",
+    "zasieg": "100 km"
+  },
+  "opinie": [
+    {
+      "imie": "Leszek",
+      "lokalizacja": "Janów Podlaski",
+      "data": "2025",
+      "tresc": "Wykonanie usługi bez zarzutu - sprawnie i fschowo . Polecam tych wykonawców. Chłopcy chcą zarobić i pracują solidnie.",
+      "ocena": 5
+    },
+    {
+      "imie": "Piotr",
+      "lokalizacja": "Janów Podlaski",
+      "data": "2024",
+      "tresc": "Polecam super kontakt",
+      "ocena": 5
+    }
+  ]
+}

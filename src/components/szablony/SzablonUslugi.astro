@@ -2,9 +2,14 @@
 /**
  * SZABLON PODSTRONY USŁUGI - następca komponentu `ServicePage.jsx`.
  *
- * Dziewięć podstron dzieli ten układ i różni się wyłącznie danymi
- * z `src/data/uslugi.ts`. Podstrona w `src/pages/` podaje klucz oraz
+ * Dziewięć podstron dzieli ten układ i różni się wyłącznie treścią
+ * z `src/content/uslugi/`. Podstrona w `src/pages/` podaje klucz oraz
  * tytuł i opis dla wyszukiwarki - i nic poza tym.
+ *
+ * Tabela cennika bierze się z `src/content/cennik.json` PO KLUCZU TRASY tej
+ * podstrony - podstrona nie trzyma kwot i nie wskazuje ich osobnym polem.
+ * Klucz jest jeden i ten sam w `routes.ts`, w cenniku i w formularzu korekty,
+ * więc klient widzi w edytorze dokładnie tę tabelę, którą ma na ekranie.
  *
  * ┌── PRZEJŚCIE Z 19.09.2026 ──────────────────────────────────────────┐
  * │ Ten szablon miał WŁASNĄ sekcję główną na jasnym tle, własny układ    │
@@ -16,8 +21,9 @@
  * └──────────────────────────────────────────────────────────────────────┘
  */
 import Podstrona from '../../layouts/Podstrona.astro'
-import { uslugi } from '../../data/uslugi'
-import { cennikUslug } from '../../data/cennik'
+import { wpis } from '../../lib/tresc'
+import { pozycjeStrony } from '../../lib/cennik'
+import { trasa } from '../../config/routes'
 import Okruszki from '../ui/Okruszki.astro'
 import EtykietaSekcji from '../ui/EtykietaSekcji.astro'
 import Przycisk from '../ui/Przycisk.astro'
@@ -34,16 +40,12 @@ import Foto from '../media/Foto.astro'
 import type { NazwaIkony } from '../icons/ikony'
 
 interface Props {
-  klucz: keyof typeof uslugi
-  tytul: string
-  opis: string
+  klucz: string
 }
-const { klucz, tytul, opis } = Astro.props
+const { klucz } = Astro.props
 
-const dane = uslugi[klucz]
-const cennik = cennikUslug[klucz as keyof typeof cennikUslug]
-if (!dane) throw new Error(`SzablonUslugi: nie ma usługi "${klucz}" w src/data/uslugi.ts`)
-if (!cennik) throw new Error(`SzablonUslugi: nie ma cennika dla usługi "${klucz}" w src/data/cennik.ts`)
+const dane = await wpis('uslugi', klucz)
+const cennik = pozycjeStrony(klucz)
 
 /**
  * Kadrowanie zdjęcia w sekcji głównej. Wartości z `pozycjaFoto` muszą stać
@@ -56,18 +58,18 @@ const POZYCJE: Record<string, string> = {
   '0% 0%': 'object-[0%_0%]',
   '0% 75%': 'object-[0%_75%]',
 }
-const pozycjaFoto = 'pozycjaFoto' in dane ? POZYCJE[(dane as { pozycjaFoto: string }).pozycjaFoto] : undefined
+const pozycjaFoto = dane.pozycjaFoto ? POZYCJE[dane.pozycjaFoto] : undefined
 
 const okruszki = [
-  { etykieta: 'Strona główna', sciezka: '/' },
-  ...(dane.okruszekNadrzedny ? [{ etykieta: dane.okruszekNadrzedny.etykieta, sciezka: dane.okruszekNadrzedny.href }] : []),
+  { etykieta: 'Strona główna', sciezka: trasa('glowna') },
+  { etykieta: dane.okruszekNadrzedny.etykieta, sciezka: trasa(dane.okruszekNadrzedny.trasa) },
   { etykieta: dane.okruszek },
 ]
 
 const tytulGalerii = `Nasze ${dane.nazwaMnoga}`
 ---
 
-<Podstrona tytul={tytul} opis={opis}>
+<Podstrona tytul={dane.meta.tytul} opis={dane.meta.opis}>
   <Okruszki pozycje={okruszki} />
 
   <SekcjaHero

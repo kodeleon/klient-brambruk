@@ -1,0 +1,143 @@
+{
+  "meta": {
+    "tytul": "Ogrodzenia i bramy - BramBruk | Biała Podlaska i okolice",
+    "opis": "Ogrodzenia panelowe, murowane, siatka, bramy przesuwne i dwuskrzydłowe, furtki. Montaż w Białej Podlaskiej i okolicach - bezpłatna wycena."
+  },
+  "okruszek": "Ogrodzenia",
+  "etykieta": "Ogrodzenia i bramy",
+  "fotoHero": "hero.ogrodzenia",
+  "fotoHeroObok": "hero.ogrodzenia-obok",
+  "tytulHero": "Ogrodzenia, bramy i furtki",
+  "podtytulHero": "Montaż, automatyka, gwarancja",
+  "opisHero": "Montujemy ogrodzenia panelowe, bramy przesuwne i dwuskrzydłowe, furtki oraz podmurówki na terenie województwa lubelskiego, podlaskiego i mazowieckiego. Pracujemy z panelami ocynkowanymi i malowanymi proszkowo w wybranym kolorze RAL.",
+  "tytulSekcji": "Nasze usługi ogrodzeniowe",
+  "uslugi": [
+    {
+      "tytul": "Panelowe 2D/3D",
+      "opis": "Najpopularniejsze ogrodzenia posesji - ocynkowane, malowane proszkowo RAL",
+      "foto": "karta.panelowe",
+      "trasa": "panelowe"
+    },
+    {
+      "tytul": "Bramy przesuwne",
+      "opis": "Automatyczne i ręczne bramy wjazdowe, samonośne i na szynie",
+      "foto": "karta.brama-przesuwna",
+      "trasa": "bramy-przesuwne"
+    },
+    {
+      "tytul": "Bramy dwuskrzydłowe",
+      "opis": "Klasyczne bramy wjazdowe - panelowe, kute, z automatyką",
+      "foto": "karta.brama-dwuskrzydlowa",
+      "trasa": "bramy-dwuskrzydlowe"
+    },
+    {
+      "tytul": "Furtki",
+      "opis": "Furtki wejściowe dopasowane stylem i kolorem do ogrodzenia",
+      "foto": "karta.furtka",
+      "trasa": "furtki"
+    },
+    {
+      "tytul": "Murowane / podmurówki",
+      "opis": "Ogrodzenia z cegły klinkierowej, bloczków i podmurówki betonowe",
+      "foto": "karta.murowane",
+      "trasa": "murowane"
+    },
+    {
+      "tytul": "Siatka ogrodzeniowa",
+      "opis": "Ekonomiczne ogrodzenie na działki, ogrody i tereny rekreacyjne",
+      "foto": "karta.siatka-hub",
+      "trasa": "siatka"
+    }
+  ],
+  "tresc": {
+    "zasieg": {
+      "tytul": "Dojeżdżamy w promieniu 100 km od Białej Podlaskiej",
+      "tekst": "Ogrodzenia montujemy na terenie województwa lubelskiego, podlaskiego i mazowieckiego. W tym promieniu mieszczą się między innymi",
+      "miasta": [
+        "Lublin",
+        "Siedlce",
+        "Świdnik",
+        "Łuków",
+        "Bielsk Podlaski",
+        "Lubartów",
+        "Hajnówka",
+        "Sokołów Podlaski",
+        "Międzyrzec Podlaski",
+        "Radzyń Podlaski"
+      ],
+      "domkniecie": "oraz wszystkie mniejsze miejscowości pomiędzy nimi. Dojazd ekipy i wizja lokalna są bezpłatne w całym tym obszarze, a jeżeli mieszkasz nieco dalej, zadzwoń i sprawdzimy, czy damy radę przyjechać."
+    },
+    "metodyka": {
+      "tytul": "Jak wygląda montaż ogrodzenia krok po kroku",
+      "wstep": "Ogrodzenie trzyma się tak długo, jak dobrze osadzone są słupki, więc kolejność prac nie jest u nas kwestią wygody. Każde zlecenie przechodzi przez te same etapy:",
+      "kroki": [
+        "wizja lokalna z pomiarem i wytyczeniem linii ogrodzenia",
+        "wiercenie otworów pod słupki wiertnicą, poniżej granicy przemarzania",
+        "osadzenie i wypoziomowanie słupków w betonie",
+        "montaż podmurówki prefabrykowanej albo wylanie jej na miejscu",
+        "montaż paneli lub przęseł, z zabezpieczeniem miejsc cięcia przed korozją",
+        "osadzenie bramy i furtki, regulacja zawiasów i rolek",
+        "podłączenie i próba automatyki: napęd, fotokomórki, piloty",
+        "uprzątnięcie terenu i wywóz odpadów"
+      ],
+      "tytulDodatkow": "Prace towarzyszące, które bierzemy na siebie",
+      "wstepDodatkow": "Na efekt końcowy nie składa się samo ogrodzenie. Równie często decyduje o nim to, co dzieje się wokół: stara siatka do zdjęcia, spadek terenu wzdłuż linii, brak zasilania przy bramie. Wszystkie te prace bierzemy na siebie w ramach tego samego zlecenia - bez szukania drugiej ekipy, godzenia dwóch terminów i przerzucania odpowiedzialności za to, co nie wyszło.",
+      "dodatki": [
+        "demontaż starego ogrodzenia razem z wywozem gruzu",
+        "montaż schodkowy na terenie pochyłym",
+        "doprowadzenie zasilania i sterowania do bramy",
+        "montaż listew podmurówkowych i blend przeciwwglądowych"
+      ]
+    },
+    "sprzet": {
+      "tytul": "Sprzęt, na którym pracujemy",
+      "tekst": "Metodę osadzenia słupków dobieramy do gruntu, bo to ona decyduje o trwałości, a nie sam sprzęt. Tam, gdzie grunt na to pozwala, otwory wiercimy wiertnicą - otwór ma wtedy równe ściany i beton wiąże w pełnym przekroju. W gruncie nasypowym, kamienistym albo przy ciasnym dojściu do budynku wiertnica nie wejdzie; wtedy kopiemy ręcznie i odpowiednio poszerzamy otwór, żeby efekt był ten sam. Linię ogrodzenia i wysokości ustawiamy niwelatorem laserowym, więc przęsła nie falują na długich odcinkach. Do cięcia paneli używamy szlifierki z tarczą do stali nierdzewnej, a każde miejsce cięcia zabezpieczamy farbą cynkową - to właśnie tam zaczyna się korozja ogrodzeń ciętych na sucho i zostawionych bez zabezpieczenia."
+    },
+    "fotoObok": "karta.murowane",
+    "fotoObokAlt": "Ogrodzenie panelowe z betonową podmurówką - realizacja BramBruk"
+  },
+  "cennikOpis": {
+    "wstep": "Cennik pokazuje widełki cenowe, a nie konkretne ceny, ponieważ ostateczny koszt ogrodzenia zależy od kilku rzeczy, których nie widać na etapie zapytania:",
+    "czynniki": [
+      "ukształtowanie terenu i różnice poziomów wzdłuż linii ogrodzenia",
+      "wysokość i typ panelu oraz rodzaj podmurówki",
+      "liczba bram i furtek, a przy nich obecność automatyki",
+      "stan gruntu: piasek, glina czy grunt nasypowy z gruzem",
+      "demontaż i wywóz starego ogrodzenia, jeżeli jest potrzebny"
+    ]
+  },
+  "galeria": [
+    {
+      "foto": "realizacja.01",
+      "tytul": "Ogrodzenie panelowe + brama",
+      "lokalizacja": "Biała Podlaska"
+    },
+    {
+      "foto": "realizacja.08",
+      "tytul": "Brama przesuwna",
+      "lokalizacja": "Janów Podlaski"
+    },
+    {
+      "foto": "realizacja.05",
+      "tytul": "Ogrodzenie z podmurówką",
+      "lokalizacja": "Leśna Podlaska"
+    }
+  ],
+  "tytulGalerii": "Nasze ogrodzenia i bramy",
+  "etykietaFaq": "FAQ - Ogrodzenia",
+  "tytulFaq": "Pytania o ogrodzenia",
+  "faq": [
+    {
+      "pytanie": "Ile kosztuje metr bieżący ogrodzenia panelowego?",
+      "odpowiedz": "Ogrodzenie panelowe 2D kosztuje orientacyjnie {cena.panel-2d.zakres}, a 3D {cena.panel-3d.zakres} - materiał plus robocizna. Sam materiał to {cena.panel-2d.material} przy panelu 2D i {cena.panel-3d.material} przy 3D. Na cenę wpływa jeszcze wysokość, kolor RAL oraz rodzaj podłoża."
+    },
+    {
+      "pytanie": "Jaka jest różnica między panelem 2D a 3D?",
+      "odpowiedz": "Panel 3D ma fałdy (przetłoczenia), które zwiększają jego sztywność - jest bardziej wytrzymały i estetyczny, sprawdza się na ogrodzenie frontowe. Panel 2D jest płaski i tańszy, dobry na ogrodzenia boczne i tylne posesji."
+    },
+    {
+      "pytanie": "Czy potrzebuję pozwolenia na budowę ogrodzenia?",
+      "odpowiedz": "Ogrodzenia do 2,2 m wysokości zazwyczaj wymagają jedynie zgłoszenia do starostwa powiatowego, nie pozwolenia na budowę. Wyjątkiem są ogrodzenia od strony dróg publicznych i torów kolejowych. Pomożemy ustalić formalności dla Twojej działki."
+    }
+  ]
+}

@@ -14,7 +14,9 @@
  */
 
 import { endpointy } from '../config/site'
-import { dane } from '../config/dane'
+// Dane firmy wprost z pliku treści: to moduł przeglądarki, więc nie może
+// przejść przez kolekcje Astro ani przez rozwijacz znaczników (`node:fs`).
+import firma from '../content/firma.json'
 
 const KOMUNIKATY: Record<string, string> = {
   required: 'To pole jest wymagane.',
@@ -32,7 +34,7 @@ const ETYKIETY: Record<string, string> = {
 
 const BRAK_BACKENDU =
   'Wysyłka formularza jest chwilowo niedostępna - trwa przenoszenie serwisu. ' +
-  `Zadzwoń: ${dane.telefon} albo napisz: ${dane.email}. Przepraszamy za utrudnienie.`
+  `Zadzwoń: ${firma.telefon} albo napisz: ${firma.email}. Przepraszamy za utrudnienie.`
 
 export type Pole = HTMLInputElement | HTMLTextAreaElement
 

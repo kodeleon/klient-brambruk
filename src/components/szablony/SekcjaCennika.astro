@@ -12,6 +12,24 @@
  * Faktura tła (`tlo-ciemne`): poświata w prawym dolnym rogu i zagęszczona
  * siatka punktów w lewym górnym. Liczby i mechanizm: `styles/components/tlo.css`.
  *
+ * TRZY KOLUMNY KWOT: materiał, robocizna i razem. Cena całkowita nie stoi
+ * w pliku treści - liczy ją `src/lib/cennik.ts` z dwóch pierwszych, więc
+ * wiersz nie ma jak się rozjechać sam ze sobą. Przy wąskiej tabeli kolumny
+ * składowych chowają się pod nazwę usługi: „Razem" zostaje zawsze, bo to
+ * jedyna liczba, po którą ktoś tu przyszedł.
+ *
+ * ⚠️ PRZEŁĄCZA ZAPYTANIE O KONTENER (`@container` + wariant `@lg`), nie punkt
+ * łamania okna. Szerokość tabeli nie wynika z szerokości ekranu, tylko z tego,
+ * czy sekcja stoi w jednej kolumnie, czy w dwóch: przy oknie 1024 px tabela
+ * dostaje 440 px, a przy 800 px - całe 720 px. Punkt łamania okna pokazywał
+ * przez to cztery kolumny tam, gdzie mieściły się trzy, a `overflow-hidden`
+ * ucinał kolumnę „Razem" - czyli jedyną istotną. Próg 32 rem bierze się
+ * z pomiaru: najszersza tabela (budownictwo) potrzebuje 478 px, a docelowa
+ * kolumna ma 568 px.
+ *
+ * Pozycja wyliczana z innej („podjazd 40 m²") nie ma rozbicia - jej kwota
+ * bierze się z metrażu razy stawka, a nie z własnego materiału i montażu.
+ *
  * Para przycisków jest przenoszona (`Przenoszony`): po zejściu do jednej
  * kolumny ląduje POD tabelą widełek. Spełnia obie przesłanki reguły - nad nią
  * stoi neutralna lista czynników, która na przyciski nie wskazuje, a to
@@ -23,13 +41,14 @@ import Odslon from "../ui/Odslon.astro";
 import Przenoszony from "../ui/Przenoszony.astro";
 import PrzyciskiWyceny from "../ui/PrzyciskiWyceny.astro";
 import Ikona from "../icons/Ikona.astro";
+import type { WierszCennika } from "../../lib/cennik";
 
 interface Props {
   etykieta: string;
   tytul: string;
   wstep: string;
   czynniki: readonly string[];
-  pozycje: readonly { usluga: string; cena: string }[];
+  pozycje: readonly WierszCennika[];
   id?: string;
 }
 const { etykieta, tytul, wstep, czynniki, pozycje, id } = Astro.props;
@@ -86,25 +105,61 @@ const INNE_USLUGI = {
       <Odslon wariant="right">
         <div>
           <div
-            class="overflow-hidden rounded-2xl border border-white/10 bg-white/[0.04]"
+            class="@container overflow-hidden rounded-2xl border border-white/10 bg-white/[0.04]"
           >
-            {
-              pozycje.map((wiersz, i) => (
-                <div
-                  class:list={[
-                    "flex items-center justify-between gap-4 px-3 py-4 sm:px-4",
-                    i !== pozycje.length - 1 && "border-b border-white/10",
-                  ]}
+            <table class="w-full text-sm">
+              <thead>
+                <tr
+                  class="border-b border-white/10 bg-white/[0.04] text-[10px] uppercase tracking-widest text-neutral-400"
                 >
-                  <span class="text-sm text-brand-text-xlight">
-                    {wiersz.usluga}
-                  </span>
-                  <span class="text-sm font-bold text-brand-olive whitespace-nowrap">
-                    {wiersz.cena}
-                  </span>
-                </div>
-              ))
-            }
+                  <th class="px-3 py-2.5 text-left font-semibold @lg:px-4"
+                    >Pozycja</th
+                  >
+                  <th
+                    class="hidden px-2 py-2.5 text-right font-semibold @lg:table-cell"
+                    >Materiał</th
+                  >
+                  <th
+                    class="hidden px-2 py-2.5 text-right font-semibold @lg:table-cell"
+                    >Robocizna</th
+                  >
+                  <th class="px-3 py-2.5 text-right font-semibold @lg:px-4"
+                    >Razem</th
+                  >
+                </tr>
+              </thead>
+              <tbody>
+                {
+                  pozycje.map((wiersz, i) => (
+                    <tr
+                      class:list={[
+                        i !== pozycje.length - 1 && "border-b border-white/10",
+                      ]}
+                    >
+                      <td class="px-3 py-3 align-top @lg:px-4">
+                        <span class="text-brand-text-xlight">
+                          {wiersz.usluga}
+                        </span>
+                        <span class="mt-1 block text-xs text-neutral-400 @lg:hidden">
+                          {wiersz.material
+                            ? `${wiersz.material} + ${wiersz.montaz}`
+                            : "z metrażu razy stawka"}
+                        </span>
+                      </td>
+                      <td class="hidden whitespace-nowrap px-2 py-3 text-right align-top text-xs text-neutral-400 @lg:table-cell">
+                        {wiersz.material ?? "—"}
+                      </td>
+                      <td class="hidden whitespace-nowrap px-2 py-3 text-right align-top text-xs text-neutral-400 @lg:table-cell">
+                        {wiersz.montaz ?? "—"}
+                      </td>
+                      <td class="whitespace-nowrap px-3 py-3 text-right align-top text-sm font-bold text-brand-olive @lg:px-4">
+                        {wiersz.razem}
+                      </td>
+                    </tr>
+                  ))
+                }
+              </tbody>
+            </table>
           </div>
 
           <p
@@ -112,9 +167,10 @@ const INNE_USLUGI = {
           >
             <Ikona nazwa="alert-circle" rozmiar={14} class="mt-0.5 shrink-0" />
             <span>
-              Ceny orientacyjne, aktualne na 2026 r. Nie stanowią oferty w
-              rozumieniu Kodeksu cywilnego - dokładną kwotę podajemy po
-              bezpłatnej wizji lokalnej.
+              Kolumna „Razem" to materiał plus robocizna - transport, dojazd i
+              drobny osprzęt mieszczą się w tych kwotach. Ceny orientacyjne,
+              aktualne na 2026 r. Nie stanowią oferty w rozumieniu Kodeksu
+              cywilnego - dokładną kwotę podajemy po bezpłatnej wizji lokalnej.
             </span>
           </p>
         </div>

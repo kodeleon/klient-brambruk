@@ -1,10 +1,13 @@
 /**
  * KONFIGURACJA TECHNICZNA SERWISU - jedno miejsce na decyzje, nie na treść.
  *
- * Treść powtarzalna (adres, telefon, godziny, ceny, odnośniki) mieszka
- * w `dane.ts` obok. Podział jest celowy: `site.ts` zmienia się raz, przy
- * zakładaniu projektu, `dane.ts` zmienia się za każdym razem, gdy klient
- * przyśle poprawkę.
+ * Granica jest ostra i przebiega w jednym miejscu: TU są rzeczy, które zmienia
+ * Kodeleon przy zmianie technicznej, a w `src/content/` rzeczy, które zmienia
+ * klient. Nazwa firmy i jej krótki opis wyszły stąd do `src/content/firma.json`
+ * właśnie dlatego: to są słowa klienta, a nie ustawienie serwisu.
+ *
+ * Ścieżki podstron mieszkają w `routes.ts` obok - też technika, bo wynikają
+ * z `src/pages/`, nie z tego, co klient chce napisać.
  *
  * `origin` jest jedynym źródłem adresu bezwzględnego w całym repozytorium.
  * Bierze go stąd: canonical, og:url, og:image, dane strukturalne, mapa strony,
@@ -14,12 +17,6 @@
 export const site = {
   /** Adres bezwzględny, bez ukośnika na końcu. */
   origin: 'https://brambruk.pl',
-
-  /** Nazwa serwisu. Trafia do og:site_name i danych strukturalnych. */
-  nazwa: 'BramBruk',
-
-  /** Krótki opis serwisu. Trafia do danych strukturalnych, nie do meta description. */
-  opis: 'Ogrodzenia, brukarstwo i budownictwo - Biała Podlaska i okolice.',
 
   /** Język dokumentu. Idzie do <html lang> i og:locale. */
   jezyk: 'pl',

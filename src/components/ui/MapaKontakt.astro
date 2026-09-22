@@ -17,7 +17,7 @@
  * │ ⚠️ STAN PRZEJŚCIOWY: do czasu wgrania obrazu stoi tu zaślepka.       │
  * └──────────────────────────────────────────────────────────────────────┘
  */
-import { dane } from '../../config/dane'
+import firma from '../../content/firma.json'
 import Foto from '../media/Foto.astro'
 import Ikona from '../icons/Ikona.astro'
 
@@ -35,12 +35,12 @@ const { class: klasa = '' } = Astro.props
 >
   <Foto
     klucz="mapa.dojazd"
-    alt={`Mapa dojazdu do BramBruk, ${dane.adres}`}
+    alt={`Mapa dojazdu do ${firma.nazwa}, ${firma.adres}`}
     class="w-full h-full min-h-[360px] object-cover"
   />
 
   <a
-    href={dane.mapyUrl}
+    href={firma.mapyUrl}
     target="_blank"
     rel="noopener noreferrer"
     class="absolute bottom-3 right-3 inline-flex items-center gap-2 rounded-full bg-brand-card/95 border border-brand-border px-4 py-2 text-xs font-semibold text-brand-text shadow-sm shadow-black/[0.04] hover:border-brand-olive/40 transition-colors"

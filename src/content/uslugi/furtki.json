@@ -1,0 +1,95 @@
+{
+  "meta": {
+    "tytul": "Furtki ogrodzeniowe - BramBruk | Biała Podlaska i okolice",
+    "opis": "Furtki dopasowane do bram i ogrodzeń panelowych. Montaż w Białej Podlaskiej i okolicach. Wycena bezpłatna, odpowiedź w 24h."
+  },
+  "okruszek": "Furtki",
+  "okruszekNadrzedny": {
+    "etykieta": "Ogrodzenia",
+    "trasa": "ogrodzenia"
+  },
+  "etykieta": "Furtki ogrodzeniowe",
+  "tytul": "Furtki ogrodzeniowe i wejściowe",
+  "podtytul": "Dopasowane stylem do ogrodzenia",
+  "nazwaPojedyncza": "furtka",
+  "nazwaMnoga": "furtki",
+  "fotoHero": "usluga.furtka",
+  "wstep": "Furtka to wizytówka ogrodzenia - element, który goście widzą jako pierwszy. Montujemy furtki panelowe, kute, z drewna kompozytowego i aluminiowe. Każda furtka dopasowana kolorystycznie i stylistycznie do ogrodzenia i bramy.",
+  "cechy": [
+    {
+      "ikona": "palette",
+      "tytul": "Dopasowanie",
+      "opis": "Furtka w stylu i kolorze ogrodzenia - spójny wygląd posesji"
+    },
+    {
+      "ikona": "ruler",
+      "tytul": "Na wymiar",
+      "opis": "Standardowe i niestandardowe wymiary, lewe i prawe otwieranie"
+    },
+    {
+      "ikona": "key-round",
+      "tytul": "Zamki i klamki",
+      "opis": "Zamki wpuszczane, elektrozaczepy, samozamykacze, domofony"
+    },
+    {
+      "ikona": "banknote",
+      "tytul": "Od {cena.furtka-panelowa.min}",
+      "opis": "Furtka panelowa z materiałem i robocizną; stalowa od {cena.furtka-stalowa.min}"
+    }
+  ],
+  "tresc": {
+    "tytul1": "Furtki ogrodzeniowe - dopełnienie ogrodzenia",
+    "tekst1": "Furtka powinna być spójna z resztą ogrodzenia pod względem materiału, koloru i stylu. Oferujemy furtki panelowe (2D i 3D), z profili stalowych zamkniętych, przęseł kutych, aluminium i drewna kompozytowego. Każda furtka malowana proszkowo w wybranym kolorze RAL.",
+    "tytul2": "Okucia i automatyka furtek",
+    "tekst2": "Furtki wyposażamy w zamki wpuszczane (na klucz lub wkładkę), klamki ze stali nierdzewnej, zawiasy regulowane i samozamykacze. Na życzenie montujemy elektrozaczepy umożliwiające otwieranie z domofonu lub wideodomofonu.",
+    "tytul3": "Wymiary i montaż",
+    "tekst3": "Standardowa szerokość furtki to 100–120 cm, wysokość dopasowywana do ogrodzenia. Furtki montujemy na słupkach stalowych lub murowanych. Czas montażu samej furtki to kilka godzin - zazwyczaj realizujemy ją w ramach całego ogrodzenia."
+  },
+  "kroki": {
+    "tytul": "Montaż furtki krok po kroku",
+    "wstep": "Furtka jest najczęściej używanym elementem ogrodzenia - otwiera się kilka razy dziennie przez kilkanaście lat. Dlatego montaż wygląda tak:",
+    "lista": [
+      "pomiar szerokości przejścia i wysokości ogrodzenia",
+      "osadzenie słupków furtkowych w betonie, wzmocnionych względem pozostałych",
+      "zawieszenie skrzydła na zawiasach regulowanych",
+      "ustawienie pionu, poziomu i prześwitu przy progu",
+      "montaż zamka, klamki i wkładki",
+      "montaż samozamykacza albo elektrozaczepu, jeżeli są w zakresie",
+      "podłączenie domofonu i przycisku wyjścia"
+    ]
+  },
+  "sprzet": "Słupki furtkowe osadzamy na większej głębokości niż zwykłe słupki ogrodzeniowe i zawsze w betonie - furtka używana codziennie rozchwieje słupek postawiony na wcisk w ciągu jednego sezonu. Wkładki i zamki montujemy z uszczelnieniem, bo w ogrodzeniu stoją na zewnątrz, bez żadnej osłony przed deszczem.",
+  "cennikCzynniki": [
+    "szerokość i wysokość skrzydła",
+    "rodzaj wypełnienia i dopasowanie do ogrodzenia",
+    "okucia: zamek, klamka, samozamykacz, elektrozaczep",
+    "podłączenie domofonu albo wideodomofonu"
+  ],
+  "galeria": [
+    {
+      "foto": "realizacja.05",
+      "tytul": "Furtka panelowa",
+      "lokalizacja": "Biała Podlaska"
+    },
+    {
+      "foto": "realizacja.01",
+      "tytul": "Furtka z ogrodzeniem",
+      "lokalizacja": "Sławacinek"
+    },
+    {
+      "foto": "realizacja.07",
+      "tytul": "Furtka metalowa",
+      "lokalizacja": "Porosiuki"
+    }
+  ],
+  "faq": [
+    {
+      "pytanie": "Ile kosztuje furtka ogrodzeniowa z montażem?",
+      "odpowiedz": "Furtka panelowa to {cena.furtka-panelowa.zakres}, stalowa {cena.furtka-stalowa.zakres} - materiał plus robocizna. Wideodomofon przy furtce to osobna dopłata {cena.furtka-videodomofon.zakres}. Cena zależy od materiału, wymiarów i okuć (zamek, samozamykacz, elektrozaczep)."
+    },
+    {
+      "pytanie": "Czy mogę zamontować domofon w furtce?",
+      "odpowiedz": "Tak - montujemy elektrozaczepy umożliwiające zdalne otwieranie furtki z domofonu lub wideodomofonu. Wymaga to doprowadzenia zasilania do furtki (kabel niskiego napięcia)."
+    }
+  ]
+}

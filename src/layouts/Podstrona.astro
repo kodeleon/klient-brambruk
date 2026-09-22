@@ -17,6 +17,7 @@
  */
 
 import { site, adres } from '../config/site'
+import firma from '../content/firma.json'
 import Naglowek from '../components/layout/Naglowek.astro'
 import OgImage from '../components/media/OgImage.astro'
 import Stopka from '../components/layout/Stopka.astro'
@@ -77,8 +78,8 @@ const daneStrukturalne = {
       '@type': 'WebSite',
       '@id': `${site.origin}/#serwis`,
       url: `${site.origin}/`,
-      name: site.nazwa,
-      description: site.opis,
+      name: firma.nazwa,
+      description: firma.opisSerwisu,
       inLanguage: site.jezyk,
     },
     {
@@ -109,7 +110,7 @@ const daneStrukturalne = {
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
 
     <meta property="og:type" content="website" />
-    <meta property="og:site_name" content={site.nazwa} />
+    <meta property="og:site_name" content={firma.nazwa} />
     <meta property="og:title" content={tytul} />
     <meta property="og:description" content={opis} />
     <meta property="og:locale" content={jezyk === site.jezyk ? site.ogLocale : jezyk} />

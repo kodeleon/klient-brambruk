@@ -1,0 +1,124 @@
+{
+  "meta": {
+    "tytul": "Brukarstwo - kostka brukowa - BramBruk | Biała Podlaska i okolice",
+    "opis": "Układanie kostki brukowej, podjazdy, chodniki i tarasy. Solidna podbudowa, estetyczne wykonanie. Bezpłatna wycena w Białej Podlaskiej i okolicach."
+  },
+  "okruszek": "Brukarstwo",
+  "etykieta": "Brukarstwo",
+  "fotoHero": "hero.brukarstwo",
+  "fotoHeroObok": "hero.brukarstwo-obok",
+  "tytulHero": "Profesjonalne brukarstwo",
+  "podtytulHero": "Od korytowania po fugowanie",
+  "opisHero": "Układamy kostkę brukową na podjazdy, chodniki, tarasy i parkingi. Kompleksowa realizacja od przygotowania terenu po wykończenie, z doborem materiałów, doradztwem i bezpłatną wyceną na terenie województwa lubelskiego, podlaskiego i mazowieckiego.",
+  "tytulSekcji": "Nasze usługi brukarskie",
+  "uslugi": [
+    {
+      "tytul": "Kostka brukowa",
+      "opis": "Układanie, dobór materiału, wzory",
+      "foto": "karta.kostka",
+      "trasa": "kostka-brukowa"
+    },
+    {
+      "tytul": "Podjazdy i parkingi",
+      "opis": "Trwałe nawierzchnie pod samochody",
+      "foto": "karta.podjazd",
+      "trasa": "podjazdy"
+    },
+    {
+      "tytul": "Chodniki i tarasy",
+      "opis": "Alejki ogrodowe, tarasy, schody",
+      "foto": "karta.chodnik",
+      "trasa": "chodniki-tarasy"
+    }
+  ],
+  "tresc": {
+    "zasieg": {
+      "tytul": "Dojeżdżamy w promieniu 100 km od Białej Podlaskiej",
+      "tekst": "Prace brukarskie wykonujemy na terenie województwa lubelskiego, podlaskiego i mazowieckiego. W tym promieniu mieszczą się między innymi",
+      "miasta": [
+        "Lublin",
+        "Siedlce",
+        "Świdnik",
+        "Łuków",
+        "Bielsk Podlaski",
+        "Lubartów",
+        "Hajnówka",
+        "Sokołów Podlaski",
+        "Międzyrzec Podlaski",
+        "Radzyń Podlaski"
+      ],
+      "domkniecie": "oraz wszystkie mniejsze miejscowości pomiędzy nimi. Przy większych powierzchniach dojazd nie wpływa na cenę - liczy się metraż i zakres prac ziemnych, a nie to, ile kilometrów pokonuje ekipa."
+    },
+    "metodyka": {
+      "tytul": "Jak układamy kostkę krok po kroku",
+      "wstep": "Kostka rozjeżdża się nie dlatego, że jest zła, tylko dlatego, że pod nią czegoś zabrakło. Dlatego połowa roboty dzieje się zanim położymy pierwszy element:",
+      "kroki": [
+        "korytowanie terenu, czyli zebranie humusu na głębokość dobraną do obciążenia",
+        "zagęszczenie gruntu rodzimego",
+        "ułożenie podbudowy z kruszywa, warstwami, z zagęszczeniem każdej warstwy",
+        "montaż krawężników i obrzeży na ławie betonowej",
+        "podsypka cementowo-piaskowa, ściągnięta pod zaplanowany spadek",
+        "układanie kostki w wybranym wzorze, z docinaniem przy krawędziach",
+        "fugowanie i zagęszczanie powierzchni zagęszczarką z matą ochronną"
+      ],
+      "tytulDodatkow": "Prace towarzyszące, które bierzemy na siebie",
+      "wstepDodatkow": "Nawierzchnia to nie tylko kostka. O tym, jak posesja wygląda i działa po naszym wyjeździe, decydują też odwodnienie, obrzeża, poziomy przy garażu i to, co zostało po starym podjeździe. Te prace wykonujemy w ramach tego samego zlecenia, w tym samym terminie i na tej samej fakturze - bo to one najczęściej przesądzają o efekcie końcowym.",
+      "dodatki": [
+        "odwodnienie liniowe i studzienki przy garażu lub bramie",
+        "schody terenowe, palisady i niskie murki oporowe",
+        "wywóz urobku i gruzu po starej nawierzchni",
+        "obsadzenie studzienek, włazów i skrzynek w nawierzchni"
+      ]
+    },
+    "sprzet": {
+      "tytul": "Sprzęt, na którym pracujemy",
+      "tekst": "Spadki ustawiamy niwelatorem laserowym, nie „na oko\" - od tego zależy, czy woda po ulewie spływa na trawnik, czy pod drzwi garażu. Grunt i kolejne warstwy podbudowy zagęszczamy zagęszczarką płytową, a w wąskich miejscach przy ścianie i słupkach ubijakiem skokowym, do którego zagęszczarka nie sięga. Kostkę tniemy piłą z chłodzeniem wodnym: cięcie na sucho wypala krawędź i zostawia jasny ślad, który widać przez kilka sezonów. Do zagęszczania gotowej powierzchni używamy maty ochronnej, żeby nie zmatowić wierzchniej warstwy kostki."
+    },
+    "fotoObok": "karta.kostka",
+    "fotoObokAlt": "Układanie kostki brukowej na podjeździe - realizacja BramBruk"
+  },
+  "cennikOpis": {
+    "wstep": "Cennik pokazuje widełki cenowe, a nie konkretne ceny, ponieważ ostateczny koszt zależy od kilku rzeczy, których nie widać na etapie zapytania:",
+    "czynniki": [
+      "przeznaczenie nawierzchni: chodnik, podjazd osobowy czy parking pod cięższy pojazd",
+      "kształt powierzchni - wąskie alejki i łuki oznaczają więcej docinania",
+      "stan gruntu i głębokość korytowania, jaką trzeba zrobić",
+      "konieczność odwodnienia i wykonania spadków",
+      "wzór ułożenia kostki i rodzaj materiału"
+    ]
+  },
+  "galeria": [
+    {
+      "foto": "realizacja.02",
+      "tytul": "Podjazd z kostki",
+      "lokalizacja": "Międzyrzec Podlaski"
+    },
+    {
+      "foto": "realizacja.09",
+      "tytul": "Chodniki i obrzeża",
+      "lokalizacja": "Sławacinek Stary"
+    },
+    {
+      "foto": "realizacja.03",
+      "tytul": "Taras z kostki",
+      "lokalizacja": "Biała Podlaska"
+    }
+  ],
+  "tytulGalerii": "Nasze prace brukarskie",
+  "etykietaFaq": "FAQ - Brukarstwo",
+  "tytulFaq": "Pytania o brukarstwo",
+  "faq": [
+    {
+      "pytanie": "Ile kosztuje ułożenie kostki brukowej za m²?",
+      "odpowiedz": "Sama robocizna to {cena.kostka.montaz}, materiał {cena.kostka.material} - razem {cena.kostka.zakres}. Podbudowa ({cena.podbudowa.zakres}) i krawężniki ({cena.krawezniki.zakres}) liczymy osobno, bo nie każda realizacja ich wymaga. Cena zależy od rodzaju kostki, grubości podbudowy i stopnia skomplikowania wzoru."
+    },
+    {
+      "pytanie": "W jakim terminie realizujecie brukarstwo?",
+      "odpowiedz": "Brukarstwo najlepiej realizować od marca do listopada, gdy temperatura nie spada poniżej 5°C. Standardowy podjazd (30–50 m²) wykonujemy w 3–5 dni roboczych. Większe projekty planujemy indywidualnie."
+    },
+    {
+      "pytanie": "Jak przygotować podłoże pod kostkę?",
+      "odpowiedz": "Przygotowanie podłoża obejmuje: korytowanie (usunięcie humusu na 30–40 cm), zagęszczenie gruntu, warstwę kruszywa (podbudowę), podsypkę cementowo-piaskową i obramowanie krawężnikami. Wykonujemy to kompleksowo w ramach zlecenia."
+    }
+  ]
+}

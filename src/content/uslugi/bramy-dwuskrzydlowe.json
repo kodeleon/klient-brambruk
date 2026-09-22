@@ -1,0 +1,96 @@
+{
+  "meta": {
+    "tytul": "Bramy dwuskrzydłowe - BramBruk | Biała Podlaska i okolice",
+    "opis": "Bramy dwuskrzydłowe pasujące do ogrodzeń panelowych i murowanych. Montaż w Białej Podlaskiej i powiecie bialskim. Bezpłatna wycena."
+  },
+  "okruszek": "Bramy dwuskrzydłowe",
+  "okruszekNadrzedny": {
+    "etykieta": "Ogrodzenia",
+    "trasa": "ogrodzenia"
+  },
+  "etykieta": "Bramy dwuskrzydłowe",
+  "tytul": "Bramy dwuskrzydłowe wjazdowe",
+  "podtytul": "Klasyczny wjazd, z napędem lub bez",
+  "nazwaPojedyncza": "brama dwuskrzydłowa",
+  "nazwaMnoga": "bramy dwuskrzydłowe",
+  "fotoHero": "usluga.brama-dwuskrzydlowa",
+  "wstep": "Bramy dwuskrzydłowe to klasyczne rozwiązanie wjazdowe - eleganckie i proste w konstrukcji. Montujemy bramy dwuskrzydłowe panelowe, palisadowe, kute i z drewna kompozytowego, z możliwością automatyzacji.",
+  "cechy": [
+    {
+      "ikona": "landmark",
+      "tytul": "Klasyka",
+      "opis": "Ponadczasowy design, dopasowanie do każdego stylu ogrodzenia"
+    },
+    {
+      "ikona": "banknote",
+      "tytul": "Ekonomiczność",
+      "opis": "Tańsza od przesuwnej przy wjazdach nawet powyżej 5 m szerokości"
+    },
+    {
+      "ikona": "wrench",
+      "tytul": "Automatyka",
+      "opis": "Siłowniki liniowe lub ramionowe - otwieranie na pilota"
+    },
+    {
+      "ikona": "palette",
+      "tytul": "Dopasowanie",
+      "opis": "Panel, przęsło kute, drewno kompozytowe - do wyboru"
+    }
+  ],
+  "tresc": {
+    "tytul1": "Bramy dwuskrzydłowe - klasyczna elegancja",
+    "tekst1": "Bramy dwuskrzydłowe otwierają się na zewnątrz lub do wewnątrz posesji. Wymagają miejsca na otwarcie skrzydeł, ale są tańsze od przesuwnych i prostsze w budowie. Idealnie sprawdzają się przy wjazdach do 5 m szerokości, gdzie nie ma ograniczeń przestrzennych.",
+    "tytul2": "Materiały i wykończenie",
+    "tekst2": "Skrzydła bramy wykonujemy z paneli ogrodzeniowych (2D/3D), profili stalowych zamkniętych, przęseł kutych lub drewna kompozytowego. Każda brama jest dwukrotnie malowana proszkowo w kolorze RAL dopasowanym do ogrodzenia i furtki (z możliwością dodatkowego cynkowania).",
+    "tytul3": "Automatyzacja bramy dwuskrzydłowej",
+    "tekst3": "Automatyka do bram dwuskrzydłowych opiera się na siłownikach liniowych (ramionowych). Zestaw obejmuje: 2 siłowniki, centralę sterującą, piloty, fotokomórki i lampę. Montaż automatyki jest możliwy zarówno przy nowej bramie, jak i doposażeniu istniejącej."
+  },
+  "kroki": {
+    "tytul": "Montaż bramy dwuskrzydłowej krok po kroku",
+    "wstep": "Brama dwuskrzydłowa wisi na słupach, więc to one decydują o tym, czy po roku skrzydła nadal się schodzą:",
+    "lista": [
+      "pomiar wjazdu i ustalenie kierunku otwierania skrzydeł",
+      "osadzenie słupów bramowych w betonie, z zapasem na obciążenie",
+      "montaż zawiasów regulowanych i zawieszenie skrzydeł",
+      "ustawienie prześwitu nad gruntem i poziomu obu skrzydeł",
+      "montaż zamka, rygla gruntowego i odbojów",
+      "montaż siłowników albo napędów ramieniowych",
+      "podłączenie fotokomórek i sterowania",
+      "próba działania i regulacja pozycji krańcowych"
+    ]
+  },
+  "sprzet": "Słupy bramowe osadzamy głębiej niż słupki ogrodzeniowe i zbroimy fundament - skrzydło działa na słup jak dźwignia. Zawiasy dobieramy regulowane w trzech osiach, żeby po sezonie dało się wyrównać skrzydła bez demontażu. Poziom i prześwit ustawiamy laserem, bo dwa skrzydła, które nie schodzą się równo, widać z ulicy od pierwszego dnia.",
+  "cennikCzynniki": [
+    "szerokość wjazdu i wysokość skrzydeł",
+    "rodzaj wypełnienia: panel, blacha, kute elementy",
+    "napędy ramieniowe albo siłowniki z osprzętem",
+    "rygiel gruntowy, odboje i zamek"
+  ],
+  "galeria": [
+    {
+      "foto": "realizacja.07",
+      "tytul": "Brama dwuskrzydłowa",
+      "lokalizacja": "Biała Podlaska"
+    },
+    {
+      "foto": "realizacja.05",
+      "tytul": "Brama z automatyką",
+      "lokalizacja": "Cicibór"
+    },
+    {
+      "foto": "realizacja.01",
+      "tytul": "Brama panelowa",
+      "lokalizacja": "Rakowiska"
+    }
+  ],
+  "faq": [
+    {
+      "pytanie": "Brama przesuwna czy dwuskrzydłowa - co wybrać?",
+      "odpowiedz": "Brama przesuwna wymaga mniej miejsca na podjazd i jest wygodniejsza z automatyką. Dwuskrzydłowa jest tańsza, ale wymaga przestrzeni na otwarcie skrzydeł. Przy wjazdach powyżej 5 m - przesuwna jest lepszym wyborem."
+    },
+    {
+      "pytanie": "Ile kosztuje brama dwuskrzydłowa z montażem?",
+      "odpowiedz": "Brama dwuskrzydłowa to {cena.brama-dwuskrzydlowa.zakres} - materiał {cena.brama-dwuskrzydlowa.material} plus robocizna {cena.brama-dwuskrzydlowa.montaz}. Kwota jest bez automatyki: siłowniki z akcesoriami to osobna dopłata {cena.automatyka-bram.zakres}. Przy tej samej szerokości wjazdu wychodzi taniej niż brama przesuwna."
+    }
+  ]
+}

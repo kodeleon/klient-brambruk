@@ -1,17 +1,12 @@
 ---
 /**
- * /brukarstwo/kostka-brukowa/ - podstrona usługi.
+ * /brukarstwo/kostka-brukowa/ - podstrona rodzaju usługi.
  *
- * Cały układ siedzi w `SzablonUslugi.astro`, treść w `src/data/uslugi.ts`.
- * Tutaj zostaje to, co jest właściwe TEJ podstronie: adres (wynika z nazwy
- * pliku) oraz tytuł i opis dla wyszukiwarki. Oba przeniesione bez zmian
- * z `code/src/seo/seoMap.js`.
+ * Plik trasy niesie JEDNĄ informację: który rekord treści tutaj stoi.
+ * Adres wynika z nazwy pliku, układ z `SzablonUslugi.astro`, a treść razem
+ * z tytułem i opisem dla wyszukiwarki - z `src/content/uslugi/kostka-brukowa.json`.
  */
 import SzablonUslugi from '../../components/szablony/SzablonUslugi.astro'
 ---
 
-<SzablonUslugi
-  klucz="kostka-brukowa"
-  tytul="Układanie kostki brukowej - BramBruk | Biała Podlaska i okolice"
-  opis="Układanie kostki brukowej od 100 zł/m² (robocizna). Dobór materiału, przygotowanie podłoża, obrzeża. Realizacje w Białej Podlaskiej i okolicach."
-/>
+<SzablonUslugi klucz="kostka-brukowa" />

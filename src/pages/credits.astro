@@ -16,12 +16,20 @@
  * Mapy jeszcze nie ma. Kiedy wejdzie obraz z `osm-custom-view`, atrybucja
  * OpenStreetMap obowiązuje PRZY MAPIE, nie tutaj - ta sekcja jest wtedy
  * dopiskiem, nie spełnieniem warunku.
+ *
+ * [decyzja] TA SAMA REGUŁA CO PRZY POLITYCE PRYWATNOŚCI: proza zostaje
+ * w pliku podstrony, bo klient jej nie edytuje. Z treści pobierana jest
+ * wyłącznie nazwa firmy, znacznikiem.
  */
 import Podstrona from '../layouts/Podstrona.astro'
+import { znacznik } from '../lib/znaczniki'
 import Okruszki from '../components/ui/Okruszki.astro'
 import EtykietaSekcji from '../components/ui/EtykietaSekcji.astro'
 import Odslon from '../components/ui/Odslon.astro'
 import Ikona from '../components/icons/Ikona.astro'
+
+const gdzie = 'src/pages/credits.astro'
+const nazwaFirmy = znacznik('firma.nazwa', gdzie)
 
 const ikonyFlaticon = [
   { temat: 'Ogrodzenia (fence)', autor: 'Magnific', url: 'https://www.flaticon.com/free-icons/fence' },
@@ -50,7 +58,7 @@ const kroje = [
         <EtykietaSekcji>Materiały</EtykietaSekcji>
         <h1 class="font-display text-3xl lg:text-4xl font-bold text-brand-text mt-2 mb-3">Credits</h1>
         <p class="text-brand-text-light leading-relaxed mb-10">
-          Poniżej wypisane są materiały, które nie powstały w BramBruk, razem z autorami i licencjami.
+          Poniżej wypisane są materiały, które nie powstały w {nazwaFirmy}, razem z autorami i licencjami.
           Lista jest częścią warunków, na jakich z nich korzystamy.
         </p>
       </Odslon>
@@ -60,7 +68,7 @@ const kroje = [
           <div class="mb-9">
             <h2 class="font-display text-lg font-bold text-brand-text mb-2">Fotografie</h2>
             <p class="text-sm text-brand-text-light leading-relaxed">
-              Wszystkie zdjęcia realizacji w serwisie to materiał własny BramBruk, wykonany na
+              Wszystkie zdjęcia realizacji w serwisie to materiał własny {nazwaFirmy}, wykonany na
               zrealizowanych zleceniach. Serwis nie używa fotografii ze stocku.
             </p>
           </div>

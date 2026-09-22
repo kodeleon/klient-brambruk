@@ -1,0 +1,487 @@
+{
+  "wersja": 1,
+  "strony": {
+    "ogrodzenia": {
+      "etykieta": "Ogrodzenia i bramy",
+      "tytulPrzegladu": "Ile kosztuje ogrodzenie?",
+      "pozycje": [
+        {
+          "id": "automatyka-bram",
+          "usluga": "Automatyka do bramy",
+          "jednostka": "zł",
+          "material": {
+            "min": 2500,
+            "max": 4500
+          },
+          "montaz": {
+            "min": 1500,
+            "max": 2500
+          }
+        }
+      ],
+      "przeglad": [
+        "panel-2d",
+        "panel-3d",
+        "siatka",
+        "murowane-slupek",
+        "brama-przesuwna",
+        "brama-dwuskrzydlowa",
+        "furtka-panelowa",
+        "automatyka-bram"
+      ]
+    },
+    "panelowe": {
+      "etykieta": "Ogrodzenia panelowe",
+      "pozycje": [
+        {
+          "id": "panel-2d",
+          "usluga": "Ogrodzenie panelowe 2D",
+          "jednostka": "zł/mb",
+          "material": {
+            "min": 40,
+            "max": 60
+          },
+          "montaz": {
+            "min": 100,
+            "max": 150
+          }
+        },
+        {
+          "id": "panel-3d",
+          "usluga": "Ogrodzenie panelowe 3D",
+          "jednostka": "zł/mb",
+          "material": {
+            "min": 50,
+            "max": 80
+          },
+          "montaz": {
+            "min": 100,
+            "max": 150
+          }
+        }
+      ],
+      "przeglad": [
+        "murowane-podmurowka-wylewana",
+        "podmurowka-prefabrykowana"
+      ]
+    },
+    "murowane": {
+      "etykieta": "Ogrodzenia murowane",
+      "pozycje": [
+        {
+          "id": "murowane-slupek",
+          "usluga": "Słupek murowany",
+          "jednostka": "zł/szt.",
+          "material": {
+            "min": 250,
+            "max": 500
+          },
+          "montaz": {
+            "min": 150,
+            "max": 300
+          }
+        },
+        {
+          "id": "murowane-podmurowka-wylewana",
+          "usluga": "Podmurówka wylewana",
+          "jednostka": "zł/mb",
+          "material": {
+            "min": 180,
+            "max": 300
+          },
+          "montaz": {
+            "min": 120,
+            "max": 200
+          }
+        },
+        {
+          "id": "podmurowka-prefabrykowana",
+          "usluga": "Podmurówka prefabrykowana",
+          "jednostka": "zł/mb",
+          "material": {
+            "min": 20,
+            "max": 45
+          },
+          "montaz": {
+            "min": 10,
+            "max": 25
+          }
+        }
+      ]
+    },
+    "siatka": {
+      "etykieta": "Siatka ogrodzeniowa",
+      "pozycje": [
+        {
+          "id": "siatka",
+          "usluga": "Ogrodzenie z siatki",
+          "jednostka": "zł/mb",
+          "material": {
+            "min": 15,
+            "max": 30
+          },
+          "montaz": {
+            "min": 40,
+            "max": 60
+          }
+        }
+      ],
+      "przeglad": [
+        "podmurowka-prefabrykowana"
+      ]
+    },
+    "bramy-przesuwne": {
+      "etykieta": "Bramy przesuwne",
+      "pozycje": [
+        {
+          "id": "brama-przesuwna",
+          "usluga": "Brama przesuwna",
+          "jednostka": "zł",
+          "material": {
+            "min": 5000,
+            "max": 11000
+          },
+          "montaz": {
+            "min": 3500,
+            "max": 6000
+          }
+        }
+      ],
+      "przeglad": [
+        "automatyka-bram"
+      ]
+    },
+    "bramy-dwuskrzydlowe": {
+      "etykieta": "Bramy dwuskrzydłowe",
+      "pozycje": [
+        {
+          "id": "brama-dwuskrzydlowa",
+          "usluga": "Brama dwuskrzydłowa",
+          "jednostka": "zł",
+          "material": {
+            "min": 2000,
+            "max": 5000
+          },
+          "montaz": {
+            "min": 1400,
+            "max": 3500
+          }
+        }
+      ],
+      "przeglad": [
+        "automatyka-bram"
+      ]
+    },
+    "furtki": {
+      "etykieta": "Furtki ogrodzeniowe",
+      "pozycje": [
+        {
+          "id": "furtka-panelowa",
+          "usluga": "Furtka panelowa",
+          "jednostka": "zł",
+          "material": {
+            "min": 800,
+            "max": 1500
+          },
+          "montaz": {
+            "min": 300,
+            "max": 600
+          }
+        },
+        {
+          "id": "furtka-stalowa",
+          "usluga": "Furtka stalowa",
+          "jednostka": "zł",
+          "material": {
+            "min": 1200,
+            "max": 2500
+          },
+          "montaz": {
+            "min": 300,
+            "max": 600
+          }
+        },
+        {
+          "id": "furtka-videodomofon",
+          "usluga": "Wideodomofon przy furtce",
+          "jednostka": "zł",
+          "material": {
+            "min": 2200,
+            "max": 3000
+          },
+          "montaz": {
+            "min": 800,
+            "max": 1000
+          }
+        }
+      ]
+    },
+    "brukarstwo": {
+      "etykieta": "Brukarstwo",
+      "tytulPrzegladu": "Ile kosztuje brukarstwo?",
+      "pozycje": [
+        {
+          "id": "podbudowa",
+          "usluga": "Podbudowa pod kostkę",
+          "jednostka": "zł/m²",
+          "material": {
+            "min": 18,
+            "max": 28
+          },
+          "montaz": {
+            "min": 17,
+            "max": 27
+          }
+        },
+        {
+          "id": "krawezniki",
+          "usluga": "Krawężniki",
+          "jednostka": "zł/mb",
+          "material": {
+            "min": 12,
+            "max": 20
+          },
+          "montaz": {
+            "min": 13,
+            "max": 20
+          }
+        },
+        {
+          "id": "obrzeza",
+          "usluga": "Obrzeża trawnikowe",
+          "jednostka": "zł/mb",
+          "material": {
+            "min": 7,
+            "max": 12
+          },
+          "montaz": {
+            "min": 8,
+            "max": 13
+          }
+        }
+      ],
+      "przeglad": [
+        "kostka",
+        "podjazd",
+        "chodnik",
+        "taras"
+      ]
+    },
+    "kostka-brukowa": {
+      "etykieta": "Kostka brukowa",
+      "pozycje": [
+        {
+          "id": "kostka",
+          "usluga": "Układanie kostki brukowej",
+          "jednostka": "zł/m²",
+          "material": {
+            "min": 30,
+            "max": 80
+          },
+          "montaz": {
+            "min": 100,
+            "max": 150
+          }
+        }
+      ],
+      "przeglad": [
+        "podbudowa",
+        "krawezniki"
+      ]
+    },
+    "podjazdy": {
+      "etykieta": "Podjazdy i parkingi",
+      "pozycje": [
+        {
+          "id": "podjazd",
+          "usluga": "Podjazd z kostki",
+          "jednostka": "zł/m²",
+          "material": {
+            "min": 30,
+            "max": 80
+          },
+          "montaz": {
+            "min": 100,
+            "max": 150
+          }
+        },
+        {
+          "id": "podjazd-odwodnienie",
+          "usluga": "Odwodnienie liniowe",
+          "jednostka": "zł/mb",
+          "material": {
+            "min": 70,
+            "max": 120
+          },
+          "montaz": {
+            "min": 50,
+            "max": 80
+          }
+        },
+        {
+          "id": "podjazd-typowy-40m2",
+          "usluga": "Podjazd 40 m² - typowa realizacja",
+          "jednostka": "zł",
+          "wyliczenie": {
+            "z": "podjazd",
+            "mnoznik": 40
+          }
+        }
+      ],
+      "przeglad": [
+        "podbudowa",
+        "krawezniki"
+      ]
+    },
+    "chodniki-tarasy": {
+      "etykieta": "Chodniki, alejki i tarasy",
+      "pozycje": [
+        {
+          "id": "chodnik",
+          "usluga": "Chodnik z kostki",
+          "jednostka": "zł/m²",
+          "material": {
+            "min": 30,
+            "max": 80
+          },
+          "montaz": {
+            "min": 65,
+            "max": 85
+          }
+        },
+        {
+          "id": "taras",
+          "usluga": "Taras z kostki lub płyt",
+          "jednostka": "zł/m²",
+          "material": {
+            "min": 30,
+            "max": 80
+          },
+          "montaz": {
+            "min": 75,
+            "max": 100
+          }
+        },
+        {
+          "id": "schody-terenowe",
+          "usluga": "Schody terenowe",
+          "jednostka": "zł/mb",
+          "material": {
+            "min": 80,
+            "max": 160
+          },
+          "montaz": {
+            "min": 70,
+            "max": 140
+          }
+        },
+        {
+          "id": "alejka-typowa",
+          "usluga": "Alejka 15 m² - typowa realizacja",
+          "jednostka": "zł",
+          "wyliczenie": {
+            "z": "chodnik",
+            "mnoznik": 15
+          }
+        },
+        {
+          "id": "taras-typowy",
+          "usluga": "Taras 20 m² - typowa realizacja",
+          "jednostka": "zł",
+          "wyliczenie": {
+            "z": "taras",
+            "mnoznik": 20
+          }
+        }
+      ],
+      "przeglad": [
+        "podbudowa",
+        "obrzeza"
+      ]
+    },
+    "budownictwo": {
+      "etykieta": "Budownictwo",
+      "tytulPrzegladu": "Ile kosztuje budowa?",
+      "pozycje": [
+        {
+          "id": "altana-3x3",
+          "usluga": "Altana 3×3 m",
+          "jednostka": "zł",
+          "material": {
+            "min": 5000,
+            "max": 9500
+          },
+          "montaz": {
+            "min": 3000,
+            "max": 5500
+          }
+        },
+        {
+          "id": "altana-4x4",
+          "usluga": "Altana 4×4 m",
+          "jednostka": "zł",
+          "material": {
+            "min": 7500,
+            "max": 14000
+          },
+          "montaz": {
+            "min": 4500,
+            "max": 8000
+          }
+        },
+        {
+          "id": "altana-grill",
+          "usluga": "Altana z grillem murowanym",
+          "jednostka": "zł",
+          "material": {
+            "min": 9500,
+            "max": 19000
+          },
+          "montaz": {
+            "min": 5500,
+            "max": 11000
+          }
+        },
+        {
+          "id": "garaz-blaszany",
+          "usluga": "Garaż blaszany",
+          "jednostka": "zł",
+          "material": {
+            "min": 2000,
+            "max": 5500
+          },
+          "montaz": {
+            "min": 1000,
+            "max": 2500
+          }
+        },
+        {
+          "id": "domek-narzedziowy",
+          "usluga": "Domek narzędziowy",
+          "jednostka": "zł",
+          "material": {
+            "min": 2600,
+            "max": 8000
+          },
+          "montaz": {
+            "min": 1400,
+            "max": 4000
+          }
+        },
+        {
+          "id": "wiata-samochodowa",
+          "usluga": "Wiata samochodowa",
+          "jednostka": "zł",
+          "material": {
+            "min": 3200,
+            "max": 9500
+          },
+          "montaz": {
+            "min": 1800,
+            "max": 5500
+          }
+        }
+      ]
+    }
+  }
+}

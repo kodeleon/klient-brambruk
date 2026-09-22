@@ -1,0 +1,19 @@
+{
+  "meta": {
+    "tytul": "Strona nie znaleziona - BramBruk",
+    "opis": "Pod tym adresem nic nie ma. Poniżej jest wszystko, czego zwykle się tutaj szuka."
+  },
+  "tytul": "Strona nie znaleziona",
+  "opis": [
+    "Adres mógł się zmienić albo zawiera literówkę.",
+    "Tymczasem zapraszamy do kontaktu lub skorzystania z bezpłatnej wyceny."
+  ],
+  "przyciski": {
+    "wycena": "Bezpłatna wycena",
+    "glowna": "Strona główna"
+  },
+  "nawigacja": {
+    "etykieta": "Pozostałe podstrony",
+    "polityka": "Polityka prywatności"
+  }
+}

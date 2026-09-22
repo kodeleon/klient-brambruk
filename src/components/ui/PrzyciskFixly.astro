@@ -13,7 +13,7 @@
  *     karcie i prowadzi poza serwis. Sam `aria-label` mówił o tym czytnikowi
  *     ekranu, ale nie widzącemu.
  */
-import { fixly } from '../../config/dane'
+import dowody from '../../content/dowody.json'
 import Ikona from '../icons/Ikona.astro'
 
 interface Props {
@@ -23,7 +23,7 @@ const { class: klasa = '' } = Astro.props
 ---
 
 <a
-  href={fixly.url}
+  href={dowody.fixly.url}
   target="_blank"
   rel="noopener noreferrer"
   class:list={[

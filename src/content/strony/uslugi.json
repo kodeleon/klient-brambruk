@@ -1,0 +1,165 @@
+{
+  "meta": {
+    "tytul": "Usługi i cennik - BramBruk | Biała Podlaska i okolice",
+    "opis": "Pełna oferta i cennik BramBruk: ogrodzenia panelowe i murowane, bramy, furtki, kostka brukowa, podjazdy, budownictwo. Biała Podlaska i okolice."
+  },
+  "hero": {
+    "etykieta": "Usługi i cennik",
+    "tytul": "Zakres usług BramBruk",
+    "podtytul": "Orientacyjne widełki cenowe",
+    "opis": "Poniżej znajdziesz przegląd wszystkich usług wraz z orientacyjnymi cenami. Dokładna wycena zawsze zależy od zakresu, materiałów i lokalizacji - opisz swój projekt w formularzu.",
+    "foto": "hero.ogrodzenia",
+    "fotoObok": "hero.uslugi-obok",
+    "etykietaTypow": "Typ usługi",
+    "etykietaNawigacji": "Przejdź do typu usługi"
+  },
+  "uwaga": {
+    "tytul": "Uwaga!",
+    "tekst": "Ceny są wyłącznie orientacyjne i nie stanowią oferty sprzedażowej. Ostateczna kwota zależy od zakresu prac, użytych materiałów i specyfiki terenu.",
+    "link": "Zapytaj o dokładną wycenę →"
+  },
+  "etykietaGrupy": "Co oferujemy",
+  "przyciskGrupy": "Szczegóły o",
+  "grupy": [
+    {
+      "klucz": "ogrodzenia",
+      "ikona": "fence",
+      "przycisk": "ogrodzeniach",
+      "etykieta": "Ogrodzenia i bramy",
+      "trasa": "ogrodzenia",
+      "karty": [
+        {
+          "tytul": "Ogrodzenie panelowe 2D",
+          "cena": "{cena.panel-2d.zakres}",
+          "nota": "materiał + robocizna",
+          "foto": "karta.panelowe",
+          "trasa": "panelowe",
+          "opis": "Panel ocynkowany malowany proszkowo RAL. Montaż na słupkach w gruncie lub na podmurówce."
+        },
+        {
+          "tytul": "Ogrodzenie panelowe 3D",
+          "cena": "{cena.panel-3d.zakres}",
+          "nota": "materiał + robocizna",
+          "foto": "karta.panelowe-3d",
+          "trasa": "panelowe",
+          "opis": "Panel z przetłoczeniami - sztywniejszy, bardziej estetyczny. Idealny na ogrodzenie frontowe."
+        },
+        {
+          "tytul": "Podmurówka i słupki murowane",
+          "cena": "{cena.murowane-podmurowka-wylewana.zakres}",
+          "nota": "materiał + robocizna",
+          "foto": "karta.murowane",
+          "trasa": "murowane",
+          "opis": "Betonowy cokół pod panel - chroni przed wilgocią i podnosi estetykę. Słupek murowany: {cena.murowane-slupek.zakres}, podmurówka prefabrykowana: {cena.podmurowka-prefabrykowana.zakres}."
+        },
+        {
+          "tytul": "Ogrodzenie z siatki",
+          "cena": "{cena.siatka.zakres}",
+          "nota": "materiał + robocizna",
+          "foto": "karta.siatka-uslugi",
+          "trasa": "ogrodzenia",
+          "opis": "Ekonomiczne ogrodzenie na działki i ogrody. Siatka ocynkowana lub powlekana PCV."
+        },
+        {
+          "tytul": "Brama przesuwna",
+          "cena": "{cena.brama-przesuwna.zakres}",
+          "nota": "materiał + robocizna",
+          "foto": "karta.brama-przesuwna",
+          "trasa": "bramy-przesuwne",
+          "opis": "Samonośna lub na szynie, szer. 3–6 m. Automatyka to dopłata {cena.automatyka-bram.zakres}."
+        },
+        {
+          "tytul": "Brama dwuskrzydłowa",
+          "cena": "{cena.brama-dwuskrzydlowa.zakres}",
+          "nota": "materiał + robocizna",
+          "foto": "karta.brama-dwuskrzydlowa",
+          "trasa": "bramy-dwuskrzydlowe",
+          "opis": "Klasyczna brama wjazdowa, panelowa lub kuta. Automatyka to dopłata {cena.automatyka-bram.zakres}."
+        },
+        {
+          "tytul": "Furtka ogrodzeniowa",
+          "cena": "{cena.furtka-panelowa.zakres}",
+          "nota": "materiał + robocizna",
+          "foto": "karta.furtka",
+          "trasa": "furtki",
+          "opis": "Dopasowana do ogrodzenia, z zamkiem i samozamykaczem. Wersja stalowa: {cena.furtka-stalowa.zakres}, wideodomofon: {cena.furtka-videodomofon.zakres}."
+        }
+      ]
+    },
+    {
+      "klucz": "brukarstwo",
+      "ikona": "pavement",
+      "przycisk": "brukarstwie",
+      "etykieta": "Brukarstwo",
+      "trasa": "brukarstwo",
+      "karty": [
+        {
+          "tytul": "Kostka brukowa - układanie",
+          "cena": "{cena.kostka.zakres}",
+          "nota": "materiał + robocizna",
+          "foto": "karta.kostka",
+          "trasa": "kostka-brukowa",
+          "opis": "Kostka, podsypka i fugowanie. Korytowanie, podbudowę i krawężniki liczymy osobno."
+        },
+        {
+          "tytul": "Podjazd z kostki brukowej",
+          "cena": "{cena.podjazd.zakres}",
+          "nota": "materiał + robocizna",
+          "foto": "karta.podjazd",
+          "trasa": "podjazdy",
+          "opis": "Wzmocniona podbudowa pod ruch samochodowy. Podbudowę, krawężniki i odwodnienie liczymy osobno."
+        },
+        {
+          "tytul": "Chodnik / alejka ogrodowa",
+          "cena": "{cena.chodnik.zakres}",
+          "nota": "materiał + robocizna",
+          "foto": "karta.chodnik",
+          "trasa": "chodniki-tarasy",
+          "opis": "Estetyczne alejki i chodniki - dopasowane do stylu ogrodu i elewacji."
+        },
+        {
+          "tytul": "Taras z kostki brukowej",
+          "cena": "{cena.taras.zakres}",
+          "nota": "materiał + robocizna",
+          "foto": "karta.kostka",
+          "trasa": "chodniki-tarasy",
+          "opis": "Przestrzeń wypoczynkowa przy domu. Odprowadzenie wody i wykończenie obrzeżami."
+        }
+      ]
+    },
+    {
+      "klucz": "budownictwo",
+      "ikona": "brick-wall",
+      "przycisk": "budownictwie",
+      "etykieta": "Budownictwo",
+      "trasa": "budownictwo",
+      "karty": [
+        {
+          "tytul": "Altana ogrodowa",
+          "cena": "wycena indywidualna",
+          "foto": "karta.altana",
+          "trasa": "budownictwo",
+          "opis": "Altany drewniane i stalowe w różnych wymiarach. Możliwość daszku, ławek i oświetlenia."
+        },
+        {
+          "tytul": "Garaż blaszany",
+          "cena": "wycena indywidualna",
+          "foto": "karta.garaz",
+          "trasa": "budownictwo",
+          "opis": "Garaże jednostanowiskowe i wielostanowiskowe. Montaż na gotowej wylewce."
+        },
+        {
+          "tytul": "Domek narzędziowy",
+          "cena": "wycena indywidualna",
+          "foto": "karta.domek",
+          "trasa": "budownictwo",
+          "opis": "Schowki ogrodowe i domki narzędziowe. Solidna konstrukcja odporna na warunki atmosferyczne."
+        }
+      ]
+    }
+  ],
+  "baner": {
+    "tytul": "Widełki to nie wycena. Potrzebujesz konkretów?",
+    "opis": "Ceny wyżej pokazują rząd wielkości. Dokładna kwota zależy od wymiarów, terenu i materiału - opisz projekt, a policzymy go dla Twojej posesji."
+  }
+}

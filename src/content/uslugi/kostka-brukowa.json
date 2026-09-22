@@ -1,0 +1,100 @@
+{
+  "meta": {
+    "tytul": "Układanie kostki brukowej - BramBruk | Biała Podlaska i okolice",
+    "opis": "Układanie kostki brukowej - dobór materiału, korytowanie, podbudowa, obrzeża i fugowanie. Widełki cenowe i realizacje w Białej Podlaskiej i okolicach."
+  },
+  "okruszek": "Kostka brukowa",
+  "okruszekNadrzedny": {
+    "etykieta": "Brukarstwo",
+    "trasa": "brukarstwo"
+  },
+  "etykieta": "Kostka brukowa",
+  "tytul": "Układanie kostki brukowej",
+  "podtytul": "Wzory, grubości i solidna podbudowa",
+  "nazwaPojedyncza": "kostka brukowa",
+  "nazwaMnoga": "kostki brukowe",
+  "fotoHero": "usluga.kostka",
+  "pozycjaFoto": "0 40%",
+  "wstep": "Kostka brukowa to najpopularniejszy materiał na podjazdy, chodniki i tarasy. Oferujemy profesjonalne układanie kostki brukowej z pełnym przygotowaniem podłoża, doborem materiałów i gwarancją na wykonanie.",
+  "cechy": [
+    {
+      "ikona": "shield-check",
+      "tytul": "Trwałość",
+      "opis": "Kostka betonowa wytrzymuje 25+ lat przy prawidłowym ułożeniu na odpowiedniej podbudowie"
+    },
+    {
+      "ikona": "palette",
+      "tytul": "Estetyka",
+      "opis": "Szeroki wybór kolorów, kształtów i wzorów - od klasycznych po nowoczesne"
+    },
+    {
+      "ikona": "badge-check",
+      "tytul": "Kompleksowo",
+      "opis": "Od korytowania i podbudowy po fugowanie - realizujemy cały zakres prac"
+    },
+    {
+      "ikona": "banknote",
+      "tytul": "Od {cena.kostka.min}",
+      "opis": "Robocizna {cena.kostka.montaz} plus materiał {cena.kostka.material}, w zależności od typu kostki"
+    }
+  ],
+  "tresc": {
+    "tytul1": "Gdzie układamy kostkę i od czego zaczynamy",
+    "tekst1": "Kostkę brukową układamy w promieniu 100 km od Białej Podlaskiej, czyli w województwie lubelskim, podlaskim i mazowieckim - od Międzyrzeca Podlaskiego i Terespola po Siedlce, Łuków i Lublin. Realizujemy podjazdy, chodniki, alejki ogrodowe, tarasy i parkingi. Każdy projekt zaczynamy od bezpłatnej wizji lokalnej z pomiarem terenu i doradztwa w doborze kostki - pod kątem obciążenia, estetyki i budżetu klienta.",
+    "tytul2": "Rodzaje kostki brukowej",
+    "tekst2": "Oferujemy układanie kostki betonowej (Holland, Behaton, Starobruk, Cegła) oraz kostki granitowej. Grubość kostki dobieramy do przeznaczenia: 4–6 cm na chodniki i tarasy, 8 cm na podjazdy samochodowe, 10 cm na parkingi i place manewrowe. Dostępne kolory: szary, grafitowy, czerwony, brązowy i mix.",
+    "tytul3": "Grubość kostki a przeznaczenie nawierzchni",
+    "tekst3": "Grubość kostki dobiera się do obciążenia, nie do budżetu. Na chodnik i alejkę ogrodową wystarcza 4–6 cm, na podjazd pod samochód osobowy potrzebne jest 8 cm, a na parking pod pojazdy dostawcze i ciężarowe 10 cm. Oszczędność na tym jednym parametrze wraca po dwóch sezonach w postaci pękniętych elementów i kolein - a wymiana oznacza rozebranie nawierzchni razem z podbudową, czyli praktycznie całą robotę od nowa."
+  },
+  "kroki": {
+    "tytul": "Jak układamy kostkę krok po kroku",
+    "wstep": "Kostka rozjeżdża się nie dlatego, że jest zła, tylko dlatego, że pod nią czegoś zabrakło. Połowa roboty dzieje się przed położeniem pierwszego elementu:",
+    "lista": [
+      "korytowanie terenu na głębokość dobraną do obciążenia",
+      "zagęszczenie gruntu rodzimego",
+      "ułożenie podbudowy z kruszywa, warstwami, z zagęszczeniem każdej warstwy",
+      "montaż krawężników i obrzeży na ławie betonowej",
+      "podsypka cementowo-piaskowa, ściągnięta pod zaplanowany spadek",
+      "układanie kostki w wybranym wzorze, z docinaniem przy krawędziach",
+      "fugowanie i zagęszczanie powierzchni zagęszczarką z matą ochronną"
+    ]
+  },
+  "sprzet": "Spadki ustawiamy niwelatorem laserowym - od tego zależy, czy po ulewie woda spływa na trawnik, czy pod drzwi garażu. Kolejne warstwy podbudowy zagęszczamy zagęszczarką płytową, a przy ścianach i słupkach ubijakiem skokowym, do którego zagęszczarka nie sięga. Kostkę tniemy piłą z chłodzeniem wodnym, bo cięcie na sucho wypala krawędź i zostawia jasny ślad na kilka sezonów.",
+  "cennikCzynniki": [
+    "rodzaj i grubość kostki",
+    "głębokość korytowania oraz grubość podbudowy",
+    "wzór ułożenia i wynikająca z niego liczba docinek",
+    "obrzeża, krawężniki i obramowanie powierzchni"
+  ],
+  "galeria": [
+    {
+      "foto": "realizacja.02",
+      "tytul": "Kostka brukowa",
+      "lokalizacja": "Biała Podlaska"
+    },
+    {
+      "foto": "realizacja.06",
+      "tytul": "Chodnik z kostki",
+      "lokalizacja": "Sławacinek"
+    },
+    {
+      "foto": "realizacja.09",
+      "tytul": "Taras z kostki",
+      "lokalizacja": "Rakowiska"
+    }
+  ],
+  "faq": [
+    {
+      "pytanie": "Ile kosztuje ułożenie kostki brukowej za m²?",
+      "odpowiedz": "Robocizna to {cena.kostka.montaz}, materiał {cena.kostka.material} - razem {cena.kostka.zakres}. Podbudowa ({cena.podbudowa.zakres}) i krawężniki ({cena.krawezniki.zakres}) to osobne pozycje. Cena zależy od rodzaju kostki, grubości podbudowy i stopnia skomplikowania wzoru."
+    },
+    {
+      "pytanie": "Jaką kostkę wybrać na podjazd?",
+      "odpowiedz": "Na podjazd samochodowy rekomendujemy kostkę o grubości 8 cm (Behaton, Holland lub Starobruk). Na podjazd ciężarowy: 10 cm. Kolory ciemne (grafitowy, brązowy) lepiej maskują zabrudzenia niż jasne."
+    },
+    {
+      "pytanie": "Jak długo trwa układanie kostki?",
+      "odpowiedz": "Standardowy podjazd (30–50 m²) wykonujemy w 3–5 dni roboczych, wliczając przygotowanie podłoża. Większe powierzchnie (100+ m²) to 1–2 tygodnie. Czas zależy od warunków terenowych i pogodowych."
+    }
+  ]
+}

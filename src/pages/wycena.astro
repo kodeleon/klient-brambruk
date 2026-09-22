@@ -20,7 +20,8 @@
  * pokazuje komunikat zastępczy z telefonem i e-mailem.
  */
 import Podstrona from '../layouts/Podstrona.astro'
-import { typyUslug, podtypy, opcjeTerenu, opcjeTerminu, opcjeBudzetu } from '../data/wycena'
+import wycena from '../content/wycena.json'
+import { wpis } from '../lib/tresc'
 import Okruszki from '../components/ui/Okruszki.astro'
 import EtykietaSekcji from '../components/ui/EtykietaSekcji.astro'
 import Przycisk from '../components/ui/Przycisk.astro'
@@ -28,35 +29,23 @@ import OsCzasuProcesu from '../components/ui/OsCzasuProcesu.astro'
 import Ikona from '../components/icons/Ikona.astro'
 import Foto from '../components/media/Foto.astro'
 
-const kroki = [
-  { klucz: 'service', etykieta: 'Usługa', opis: 'Wybierz usługę' },
-  { klucz: 'details', etykieta: 'Szczegóły', opis: 'Podaj szczegóły' },
-  { klucz: 'extras', etykieta: 'Dodatkowe', opis: 'Dodatkowe info' },
-  { klucz: 'contact', etykieta: 'Dane', opis: 'Twoje dane' },
-  { klucz: 'summary', etykieta: 'Sprawdź', opis: 'Sprawdź i wyślij' },
-]
+const { typy: typyUslug, podtypy, teren: opcjeTerenu, termin: opcjeTerminu, budzet: opcjeBudzetu } = wycena
+
+const strona = await wpis('strony', 'wycena')
+const { hero, etapy, sukces, zdjecia, podsumowanie, rodo, przyciski, licznikKrokow } = strona
+const kroki = strona.kroki ?? []
 
 const klasaPola =
   'w-full px-4 py-3 rounded-lg border bg-white text-brand-text text-sm focus:outline-none focus:border-brand-olive focus:ring-2 focus:ring-brand-olive/10 transition-all border-brand-border'
 const klasaChipa =
   'chip inline-flex px-5 py-2.5 rounded-full border text-sm font-medium transition-all duration-200 border-brand-border bg-brand-card text-brand-text-light hover:border-brand-olive/40 hover:text-brand-text'
 
-const wierszePodsumowania = [
-  { pole: 'usluga', etykieta: 'Usługa', krok: 0 },
-  { pole: 'wymiary', etykieta: 'Wymiary', krok: 1 },
-  { pole: 'lokalizacja', etykieta: 'Lokalizacja', krok: 1 },
-  { pole: 'teren', etykieta: 'Teren', krok: 2 },
-  { pole: 'termin', etykieta: 'Termin', krok: 2 },
-  { pole: 'budzet', etykieta: 'Budżet', krok: 2 },
-  { pole: 'opis', etykieta: 'Opis', krok: 2 },
-  { pole: 'zdjecia', etykieta: 'Zdjęcia', krok: 2 },
-  { pole: 'kontakt', etykieta: 'Kontakt', krok: 3 },
-]
+const wierszePodsumowania = podsumowanie.wiersze
 ---
 
 <Podstrona
-  tytul="Bezpłatna wycena w 24h - BramBruk | Biała Podlaska i okolice"
-  opis="Opisz swój projekt i otrzymaj bezpłatną wycenę w ciągu 24 godzin. Ogrodzenia, bramy, brukarstwo - Biała Podlaska i okolice. Bez zobowiązań."
+  tytul={strona.meta.tytul}
+  opis={strona.meta.opis}
 >
   <Okruszki pozycje={[{ etykieta: 'Strona główna', sciezka: '/' }, { etykieta: 'Wycena' }]} />
 
@@ -70,14 +59,14 @@ const wierszePodsumowania = [
           >
             <Ikona nazwa="check-circle-2" rozmiar={20} />
           </div>
-          <h2 class="font-display text-xl lg:text-2xl font-bold text-brand-text">Dziękujemy za zapytanie!</h2>
+          <h2 class="font-display text-xl lg:text-2xl font-bold text-brand-text">{sukces.tytul}</h2>
           <p class="mt-2 text-sm text-brand-text-light">
-            Nic nie musisz robić - odpiszemy na e-mail w ciągu
-            <strong class="text-brand-text font-semibold">24 godzin</strong>.
+            {sukces.opisPrzed}
+            <strong class="text-brand-text font-semibold">{sukces.opisMocny}</strong>.
           </p>
-          <OsCzasuProcesu aktywny="2" etykieta="Co dalej" kompakt />
+          <OsCzasuProcesu aktywny="2" etykieta={sukces.etykietaOsi} kompakt />
           <div class="flex flex-wrap justify-center gap-3">
-            <Przycisk href="/" wariant="outline" ikona="home">Strona główna</Przycisk>
+            <Przycisk href="/" wariant="outline" ikona="home">{sukces.przycisk}</Przycisk>
           </div>
         </div>
       </div>
@@ -98,13 +87,11 @@ const wierszePodsumowania = [
       <div class="sekcja-hero__siatka absolute inset-0 hidden lg:block" aria-hidden="true"></div>
       <div class="sekcja-hero__swiatlo absolute inset-0 hidden lg:block" aria-hidden="true"></div>
       <div class="relative max-w-7xl mx-auto px-5 lg:px-10 py-10 lg:py-14 text-center">
-        <EtykietaSekcji wariant="ciemne" class="mb-3">Bezpłatna wycena</EtykietaSekcji>
+        <EtykietaSekcji wariant="ciemne" class="mb-3">{hero.etykieta}</EtykietaSekcji>
         <h1 class="font-display text-3xl lg:text-[42px] font-bold text-white leading-tight mb-3">
-          Bezpłatna wycena w 24h
+          {hero.tytul}
         </h1>
-        <p class="text-neutral-400 max-w-lg mx-auto">
-          Opisz swój projekt - bez zobowiązań. Odpowiedź zwykle w ciągu jednego dnia roboczego.
-        </p>
+        <p class="text-neutral-400 max-w-lg mx-auto">{hero.opis}</p>
 
         {/* Wskaźnik kroków - stany aktualizuje skrypt. */}
         <div class="mt-8 max-w-2xl mx-auto">
@@ -152,16 +139,14 @@ const wierszePodsumowania = [
           data-formularz="wycena"
         >
           <p class="text-xs text-brand-text-light mb-1">
-            Krok <span data-wycena-numer>1</span> z {kroki.length}
+            {licznikKrokow.przed} <span data-wycena-numer>1</span> {licznikKrokow.miedzy} {kroki.length}
           </p>
           <p class="text-xs font-semibold text-brand-sage mb-6" data-wycena-etykieta>{kroki[0].etykieta}</p>
 
           {/* ═══ KROK 1 - typ usługi ═══════════════════════ */}
           <div data-krok="0">
-            <h2 class="font-display text-2xl lg:text-3xl font-bold text-brand-text">Wybierz typ usługi</h2>
-            <p class="mt-2 text-sm text-brand-text-light" data-krok0-opis>
-              Kliknij kartę odpowiadającą Twojemu projektowi.
-            </p>
+            <h2 class="font-display text-2xl lg:text-3xl font-bold text-brand-text">{etapy[0].tytul}</h2>
+            <p class="mt-2 text-sm text-brand-text-light" data-krok0-opis>{etapy[0].opis}</p>
             <div class="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-4">
               {
                 typyUslug.map((typ) => (
@@ -201,8 +186,8 @@ const wierszePodsumowania = [
           {/* ═══ KROK 2 - szczegóły ════════════════════════ */}
           <div data-krok="1" class="space-y-8">
             <div>
-              <h2 class="font-display text-2xl lg:text-3xl font-bold text-brand-text">Szczegóły projektu</h2>
-              <p class="mt-2 text-sm text-brand-text-light">Wybierz rodzaj i podaj orientacyjne wymiary.</p>
+              <h2 class="font-display text-2xl lg:text-3xl font-bold text-brand-text">{etapy[1].tytul}</h2>
+              <p class="mt-2 text-sm text-brand-text-light">{etapy[1].opis}</p>
               <div class="mt-6">
                 <span class="block text-xs font-semibold text-brand-text mb-3">Rodzaj</span>
                 {
@@ -267,10 +252,8 @@ const wierszePodsumowania = [
           {/* ═══ KROK 3 - dodatkowe ════════════════════════ */}
           <div data-krok="2" class="space-y-8">
             <div>
-              <h2 class="font-display text-2xl lg:text-3xl font-bold text-brand-text">Dodatkowe informacje</h2>
-              <p class="mt-2 text-sm text-brand-text-light">
-                Im więcej szczegółów, tym dokładniejsza wycena. Wszystkie pola opcjonalne.
-              </p>
+              <h2 class="font-display text-2xl lg:text-3xl font-bold text-brand-text">{etapy[2].tytul}</h2>
+              <p class="mt-2 text-sm text-brand-text-light">{etapy[2].opis}</p>
             </div>
             <div>
               <span class="block text-xs font-semibold text-brand-text mb-3">Utrudnienia terenu</span>
@@ -347,10 +330,8 @@ const wierszePodsumowania = [
                       <Ikona nazwa="upload" rozmiar={18} />
                     </div>
                     <div>
-                      <p class="text-sm font-medium text-brand-text">Dodaj zdjęcia</p>
-                      <p class="text-xs text-brand-text-light">
-                        Opcjonalnie - przyspiesza wycenę · max 2 plików, do 4 MB każdy
-                      </p>
+                      <p class="text-sm font-medium text-brand-text">{zdjecia.tytul}</p>
+                      <p class="text-xs text-brand-text-light">{zdjecia.opis}</p>
                     </div>
                   </div>
 
@@ -359,7 +340,7 @@ const wierszePodsumowania = [
                     class="px-5 py-2.5 rounded-full font-semibold text-sm transition-colors bg-brand-olive text-brand-dark hover:bg-brand-olive-dark cursor-pointer"
                     data-upload-przycisk
                   >
-                    Wybierz pliki
+                    {zdjecia.przycisk}
                   </label>
                   <input
                     id="pole-zdjecia"
@@ -380,10 +361,8 @@ const wierszePodsumowania = [
 
           {/* ═══ KROK 4 - dane kontaktowe ══════════════════ */}
           <div data-krok="3">
-            <h2 class="font-display text-2xl lg:text-3xl font-bold text-brand-text">Dane kontaktowe</h2>
-            <p class="mt-2 text-sm text-brand-text-light">
-              Odpowiedź odeślemy na e-mail. Telefon opcjonalny - przyspiesza kontakt.
-            </p>
+            <h2 class="font-display text-2xl lg:text-3xl font-bold text-brand-text">{etapy[3].tytul}</h2>
+            <p class="mt-2 text-sm text-brand-text-light">{etapy[3].opis}</p>
             <div class="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label class="block text-xs font-semibold text-brand-text mb-2" for="pole-imie">
@@ -439,14 +418,12 @@ const wierszePodsumowania = [
 
           {/* ═══ KROK 5 - podsumowanie ═════════════════════ */}
           <div data-krok="4">
-            <h2 class="font-display text-2xl lg:text-3xl font-bold text-brand-text">Podsumowanie</h2>
-            <p class="mt-2 text-sm text-brand-text-light">
-              Sprawdź dane przed wysłaniem. Kliknij wiersz, aby edytować.
-            </p>
+            <h2 class="font-display text-2xl lg:text-3xl font-bold text-brand-text">{etapy[4].tytul}</h2>
+            <p class="mt-2 text-sm text-brand-text-light">{etapy[4].opis}</p>
             <div class="mt-8 bg-brand-card border border-brand-border rounded-2xl overflow-hidden">
               <div class="px-5 py-3 bg-brand-section border-b border-brand-border">
                 <span class="text-[10px] tracking-widest font-semibold text-brand-sage uppercase">
-                  Karta projektu
+                  {podsumowanie.tytul}
                 </span>
               </div>
               {
@@ -490,9 +467,9 @@ const wierszePodsumowania = [
           </div>
 
           <p class="mt-6 text-xs text-brand-text-light" data-wycena-rodo hidden>
-            Wysyłając formularz akceptujesz&nbsp;
+            {rodo.przed}&nbsp;
             <a href="/polityka-prywatnosci/" class="text-brand-olive-text underline hover:text-brand-text">
-              Politykę Prywatności
+              {rodo.link}
             </a>.
           </p>
 
@@ -522,7 +499,7 @@ const wierszePodsumowania = [
               disabled
             >
               <Ikona nazwa="arrow-left" rozmiar={16} />
-              Wstecz
+              {przyciski.wstecz}
             </button>
 
             <button
@@ -530,7 +507,7 @@ const wierszePodsumowania = [
               data-wycena-dalej
               class="inline-flex items-center gap-1 px-6 py-3 rounded-full text-sm font-semibold transition-all bg-brand-olive text-brand-dark hover:bg-brand-olive-dark hover:shadow-lg hover:shadow-brand-olive/20"
             >
-              Dalej
+              {przyciski.dalej}
               <Ikona nazwa="arrow-right" rozmiar={16} />
             </button>
 
@@ -540,7 +517,7 @@ const wierszePodsumowania = [
               class="flex items-center gap-1 px-6 py-3 rounded-full text-sm font-semibold transition-all bg-brand-olive text-brand-dark hover:bg-brand-olive-dark hover:shadow-lg hover:shadow-brand-olive/20"
               hidden
             >
-              Poproś o wycenę
+              {przyciski.wyslij}
               <Ikona nazwa="send" rozmiar={16} />
             </button>
           </div>

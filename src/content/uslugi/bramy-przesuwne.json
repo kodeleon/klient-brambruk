@@ -1,0 +1,101 @@
+{
+  "meta": {
+    "tytul": "Bramy przesuwne z montażem - BramBruk | Biała Podlaska i okolice",
+    "opis": "Bramy przesuwne automatyczne i manualne. Montaż, dobór napędu, gwarancja. Realizacje w Białej Podlaskiej i okolicach - bezpłatna wycena."
+  },
+  "okruszek": "Bramy przesuwne",
+  "okruszekNadrzedny": {
+    "etykieta": "Ogrodzenia",
+    "trasa": "ogrodzenia"
+  },
+  "etykieta": "Bramy przesuwne",
+  "tytul": "Bramy przesuwne i automatyka",
+  "podtytul": "Samonośne i na szynie, z automatyką",
+  "nazwaPojedyncza": "brama przesuwna",
+  "nazwaMnoga": "bramy przesuwne",
+  "fotoHero": "usluga.brama-przesuwna",
+  "wstep": "Bramy przesuwne to najwygodniejsze rozwiązanie do wjazdu na posesję - nie wymagają miejsca na otwarcie skrzydeł. Montujemy bramy przesuwne ręczne i automatyczne, samonośne i prowadzone na szynie.",
+  "cechy": [
+    {
+      "ikona": "car",
+      "tytul": "Wygoda",
+      "opis": "Otwieranie równoległe do ogrodzenia - bez zajmowania miejsca na podjeździe"
+    },
+    {
+      "ikona": "wrench",
+      "tytul": "Automatyka",
+      "opis": "Napędy automatyczne z pilotem, fotokomórkami i lampą sygnalizacyjną"
+    },
+    {
+      "ikona": "home",
+      "tytul": "Samonośne",
+      "opis": "Bramy bez szyny naziemnej - idealne na podjazdy z kostki brukowej"
+    },
+    {
+      "ikona": "ruler",
+      "tytul": "Szerokości 3–6 m",
+      "opis": "Standardowe szerokości przejazdowe, możliwość realizacji na wymiar"
+    }
+  ],
+  "tresc": {
+    "tytul1": "Gdzie brama przesuwna sprawdza się lepiej od dwuskrzydłowej",
+    "tekst1": "Montujemy bramy przesuwne samonośne (bez szyny naziemnej) i prowadzone na szynie. Bramy samonośne sprawdzają się szczególnie przy podjazdach z kostki brukowej, gdzie szyna naziemna utrudniałaby odśnieżanie i koszenie. Każda brama dobierana jest do istniejącego ogrodzenia - panelowego, murowanego lub kutego.",
+    "tytul2": "Automatyka bram przesuwnych",
+    "tekst2": "Oferujemy montaż napędów automatycznych renomowanych producentów. Zestaw automatyki obejmuje: napęd z przekładnią, 2 piloty, fotokomórki bezpieczeństwa, lampę sygnalizacyjną i listwę zębatą. Możliwość dołożenia domofonu, czytnika kart lub sterowania z telefonu.",
+    "tytul3": "Wymiary i materiały",
+    "tekst3": "Standardowe szerokości bram przesuwnych to 3, 4, 5 i 6 metrów. Wysokość dopasowywana do ogrodzenia (120–200 cm). Wypełnienie: panel ogrodzeniowy, przęsło stalowe, drewno kompozytowe. Malowanie proszkowe w wybranym kolorze RAL."
+  },
+  "kroki": {
+    "tytul": "Montaż bramy przesuwnej krok po kroku",
+    "wstep": "Brama samonośna waży kilkaset kilogramów i cały ten ciężar stoi na dwóch wózkach, więc fundament jest tu połową roboty:",
+    "lista": [
+      "pomiar wjazdu i ustalenie strony, w którą odjeżdża skrzydło",
+      "wykonanie fundamentu pod wózki jezdne, poniżej granicy przemarzania",
+      "zabetonowanie ramy montażowej i wprowadzenie peszla na zasilanie",
+      "ustawienie i wypoziomowanie wózków jezdnych",
+      "osadzenie skrzydła i regulacja rolek prowadzących",
+      "montaż napędu, listwy zębatej i wyłączników krańcowych",
+      "podłączenie fotokomórek, lampy sygnalizacyjnej i pilotów",
+      "próba działania i ustawienie siły napędu"
+    ]
+  },
+  "sprzet": "Fundament pod bramę zbroimy i wypoziomowujemy niwelatorem: krzywa rama oznacza bramę, która z czasem zaczyna ocierać i wykańcza napęd. Listwę zębatą ustawiamy z prześwitem względem zębatki, bo listwa oparta na napędzie przenosi na niego ciężar całego skrzydła. Siłę napędu ustawiamy zawsze na najniższą, przy której brama pracuje - to jest zabezpieczenie, a nie ustawienie na jakość.",
+  "cennikCzynniki": [
+    "szerokość wjazdu i wynikająca z niej masa skrzydła",
+    "rodzaj wypełnienia i wykończenia",
+    "automatyka: napęd, fotokomórki, piloty, lampa",
+    "doprowadzenie zasilania do miejsca montażu",
+    "zakres prac przy fundamencie pod wózki"
+  ],
+  "galeria": [
+    {
+      "foto": "realizacja.08",
+      "tytul": "Brama przesuwna panelowa",
+      "lokalizacja": "Biała Podlaska"
+    },
+    {
+      "foto": "realizacja.02",
+      "tytul": "Brama z automatyką",
+      "lokalizacja": "Sławacinek"
+    },
+    {
+      "foto": "realizacja.07",
+      "tytul": "Brama samonośna",
+      "lokalizacja": "Terespol"
+    }
+  ],
+  "faq": [
+    {
+      "pytanie": "Ile kosztuje brama przesuwna z montażem i automatyką?",
+      "odpowiedz": "Brama przesuwna to {cena.brama-przesuwna.zakres} - materiał {cena.brama-przesuwna.material} plus robocizna {cena.brama-przesuwna.montaz}. Kwota jest bez automatyki: napęd z akcesoriami to osobna dopłata {cena.automatyka-bram.zakres}. Na cenę wpływa szerokość (3–6 m), wypełnienie i jakość napędu."
+    },
+    {
+      "pytanie": "Brama samonośna czy na szynie - co lepsze?",
+      "odpowiedz": "Brama samonośna nie wymaga szyny w podłożu - łatwiejsza w utrzymaniu i idealna na podjazdy z kostki. Brama na szynie jest tańsza, ale wymaga regularnego czyszczenia szyny. Dla nowych podjazdów rekomendujemy samonośną."
+    },
+    {
+      "pytanie": "Czy mogę zamontować automatykę do istniejącej bramy?",
+      "odpowiedz": "Tak, w większości przypadków można doposażyć istniejącą bramę przesuwną w napęd automatyczny. Wymagany jest przegląd stanu bramy i prowadnic - bezpłatnie ocenimy możliwości na wizji lokalnej."
+    }
+  ]
+}

@@ -1,17 +1,12 @@
 ---
 /**
- * /ogrodzenia/murowane/ - podstrona usługi.
+ * /ogrodzenia/murowane/ - podstrona rodzaju usługi.
  *
- * Cały układ siedzi w `SzablonUslugi.astro`, treść w `src/data/uslugi.ts`.
- * Tutaj zostaje to, co jest właściwe TEJ podstronie: adres (wynika z nazwy
- * pliku) oraz tytuł i opis dla wyszukiwarki. Oba przeniesione bez zmian
- * z `code/src/seo/seoMap.js`.
+ * Plik trasy niesie JEDNĄ informację: który rekord treści tutaj stoi.
+ * Adres wynika z nazwy pliku, układ z `SzablonUslugi.astro`, a treść razem
+ * z tytułem i opisem dla wyszukiwarki - z `src/content/uslugi/murowane.json`.
  */
 import SzablonUslugi from '../../components/szablony/SzablonUslugi.astro'
 ---
 
-<SzablonUslugi
-  klucz="murowane"
-  tytul="Ogrodzenia murowane i z podmurówką - BramBruk | Biała Podlaska i okolice"
-  opis="Ogrodzenia murowane i podmurówki betonowe pod panele. Realizacje w Białej Podlaskiej i powiecie bialskim. Bezpłatna wycena."
-/>
+<SzablonUslugi klucz="murowane" />

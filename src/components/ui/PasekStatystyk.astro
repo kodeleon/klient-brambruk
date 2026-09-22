@@ -1,13 +1,15 @@
 ---
 /**
  * PASEK STATYSTYK - odpowiednik `StatBar.jsx`.
- * Liczby biorą się z `src/config/dane.ts`, nie z kodu komponentu.
+ * Liczby biorą się z `src/content/`, nie z kodu komponentu. Lata na rynku
+ * są LICZONE z roku założenia - przechowywana „6" starzała się co Nowy Rok.
  *
  * `kolumny` istnieje, bo ten sam pasek stoi raz na pełnej szerokości sekcji,
  * a raz w kolumnie o połowie tej szerokości. Cztery pozycje w wąskiej
  * kolumnie zlewają się w rząd liczb bez etykiet - stąd wariant dwukolumnowy.
  */
-import { statystyki, fixly } from "../../config/dane";
+import firma from "../../content/firma.json";
+import dowody from "../../content/dowody.json";
 
 interface Props {
   /** 4 = jeden rząd na szerokiej sekcji, 2 = siatka 2x2 w wąskiej kolumnie. */
@@ -16,11 +18,13 @@ interface Props {
 }
 const { kolumny = 4, class: klasa = "" } = Astro.props;
 
+const lata = new Date().getFullYear() - firma.rokZalozenia;
+
 const pozycje = [
-  { wartosc: String(statystyki.lata), etykieta: "lat doświadczenia" },
-  { wartosc: String(statystyki.miejscowosci), etykieta: "miejscowości" },
-  { wartosc: statystyki.realizacje, etykieta: "realizacji" },
-  { wartosc: fixly.ocena, etykieta: "ocena na Fixly" },
+  { wartosc: String(lata), etykieta: "lat doświadczenia" },
+  { wartosc: String(dowody.statystyki.miejscowosci), etykieta: "miejscowości" },
+  { wartosc: dowody.statystyki.realizacje, etykieta: "realizacji" },
+  { wartosc: dowody.fixly.ocena, etykieta: "ocena na Fixly" },
 ];
 
 const SIATKA = {

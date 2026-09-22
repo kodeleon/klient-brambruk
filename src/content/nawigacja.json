@@ -1,0 +1,50 @@
+{
+  "glowna": [
+    {
+      "etykieta": "Usługi",
+      "trasa": "uslugi",
+      "podmenu": [
+        { "etykieta": "Ogrodzenia i bramy", "trasa": "ogrodzenia" },
+        { "etykieta": "Brukarstwo", "trasa": "brukarstwo" },
+        { "etykieta": "Budownictwo", "trasa": "budownictwo" }
+      ]
+    },
+    { "etykieta": "Realizacje", "trasa": "realizacje" },
+    { "etykieta": "O nas", "trasa": "o-nas" },
+    { "etykieta": "Kontakt", "trasa": "kontakt" }
+  ],
+  "stopka": [
+    {
+      "tytul": "Nawigacja",
+      "pozycje": [
+        { "etykieta": "Usługi i cennik", "trasa": "uslugi" },
+        { "etykieta": "Realizacje", "trasa": "realizacje" },
+        { "etykieta": "O nas", "trasa": "o-nas" },
+        { "etykieta": "Kontakt", "trasa": "kontakt" },
+        { "etykieta": "Wycena", "trasa": "wycena" }
+      ]
+    },
+    {
+      "tytul": "Typy usług",
+      "pozycje": [
+        { "etykieta": "Ogrodzenia", "trasa": "ogrodzenia" },
+        { "etykieta": "Brukarstwo", "trasa": "brukarstwo" },
+        { "etykieta": "Budownictwo", "trasa": "budownictwo" }
+      ]
+    },
+    {
+      "tytul": "Rodzaje usług",
+      "pozycje": [
+        { "etykieta": "Ogrodzenia panelowe", "trasa": "panelowe" },
+        { "etykieta": "Ogrodzenia murowane", "trasa": "murowane" },
+        { "etykieta": "Bramy przesuwne", "trasa": "bramy-przesuwne" },
+        { "etykieta": "Bramy dwuskrzydłowe", "trasa": "bramy-dwuskrzydlowe" },
+        { "etykieta": "Furtki", "trasa": "furtki" },
+        { "etykieta": "Ogrodzenia z siatki", "trasa": "siatka" },
+        { "etykieta": "Kostka brukowa", "trasa": "kostka-brukowa" },
+        { "etykieta": "Podjazdy", "trasa": "podjazdy" },
+        { "etykieta": "Chodniki i tarasy", "trasa": "chodniki-tarasy" }
+      ]
+    }
+  ]
+}

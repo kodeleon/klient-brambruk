@@ -1,0 +1,121 @@
+{
+  "meta": {
+    "tytul": "Budownictwo - BramBruk | Biała Podlaska i okolice",
+    "opis": "Altany ogrodowe, garaże blaszane i domki narzędziowe. Solidne wykonanie, terminowe realizacje w Białej Podlaskiej i okolicach."
+  },
+  "okruszek": "Budownictwo",
+  "etykieta": "Budownictwo",
+  "fotoHero": "hero.budownictwo",
+  "fotoHeroObok": "hero.budownictwo-obok",
+  "tytulHero": "Altany, garaże i domki",
+  "podtytulHero": "Od fundamentu po wykończenie",
+  "opisHero": "Budujemy solidne konstrukcje ogrodowe i gospodarcze: altany drewniane i murowane, garaże blaszane, domki narzędziowe i wiaty. Od fundamentu po wykończenie, na terenie województwa lubelskiego, podlaskiego i mazowieckiego.",
+  "tytulSekcji": "Nasze usługi budowlane",
+  "uslugi": [
+    {
+      "tytul": "Altany ogrodowe",
+      "opis": "Drewniane i murowane altany z dachem, na relaks i grillowanie",
+      "foto": "karta.altana"
+    },
+    {
+      "tytul": "Garaże",
+      "opis": "Garaże blaszane i murowane na samochód, motocykl lub sprzęt",
+      "foto": "karta.garaz"
+    },
+    {
+      "tytul": "Domki narzędziowe",
+      "opis": "Praktyczne pomieszczenia gospodarcze na narzędzia i sprzęt ogrodowy",
+      "foto": "karta.domek"
+    }
+  ],
+  "tresc": {
+    "zasieg": {
+      "tytul": "Dojeżdżamy w promieniu 100 km od Białej Podlaskiej",
+      "tekst": "Konstrukcje ogrodowe i gospodarcze stawiamy na terenie województwa lubelskiego, podlaskiego i mazowieckiego. W tym promieniu mieszczą się między innymi",
+      "miasta": [
+        "Lublin",
+        "Siedlce",
+        "Świdnik",
+        "Łuków",
+        "Bielsk Podlaski",
+        "Lubartów",
+        "Hajnówka",
+        "Sokołów Podlaski",
+        "Międzyrzec Podlaski",
+        "Radzyń Podlaski"
+      ],
+      "domkniecie": "oraz wszystkie mniejsze miejscowości pomiędzy nimi. Elementy przygotowujemy w warsztacie i przywozimy na miejsce, więc budowa altany czy garażu nie zamienia posesji w plac budowy na dwa tygodnie."
+    },
+    "metodyka": {
+      "tytul": "Jak stawiamy altanę, garaż lub wiatę",
+      "wstep": "Konstrukcja ogrodowa stoi prosto tak długo, jak równe jest to, na czym stoi. Dlatego zaczynamy od podłoża, a nie od ścian:",
+      "kroki": [
+        "ustalenie miejsca, wymiarów i sprawdzenie, czy potrzebne jest zgłoszenie",
+        "przygotowanie podłoża: płyta betonowa, bloczki albo kotwy gruntowe",
+        "montaż konstrukcji nośnej z zabezpieczonego drewna lub profili stalowych",
+        "pokrycie dachu wraz z obróbkami i orynnowaniem",
+        "impregnacja lub malowanie elementów drewnianych",
+        "montaż drzwi, okien, bram i zamków",
+        "uprzątnięcie terenu i wywóz odpadów po budowie"
+      ],
+      "tytulDodatkow": "Prace towarzyszące, które bierzemy na siebie",
+      "wstepDodatkow": "Altana ani garaż rzadko kończą się na samej konstrukcji. O tym, czy zaczniesz z nich korzystać od razu, decydują drobiazgi wokół: dojście, światło, podłoga, miejsce na grill. Obejmujemy je tym samym zleceniem, żeby nie okazało się po odbiorze, że do zamknięcia tematu potrzebny jest jeszcze jeden wykonawca.",
+      "dodatki": [
+        "podłogę na legarach albo wylewkę pod altaną",
+        "instalację elektryczną: oświetlenie i gniazda",
+        "grill murowany i wbudowane ławki w altanie",
+        "utwardzenie dojścia lub podjazdu kostką brukową"
+      ]
+    },
+    "sprzet": {
+      "tytul": "Sprzęt, na którym pracujemy",
+      "tekst": "Podłoże wypoziomowujemy niwelatorem laserowym, bo kilka milimetrów różnicy na fundamencie zamienia się w kilka centymetrów krzywizny na kalenicy. Tam, gdzie grunt na to pozwala, kotwy osadzamy wiertnicą - altana staje wtedy bez wylewania betonowej płyty i bez rozkopywania połowy ogrodu. Przy gruncie kamienistym albo nasypowym schodzimy na bloczki lub płytę, bo kotwa w takim podłożu nie trzyma. Drewno tniemy pilarką z prowadnicą, a nie z ręki - równe cięcie oznacza szczelne połączenia, a te decydują o tym, czy w konstrukcję wchodzi woda. Każdy element drewniany, który dotyka gruntu albo betonu, dostaje przekładkę i impregnat."
+    },
+    "fotoObok": "karta.altana",
+    "fotoObokAlt": "Drewniana altana ogrodowa - realizacja BramBruk"
+  },
+  "cennikOpis": {
+    "wstep": "Cennik pokazuje widełki cenowe, a nie konkretne ceny, ponieważ ostateczny koszt budowy zależy od kilku rzeczy, których nie widać na etapie zapytania:",
+    "czynniki": [
+      "wymiary konstrukcji i rodzaj drewna albo profili",
+      "rodzaj podłoża: kotwy gruntowe, bloczki czy płyta betonowa",
+      "pokrycie dachu i sposób wykończenia elementów",
+      "wyposażenie: podłoga, elektryka, grill murowany, bramy",
+      "dojazd i możliwość wjechania sprzętem na posesję"
+    ]
+  },
+  "galeria": [
+    {
+      "foto": "realizacja.04",
+      "tytul": "Altana ogrodowa",
+      "lokalizacja": "Terespol"
+    },
+    {
+      "foto": "realizacja.06",
+      "tytul": "Garaż blaszany",
+      "lokalizacja": "Łomazy"
+    },
+    {
+      "foto": "realizacja.10",
+      "tytul": "Domek narzędziowy",
+      "lokalizacja": "Cicibór"
+    }
+  ],
+  "tytulGalerii": "Nasze budowy",
+  "etykietaFaq": "FAQ - Budownictwo",
+  "tytulFaq": "Pytania o budownictwo",
+  "faq": [
+    {
+      "pytanie": "Ile kosztuje altana ogrodowa?",
+      "odpowiedz": "Altana drewniana 3×3 m to wydatek rzędu {cena.altana-3x3.zakres}, w zależności od rodzaju drewna, pokrycia dachu i wyposażenia. Altana z grillem murowanym: {cena.altana-grill.zakres}. Wyceniamy indywidualnie po ustaleniu projektu."
+    },
+    {
+      "pytanie": "Czy na budowę altany potrzebne jest pozwolenie?",
+      "odpowiedz": "Altana do 35 m² na działce budowlanej (maksymalnie dwie altany na 500 m² działki) wymaga jedynie zgłoszenia w starostwie, nie pozwolenia na budowę. Pomożemy ustalić formalności dla Twojej działki."
+    },
+    {
+      "pytanie": "Jak długo trwa budowa altany lub garażu?",
+      "odpowiedz": "Altana drewniana: 3–7 dni roboczych. Garaż blaszany: 1–2 dni. Garaż murowany: 2–4 tygodnie. Czas zależy od stopnia skomplikowania i warunków pogodowych. Budujemy od marca do listopada."
+    }
+  ]
+}

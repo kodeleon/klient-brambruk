@@ -1,0 +1,97 @@
+{
+  "meta": {
+    "tytul": "Chodniki, alejki i tarasy - BramBruk | Biała Podlaska i okolice",
+    "opis": "Chodniki, alejki i tarasy z kostki brukowej i płyt. Wykonanie i doradztwo w Białej Podlaskiej i okolicach. Bezpłatna wycena."
+  },
+  "okruszek": "Chodniki i tarasy",
+  "okruszekNadrzedny": {
+    "etykieta": "Brukarstwo",
+    "trasa": "brukarstwo"
+  },
+  "etykieta": "Chodniki, alejki i tarasy",
+  "tytul": "Chodniki, alejki ogrodowe i tarasy",
+  "podtytul": "Alejki, tarasy i schody terenowe",
+  "nazwaPojedyncza": "chodnik z kostki",
+  "nazwaMnoga": "chodniki i tarasy",
+  "fotoHero": "usluga.chodnik",
+  "pozycjaFoto": "0% 75%",
+  "wstep": "Chodniki, alejki i tarasy z kostki brukowej to estetyczne i funkcjonalne uzupełnienie posesji. Wykonujemy nawierzchnie ogrodowe w różnych wzorach - od prostych ścieżek po dekoracyjne tarasy z obramowaniem.",
+  "cechy": [
+    {
+      "ikona": "leaf",
+      "tytul": "Ogródek",
+      "opis": "Alejki ogrodowe, ścieżki między rabatami, dojścia do altany"
+    },
+    {
+      "ikona": "sun",
+      "tytul": "Taras",
+      "opis": "Powierzchnia pod meble ogrodowe, grill, strefę wypoczynku"
+    },
+    {
+      "ikona": "square-stack",
+      "tytul": "Schody",
+      "opis": "Stopnie terenowe z kostki lub kamienia na terenie ze spadkiem"
+    },
+    {
+      "ikona": "banknote",
+      "tytul": "Od {cena.chodnik.min}",
+      "opis": "Chodnik z materiałem i robocizną, kostka cieńsza niż na podjazd"
+    }
+  ],
+  "tresc": {
+    "tytul1": "Chodniki i alejki ogrodowe",
+    "tekst1": "Alejki ogrodowe z kostki brukowej porządkują przestrzeń wokół domu i chronią trawnik przed wydeptywaniem. Wykonujemy ścieżki proste i kręte, szerokie i wąskie - dopasowane do układu ogrodu. Na chodniki stosujemy kostkę o grubości 4–6 cm na lekkiej podbudowie.",
+    "tytul2": "Tarasy z kostki brukowej",
+    "tekst2": "Taras to strefa relaksu - miejsce na meble ogrodowe, grill, leżaki. Wykonujemy tarasy z kostki brukowej, płyt tarasowych i kamienia naturalnego. Każdy taras wymaga precyzyjnych spadków (min. 1–2% od budynku), aby woda nie wdzierała się pod fundament.",
+    "tytul3": "Schody terenowe",
+    "tekst3": "Na działkach ze spadkiem terenu budujemy stopnie z kostki brukowej, kamienia lub bloczków betonowych. Schody terenowe muszą być stabilne, antypoślizgowe i dobrze odwodnione. Typowa wysokość stopnia: 15–17 cm, głębokość: 30–35 cm."
+  },
+  "kroki": {
+    "tytul": "Jak wykonujemy chodnik, taras i schody terenowe",
+    "wstep": "Ciągi piesze są lżej obciążone od podjazdów, ale mają więcej krawędzi, łuków i styków - i to one decydują o efekcie:",
+    "lista": [
+      "wytyczenie przebiegu, szerokości i promieni łuków",
+      "korytowanie i zagęszczenie podłoża",
+      "podbudowa dobrana do ruchu pieszego",
+      "obrzeża na ławie betonowej, wyznaczające linię ciągu",
+      "podsypka ze spadkiem odprowadzającym wodę od budynku",
+      "układanie kostki lub płyt, z docinaniem przy łukach i narożnikach",
+      "przy schodach terenowych: stopnie z palisady albo bloczków oporowych",
+      "fugowanie i zagęszczanie powierzchni"
+    ]
+  },
+  "sprzet": "Łuki wytyczamy sznurem i szablonem, a nie na oko - przy alejce ogrodowej to jedyna różnica między „ładnie\" a „krzywo\". Docinki wykonujemy piłą z chłodzeniem wodnym, żeby styk przy obrzeżu był równy i bez wyszczerbień. Przy schodach każdy stopień poziomujemy osobno, bo różnica wysokości między stopniami jest tym, o co człowiek zaczepia stopą.",
+  "cennikCzynniki": [
+    "powierzchnia oraz liczba łuków i narożników",
+    "grubość kostki lub płyt",
+    "schody terenowe, palisady i murki oporowe",
+    "obrzeża i sposób wykończenia krawędzi"
+  ],
+  "galeria": [
+    {
+      "foto": "realizacja.06",
+      "tytul": "Chodnik ogrodowy",
+      "lokalizacja": "Biała Podlaska"
+    },
+    {
+      "foto": "realizacja.09",
+      "tytul": "Taras z kostki",
+      "lokalizacja": "Rakowiska"
+    },
+    {
+      "foto": "realizacja.02",
+      "tytul": "Alejka w ogrodzie",
+      "lokalizacja": "Sławacinek"
+    }
+  ],
+  "faq": [
+    {
+      "pytanie": "Ile kosztuje chodnik z kostki brukowej?",
+      "odpowiedz": "Chodnik z kostki to {cena.chodnik.zakres}, taras {cena.taras.zakres} - materiał plus robocizna. Typowa alejka ogrodowa 15 m² (szer. 80 cm) wychodzi na {cena.alejka-typowa.zakres}, taras 20 m² na {cena.taras-typowy.zakres}. Schody terenowe to {cena.schody-terenowe.zakres}."
+    },
+    {
+      "pytanie": "Jaka kostka na chodnik, a jaka na taras?",
+      "odpowiedz": "Na chodnik i taras wystarczy kostka o grubości 4–6 cm (Holland, Cegła, Starobruk). Na taras warto rozważyć płyty tarasowe 40×40 lub 60×60 cm - większy format, elegantszy wygląd. Podbudowa na chodnik jest cieńsza niż na podjazd."
+    }
+  ]
+}

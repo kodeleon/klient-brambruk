@@ -11,7 +11,7 @@
  * Kopia ukryta przez `display:none` nie istnieje dla czytników ekranu ani
  * dla kolejności fokusu, więc numer telefonu jest ogłaszany raz.
  */
-import { dane } from "../../config/dane";
+import firma from "../../content/firma.json";
 import Przycisk from "./Przycisk.astro";
 ---
 
@@ -22,18 +22,17 @@ import Przycisk from "./Przycisk.astro";
   Zadzwoń - odpowiemy w kilka minut, bez formularzy i bez czekania.
 </p>
 <Przycisk
-  href={`tel:${dane.telefonHref}`}
+  href={`tel:${firma.telefonHref}`}
   rozmiar="md"
   ikona="phone"
   class="w-auto"
 >
-  {dane.telefon}
+  {firma.telefon}
 </Przycisk>
 {
   /* Godziny w dwóch wierszach: tydzień i sobota to dwie różne
       informacje, a sklejone kropką czytają się jak jedna. */
 }
 <p class="mt-4 text-xs text-brand-text-light">
-  <span class="block">{dane.godzinyTydzien}</span>
-  <span class="block">{dane.godzinySobota}</span>
+  {firma.godziny.map((wiersz) => <span class="block">{wiersz}</span>)}
 </p>

@@ -1,0 +1,17 @@
+{
+  "meta": {
+    "tytul": "Kontakt - BramBruk | Biała Podlaska i okolice",
+    "opis": "Skontaktuj się z BramBruk - ogrodzenia i brukarstwo w Białej Podlaskiej. Odpowiadamy szybko. Napisz lub zadzwoń."
+  },
+  "etykieta": "Kontakt",
+  "tytul": "Skontaktuj się z nami",
+  "sukces": {
+    "tytul": "Wiadomość wysłana!",
+    "opis": "Odpowiemy w ciągu 24 godzin w dni robocze."
+  },
+  "tytulDanych": "Dane kontaktowe",
+  "baner": {
+    "tytul": "Szukasz wyceny na ogrodzenie lub brukarstwo?",
+    "opis": "Kreator wyceny prowadzi przez pięć krótkich kroków: typ usługi, wymiary, teren, termin i dane kontaktowe. Na tej podstawie odsyłamy widełki cenowe."
+  }
+}

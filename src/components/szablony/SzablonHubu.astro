@@ -3,7 +3,16 @@
  * SZABLON HUBA KATEGORII - następca komponentu `ServiceHub.jsx`.
  *
  * Trzy podstrony (/ogrodzenia/, /brukarstwo/, /budownictwo/) dzielą ten
- * układ i różnią się wyłącznie danymi z `src/data/huby.ts`.
+ * układ i różnią się wyłącznie treścią z `src/content/huby/`.
+ *
+ * Tabela „orientacyjne ceny" NIE MA WŁASNYCH KWOT: bierze je z
+ * `src/content/cennik.json` PO KLUCZU TRASY tej podstrony - tym samym, który
+ * stoi w `src/config/routes.ts` i w formularzu korekty. Rekord treści nie ma
+ * już pola `cennik`: wskazywanie cennika osobnym polem znaczyło, że dwa
+ * pliki muszą się zgadzać po identyfikatorze, którego nic nie pilnowało.
+ *
+ * Hub pokazuje to, co WSPÓLNE dla co najmniej dwóch usług w tej kategorii
+ * albo zbiorcze - reszta stoi na podstronach usług.
  *
  * ┌── CO TU ZOSTAŁO PO PRZEJŚCIU Z 19.09.2026 ─────────────────────────┐
  * │ Sekcja główna, sekcja „Dlaczego my" i cennik wyprowadziły się do     │
@@ -18,8 +27,9 @@
  * └──────────────────────────────────────────────────────────────────────┘
  */
 import Podstrona from '../../layouts/Podstrona.astro'
-import { huby } from '../../data/huby'
-import { cennikHubow } from '../../data/cennik'
+import { wpis } from '../../lib/tresc'
+import { pozycjeStrony, tytulPrzegladu } from '../../lib/cennik'
+import { trasa } from '../../config/routes'
 import Okruszki from '../ui/Okruszki.astro'
 import EtykietaSekcji from '../ui/EtykietaSekcji.astro'
 import Przycisk from '../ui/Przycisk.astro'
@@ -35,22 +45,17 @@ import GaleriaKaruzela from '../ui/GaleriaKaruzela.astro'
 import Foto from '../media/Foto.astro'
 
 interface Props {
-  klucz: keyof typeof huby
-  tytul: string
-  opis: string
+  klucz: string
 }
-const { klucz, tytul, opis } = Astro.props
+const { klucz } = Astro.props
 
-const dane = huby[klucz]
-const cennik = cennikHubow[klucz]
-if (!dane) throw new Error(`SzablonHubu: nie ma huba "${klucz}" w src/data/huby.ts`)
-if (!cennik) throw new Error(`SzablonHubu: nie ma cennika huba "${klucz}" w src/data/cennik.ts`)
+const dane = await wpis('huby', klucz)
 
 const { zasieg, metodyka, sprzet } = dane.tresc
 ---
 
-<Podstrona tytul={tytul} opis={opis}>
-  <Okruszki pozycje={[{ etykieta: 'Strona główna', sciezka: '/' }, { etykieta: dane.okruszek }]} />
+<Podstrona tytul={dane.meta.tytul} opis={dane.meta.opis}>
+  <Okruszki pozycje={[{ etykieta: 'Strona główna', sciezka: trasa('glowna') }, { etykieta: dane.okruszek }]} />
 
   <SekcjaHero
     etykieta={dane.etykieta}
@@ -92,8 +97,8 @@ const { zasieg, metodyka, sprzet } = dane.tresc
                 tytul={usluga.tytul}
                 opis={usluga.opis}
                 foto={usluga.foto}
-                href={usluga.href ?? '/wycena/'}
-                cta={usluga.href ? 'Zobacz szczegóły' : 'Zapytaj o wycenę'}
+                href={usluga.trasa ? trasa(usluga.trasa) : trasa('wycena')}
+                cta={usluga.trasa ? 'Zobacz szczegóły' : 'Zapytaj o wycenę'}
               />
             </Odslon>
           ))
@@ -129,10 +134,10 @@ const { zasieg, metodyka, sprzet } = dane.tresc
 
   <SekcjaCennika
     etykieta="Orientacyjne ceny"
-    tytul={cennik.tytul}
+    tytul={tytulPrzegladu(klucz)}
     wstep={dane.cennikOpis.wstep}
     czynniki={dane.cennikOpis.czynniki}
-    pozycje={cennik.pozycje}
+    pozycje={pozycjeStrony(klucz)}
   />
 
   {/* ═══ REALIZACJE ══════════════════════════════════════ */}

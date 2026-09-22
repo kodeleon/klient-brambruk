@@ -2,8 +2,10 @@
 /**
  * STOPKA - następca `Footer.jsx`.
  *
- * Trzy kolumny odnośników i dane firmy biorą się z `src/config/dane.ts`.
- * Rok jest liczony, nie wpisany na sztywno.
+ * Trzy kolumny odnośników biorą etykiety z `src/content/nawigacja.json`,
+ * a ścieżki z `src/config/routes.ts`. Dane firmy z `src/content/firma.json`.
+ * Rok jest liczony tutaj, po stronie prezentacji - nie stoi w treści,
+ * bo nikt go nie redaguje.
  *
  * Co się zmieniło przy przejściu po wyglądzie (18.09.2026):
  *
@@ -23,20 +25,35 @@
  * Kolory: na `brand-dark` tekstem jest `neutral-400` (6,61:1), nie
  * `neutral-500` (3,52:1) - patrz tabela w `tokens.css`.
  */
-import { dane, fixly, nawigacjaStopki, rok } from "../../config/dane";
+import firma from "../../content/firma.json";
+import dowody from "../../content/dowody.json";
+import nawigacja from "../../content/nawigacja.json";
+import { trasa } from "../../config/routes";
 import Ikona from "../icons/Ikona.astro";
 import IkonaTikTok from "../icons/IkonaTikTok.astro";
 import PrzyciskFixly from "../ui/PrzyciskFixly.astro";
 import Logo from "../media/Logo.astro";
 
+/** Rok w zastrzeżeniu praw. Liczony, nie zaszyty - checklista sprawdza to wprost. */
+const rok = new Date().getFullYear();
+
 const spolecznosciowe = [
-  { etykieta: "Facebook", url: dane.facebookUrl, ikona: "facebook" as const },
+  { etykieta: "Facebook", url: firma.facebookUrl, ikona: "facebook" as const },
   {
     etykieta: "Instagram",
-    url: dane.instagramUrl,
+    url: firma.instagramUrl,
     ikona: "instagram" as const,
   },
 ].filter((p) => p.url);
+
+/** Etykiety z treści, ścieżki z `routes.ts`. */
+const kolumny = nawigacja.stopka.map((kolumna) => ({
+  tytul: kolumna.tytul,
+  pozycje: kolumna.pozycje.map((pozycja) => ({
+    etykieta: pozycja.etykieta,
+    sciezka: trasa(pozycja.trasa),
+  })),
+}));
 
 /**
  * Pasek nad stopką. Kolejność od najczęściej szukanego.
@@ -50,32 +67,32 @@ const kontakty = [
   {
     etykieta: "Zadzwoń",
     ikona: "phone" as const,
-    tresc: [dane.telefon],
-    href: `tel:${dane.telefonHref}`,
+    tresc: [firma.telefon],
+    href: `tel:${firma.telefonHref}`,
   },
   {
     etykieta: "Napisz",
     ikona: "mail" as const,
-    tresc: [dane.email],
-    href: `mailto:${dane.email}`,
+    tresc: [firma.email],
+    href: `mailto:${firma.email}`,
   },
   {
     etykieta: "Siedziba",
     ikona: "map-pin" as const,
-    tresc: dane.adresLinie,
-    href: dane.mapyUrl,
+    tresc: firma.adresLinie,
+    href: firma.mapyUrl,
     zewnetrzny: true,
   },
   {
     etykieta: "Godziny pracy",
     ikona: "clock" as const,
-    tresc: [dane.godzinyTydzien, dane.godzinySobota],
+    tresc: firma.godziny,
   },
 ];
 
 const rejestr = [
-  { etykieta: "NIP", wartosc: dane.nip },
-  { etykieta: "REGON", wartosc: dane.regon },
+  { etykieta: "NIP", wartosc: firma.nip },
+  { etykieta: "REGON", wartosc: firma.regon },
 ];
 ---
 
@@ -146,7 +163,7 @@ const rejestr = [
           <span class="text-brand-bg font-brand text-2xl">BRAMBRUK</span>
         </a>
 
-        <p class="mt-3 text-sm text-neutral-400">{dane.opis}</p>
+        <p class="mt-3 text-sm text-neutral-400">{firma.opis}</p>
 
         <dl class="mt-4 space-y-1 text-sm">
           {
@@ -181,9 +198,9 @@ const rejestr = [
             ))
           }
           {
-            dane.tiktokUrl && (
+            firma.tiktokUrl && (
               <a
-                href={dane.tiktokUrl}
+                href={firma.tiktokUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 class="w-10 h-10 rounded-full bg-white/5 hover:bg-brand-olive/20 flex items-center justify-center transition-colors"
@@ -203,7 +220,7 @@ const rejestr = [
           <span
             class="flex text-fixly-main"
             role="img"
-            aria-label={`Ocena ${fixly.ocena}`}
+            aria-label={`Ocena ${dowody.fixly.ocena}`}
           >
             {
               Array.from({ length: 5 }).map(() => (
@@ -215,7 +232,7 @@ const rejestr = [
       </div>
 
       {
-        nawigacjaStopki.map((kolumna) => (
+        kolumny.map((kolumna) => (
           <div>
             <h2 class="text-white text-xs font-semibold tracking-wider uppercase mb-4">
               {kolumna.tytul}

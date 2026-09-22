@@ -1,0 +1,99 @@
+{
+  "meta": {
+    "tytul": "Ogrodzenia murowane i z podmurówką - BramBruk | Biała Podlaska i okolice",
+    "opis": "Ogrodzenia murowane i podmurówki betonowe pod panele. Realizacje w Białej Podlaskiej i powiecie bialskim. Bezpłatna wycena."
+  },
+  "okruszek": "Murowane",
+  "okruszekNadrzedny": {
+    "etykieta": "Ogrodzenia",
+    "trasa": "ogrodzenia"
+  },
+  "etykieta": "Ogrodzenia murowane",
+  "tytul": "Ogrodzenia murowane i podmurówki",
+  "podtytul": "Klinkier, bloczki i podmurówki",
+  "nazwaPojedyncza": "ogrodzenie murowane",
+  "nazwaMnoga": "ogrodzenia murowane",
+  "fotoHero": "usluga.murowane",
+  "wstep": "Ogrodzenia murowane to rozwiązanie premium - trwałe, eleganckie i zapewniające maksymalną prywatność. Wykonujemy ogrodzenia z cegły klinkierowej, bloczków betonowych i kamienia, a także podmurówki pod panele ogrodzeniowe.",
+  "cechy": [
+    {
+      "ikona": "brick-wall",
+      "tytul": "Solidność",
+      "opis": "Konstrukcja murowana - najtrwalsza forma ogrodzenia, na dziesiątki, a nawet setki lat"
+    },
+    {
+      "ikona": "sparkles",
+      "tytul": "Estetyka",
+      "opis": "Cegła klinkierowa, bloczki łupane, kamień - wiele wariantów wykończenia"
+    },
+    {
+      "ikona": "lock",
+      "tytul": "Prywatność",
+      "opis": "Pełne ogrodzenie murowane zapewnia maksymalną izolację od sąsiedztwa"
+    },
+    {
+      "ikona": "hard-hat",
+      "tytul": "Podmurówki",
+      "opis": "Betonowe podmurówki pod panele - estetyka i ochrona przed podciekaniem"
+    }
+  ],
+  "tresc": {
+    "tytul1": "Ogrodzenia murowane i podmurówki pod panele",
+    "tekst1": "Realizujemy ogrodzenia murowane z cegły klinkierowej, bloczków betonowych ozdobnych i kamienia naturalnego na terenie Białej Podlaskiej i okolicznych miejscowości. Każde ogrodzenie murowane wymaga solidnego fundamentu - wylewamy ławy betonowe i murkujemy słupki z zachowaniem dylatacji. Efekt końcowy to ogrodzenie, które wygląda reprezentacyjnie i służy przez dziesięciolecia.",
+    "tytul2": "Podmurówki betonowe pod panele",
+    "tekst2": "Podmurówka to betonowy cokół pod panelem ogrodzeniowym. Chroni dolną część ogrodzenia przed wilgocią, podnosi estetykę i zapobiega podciekaniu wody, oraz zapewnia ochronę przed zwierzętami. Oferujemy podmurówki prefabrykowane (szybki montaż) oraz wylewane na miejscu (dopasowanie do nierównego terenu). Standardowa wysokość to 20–30 cm.",
+    "tytul3": "Łączenie paneli z murem",
+    "tekst3": "Popularne rozwiązanie to murowane słupki z wypełnieniem panelowym lub przęsłowym - łączy elegancję muru z lekkością panelu. Wykonujemy zarówno pełne ogrodzenia murowane, jak i kombinacje mur + panel, mur + przęsło kute, mur + gabion."
+  },
+  "kroki": {
+    "tytul": "Jak stawiamy mur i podmurówkę",
+    "wstep": "Mur stoi tyle, ile wytrzyma jego fundament, więc pierwsze trzy kroki dzieją się pod ziemią:",
+    "lista": [
+      "wykop i wylanie ławy fundamentowej poniżej granicy przemarzania",
+      "zbrojenie ławy i osadzenie prętów startowych pod słupki",
+      "murowanie słupków z dylatacją rozłożoną wzdłuż ogrodzenia",
+      "wykonanie podmurówki: wylewanej na miejscu albo z prefabrykatów",
+      "montaż czapek i daszków, które odprowadzają wodę poza lico muru",
+      "impregnacja klinkieru preparatem hydrofobowym",
+      "montaż przęseł, bramy i furtki w gotowe słupki"
+    ]
+  },
+  "sprzet": "Poziom ławy i wysokość słupków ustawiamy niwelatorem laserowym - przy murze każde odchylenie widać z drugiego końca posesji. Beton mieszamy na miejscu, żeby zachować tę samą recepturę na całej długości ławy. Klinkier tniemy piłą z chłodzeniem wodnym: cięcie na sucho przypala krawędź i zostawia jasny ślad, którego nie da się już zmyć.",
+  "cennikCzynniki": [
+    "materiał: bloczek betonowy, klinkier czy kamień",
+    "wysokość muru i głębokość ławy fundamentowej",
+    "liczba słupków i sposób wypełnienia przęseł",
+    "stan gruntu i konieczność wymiany go pod ławą"
+  ],
+  "galeria": [
+    {
+      "foto": "realizacja.03",
+      "tytul": "Słupki murowane + panel",
+      "lokalizacja": "Biała Podlaska"
+    },
+    {
+      "foto": "realizacja.06",
+      "tytul": "Podmurówka betonowa",
+      "lokalizacja": "Rakowiska"
+    },
+    {
+      "foto": "realizacja.09",
+      "tytul": "Ogrodzenie z cegły",
+      "lokalizacja": "Międzyrzec Podl."
+    }
+  ],
+  "faq": [
+    {
+      "pytanie": "Ile kosztuje metr bieżący ogrodzenia murowanego?",
+      "odpowiedz": "Pełne ogrodzenie murowane wyceniamy indywidualnie, bo składa się z pozycji liczonych osobno: podmurówki wylewanej ({cena.murowane-podmurowka-wylewana.zakres}) i słupków ({cena.murowane-slupek.zakres}), a liczba słupków zależy od długości ogrodzenia. Tańsza alternatywa to podmurówka prefabrykowana: {cena.podmurowka-prefabrykowana.zakres}. Na cenę wpływa materiał (bloczki, cegła klinkierowa, kamień), wysokość i stopień skomplikowania."
+    },
+    {
+      "pytanie": "Czy podmurówka jest konieczna pod ogrodzenie panelowe?",
+      "odpowiedz": "Nie jest konieczna, ale zdecydowanie zalecana. Podmurówka podnosi estetykę, chroni panel przed wilgocią od gruntu i zapobiega podciekaniu zwierząt. Zwiększa też trwałość całego ogrodzenia."
+    },
+    {
+      "pytanie": "Jak długo trwa budowa ogrodzenia murowanego?",
+      "odpowiedz": "Ogrodzenie murowane wymaga więcej czasu niż panelowe - od 1 do 3 tygodni dla typowej posesji, w zależności od długości, materiału i warunków pogodowych. Fundament potrzebuje kilku dni na wiązanie."
+    }
+  ]
+}

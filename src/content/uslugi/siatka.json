@@ -1,0 +1,95 @@
+{
+  "meta": {
+    "tytul": "Ogrodzenia z siatki - BramBruk | Biała Podlaska i okolice",
+    "opis": "Ogrodzenia z siatki zgrzewanej i plecianej. Trwały montaż na słupkach dla posesji i działek w Białej Podlaskiej i okolicach."
+  },
+  "okruszek": "Siatka",
+  "okruszekNadrzedny": {
+    "etykieta": "Ogrodzenia",
+    "trasa": "ogrodzenia"
+  },
+  "etykieta": "Siatka ogrodzeniowa",
+  "tytul": "Ogrodzenia z siatki ogrodzeniowej",
+  "podtytul": "Najtańszy sposób na ogrodzenie działki",
+  "nazwaPojedyncza": "ogrodzenie z siatki",
+  "nazwaMnoga": "ogrodzenia z siatki",
+  "fotoHero": "usluga.siatka",
+  "wstep": "Siatka ogrodzeniowa to najbardziej ekonomiczne rozwiązanie ogrodzeniowe. Idealna na działki rekreacyjne, ogrody, uprawy i tymczasowe ogrodzenia budowlane. Montujemy siatki plecionki na słupkach stalowych z naciągiem.",
+  "cechy": [
+    {
+      "ikona": "banknote",
+      "tytul": "Ekonomiczność",
+      "opis": "Najtańsza forma ogrodzenia - {cena.siatka.od} z materiałem i robocizną"
+    },
+    {
+      "ikona": "zap",
+      "tytul": "Szybki montaż",
+      "opis": "Ogrodzenie 100 mb siatką w 1–2 dni robocze"
+    },
+    {
+      "ikona": "shield-check",
+      "tytul": "Trwałość",
+      "opis": "Siatka ocynkowana lub powlekana PCV - odporność na korozję"
+    },
+    {
+      "ikona": "leaf",
+      "tytul": "Wszechstronność",
+      "opis": "Działki, ogrody, boiska, hodowle, ogrodzenia tymczasowe"
+    }
+  ],
+  "tresc": {
+    "tytul1": "Siatka ogrodzeniowa - ekonomiczne ogrodzenie",
+    "tekst1": "Siatka ogrodzeniowa (plecionka) to sprawdzone rozwiązanie dla działek, ogrodów i terenów rekreacyjnych. Oferujemy siatki ocynkowane i powlekane PCV w kolorze zielonym lub czarnym. Montaż na słupkach stalowych wbetonowanych lub wbijanych w grunt.",
+    "tytul2": "Rodzaje siatek ogrodzeniowych",
+    "tekst2": "Oferujemy siatki o różnych oczkach (50×50, 60×60 mm) i grubościach drutu (2,5–3,5 mm). Siatka ocynkowana jest tańsza, siatka powlekana PCV - bardziej estetyczna i trwalsza. Wysokości standardowe: 100, 125, 150, 175 i 200 cm.",
+    "tytul3": "Kiedy siatka się nie sprawdzi",
+    "tekst3": "Siatka jest najtańszym ogrodzeniem i to jest jej jedyna przewaga, o której warto pamiętać przy wyborze. Nie daje prywatności, nie zatrzymuje wzroku ani wiatru i nie wygląda reprezentacyjnie od strony drogi. Sprawdza się na granicach działek, w ogrodach, przy uprawach i jako ogrodzenie tymczasowe na czas budowy. Na ogrodzenie frontowe domu odradzamy ją wprost - w tym miejscu lepiej wychodzi panel, nawet w najtańszym wariancie 2D."
+  },
+  "kroki": {
+    "tytul": "Jak montujemy ogrodzenie z siatki",
+    "wstep": "Siatka wygląda dobrze tylko wtedy, gdy jest równo naciągnięta, a naciąg trzymają słupki narożne. Stąd ta kolejność:",
+    "lista": [
+      "wytyczenie linii i rozstawienie słupków co 2–3 m",
+      "osadzenie słupków narożnych i bramowych razem z zastrzałami",
+      "zabetonowanie słupków pośrednich",
+      "przeciągnięcie drutów naciągowych w trzech poziomach",
+      "rozwinięcie siatki i naciągnięcie jej napinaczami",
+      "przymocowanie siatki do drutów na całej długości",
+      "montaż furtki i bramy, jeżeli są w zakresie"
+    ]
+  },
+  "sprzet": "Do naciągu używamy napinaczy dźwigniowych, a nie siły rąk - siatka naciągnięta ręcznie po sezonie zaczyna falować. Słupki ustawiamy na sznurze i poziomicy laserowej, bo przy ogrodzeniu bez przęseł to jedyne, co trzyma linię. Otwory wiercimy wiertnicą wszędzie tam, gdzie grunt to umożliwia - przy stu metrach ogrodzenia zostaje wtedy zdecydowanie mniej urobku do wywiezienia niż przy kopaniu.",
+  "cennikCzynniki": [
+    "wysokość i rodzaj siatki: ocynk czy powlekana PCV",
+    "rozstaw słupków i liczba narożników z zastrzałami",
+    "ukształtowanie terenu wzdłuż linii ogrodzenia",
+    "liczba furtek i bram w zakresie"
+  ],
+  "galeria": [
+    {
+      "foto": "realizacja.08",
+      "tytul": "Siatka na działce",
+      "lokalizacja": "Biała Podlaska"
+    },
+    {
+      "foto": "realizacja.06",
+      "tytul": "Ogrodzenie z siatki",
+      "lokalizacja": "Janów Podlaski"
+    },
+    {
+      "foto": "realizacja.03",
+      "tytul": "Siatka ogrodowa",
+      "lokalizacja": "Piszczac"
+    }
+  ],
+  "faq": [
+    {
+      "pytanie": "Ile kosztuje ogrodzenie z siatki?",
+      "odpowiedz": "Ogrodzenie z siatki plecionki ze słupkami to {cena.siatka.zakres} - materiał {cena.siatka.material} plus robocizna {cena.siatka.montaz}. To najtańsze rozwiązanie ogrodzeniowe na rynku."
+    },
+    {
+      "pytanie": "Jak długo wytrzyma siatka ogrodzeniowa?",
+      "odpowiedz": "Siatka ocynkowana wytrzymuje ok. 10–15 lat, siatka powlekana PCV - 15–20+ lat. Trwałość zależy od jakości cynkowania i warunków atmosferycznych."
+    }
+  ]
+}

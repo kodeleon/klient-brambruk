@@ -1,0 +1,135 @@
+{
+  "meta": {
+    "tytul": "Bezpłatna wycena w 24h - BramBruk | Biała Podlaska i okolice",
+    "opis": "Opisz swój projekt i otrzymaj bezpłatną wycenę w ciągu 24 godzin. Ogrodzenia, bramy, brukarstwo - Biała Podlaska i okolice. Bez zobowiązań."
+  },
+  "hero": {
+    "etykieta": "Bezpłatna wycena",
+    "tytul": "Bezpłatna wycena w 24h",
+    "opis": "Opisz swój projekt - bez zobowiązań. Odpowiedź zwykle w ciągu jednego dnia roboczego."
+  },
+  "kroki": [
+    {
+      "klucz": "service",
+      "etykieta": "Usługa",
+      "opis": "Wybierz usługę"
+    },
+    {
+      "klucz": "details",
+      "etykieta": "Szczegóły",
+      "opis": "Podaj szczegóły"
+    },
+    {
+      "klucz": "extras",
+      "etykieta": "Dodatkowe",
+      "opis": "Dodatkowe info"
+    },
+    {
+      "klucz": "contact",
+      "etykieta": "Dane",
+      "opis": "Twoje dane"
+    },
+    {
+      "klucz": "summary",
+      "etykieta": "Sprawdź",
+      "opis": "Sprawdź i wyślij"
+    }
+  ],
+  "etapy": [
+    {
+      "tytul": "Wybierz typ usługi",
+      "opis": "Kliknij kartę odpowiadającą Twojemu projektowi."
+    },
+    {
+      "tytul": "Szczegóły projektu",
+      "opis": "Wybierz rodzaj i podaj orientacyjne wymiary."
+    },
+    {
+      "tytul": "Dodatkowe informacje",
+      "opis": "Im więcej szczegółów, tym dokładniejsza wycena. Wszystkie pola opcjonalne."
+    },
+    {
+      "tytul": "Dane kontaktowe",
+      "opis": "Odpowiedź odeślemy na e-mail. Telefon opcjonalny - przyspiesza kontakt."
+    },
+    {
+      "tytul": "Podsumowanie",
+      "opis": "Sprawdź dane przed wysłaniem. Kliknij wiersz, aby edytować."
+    }
+  ],
+  "sukces": {
+    "tytul": "Dziękujemy za zapytanie!",
+    "opisPrzed": "Nic nie musisz robić - odpiszemy na e-mail w ciągu",
+    "opisMocny": "24 godzin",
+    "etykietaOsi": "Co dalej",
+    "przycisk": "Strona główna"
+  },
+  "zdjecia": {
+    "tytul": "Dodaj zdjęcia",
+    "opis": "Opcjonalnie - przyspiesza wycenę · max 2 plików, do 4 MB każdy",
+    "przycisk": "Wybierz pliki"
+  },
+  "podsumowanie": {
+    "tytul": "Karta projektu",
+    "wiersze": [
+      {
+        "pole": "usluga",
+        "etykieta": "Usługa",
+        "krok": 0
+      },
+      {
+        "pole": "wymiary",
+        "etykieta": "Wymiary",
+        "krok": 1
+      },
+      {
+        "pole": "lokalizacja",
+        "etykieta": "Lokalizacja",
+        "krok": 1
+      },
+      {
+        "pole": "teren",
+        "etykieta": "Teren",
+        "krok": 2
+      },
+      {
+        "pole": "termin",
+        "etykieta": "Termin",
+        "krok": 2
+      },
+      {
+        "pole": "budzet",
+        "etykieta": "Budżet",
+        "krok": 2
+      },
+      {
+        "pole": "opis",
+        "etykieta": "Opis",
+        "krok": 2
+      },
+      {
+        "pole": "zdjecia",
+        "etykieta": "Zdjęcia",
+        "krok": 2
+      },
+      {
+        "pole": "kontakt",
+        "etykieta": "Kontakt",
+        "krok": 3
+      }
+    ]
+  },
+  "rodo": {
+    "przed": "Wysyłając formularz akceptujesz",
+    "link": "Politykę Prywatności"
+  },
+  "przyciski": {
+    "wstecz": "Wstecz",
+    "dalej": "Dalej",
+    "wyslij": "Poproś o wycenę"
+  },
+  "licznikKrokow": {
+    "przed": "Krok",
+    "miedzy": "z"
+  }
+}

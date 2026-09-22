@@ -21,7 +21,9 @@
  * │ pokazywał na górze strony.                                          │
  * └──────────────────────────────────────────────────────────────────────┘
  */
-import { dane, nawigacja } from "../../config/dane";
+import firma from "../../content/firma.json";
+import nawigacja from "../../content/nawigacja.json";
+import { trasa, type PozycjaNawigacji } from "../../config/routes";
 import Przycisk from "../ui/Przycisk.astro";
 import Ikona from "../icons/Ikona.astro";
 import Logo from "../media/Logo.astro";
@@ -29,6 +31,17 @@ import Logo from "../media/Logo.astro";
 const tu = Astro.url.pathname;
 /** Stary projekt podświetlał pozycję przez `pathname.startsWith(href)`. */
 const aktywna = (sciezka: string) => tu.startsWith(sciezka.replace(/\/$/, ""));
+
+/* Etykiety z treści, ścieżki z `routes.ts` - składane raz, tutaj, bo ta sama
+   lista renderuje się dwa razy: w pasku i w panelu mobilnym. */
+const menu = (nawigacja.glowna as PozycjaNawigacji[]).map((pozycja) => ({
+  etykieta: pozycja.etykieta,
+  sciezka: trasa(pozycja.trasa),
+  podmenu: (pozycja.podmenu ?? []).map((pod) => ({
+    etykieta: pod.etykieta,
+    sciezka: trasa(pod.trasa),
+  })),
+}));
 ---
 
 <header
@@ -51,8 +64,8 @@ const aktywna = (sciezka: string) => tu.startsWith(sciezka.replace(/\/$/, ""));
         aria-label="Nawigacja główna"
       >
         {
-          nawigacja.map((pozycja) => {
-            const podmenu = "podmenu" in pozycja ? pozycja.podmenu : undefined;
+          menu.map((pozycja) => {
+            const podmenu = pozycja.podmenu.length ? pozycja.podmenu : undefined;
             const klasaOdnosnika = [
               "text-[13px] font-medium transition-colors duration-200",
               aktywna(pozycja.sciezka)
@@ -126,13 +139,13 @@ const aktywna = (sciezka: string) => tu.startsWith(sciezka.replace(/\/$/, ""));
       <div class="flex items-center gap-4 px-4">
         <div class="hidden sm:flex items-center gap-2">
           <Przycisk
-            href={`tel:${dane.telefonHref}`}
+            href={`tel:${firma.telefonHref}`}
             wariant="custom-dark"
             rozmiar="sm"
           >
             <Ikona nazwa="phone" rozmiar={14} />
             <span class="hidden xl:inline text-sm font-normal"
-              >{dane.telefon}</span
+              >{firma.telefon}</span
             >
           </Przycisk>
           <Przycisk href="/wycena/" rozmiar="sm" ikona="receipt-text"
@@ -179,8 +192,8 @@ const aktywna = (sciezka: string) => tu.startsWith(sciezka.replace(/\/$/, ""));
   >
     <div class="px-5 py-4 bg-brand-dark space-y-1">
       {
-        nawigacja.map((pozycja) => {
-          const podmenu = "podmenu" in pozycja ? pozycja.podmenu : undefined;
+        menu.map((pozycja) => {
+          const podmenu = pozycja.podmenu.length ? pozycja.podmenu : undefined;
           return (
             <>
               <a
@@ -223,7 +236,7 @@ const aktywna = (sciezka: string) => tu.startsWith(sciezka.replace(/\/$/, ""));
       }
       <div class="pt-3 flex flex-col gap-2">
         <Przycisk
-          href={`tel:${dane.telefonHref}`}
+          href={`tel:${firma.telefonHref}`}
           wariant="secondary"
           class="flex items-center justify-center gap-2 py-3 border border-brand-bg text-brand-bg rounded-full text-sm font-semibold hover:bg-brand-bg"
         >

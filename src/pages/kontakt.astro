@@ -15,7 +15,8 @@
  *      podmianą jednej stałej, a nie przepisywaniem formularza.
  */
 import Podstrona from '../layouts/Podstrona.astro'
-import { dane } from '../config/dane'
+import firma from '../content/firma.json'
+import { wpis } from '../lib/tresc'
 import Okruszki from '../components/ui/Okruszki.astro'
 import EtykietaSekcji from '../components/ui/EtykietaSekcji.astro'
 import Odslon from '../components/ui/Odslon.astro'
@@ -23,13 +24,15 @@ import BanerCta from '../components/ui/BanerCta.astro'
 import MapaKontakt from '../components/ui/MapaKontakt.astro'
 import Ikona from '../components/icons/Ikona.astro'
 
+const strona = await wpis('strony', 'kontakt')
+
 const klasaPola =
   'w-full px-4 py-3 rounded-lg border bg-white text-brand-text text-sm focus:outline-none focus:border-brand-olive focus:ring-2 focus:ring-brand-olive/10 transition-all border-brand-border'
 ---
 
 <Podstrona
-  tytul="Kontakt - BramBruk | Biała Podlaska i okolice"
-  opis="Skontaktuj się z BramBruk - ogrodzenia i brukarstwo w Białej Podlaskiej. Odpowiadamy szybko. Napisz lub zadzwoń."
+  tytul={strona.meta.tytul}
+  opis={strona.meta.opis}
 >
   <Okruszki pozycje={[{ etykieta: 'Strona główna', sciezka: '/' }, { etykieta: 'Kontakt' }]} />
 
@@ -37,9 +40,9 @@ const klasaPola =
     <div class="max-w-7xl mx-auto px-5 lg:px-10">
       <Odslon>
         <div class="mb-6">
-          <EtykietaSekcji>Kontakt</EtykietaSekcji>
+          <EtykietaSekcji>{strona.etykieta}</EtykietaSekcji>
           <h1 class="font-display text-3xl lg:text-4xl font-bold text-brand-text mt-2">
-            Skontaktuj się z nami
+            {strona.tytul}
           </h1>
         </div>
       </Odslon>
@@ -57,8 +60,8 @@ const klasaPola =
                 >
                   <Ikona nazwa="send" rozmiar={28} />
                 </div>
-                <h2 class="font-display text-2xl font-bold text-brand-text mb-3">Wiadomość wysłana!</h2>
-                <p class="text-brand-text-light">Odpowiemy w ciągu 24 godzin w dni robocze.</p>
+                <h2 class="font-display text-2xl font-bold text-brand-text mb-3">{strona.sukces.tytul}</h2>
+                <p class="text-brand-text-light">{strona.sukces.opis}</p>
               </div>
             </div>
 
@@ -189,7 +192,7 @@ const klasaPola =
         <div class="space-y-6 flex flex-col justify-between mb-6">
           <Odslon wariant="right">
             <div class="bg-brand-card rounded-2xl border border-brand-border/60 shadow-sm shadow-black/[0.04] px-3 py-5">
-              <h2 class="font-display text-lg font-bold text-brand-text mb-4">Dane kontaktowe</h2>
+              <h2 class="font-display text-lg font-bold text-brand-text mb-4">{strona.tytulDanych}</h2>
               {/* Dwie kolumny: kontakt bezpośredni po lewej, „gdzie i kiedy"
                   po prawej. Najdłuższa pozycja (adres e-mail) z ikoną
                   potrzebuje ok. 170 px, więc poniżej `sm` karta nie mieści
@@ -199,16 +202,16 @@ const klasaPola =
                 <div class="space-y-3">
                   
                   <a
-                    href={`mailto:${dane.email}`}
+                    href={`mailto:${firma.email}`}
                     class="flex items-center gap-3 text-brand-text-light hover:text-brand-sage-jasny transition-colors"
                   >
                     <Ikona nazwa="mail" rozmiar={16} class="text-brand-sage-jasny shrink-0" />
-                    {dane.email}
+                    {firma.email}
                   </a>
                   <div class="flex items-start gap-3 text-brand-text-light">
                     <Ikona nazwa="map-pin" rozmiar={16} class="mt-0.5 text-brand-sage-jasny shrink-0" />
                     <span>
-                      {dane.adresLinie.map((wiersz) => <span class="block">{wiersz}</span>)}
+                      {firma.adresLinie.map((wiersz) => <span class="block">{wiersz}</span>)}
                     </span>
                   </div>
                 </div>
@@ -218,18 +221,17 @@ const klasaPola =
                     się w przypadkowym punkcie. */}
                 <div class="space-y-3">
                   <a
-                    href={`tel:${dane.telefonHref}`}
+                    href={`tel:${firma.telefonHref}`}
                     class="flex items-center gap-3 text-brand-text-light hover:text-brand-sage-jasny transition-colors"
                   >
                     <Ikona nazwa="phone" rozmiar={16} class="text-brand-sage-jasny shrink-0" />
-                    {dane.telefon}
+                    {firma.telefon}
                   </a>
                   
                   <div class="flex items-start gap-3 text-brand-text-light">
                     <Ikona nazwa="clock" rozmiar={16} class="mt-0.5 text-brand-sage-jasny shrink-0" />
                     <span>
-                      <span class="block">{dane.godzinyTydzien}</span>
-                      <span class="block">{dane.godzinySobota}</span>
+                      {firma.godziny.map((wiersz) => <span class="block">{wiersz}</span>)}
                     </span>
                   </div>
                 </div>
@@ -244,8 +246,5 @@ const klasaPola =
     </div>
   </section>
 
-  <BanerCta
-    tytul="Szukasz wyceny na ogrodzenie lub brukarstwo?"
-    opis="Kreator wyceny prowadzi przez pięć krótkich kroków: typ usługi, wymiary, teren, termin i dane kontaktowe. Na tej podstawie odsyłamy widełki cenowe."
-  />
+  <BanerCta tytul={strona.baner.tytul} opis={strona.baner.opis} />
 </Podstrona>

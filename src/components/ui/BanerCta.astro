@@ -30,8 +30,9 @@
  * │ o przeniesieniu danych, a nie obietnica wysyłki.                    │
  * └─────────────────────────────────────────────────────────────────────┘
  */
-import { dane, statystyki } from "../../config/dane";
-import { typyUslug } from "../../data/wycena";
+import firma from "../../content/firma.json";
+import dowody from "../../content/dowody.json";
+import wycena from "../../content/wycena.json";
 import EtykietaSekcji from "./EtykietaSekcji.astro";
 import Przycisk from "./Przycisk.astro";
 import Ikona from "../icons/Ikona.astro";
@@ -50,7 +51,7 @@ const {
   tytul = "Chcesz poznać dokładną cenę?",
   opis = "Opisz projekt w formularzu - orientacyjną wycenę odsyłamy w ciągu jednego dnia roboczego. Bez zobowiązań i bez ukrytych kosztów.",
   punkty = [
-    `Bezpłatna wycena i wizja lokalna w promieniu ${statystyki.zasieg}`,
+    `Bezpłatna wycena i wizja lokalna w promieniu ${dowody.statystyki.zasieg}`,
     "Odpowiedź w 24 h w dni robocze",
     "Ceny orientacyjne podajemy otwarcie, przed podpisaniem umowy",
   ],
@@ -113,12 +114,12 @@ const klasaPola =
               lub zadzwoń
             </span>
             <Przycisk
-              href={`tel:${dane.telefonHref}`}
+              href={`tel:${firma.telefonHref}`}
               wariant="secondary"
               rozmiar="sm"
               ikona="phone"
             >
-              {dane.telefon}
+              {firma.telefon}
             </Przycisk>
           </div>
         </div>
@@ -144,7 +145,7 @@ const klasaPola =
                 Czego dotyczy projekt?
               </legend>
               <div class="grid grid-cols-3 gap-2">
-                {typyUslug.map((typ) => (
+                {wycena.typy.map((typ) => (
                   <div>
                     <input
                       type="radio"
