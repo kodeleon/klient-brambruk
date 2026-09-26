@@ -1,0 +1,72 @@
+{
+  // Worker formularzy. Osobne wdrożenie, niezależne od serwisu statycznego.
+  // Wdrożenie, sekret i podpięcie domeny: README.md.
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "brambruk-forms",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-09-14",
+
+  // Adres testowy *.workers.dev - do testów przed przeniesieniem DNS.
+  "workers_dev": true,
+
+  // Własna domena. Odkomentuj DOPIERO po przeniesieniu DNS brambruk.pl
+  // do Cloudflare (strefa musi być na tym samym koncie). Wrangler sam
+  // założy rekord DNS i certyfikat przy `wrangler deploy`.
+  // Po podpięciu domeny można wyłączyć "workers_dev" (ustaw na false).
+  // "routes": [{ "pattern": "api.brambruk.pl", "custom_domain": true }],
+
+  "vars": {
+    // Originy stron, które mogą wysyłać formularze (po przecinku, dokładne
+    // dopasowanie: schemat + host + port, bez końcowego ukośnika).
+    "ALLOWED_ORIGINS": "https://brambruk.pl,https://www.brambruk.pl",
+
+    // Nadawca - adres na domenie zweryfikowanej w Resend.
+    "MAIL_FROM": "Brambruk - Kontakt <kontakt@brambruk.pl>",
+
+    // Odbiorcy zgłoszeń (po przecinku).
+    "MAIL_TO": "kontakt@brambruk.pl",
+
+    // Logo w stopce maila (PNG, wyświetlane w 64 px).
+    "LOGO_URL": "https://brambruk.pl/assets/logo/znak-144.png",
+
+    // "true" = pełna ścieżka (walidacja, render, base64, payload), ale bez
+    // wywołania Resend. Do pomiaru CPU i testów po wdrożeniu.
+    "MAIL_DRY_RUN": "false"
+  },
+
+  // RESEND_API_KEY to sekret: `npx wrangler secret put RESEND_API_KEY`.
+  // Lokalnie: plik .dev.vars (wzór w .dev.vars.example). Nigdy tutaj.
+
+  // Rate limiting (licznik w pamięci Cloudflare, nic nie jest zapisywane).
+  // period może wynosić tylko 10 albo 60 sekund.
+  // namespace_id: dowolna dodatnia liczba całkowita (jako string), UNIKALNA
+  // w obrębie konta Cloudflare. Przed wdrożeniem sprawdź, że żaden inny
+  // worker na koncie nie używa tych numerów - wspólny numer = wspólny licznik.
+  "ratelimits": [
+    {
+      "name": "RL_IP",
+      "namespace_id": "1001",
+      "simple": { "limit": 5, "period": 60 }
+    },
+    {
+      "name": "RL_EMAIL",
+      "namespace_id": "1002",
+      "simple": { "limit": 3, "period": 60 }
+    }
+  ],
+
+  "observability": {
+    "enabled": true,
+    "head_sampling_rate": 1,
+    "logs": {
+      // DECYZJA: automatyczne "invocation logs" Cloudflare zapisują nagłówki
+      // żądania i obiekt `cf` (w tym adres IP i geolokalizację). Zasada
+      // projektu: IP nigdzie nie jest zapisywane. Zostają tylko nasze
+      // własne linie logu (src/log.ts), bez danych osobowych.
+      // Błędy przekroczenia CPU widać w zakładce Metrics workera.
+      // Do pomiaru CPU (README, faza pomiaru) można włączyć na chwilę
+      // na wdrożeniu testowym - ruch testowy pochodzi tylko od nas.
+      "invocation_logs": false
+    }
+  }
+}

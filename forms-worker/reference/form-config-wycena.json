@@ -1,0 +1,296 @@
+{
+  "slug": "wycena",
+  "name": "Formularz wyceny",
+  "settings": {
+    "block_links": true
+  },
+  "fields": [
+    {
+      "name": "serviceType",
+      "type": "select",
+      "required": true,
+      "label": "Usługa",
+      "default": "—",
+      "options": [
+        {
+          "key": "ogrodzenia",
+          "label": "Ogrodzenie / brama"
+        },
+        {
+          "key": "brukarstwo",
+          "label": "Kostka brukowa"
+        },
+        {
+          "key": "budownictwo",
+          "label": "Budownictwo lekkie"
+        }
+      ]
+    },
+    {
+      "name": "subtype",
+      "type": "select",
+      "required": false,
+      "label": "Rodzaj",
+      "default": "—",
+      "options": [
+        {
+          "key": "panelowe",
+          "label": "Panelowe 2D/3D"
+        },
+        {
+          "key": "murowane",
+          "label": "Murowane / podmurówki"
+        },
+        {
+          "key": "brama-przesuwna",
+          "label": "Brama przesuwna"
+        },
+        {
+          "key": "brama-dwuskrzydlowa",
+          "label": "Brama dwuskrzydłowa"
+        },
+        {
+          "key": "furtka",
+          "label": "Furtka"
+        },
+        {
+          "key": "siatka",
+          "label": "Siatka ogrodzeniowa"
+        },
+        {
+          "key": "inne-ogrodzenia",
+          "label": "Inne / nie wiem"
+        },
+        {
+          "key": "podjazd",
+          "label": "Podjazd"
+        },
+        {
+          "key": "chodnik",
+          "label": "Chodnik / alejka"
+        },
+        {
+          "key": "taras",
+          "label": "Taras"
+        },
+        {
+          "key": "parking",
+          "label": "Parking"
+        },
+        {
+          "key": "schody",
+          "label": "Schody terenowe"
+        },
+        {
+          "key": "inne-brukarstwo",
+          "label": "Inne / nie wiem"
+        },
+        {
+          "key": "altana",
+          "label": "Altana ogrodowa"
+        },
+        {
+          "key": "garaz",
+          "label": "Garaż"
+        },
+        {
+          "key": "domek",
+          "label": "Domek narzędziowy"
+        },
+        {
+          "key": "wiata",
+          "label": "Wiata"
+        },
+        {
+          "key": "inne-budownictwo",
+          "label": "Inne"
+        }
+      ]
+    },
+    {
+      "name": "amount",
+      "type": "text",
+      "required": false,
+      "label": "Wymiary",
+      "maxlength": 50,
+      "default": "—"
+    },
+    {
+      "name": "location",
+      "type": "text",
+      "required": false,
+      "label": "Lokalizacja",
+      "maxlength": 200,
+      "default": "—"
+    },
+    {
+      "name": "terrain",
+      "type": "multiselect",
+      "required": false,
+      "label": "Utrudnienia terenu",
+      "default": "Brak",
+      "options": [
+        {
+          "key": "flat",
+          "label": "Teren płaski"
+        },
+        {
+          "key": "uneven",
+          "label": "Lekkie nierówności"
+        },
+        {
+          "key": "slope",
+          "label": "Spadek / pochyłość"
+        },
+        {
+          "key": "access",
+          "label": "Utrudniony dojazd"
+        },
+        {
+          "key": "old-fence",
+          "label": "Stare ogrodzenie do rozbiórki"
+        },
+        {
+          "key": "leveling",
+          "label": "Wyrównanie terenu"
+        },
+        {
+          "key": "rocky",
+          "label": "Kamienisty / twardy grunt"
+        },
+        {
+          "key": "wet",
+          "label": "Podmokły / wysoki poziom wód"
+        },
+        {
+          "key": "roots",
+          "label": "Korzenie drzew / pnie"
+        },
+        {
+          "key": "narrow",
+          "label": "Wąski dojazd maszyn"
+        },
+        {
+          "key": "neighbor",
+          "label": "Granica z sąsiadem"
+        }
+      ]
+    },
+    {
+      "name": "timeline",
+      "type": "select",
+      "required": false,
+      "label": "Planowany termin",
+      "default": "—",
+      "options": [
+        {
+          "key": "asap",
+          "label": "Jak najszybciej"
+        },
+        {
+          "key": "month",
+          "label": "W ciągu miesiąca"
+        },
+        {
+          "key": "quarter",
+          "label": "W ciągu 3 miesięcy"
+        },
+        {
+          "key": "later",
+          "label": "Później / do ustalenia"
+        }
+      ]
+    },
+    {
+      "name": "budget",
+      "type": "select",
+      "required": false,
+      "label": "Orientacyjny budżet",
+      "default": "—",
+      "options": [
+        {
+          "key": "up_to_5k",
+          "label": "do 5 000 zł"
+        },
+        {
+          "key": "5k_15k",
+          "label": "5 000 – 15 000 zł"
+        },
+        {
+          "key": "15k_30k",
+          "label": "15 000 – 30 000 zł"
+        },
+        {
+          "key": "over_30k",
+          "label": "powyżej 30 000 zł"
+        },
+        {
+          "key": "unknown",
+          "label": "Nie wiem jeszcze"
+        }
+      ]
+    },
+    {
+      "name": "description",
+      "type": "textarea",
+      "required": false,
+      "label": "Opis projektu",
+      "maxlength": 5000,
+      "default": "—"
+    },
+    {
+      "name": "photos",
+      "type": "file",
+      "required": false,
+      "label": "Zdjęcia",
+      "default": "Brak",
+      "max_files": 5,
+      "max_size_mb": 5,
+      "allowed_types": [
+        "image/jpeg",
+        "image/png",
+        "image/webp"
+      ]
+    },
+    {
+      "name": "name",
+      "type": "text",
+      "required": true,
+      "label": "Imię",
+      "maxlength": 100
+    },
+    {
+      "name": "email",
+      "type": "email",
+      "required": true,
+      "label": "Email",
+      "maxlength": 200
+    },
+    {
+      "name": "phone",
+      "type": "tel",
+      "required": false,
+      "label": "Telefon",
+      "maxlength": 20,
+      "default": "—"
+    }
+  ],
+  "recipients": {
+    "mode": "single",
+    "admin_emails": [
+      "kontakt@brambruk.pl"
+    ]
+  },
+  "templates": {
+    "admin": {
+      "enabled": true,
+      "subject": "Nowe zapytanie o wycenę — {{serviceType}}",
+      "body": "<!DOCTYPE html><html><head><meta charset=\"utf-8\"><title>Preview: wycena admin</title></head><body style=\"background:#e8e8e8;padding:20px;\">\n<!-- PREHEADER --><div style=\"display:none;font-size:1px;line-height:1px;max-height:0px;max-width:0px;opacity:0;overflow:hidden;mso-hide:all;\">Nowe zapytanie o wycenę — {{serviceType}} od {{name}}.</div><table role=\"presentation\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"margin:0;padding:0;border-collapse:collapse;\"><tr><td align=\"center\" style=\"padding:28px 12px;\"><table role=\"presentation\" width=\"640\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"width:640px;max-width:640px;background:#ffffff;border:1px solid #ececec;border-radius:16px;overflow:hidden;border-collapse:separate;\"><!-- TOP BAR --><tr><td style=\"background:#98af15;padding:14px 18px;font-family:Arial,Helvetica,sans-serif;\"><div style=\"font-size:15px;line-height:20px;color:#ffffff;font-weight:700;letter-spacing:0.2px;\">Nowe zapytanie o wycenę</div></td></tr><!-- HEADER --><tr><td style=\"padding:22px 22px 14px;font-family:Arial,Helvetica,sans-serif;\"><div style=\"font-size:24px;line-height:30px;color:#5a5343;font-weight:800;\">Nowe zapytanie o wycenę</div><div style=\"height:8px;\"></div><div style=\"font-size:15px;line-height:22px;color:#5a5a5a;\">Na stronie <a href=\"https://brambruk.pl\" style=\"color:#89a66f;text-decoration:underline;\">brambruk.pl</a> zostało przesłane zapytanie o wycenę.</div></td></tr><!-- DANE NADAWCY --><tr><td style=\"padding:0 22px 14px 22px;\"><table role=\"presentation\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"background:#f8f9f7;border:1px solid #ececec;border-radius:14px;\"><tr><td style=\"padding:16px;font-family:Arial,Helvetica,sans-serif;\"><div style=\"font-size:17px;line-height:24px;color:#2c2c2c;font-weight:800;margin:0 0 12px;\">Dane nadawcy</div><table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"font-family:Arial,Helvetica,sans-serif;font-size:14px;line-height:20px;\"><tr><td style=\"color:#5a5a5a;width:140px;padding:5px 0;\">Imię:</td><td style=\"color:#2c2c2c;padding:5px 4px;\"><strong>{{name}}</strong></td></tr><tr><td style=\"color:#5a5a5a;padding:5px 0;\">E-mail:</td><td style=\"padding:5px 4px;\"><a href=\"mailto:{{email}}\" style=\"color:#89a66f;text-decoration:underline;\">{{email}}</a></td></tr><tr><td style=\"color:#5a5a5a;padding:5px 0;\">Telefon:</td><td style=\"color:#2c2c2c;padding:5px 4px;\"><strong>{{phone}}</strong></td></tr></table></td></tr></table></td></tr><!-- SZCZEGÓŁY PROJEKTU --><tr><td style=\"padding:0 22px 14px 22px;\"><table role=\"presentation\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"background:#f8f9f7;border:1px solid #ececec;border-radius:14px;\"><tr><td style=\"padding:16px;font-family:Arial,Helvetica,sans-serif;\"><div style=\"font-size:17px;line-height:24px;color:#2c2c2c;font-weight:800;margin:0 0 12px;\">Szczegóły projektu</div><table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"font-family:Arial,Helvetica,sans-serif;font-size:14px;line-height:20px;\"><tr><td style=\"color:#5a5a5a;width:160px;padding:5px 0;\">Typ usługi:</td><td style=\"color:#2c2c2c;padding:5px 4px;\"><strong>{{serviceType}}</strong></td></tr><tr><td style=\"color:#5a5a5a;padding:5px 0;\">Rodzaj:</td><td style=\"color:#2c2c2c;padding:5px 4px;\"><strong>{{subtype}}</strong></td></tr><tr><td style=\"color:#5a5a5a;padding:5px 0;\">Wymiary:</td><td style=\"color:#2c2c2c;padding:5px 4px;\"><strong>{{amount}}</strong></td></tr><tr><td style=\"color:#5a5a5a;padding:5px 0;\">Lokalizacja:</td><td style=\"color:#2c2c2c;padding:5px 4px;\"><strong>{{location}}</strong></td></tr><tr><td style=\"color:#5a5a5a;padding:5px 0;\">Teren:</td><td style=\"color:#2c2c2c;padding:5px 4px;\"><strong>{{terrain}}</strong></td></tr><tr><td style=\"color:#5a5a5a;padding:5px 0;\">Termin:</td><td style=\"color:#2c2c2c;padding:5px 4px;\"><strong>{{timeline}}</strong></td></tr><tr><td style=\"color:#5a5a5a;padding:5px 0;\">Budżet:</td><td style=\"color:#2c2c2c;padding:5px 4px;\"><strong>{{budget}}</strong></td></tr><tr><td style=\"color:#5a5a5a;padding:5px 0;\">Zdjęcia:</td><td style=\"color:#2c2c2c;padding:5px 4px;\"><strong>{{photos}}</strong></td></tr></table><div style=\"height:8px;\"></div><div style=\"font-size:12px;line-height:18px;color:#8a8580;\">Puste pola oznaczają, że nadawca nie podał tych informacji. Zdjęcia dołączone jako załączniki.</div></td></tr></table></td></tr><!-- OPIS --><tr><td style=\"padding:0 22px 18px 22px;\"><table role=\"presentation\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"background:#f8f9f7;border:1px solid #ececec;border-radius:14px;\"><tr><td style=\"padding:16px;font-family:Arial,Helvetica,sans-serif;\"><div style=\"font-size:17px;line-height:24px;color:#2c2c2c;font-weight:800;margin:0 0 12px;\">Opis projektu</div><table role=\"presentation\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"background:#ffffff;border:1px solid #ececec;border-left:6px solid #b5cc1c;border-radius:12px;\"><tr><td style=\"padding:14px;font-family:Arial,Helvetica,sans-serif;font-size:14px;line-height:22px;color:#2c2c2c;\"><div style=\"white-space:pre-line;word-break:break-word;overflow-wrap:anywhere;margin:0;\">{{description}}</div></td></tr></table></td></tr></table></td></tr><!-- FOOTER --><tr><td style=\"background:#5a5343;padding:18px 22px;font-family:Arial,Helvetica,sans-serif;\"><table role=\"presentation\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"border-collapse:collapse;\"><tr><td align=\"left\" style=\"vertical-align:top;padding-right:10px;width:74px;\"><a href=\"https://brambruk.pl\" style=\"text-decoration:none;border:0;display:inline-block;\"><img src=\"https://brambruk.pl/wp-content/uploads/2025/10/logo-mim-256.png\" width=\"64\" alt=\"BramBruk\" style=\"display:block;border:0;outline:none;height:auto;max-width:64px;\"></a></td><td style=\"vertical-align:middle;\"><div style=\"font-size:18px;line-height:24px;color:#ffffff;font-weight:800;\">BramBruk</div><div style=\"font-size:13px;line-height:18px;color:#ffffff;opacity:0.92;\">Ogrodzenia &#8226; Brukarstwo &#8226; Budownictwo</div></td><td align=\"right\" style=\"padding-bottom:6px;\"><a href=\"https://brambruk.pl\" style=\"display:inline-block;background:#98af15;color:#ffffff;text-decoration:none;font-family:Arial,Helvetica,sans-serif;font-size:14px;font-weight:700;line-height:0;padding:18px 20px;border-radius:10px;\">Przejdź na stronę</a></td></tr></table><div style=\"height:12px;font-size:1px;line-height:1px;\">&nbsp;</div><div style=\"font-size:12px;line-height:18px;color:#ECECEC;opacity:0.8;\">Ta wiadomość została wygenerowana automatycznie.</div></td></tr></table></td></tr></table>\n</body></html>"
+    },
+    "client": {
+      "enabled": true,
+      "subject": "Potwierdzenie zapytania o wycenę — BramBruk",
+      "body": "<!DOCTYPE html><html><head><meta charset=\"utf-8\"><title>Preview: wycena client</title></head><body style=\"background:#e8e8e8;padding:20px;\">\n<!-- PREHEADER --><div style=\"display:none;font-size:1px;line-height:1px;max-height:0px;max-width:0px;opacity:0;overflow:hidden;mso-hide:all;\">Potwierdzenie zapytania o wycenę — BramBruk. Otrzymaliśmy Twoje zapytanie i wrócimy z wyceną najszybciej jak to możliwe.</div><table role=\"presentation\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"margin:0;padding:0;border-collapse:collapse;\"><tr><td align=\"center\" style=\"padding:28px 12px;\"><table role=\"presentation\" width=\"640\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"width:640px;max-width:640px;background:#ffffff;border:1px solid #ececec;border-radius:16px;overflow:hidden;border-collapse:separate;\"><!-- TOP BAR --><tr><td style=\"background:#98af15;padding:14px 18px;font-family:Arial,Helvetica,sans-serif;\"><div style=\"font-size:15px;line-height:20px;color:#ffffff;font-weight:700;letter-spacing:0.2px;\">Potwierdzenie zapytania o wycenę</div></td></tr><!-- HEADER --><tr><td style=\"padding:22px 22px 14px;font-family:Arial,Helvetica,sans-serif;\"><div style=\"font-size:24px;line-height:30px;color:#5a5343;font-weight:800;\">Cześć, <span style=\"color:#2c2c2c;\">{{name}}</span>!</div><div style=\"height:10px;\"></div><div style=\"font-size:15px;line-height:22px;color:#5a5a5a;\">Dziękujemy za przesłanie zapytania o wycenę na stronie <a href=\"https://brambruk.pl\" style=\"color:#89a66f;text-decoration:underline;\">brambruk.pl</a>. Poniżej znajdziesz kopię przesłanych danych.</div></td></tr><!-- PODSUMOWANIE --><tr><td style=\"padding:0 22px 14px 22px;\"><table role=\"presentation\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"background:#f8f9f7;border:1px solid #ececec;border-radius:14px;\"><tr><td style=\"padding:16px;font-family:Arial,Helvetica,sans-serif;\"><div style=\"font-size:17px;line-height:24px;color:#2c2c2c;font-weight:800;margin:0 0 12px;\">Podsumowanie zapytania</div><div style=\"font-size:15px;line-height:20px;color:#2c2c2c;font-weight:600;margin-bottom:8px;\">Twoje dane:</div><table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"font-family:Arial,Helvetica,sans-serif;font-size:14px;line-height:20px;\"><tr><td style=\"color:#5a5a5a;width:160px;padding:5px 0;\">Imię:</td><td style=\"color:#2c2c2c;padding:5px 4px;\"><strong>{{name}}</strong></td></tr><tr><td style=\"color:#5a5a5a;padding:5px 0;\">E-mail:</td><td style=\"color:#2c2c2c;padding:5px 4px;\"><strong>{{email}}</strong></td></tr><tr><td style=\"color:#5a5a5a;padding:5px 0;\">Telefon:</td><td style=\"color:#2c2c2c;padding:5px 4px;\"><strong>{{phone}}</strong></td></tr></table><div style=\"height:14px;\"></div><div style=\"font-size:15px;line-height:20px;color:#2c2c2c;font-weight:600;margin-bottom:8px;\">Szczegóły projektu:</div><table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"font-family:Arial,Helvetica,sans-serif;font-size:14px;line-height:20px;\"><tr><td style=\"color:#5a5a5a;width:160px;padding:5px 0;\">Typ usługi:</td><td style=\"color:#2c2c2c;padding:5px 4px;\"><strong>{{serviceType}}</strong></td></tr><tr><td style=\"color:#5a5a5a;padding:5px 0;\">Rodzaj:</td><td style=\"color:#2c2c2c;padding:5px 4px;\"><strong>{{subtype}}</strong></td></tr><tr><td style=\"color:#5a5a5a;padding:5px 0;\">Wymiary:</td><td style=\"color:#2c2c2c;padding:5px 4px;\"><strong>{{amount}}</strong></td></tr><tr><td style=\"color:#5a5a5a;padding:5px 0;\">Lokalizacja:</td><td style=\"color:#2c2c2c;padding:5px 4px;\"><strong>{{location}}</strong></td></tr><tr><td style=\"color:#5a5a5a;padding:5px 0;\">Termin:</td><td style=\"color:#2c2c2c;padding:5px 4px;\"><strong>{{timeline}}</strong></td></tr><tr><td style=\"color:#5a5a5a;padding:5px 0;\">Budżet:</td><td style=\"color:#2c2c2c;padding:5px 4px;\"><strong>{{budget}}</strong></td></tr><tr><td style=\"color:#5a5a5a;padding:5px 0;\">Zdjęcia:</td><td style=\"color:#2c2c2c;padding:5px 4px;\"><strong>{{photos}}</strong></td></tr></table><div style=\"height:14px;\"></div><div style=\"font-size:15px;line-height:20px;color:#2c2c2c;font-weight:600;margin-bottom:8px;\">Opis:</div><table role=\"presentation\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"background:#ffffff;border:1px solid #ececec;border-left:6px solid #b5cc1c;border-radius:12px;\"><tr><td style=\"padding:14px;font-family:Arial,Helvetica,sans-serif;font-size:14px;line-height:22px;color:#2c2c2c;\"><div style=\"white-space:pre-line;word-break:break-word;overflow-wrap:anywhere;margin:0;\">{{description}}</div></td></tr></table><div style=\"height:10px;\"></div><div style=\"font-size:12px;line-height:18px;color:#5a5a5a;\">Jeśli w danych jest błąd, odpowiedz na tę wiadomość i poprawimy zgłoszenie.</div></td></tr></table></td></tr><!-- CO DALEJ --><tr><td style=\"padding:0 22px 22px 22px;\"><table role=\"presentation\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"background:#f8f9f7;border:1px solid #ececec;border-radius:14px;\"><tr><td style=\"padding:16px;font-family:Arial,Helvetica,sans-serif;\"><div style=\"font-size:17px;line-height:24px;color:#2c2c2c;font-weight:800;margin:0 0 12px;\">Co dalej?</div><table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"font-family:Arial,Helvetica,sans-serif;\"><tr><td style=\"vertical-align:top;width:26px;padding:5px 0;\"><span style=\"display:inline-block;width:22px;height:22px;border-radius:999px;background:#d5e76b;color:#2c2c2c;font-size:12px;text-align:center;font-weight:800;line-height:22px;\">1</span></td><td style=\"padding:5px 0 5px 10px;font-size:14px;line-height:20px;color:#5a5a5a;\">Zapoznamy się z Twoim zapytaniem i przygotujemy wycenę (zwykle w ciągu 24h).</td></tr><tr><td style=\"vertical-align:top;width:26px;padding:5px 0;\"><span style=\"display:inline-block;width:22px;height:22px;border-radius:999px;background:#d5e76b;color:#2c2c2c;font-size:12px;text-align:center;font-weight:800;line-height:22px;\">2</span></td><td style=\"padding:5px 0 5px 10px;font-size:14px;line-height:20px;color:#5a5a5a;\">Jeśli będziemy potrzebować doprecyzowania — dopytamy o szczegóły.</td></tr><tr><td style=\"vertical-align:top;width:26px;padding:5px 0;\"><span style=\"display:inline-block;width:22px;height:22px;border-radius:999px;background:#d5e76b;color:#2c2c2c;font-size:12px;text-align:center;font-weight:800;line-height:22px;\">3</span></td><td style=\"padding:5px 0 5px 10px;font-size:14px;line-height:20px;color:#5a5a5a;\">Ustalimy zakres, termin i najlepsze rozwiązanie pod Twoje potrzeby.</td></tr></table></td></tr></table></td></tr><!-- FOOTER --><tr><td style=\"background:#5a5343;padding:18px 22px;font-family:Arial,Helvetica,sans-serif;\"><table role=\"presentation\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"border-collapse:collapse;\"><tr><td align=\"left\" style=\"vertical-align:top;padding-right:10px;width:74px;\"><a href=\"https://brambruk.pl\" style=\"text-decoration:none;border:0;display:inline-block;\"><img src=\"https://brambruk.pl/wp-content/uploads/2025/10/logo-mim-256.png\" width=\"64\" alt=\"BramBruk\" style=\"display:block;border:0;outline:none;height:auto;max-width:64px;\"></a></td><td style=\"vertical-align:middle;\"><div style=\"font-size:18px;line-height:24px;color:#ffffff;font-weight:800;\">BramBruk</div><div style=\"font-size:13px;line-height:18px;color:#ffffff;opacity:0.92;\">Ogrodzenia &#8226; Brukarstwo &#8226; Budownictwo</div></td><td align=\"right\" style=\"padding-bottom:6px;\"><a href=\"https://brambruk.pl\" style=\"display:inline-block;background:#98af15;color:#ffffff;text-decoration:none;font-family:Arial,Helvetica,sans-serif;font-size:14px;font-weight:700;line-height:0;padding:18px 20px;border-radius:10px;\">Przejdź na stronę</a></td></tr></table><div style=\"height:12px;font-size:1px;line-height:1px;\">&nbsp;</div><div style=\"font-size:12px;line-height:18px;color:#ECECEC;opacity:0.8;\">Ta wiadomość została wygenerowana automatycznie jako potwierdzenie przesłania formularza. Jeśli formularz został przesłany przez kogoś innego, możesz zignorować tę wiadomość.</div></td></tr></table></td></tr></table>\n</body></html>"
+    }
+  }
+}

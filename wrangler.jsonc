@@ -4,7 +4,7 @@
   // Serwis nie ma kodu Workera - sam katalog `dist`. Dlatego NIE ma tu pola
   // `main` ani `assets.binding`: oba mają sens wyłącznie wtedy, gdy istnieje
   // skrypt Workera, który miałby z tego bindingu korzystać. Worker formularza
-  // (jeśli moduł jest włączony) to OSOBNE wdrożenie, patrz worker/README.md.
+  // (jeśli moduł jest włączony) to OSOBNE wdrożenie, patrz forms-worker/README.md.
   //
   // Wdrożenie: `npm run build`, potem `npx wrangler deploy`. Wrangler celowo
   // NIE jest w devDependencies - to narzędzie wdrożeniowe, nie zależność

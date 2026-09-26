@@ -258,7 +258,7 @@ podstronę potrzebuje wzoru, a nie opisu wzoru. Ale w wydaniu ich nie ma:
 | przykładowe wpisy w `src/config/dane.ts` | pokazują format każdego pola | podmienić na dane klienta |
 | `src/pages/_artykuly/` | wzór podstron modułu artykułów, nieaktywny (podkreślenie wyłącza katalog z routingu) | zostawić albo skasować razem z modułem |
 | `src/content/artykuly/przyklad-artykulu.md` | wzór wpisu kolekcji; ma `szkic: true`, więc nie trafia do builda | podmienić na prawdziwy artykuł albo skasować |
-| `worker/` | backend formularza kontaktowego, osobne wdrożenie | skasować, jeśli projekt nie ma formularza |
+| `forms-worker/` | backend formularza kontaktowego, osobne wdrożenie | skasować, jeśli projekt nie ma formularza |
 
 `npm run audit` nie wyłapie zapomnianego wzoru - dla niego to poprawna
 podstrona. Wyłapie go **audyt przedwdrożeniowy**, punkt o treściach
@@ -436,7 +436,7 @@ część jej kosztu.
 | **Ustawienie techniczne** | `src/config/site.ts` | `origin`, język, moduły, endpointy, dyrektywy CSP |
 | **Skrypt zachowania** | `src/scripts/nazwa.ts` | plus pozycja w tablicy w `main.ts` |
 | **Skrypt pomocniczy (narzędzie)** | `tools/<obszar>/` | `media`, `audit`, `build`, `fonts` |
-| **Kod serwerowy** | `worker/` | osobne wdrożenie, osobny `wrangler.jsonc` |
+| **Kod serwerowy** | `forms-worker/` | osobne wdrożenie, osobny `wrangler.jsonc` |
 
 Katalogi `src/pages`, `src/layouts`, `src/components`, `src/content`,
 `src/styles` mają nazwy narzucone przez Astro i celowo zostają po angielsku.
@@ -717,14 +717,14 @@ jednocześnie dyrektywami CSP, blokami polityki prywatności i zakresem audytu.
 
 | Moduł | Domyślnie | Co włącza |
 |---|---|---|
-| `formularz` | wyłączony | formularz + Worker z `worker/` (pakiety Rozwój i Premium) |
+| `formularz` | wyłączony | formularz + Worker z `forms-worker/` (pakiety Rozwój i Premium) |
 | `analityka` | wyłączony | Plausible + wpis w CSP + blok w polityce prywatności |
 | `galeria` | włączony | powiększanie zdjęć (`<dialog>`, bez bibliotek) |
 | `artykuly` | wyłączony | kolekcja treści (pakiet Premium) |
 | `drugiJezyk` | wyłączony | punkty zaczepienia `hreflang` w układzie |
 | `mapa` | wyłączony | miejsce na render z `osm-custom-view` |
 
-**Formularz** wymaga wdrożenia Workera - patrz `worker/README.md`. Bez adresu
+**Formularz** wymaga wdrożenia Workera - patrz `forms-worker/README.md`. Bez adresu
 w `endpointy.formularz` formularz się nie renderuje: lepiej brak formularza
 niż formularz, który nigdzie nie wysyła.
 
@@ -765,11 +765,11 @@ nie należy do frontu, tylko do Workera.
 ### Jedyny prawdziwy sekret w projekcie
 
 `RESEND_API_KEY` - klucz do wysyłki poczty z formularza kontaktowego. Siedzi
-w Workerze (`worker/`), który jest osobnym wdrożeniem, i jest ustawiany jako
+w Workerze (`forms-worker/`), który jest osobnym wdrożeniem, i jest ustawiany jako
 **Workers Secret**:
 
 ```bash
-cd worker
+cd forms-worker
 npx wrangler secret put RESEND_API_KEY
 ```
 
@@ -777,7 +777,7 @@ Wrangler pyta o wartość, zapisuje ją zaszyfrowaną po stronie Cloudflare
 i **nie tworzy żadnego pliku**. Klucz nie istnieje w repozytorium na żadnym
 etapie. Podmiana to ta sama komenda z nową wartością.
 
-Do pracy lokalnej (`npx wrangler dev` w katalogu `worker/`) klucz można podać
+Do pracy lokalnej (`npx wrangler dev` w katalogu `forms-worker/`) klucz można podać
 w pliku `.dev.vars`:
 
 ```
@@ -799,7 +799,7 @@ do repozytoriów.
 
 Ochroną endpointu nie jest jego nieznajomość, tylko to, co robi Worker:
 sprawdzenie pochodzenia żądania, pułapka na boty i znacznik czasu. Opis
-w `worker/README.md`.
+w `forms-worker/README.md`.
 
 ### Czego nie wolno zrobić
 
@@ -1041,7 +1041,7 @@ frameworka.
   skryptu; usuń wtedy `<script>` z układu, nie zostawiaj pustego bundla,
 - `src/pages/przyklad-podstrony.astro` - to wzór do skopiowania, nie podstrona
   projektu. **Skasuj ją przed wydaniem.**
-- katalogu `worker/`, jeśli projekt nie ma formularza.
+- katalogu `forms-worker/`, jeśli projekt nie ma formularza.
 
 ---
 

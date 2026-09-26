@@ -1,0 +1,463 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Worker formularzy - strona testowa</title>
+<!--
+  Strona testowa workera formularzy. Jeden plik, bez frameworków.
+  Uruchomienie: `npm run dev` (worker na :8787) + `npm run dev:page` (ta strona na :4321).
+
+  Celowo BEZ walidacji po stronie przeglądarki (novalidate) - strona służy
+  do sprawdzania odpowiedzi workera, także na błędne dane.
+
+  Sekcja "KOMPRESJA ZDJĘĆ" w skrypcie niżej to implementacja referencyjna
+  dla frontu (INTEGRATION.md, punkt 4). Pola i opcje przepisane ręcznie
+  z src/forms.ts - tak samo zrobi front.
+-->
+<style>
+  :root { --green: #98af15; --brown: #5a5343; --line: #d9d9d4; --bg: #f8f9f7; --err: #b3261e; }
+  * { box-sizing: border-box; }
+  body { margin: 0; font: 15px/1.45 system-ui, -apple-system, "Segoe UI", Arial, sans-serif; color: #2c2c2c; background: #eceee8; }
+  header { background: var(--brown); color: #fff; padding: 14px 20px; display: flex; flex-wrap: wrap; gap: 12px 24px; align-items: center; }
+  header h1 { font-size: 18px; margin: 0; }
+  header label { display: flex; gap: 8px; align-items: center; }
+  header input { width: 280px; max-width: 100%; }
+  main { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 16px; padding: 16px; max-width: 1400px; margin: 0 auto; }
+  section { background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 16px; }
+  h2 { margin: 0 0 12px; font-size: 17px; color: var(--brown); border-left: 5px solid var(--green); padding-left: 8px; }
+  label.f { display: block; margin: 10px 0 4px; font-weight: 600; font-size: 13px; }
+  label.f small { font-weight: 400; color: #777; }
+  input[type=text], input[type=email], input[type=tel], input[type=url], select, textarea { width: 100%; padding: 7px 9px; border: 1px solid var(--line); border-radius: 7px; font: inherit; background: #fff; }
+  textarea { min-height: 90px; resize: vertical; }
+  fieldset { border: 1px solid var(--line); border-radius: 8px; margin: 10px 0 0; padding: 8px 10px; }
+  fieldset label { display: inline-flex; gap: 5px; margin: 3px 12px 3px 0; font-size: 13px; }
+  .row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; align-items: center; }
+  button { font: inherit; padding: 8px 16px; border-radius: 8px; border: 1px solid var(--brown); background: #fff; cursor: pointer; }
+  button[type=submit] { background: var(--green); border-color: var(--green); color: #fff; font-weight: 700; }
+  button:disabled { opacity: .5; cursor: not-allowed; }
+  .tools { font-size: 13px; color: #555; display: flex; flex-wrap: wrap; gap: 6px 14px; margin-top: 10px; }
+  .tools label { display: inline-flex; gap: 5px; align-items: center; }
+  .hp { position: absolute; left: -10000px; width: 1px; height: 1px; overflow: hidden; }
+  .hp.visible { position: static; width: auto; height: auto; }
+  .photos { list-style: none; padding: 0; margin: 8px 0 0; display: grid; gap: 8px; }
+  .photos li { display: grid; grid-template-columns: 64px 1fr auto; gap: 10px; align-items: center; background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 6px; font-size: 12.5px; }
+  .photos img, .photos .ph { width: 64px; height: 64px; object-fit: cover; border-radius: 6px; background: #ddd; display: grid; place-items: center; }
+  .photos .busy { color: #8a6d00; }
+  .photos .bad { color: var(--err); }
+  .field-msg { color: var(--err); font-size: 12.5px; margin-top: 4px; min-height: 1em; }
+  pre { background: #1f1f1c; color: #e8f0c0; padding: 12px; border-radius: 8px; overflow: auto; font-size: 12.5px; min-height: 60px; margin: 12px 0 0; white-space: pre-wrap; word-break: break-word; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Worker formularzy - strona testowa</h1>
+  <label>Adres workera <input id="endpoint" type="url" value="http://localhost:8787"></label>
+  <span id="origin-info" style="font-size:12px;opacity:.8"></span>
+</header>
+
+<main>
+  <!-- ===================== KONTAKT ===================== -->
+  <section>
+    <h2>contact - formularz kontaktowy</h2>
+    <form id="contact" data-slug="contact" novalidate>
+      <label class="f">Imię <small>name, wymagane, max 100</small></label>
+      <input type="text" name="name" autocomplete="name">
+      <label class="f">E-mail <small>email, wymagane, max 200</small></label>
+      <input type="email" name="email" autocomplete="email">
+      <label class="f">Telefon <small>phone, opcjonalne, max 20</small></label>
+      <input type="tel" name="phone" autocomplete="tel">
+      <label class="f">Wiadomość <small>message, wymagane, max 2000, bez linków</small></label>
+      <textarea name="message"></textarea>
+
+      <div class="hp" aria-hidden="true"><label>Nie wypełniaj <input type="text" name="_hp" tabindex="-1" autocomplete="off"></label></div>
+
+      <div class="tools">
+        <label><input type="checkbox" class="show-hp"> pokaż honeypot (_hp)</label>
+        <label><input type="checkbox" class="as-json"> wyślij jako JSON</label>
+      </div>
+      <div class="row">
+        <button type="submit">Wyślij</button>
+        <button type="button" class="fill">Przykładowe dane</button>
+        <button type="button" class="fill-bad">Błędne dane</button>
+        <button type="reset">Wyczyść</button>
+      </div>
+    </form>
+    <pre class="out">Odpowiedź workera pojawi się tutaj.</pre>
+  </section>
+
+  <!-- ===================== WYCENA ===================== -->
+  <section>
+    <h2>quote - kreator wyceny</h2>
+    <form id="quote" data-slug="quote" novalidate>
+      <label class="f">Typ usługi <small>serviceType, wymagane</small></label>
+      <select name="serviceType">
+        <option value="">- wybierz -</option>
+        <option value="ogrodzenia">Ogrodzenie / brama</option>
+        <option value="brukarstwo">Kostka brukowa</option>
+        <option value="budownictwo">Budownictwo lekkie</option>
+      </select>
+      <label class="f">Rodzaj <small>subtype, zależy od serviceType</small></label>
+      <select name="subtype"><option value="">- najpierw wybierz typ usługi -</option></select>
+      <label class="f">Wymiary <small>amount, max 50</small></label>
+      <input type="text" name="amount">
+      <label class="f">Lokalizacja <small>location, max 200</small></label>
+      <input type="text" name="location">
+      <fieldset>
+        <legend style="font-size:13px;font-weight:600">Teren <small style="font-weight:400;color:#777">terrain, multiselect</small></legend>
+        <div id="terrain"></div>
+      </fieldset>
+      <label class="f">Termin <small>timeline</small></label>
+      <select name="timeline">
+        <option value="">-</option>
+        <option value="asap">Jak najszybciej</option>
+        <option value="month">W ciągu miesiąca</option>
+        <option value="quarter">W ciągu 3 miesięcy</option>
+        <option value="later">Później / do ustalenia</option>
+      </select>
+      <label class="f">Budżet <small>budget</small></label>
+      <select name="budget">
+        <option value="">-</option>
+        <option value="up_to_5k">do 5 000 zł</option>
+        <option value="5k_15k">5 000 – 15 000 zł</option>
+        <option value="15k_30k">15 000 – 30 000 zł</option>
+        <option value="over_30k">powyżej 30 000 zł</option>
+        <option value="unknown">Nie wiem jeszcze</option>
+      </select>
+      <label class="f">Opis projektu <small>description, max 5000, bez linków</small></label>
+      <textarea name="description"></textarea>
+
+      <label class="f">Zdjęcia <small>photos, max 2, JPEG/PNG/WebP, max 4 MiB po kompresji</small></label>
+      <input type="file" id="photo-input" accept="image/jpeg,image/png,image/webp,image/heic,image/heif" multiple>
+      <div class="tools">
+        <label><input type="checkbox" id="no-compress"> wyślij bez kompresji (test ścieżki awaryjnej, bez limitu rozmiaru na froncie)</label>
+      </div>
+      <ul class="photos" id="photo-list"></ul>
+      <div class="field-msg" id="photo-msg"></div>
+
+      <label class="f">Imię <small>name, wymagane, max 100</small></label>
+      <input type="text" name="name" autocomplete="name">
+      <label class="f">E-mail <small>email, wymagane, max 200</small></label>
+      <input type="email" name="email" autocomplete="email">
+      <label class="f">Telefon <small>phone, opcjonalne, max 20</small></label>
+      <input type="tel" name="phone" autocomplete="tel">
+
+      <div class="hp" aria-hidden="true"><label>Nie wypełniaj <input type="text" name="_hp" tabindex="-1" autocomplete="off"></label></div>
+
+      <div class="tools">
+        <label><input type="checkbox" class="show-hp"> pokaż honeypot (_hp)</label>
+      </div>
+      <div class="row">
+        <button type="submit" id="quote-submit">Wyślij</button>
+        <button type="button" class="fill">Przykładowe dane</button>
+        <button type="button" class="fill-bad">Błędne dane</button>
+        <button type="reset">Wyczyść</button>
+      </div>
+    </form>
+    <pre class="out">Odpowiedź workera pojawi się tutaj.</pre>
+  </section>
+</main>
+
+<script>
+'use strict'
+
+// ---------------------------------------------------------------------------
+// Dane przepisane z src/forms.ts (front nic nie importuje z workera)
+// ---------------------------------------------------------------------------
+
+const SUBTYPES = {
+  ogrodzenia: { panelowe: 'Panelowe 2D/3D', murowane: 'Murowane / podmurówki', 'brama-przesuwna': 'Brama przesuwna', 'brama-dwuskrzydlowa': 'Brama dwuskrzydłowa', furtka: 'Furtka', siatka: 'Siatka ogrodzeniowa', 'inne-ogrodzenia': 'Inne / nie wiem' },
+  brukarstwo: { podjazd: 'Podjazd', chodnik: 'Chodnik / alejka', taras: 'Taras', parking: 'Parking', schody: 'Schody terenowe', 'inne-brukarstwo': 'Inne / nie wiem' },
+  budownictwo: { altana: 'Altana ogrodowa', garaz: 'Garaż', domek: 'Domek narzędziowy', wiata: 'Wiata', 'inne-budownictwo': 'Inne' },
+}
+const TERRAIN = { flat: 'Teren płaski', uneven: 'Lekkie nierówności', slope: 'Spadek / pochyłość', access: 'Utrudniony dojazd', 'old-fence': 'Stare ogrodzenie do rozbiórki', leveling: 'Wyrównanie terenu', rocky: 'Kamienisty / twardy grunt', wet: 'Podmokły / wysoki poziom wód', roots: 'Korzenie drzew / pnie', narrow: 'Wąski dojazd maszyn', neighbor: 'Granica z sąsiadem' }
+
+const PHOTO_LIMITS = {
+  maxFiles: 2,
+  maxFileSize: 4 * 1024 * 1024, // = maxFileSize w forms.ts (bajty)
+  workerTypes: ['image/jpeg', 'image/png', 'image/webp'], // = accept w forms.ts
+}
+
+const $ = (sel, root = document) => root.querySelector(sel)
+document.getElementById('origin-info').textContent = `origin tej strony: ${location.origin} (musi być w ALLOWED_ORIGINS)`
+
+// --- subtype zależny od serviceType ---
+const quoteForm = document.getElementById('quote')
+const serviceSelect = quoteForm.elements.serviceType
+const subtypeSelect = quoteForm.elements.subtype
+function fillSubtypes() {
+  const options = SUBTYPES[serviceSelect.value]
+  subtypeSelect.replaceChildren(new Option(options ? '-' : '- najpierw wybierz typ usługi -', ''))
+  if (options) for (const [key, label] of Object.entries(options)) subtypeSelect.add(new Option(label, key))
+}
+serviceSelect.addEventListener('change', fillSubtypes)
+
+// --- terrain jako checkboxy (powtórzony klucz terrain=a&terrain=b) ---
+const terrainBox = document.getElementById('terrain')
+for (const [key, label] of Object.entries(TERRAIN)) {
+  const l = document.createElement('label')
+  l.innerHTML = `<input type="checkbox" name="terrain" value="${key}"> `
+  l.append(label)
+  terrainBox.append(l)
+}
+
+// ---------------------------------------------------------------------------
+// KOMPRESJA ZDJĘĆ - implementacja referencyjna dla frontu (INTEGRATION.md pkt 4)
+// ---------------------------------------------------------------------------
+//
+// - kompresja w momencie dodania zdjęcia (podgląd i waga od razu),
+// - createImageBitmap(file, { imageOrientation: 'from-image' }) -> canvas,
+//   dłuższy bok maks. 2000 px, bez powiększania mniejszych,
+// - wyjście JPEG, jakość 0,82 (pewny podgląd załącznika w każdym kliencie poczty),
+// - ponowne kodowanie usuwa EXIF, w tym GPS - zamierzone,
+// - wynik większy od oryginału, a oryginał mieści się w wymiarach i ma typ
+//   akceptowany przez worker -> wysyłamy oryginał,
+// - błąd dekodowania (np. HEIC bez obsługi): oryginał, jeśli spełnia limity
+//   workera; jeśli nie - komunikat przy polu,
+// - liczba i typ plików sprawdzane PRZED kompresją, rozmiar PO kompresji,
+// - przycisk wysyłki zablokowany, dopóki trwa kompresja.
+
+const MAX_SIDE = 2000
+const JPEG_QUALITY = 0.82
+const INPUT_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/heic', 'image/heif']
+const INPUT_EXT = /\.(jpe?g|png|webp|heic|heif)$/i
+
+/** @type {{ id: number, original: File, status: 'busy'|'ready'|'error', output?: Blob, name?: string, info?: string, error?: string, preview?: string }[]} */
+let photos = []
+let nextId = 1
+
+const photoInput = document.getElementById('photo-input')
+const photoList = document.getElementById('photo-list')
+const photoMsg = document.getElementById('photo-msg')
+const noCompress = document.getElementById('no-compress')
+const quoteSubmit = document.getElementById('quote-submit')
+
+const kb = (bytes) => bytes >= 1024 * 1024 ? `${(bytes / 1024 / 1024).toFixed(2)} MB` : `${Math.round(bytes / 1024)} KB`
+const isAcceptedInput = (file) => INPUT_TYPES.includes(file.type) || (!file.type && INPUT_EXT.test(file.name))
+
+photoInput.addEventListener('change', () => {
+  photoMsg.textContent = ''
+  const picked = [...photoInput.files]
+  photoInput.value = '' // pozwala dodać ten sam plik ponownie po usunięciu
+  const rejectedType = picked.filter((f) => !isAcceptedInput(f))
+  const accepted = picked.filter(isAcceptedInput)
+  const room = PHOTO_LIMITS.maxFiles - photos.length
+  const messages = []
+  if (rejectedType.length) messages.push(`Nieobsługiwany format: ${rejectedType.map((f) => f.name).join(', ')}. Dodaj zdjęcie JPG, PNG lub WebP.`)
+  if (accepted.length > room) messages.push(`Możesz dodać maksymalnie ${PHOTO_LIMITS.maxFiles} zdjęcia.`)
+  photoMsg.textContent = messages.join(' ')
+  for (const file of accepted.slice(0, Math.max(0, room))) {
+    const photo = { id: nextId++, original: file, status: 'busy' }
+    photos.push(photo)
+    processPhoto(photo)
+  }
+  renderPhotos()
+})
+
+noCompress.addEventListener('change', () => {
+  for (const photo of photos) processPhoto(photo)
+})
+
+async function processPhoto(photo) {
+  const run = (photo.run = (photo.run ?? 0) + 1)
+  photo.status = 'busy'
+  photo.error = undefined
+  renderPhotos()
+  const file = photo.original
+  let result
+  try {
+    result = noCompress.checked ? await passThrough(file) : await compressImage(file)
+  } catch {
+    result = decodeFailed(file)
+  }
+  if (run !== photo.run || !photos.includes(photo)) return // nowszy przebieg wygrywa / zdjęcie usunięte
+  Object.assign(photo, result)
+  if (photo.preview) URL.revokeObjectURL(photo.preview)
+  photo.preview = photo.output ? URL.createObjectURL(photo.output) : undefined
+  renderPhotos()
+}
+
+/** Główna ścieżka: zmniejszenie i JPEG. */
+async function compressImage(file) {
+  const bitmap = await createImageBitmap(file, { imageOrientation: 'from-image' })
+  const { width, height } = bitmap
+  const scale = Math.min(1, MAX_SIDE / Math.max(width, height)) // bez powiększania
+  const w = Math.round(width * scale)
+  const h = Math.round(height * scale)
+  let blob
+  try {
+    blob = await drawToJpeg(bitmap, w, h)
+  } finally {
+    bitmap.close()
+  }
+
+  const originalFits = scale === 1 && PHOTO_LIMITS.workerTypes.includes(file.type)
+  if (originalFits && blob.size >= file.size) {
+    return ready(file, file.name, `${width}×${height}, ${kb(file.size)} - oryginał (kompresja nic nie dała)`)
+  }
+  const info = `${width}×${height}, ${kb(file.size)} → ${w}×${h}, ${kb(blob.size)} (JPEG ${JPEG_QUALITY})`
+  return ready(blob, file.name.replace(/\.[^.]+$/, '') + '.jpg', info)
+}
+
+async function drawToJpeg(bitmap, w, h) {
+  const paint = (ctx) => {
+    ctx.fillStyle = '#fff' // przezroczystość PNG -> białe tło (JPEG nie ma kanału alfa)
+    ctx.fillRect(0, 0, w, h)
+    ctx.imageSmoothingQuality = 'high'
+    ctx.drawImage(bitmap, 0, 0, w, h)
+  }
+  if (typeof OffscreenCanvas !== 'undefined') {
+    const canvas = new OffscreenCanvas(w, h)
+    const ctx = canvas.getContext('2d')
+    if (ctx && canvas.convertToBlob) {
+      paint(ctx)
+      return canvas.convertToBlob({ type: 'image/jpeg', quality: JPEG_QUALITY })
+    }
+  }
+  const canvas = document.createElement('canvas')
+  canvas.width = w
+  canvas.height = h
+  paint(canvas.getContext('2d'))
+  return new Promise((resolve, reject) =>
+    canvas.toBlob((b) => (b ? resolve(b) : reject(new Error('toBlob failed'))), 'image/jpeg', JPEG_QUALITY),
+  )
+}
+
+/** Tryb testowy: oryginał bez zmian (wymiary tylko do podglądu). */
+async function passThrough(file) {
+  let dims = '?×?'
+  try {
+    const bitmap = await createImageBitmap(file)
+    dims = `${bitmap.width}×${bitmap.height}`
+    bitmap.close()
+  } catch {}
+  return ready(file, file.name, `${dims}, ${kb(file.size)} - bez kompresji`)
+}
+
+/** Nie udało się zdekodować: oryginał, jeśli spełnia limity workera. */
+function decodeFailed(file) {
+  if (PHOTO_LIMITS.workerTypes.includes(file.type) && file.size <= PHOTO_LIMITS.maxFileSize) {
+    return ready(file, file.name, `${kb(file.size)} - nie udało się przetworzyć, wysyłamy oryginał`)
+  }
+  return { status: 'error', output: undefined, error: `Nie udało się przetworzyć zdjęcia "${file.name}". Zapisz je jako JPG i dodaj ponownie.` }
+}
+
+function ready(blob, name, info) {
+  // Limit rozmiaru sprawdzany PO kompresji. Tryb "bez kompresji" celowo go pomija.
+  if (!noCompress.checked && blob.size > PHOTO_LIMITS.maxFileSize) {
+    return { status: 'error', output: undefined, error: `Zdjęcie "${name}" jest za duże (${kb(blob.size)}, limit 4 MB).` }
+  }
+  return { status: 'ready', output: blob, name, info }
+}
+
+function renderPhotos() {
+  photoList.replaceChildren(
+    ...photos.map((photo) => {
+      const li = document.createElement('li')
+      const thumb = photo.preview ? Object.assign(document.createElement('img'), { src: photo.preview, alt: '' }) : Object.assign(document.createElement('div'), { className: 'ph', textContent: photo.status === 'busy' ? '…' : '!' })
+      const text = document.createElement('div')
+      const title = document.createElement('strong')
+      title.textContent = photo.original.name
+      const detail = document.createElement('div')
+      detail.className = photo.status === 'busy' ? 'busy' : photo.status === 'error' ? 'bad' : ''
+      detail.textContent = photo.status === 'busy' ? 'Przetwarzanie…' : photo.status === 'error' ? photo.error : photo.info
+      text.append(title, detail)
+      const remove = Object.assign(document.createElement('button'), { type: 'button', textContent: 'Usuń' })
+      remove.addEventListener('click', () => {
+        if (photo.preview) URL.revokeObjectURL(photo.preview)
+        photos = photos.filter((p) => p !== photo)
+        renderPhotos()
+      })
+      li.append(thumb, text, remove)
+      return li
+    }),
+  )
+  // Wysyłka zablokowana, dopóki trwa przetwarzanie albo jest zdjęcie z błędem.
+  quoteSubmit.disabled = photos.some((p) => p.status !== 'ready')
+}
+
+quoteForm.addEventListener('reset', () => {
+  for (const p of photos) if (p.preview) URL.revokeObjectURL(p.preview)
+  photos = []
+  photoMsg.textContent = ''
+  setTimeout(() => { fillSubtypes(); renderPhotos() })
+})
+
+// ---------------------------------------------------------------------------
+// Wysyłka
+// ---------------------------------------------------------------------------
+
+for (const form of document.querySelectorAll('form')) {
+  const out = form.parentElement.querySelector('.out')
+  form.querySelectorAll('.show-hp').forEach((box) =>
+    box.addEventListener('change', () => form.querySelector('.hp').classList.toggle('visible', box.checked)),
+  )
+
+  form.addEventListener('submit', async (event) => {
+    event.preventDefault()
+    const slug = form.dataset.slug
+    const url = `${document.getElementById('endpoint').value.replace(/\/+$/, '')}/forms/${slug}`
+    const data = new FormData(form)
+    if (slug === 'quote') {
+      for (const photo of photos) if (photo.output) data.append('photos', photo.output, photo.name)
+    }
+
+    let init = { method: 'POST', body: data } // bez ręcznego Content-Type - przeglądarka doda boundary
+    if (form.querySelector('.as-json')?.checked) {
+      const obj = {}
+      for (const [key, value] of data) obj[key] = key in obj ? [].concat(obj[key], value) : value
+      init = { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(obj) }
+    }
+
+    const sent = [...data].map(([k, v]) => (v instanceof Blob ? `${k}=<plik ${kb(v.size)}>` : `${k}=${JSON.stringify(v)}`))
+    out.textContent = `POST ${url}\n…`
+    const started = performance.now()
+    try {
+      const response = await fetch(url, init)
+      const text = await response.text()
+      let body = text
+      try { body = JSON.stringify(JSON.parse(text), null, 2) } catch {}
+      const retry = response.headers.get('Retry-After')
+      out.textContent = `HTTP ${response.status} (${Math.round(performance.now() - started)} ms)${retry ? `  Retry-After: ${retry}` : ''}\n${body}\n\nWysłane pola:\n${sent.join('\n')}`
+    } catch (error) {
+      out.textContent = `Błąd sieci / CORS: ${error}\n(worker uruchomiony? origin strony w ALLOWED_ORIGINS?)`
+    }
+  })
+}
+
+// ---------------------------------------------------------------------------
+// Dane przykładowe
+// ---------------------------------------------------------------------------
+
+/** Wypełnia pola tekstowe i wybory (zdjęcia i honeypot zostają bez zmian). */
+function fill(form, values) {
+  if (form.elements.serviceType) {
+    form.elements.serviceType.value = values.serviceType ?? ''
+    fillSubtypes()
+  }
+  for (const el of form.querySelectorAll('input[name], select[name], textarea[name]')) {
+    if (el.name === '_hp' || el.name === 'serviceType') continue
+    if (el.type === 'checkbox') el.checked = (values[el.name] ?? []).includes(el.value)
+    else el.value = values[el.name] ?? ''
+  }
+}
+
+const SAMPLES = {
+  contact: {
+    good: { name: 'Anna Testowa', email: 'anna.testowa@example.com', phone: '+48 123 456 789', message: 'Dzień dobry,\nproszę o kontakt w sprawie ogrodzenia.\n\nPozdrawiam' },
+    bad: { name: '', email: 'anna@', phone: 'abc', message: 'Zobacz www.spam.example' },
+  },
+  quote: {
+    good: { serviceType: 'ogrodzenia', subtype: 'brama-przesuwna', amount: '40 mb, wys. 1,5 m', location: 'Biała Podlaska', terrain: ['slope', 'roots'], timeline: 'month', budget: '5k_15k', description: 'Ogrodzenie panelowe od strony ulicy,\nbrama przesuwna 4 m i furtka.', name: 'Jan Testowy', email: 'jan.testowy@example.com', phone: '600 700 800' },
+    bad: { serviceType: '', amount: 'x'.repeat(60), description: 'https://spam.example', name: '', email: 'jan', phone: '12' },
+  },
+}
+
+for (const form of document.querySelectorAll('form')) {
+  const sample = SAMPLES[form.dataset.slug]
+  form.querySelector('.fill').addEventListener('click', () => fill(form, sample.good))
+  form.querySelector('.fill-bad').addEventListener('click', () => fill(form, sample.bad))
+}
+</script>
+</body>
+</html>

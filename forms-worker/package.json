@@ -1,0 +1,28 @@
+{
+  "name": "brambruk-forms",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit && tsc --noEmit -p dev",
+    "types": "wrangler types --strict-vars=false",
+    "preview:emails": "tsx dev/preview-emails.ts",
+    "dev:page": "node dev/serve.mjs"
+  },
+  "devDependencies": {
+    "@cloudflare/vitest-pool-workers": "^0.22.0",
+    "@types/node": "^24.19.0",
+    "tsx": "^4.23.15",
+    "typescript": "^7.0.2",
+    "vitest": "^4.1.11",
+    "wrangler": "^4.141.0"
+  },
+  "overrides": {
+    "@cloudflare/vitest-pool-workers": {
+      "miniflare": "5.20260925.0-alpha",
+      "wrangler": "$wrangler"
+    }
+  }
+}
