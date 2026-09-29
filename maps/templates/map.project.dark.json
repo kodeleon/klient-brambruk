@@ -1,0 +1,130 @@
+{
+  "center": [52.17905, 21.0026],
+  "paths": {
+    "fonts": "../fonts",
+    "extract": "data/extract.json",
+    "output": "../../media/img/_raw/mapa-<mapa>-{frame}.png",
+    "font_cache": ".podglad/fonty",
+    "preview": ".podglad"
+  },
+  "extract": {"span_m": [1600, 750], "tolerance_m": 1.3, "min_building_m2": 60, "min_area_m2": 200, "decimals": 5},
+  "frames": {
+    "desktop": {
+      "width_m": 3000,
+      "aspect": [21, 9],
+      "render_px": 3072,
+      "container_css": 1160,
+      "road_classes": ["major", "collector", "local", "access"],
+      "min_building_m2": 500,
+      "preview_css": [1160, 900]
+    },
+    "mobil": {
+      "width_m": 900,
+      "aspect": [4, 3],
+      "render_px": 1920,
+      "container_css": 342,
+      "road_classes": ["major", "collector", "local", "access", "service"],
+      "min_building_m2": 120,
+      "preview_css": [342, 671]
+    }
+  },
+  "palette": {
+    "background": "#121212",
+    "water": "#15181c",
+    "green": "#161813",
+    "settlement": "#191715",
+    "building": "#191715",
+    "landmark": "#2b251b",
+    "rail": "#4b453d",
+    "rail_tie": "#121212",
+    "tram": "#544c42",
+    "road_major": "#4a443d",
+    "road_collector": "#3c3730",
+    "road_local": "#302c27",
+    "road_access": "#262421",
+    "road_service": "#1f1e1c",
+    "label_street": "#ddd8d1",
+    "label_primary": "#f2f0ed",
+    "label_district": "#8a857e",
+    "halo": "#121212",
+    "marker_bg": "#ddd8d1",
+    "marker_fg": "#121212",
+    "country": "#161616",
+    "border": "#4b453d",
+    "border_minor": "#302c27",
+    "highlight": "#1f2416",
+    "highlight_edge": "#8fa316"
+  },
+  "fonts": {
+    "public-sans-400": ["public-sans.woff2", 400],
+    "public-sans-500": ["public-sans.woff2", 500],
+    "plex-mono-500": ["ibm-plex-mono-500.woff2", null]
+  },
+  "label_fonts": {
+    "street": "public-sans-500",
+    "landmark": "public-sans-500",
+    "junction": "public-sans-500",
+    "stop": "public-sans-500",
+    "district": "plex-mono-500"
+  },
+  "label_colors": {
+    "street": "label_street",
+    "landmark": "label_primary",
+    "junction": "label_primary",
+    "stop": "label_primary",
+    "district": "label_district"
+  },
+  "marker_styles": {
+    "metro": {"shape": "square", "size_css": 13.0, "glyph": "M", "font_css": 9.5, "font": "public-sans-500"},
+    "tram": {"shape": "square", "size_css": 11.5, "glyph": "T", "font_css": 8.5, "font": "public-sans-500"},
+    "kolej": {"shape": "train", "size_css": 12.5}
+  },
+  "widths_css": {"major": 4.2, "collector": 3.1, "local": 2.2, "access": 1.5, "service": 0.9, "rail": 2.0, "tram": 1.1, "river": 1.5, "border": 1.2, "border_minor": 0.6, "highlight_edge": 1.5},
+  "font_sizes_css": {"street": 12.5, "landmark": 13.5, "junction": 12.0, "stop": 11.5, "district": 11.0},
+  "style": {"halo_css": 3.6, "halo_alpha": 0.95, "tracking_street": 0.04, "tracking_district": 0.18, "interline": 1.18},
+  "pin_css": {"width": 36, "height": 46},
+  "labels": {
+    "desktop": [
+      {"street": "Wołoska", "near": [-25, 380]},
+      {"street": "Marynarska", "near": [-430, 40]},
+      {"street": "Postępu", "near": [-345, 330]},
+      {"street": "Sasanki", "near": [-1270, 350]},
+      {"street": "Domaniewska", "near": [-430, 478]},
+      {"street": "Cybernetyki", "near": [-620, -300]},
+      {"street": "Aleja Wilanowska", "near": [700, -40]},
+      {"street": "Puławska", "near": [1300, -180]},
+      {"street": "Aleja Lotników", "near": [830, -420]},
+      {"street": "Wincentego Rzymowskiego", "near": [0, -560], "clamp": false},
+      {"street": "Zygmunta Modzelewskiego", "near": [700, 280]},
+      {"point": ["Westfield", "Mokotów"], "lon": 21.004822, "lat": 52.179643, "kind": "landmark"},
+      {"point": ["Rondo Unii", "Europejskiej"], "lon": 21.000378, "lat": 52.177873, "kind": "junction"},
+      {"point": "Służewiec", "lon": 20.990466, "lat": 52.182914, "kind": "district"},
+      {"point": "Ksawerów", "lon": 21.016488, "lat": 52.184038, "kind": "district"},
+      {"point": "Służew", "lon": 21.020362, "lat": 52.174062, "kind": "district"}
+    ],
+    "mobil": [
+      {"street": "Wołoska", "near": [-25, 250]},
+      {"street": "Marynarska", "near": [-250, -30]},
+      {"street": "Aleja Wilanowska", "near": [270, -95]},
+      {"point": ["Westfield", "Mokotów"], "lon": 21.004471, "lat": 52.179679, "kind": "landmark"},
+      {"point": ["Rondo Unii", "Europejskiej"], "lon": 21.000553, "lat": 52.177118, "kind": "junction"}
+    ]
+  },
+  "markers": {
+    "desktop": [
+      {"kind": "metro", "lon": 21.02314, "lat": 52.181818, "name": "Wilanowska", "align": "right", "offset": [-34, 0]},
+      {
+        "kind": "kolej",
+        "lon": 20.987031,
+        "lat": 52.180749,
+        "name": "Warszawa Służewiec",
+        "align": "left",
+        "offset": [28, -46]
+      },
+      {"kind": "tram", "lon": 21.00105, "lat": 52.1787}
+    ],
+    "mobil": [
+      {"kind": "tram", "lon": 21.00105, "lat": 52.1787}
+    ]
+  }
+}

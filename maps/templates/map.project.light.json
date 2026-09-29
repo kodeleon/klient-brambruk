@@ -1,0 +1,281 @@
+{
+  "center": [
+    50.0575,
+    19.937
+  ],
+  "paths": {
+    "fonts": "../fonts",
+    "extract": "data/extract.json",
+    "output": "../../media/img/_raw/mapa-<mapa>-{frame}.png",
+    "font_cache": ".podglad/fonty",
+    "preview": ".podglad"
+  },
+  "extract": {
+    "span_m": [
+      900,
+      750
+    ],
+    "tolerance_m": 1.3,
+    "min_building_m2": 60,
+    "min_area_m2": 200,
+    "decimals": 5
+  },
+  "frames": {
+    "karta": {
+      "width_m": 1500,
+      "aspect": [
+        4,
+        3
+      ],
+      "render_px": 2000,
+      "container_css": 700,
+      "road_classes": [
+        "major",
+        "collector",
+        "local",
+        "access",
+        "service"
+      ],
+      "min_building_m2": 150,
+      "preview_css": [
+        700,
+        480
+      ]
+    }
+  },
+  "palette": {
+    "background": "#f7f5f1",
+    "water": "#dfe8ef",
+    "green": "#e5ecdb",
+    "settlement": "#e4ddd1",
+    "building": "#ebe7e1",
+    "landmark": "#f2e7cd",
+    "rail": "#a9a29a",
+    "rail_tie": "#f7f5f1",
+    "tram": "#b3aca3",
+    "road_major": "#b5aea5",
+    "road_collector": "#c4beb6",
+    "road_local": "#d1cbc3",
+    "road_access": "#dbd6cf",
+    "road_service": "#e5e1db",
+    "label_street": "#3a352f",
+    "label_primary": "#1b1916",
+    "label_district": "#6d675f",
+    "halo": "#f7f5f1",
+    "marker_bg": "#2a2621",
+    "marker_fg": "#f7f5f1",
+    "country": "#ffffff",
+    "border": "#a9a29a",
+    "border_minor": "#c9c0b3",
+    "highlight": "#e7ecc9",
+    "highlight_edge": "#8fa316"
+  },
+  "fonts": {
+    "public-sans-400": [
+      "public-sans.woff2",
+      400
+    ],
+    "public-sans-500": [
+      "public-sans.woff2",
+      500
+    ],
+    "plex-mono-500": [
+      "ibm-plex-mono-500.woff2",
+      null
+    ]
+  },
+  "label_fonts": {
+    "street": "plex-mono-500",
+    "landmark": "public-sans-500",
+    "junction": "public-sans-400",
+    "stop": "public-sans-400",
+    "district": "public-sans-500"
+  },
+  "label_colors": {
+    "street": "label_street",
+    "landmark": "label_primary",
+    "junction": "label_primary",
+    "stop": "label_primary",
+    "district": "label_district"
+  },
+  "widths_css": {
+    "major": 4.2,
+    "collector": 3.1,
+    "local": 2.2,
+    "access": 1.5,
+    "service": 0.9,
+    "rail": 2.0,
+    "tram": 1.1,
+    "river": 2.4,
+    "border": 1.2,
+    "border_minor": 0.6,
+    "highlight_edge": 1.5
+  },
+  "font_sizes_css": {
+    "street": 11.0,
+    "landmark": 13.5,
+    "junction": 12.0,
+    "stop": 11.5,
+    "district": 11.0
+  },
+  "style": {
+    "halo_css": 3.6,
+    "halo_alpha": 0.95,
+    "tracking_street": 0.02,
+    "tracking_district": 0.18,
+    "interline": 1.18
+  },
+  "pin_css": {
+    "width": 30,
+    "height": 38
+  },
+  "labels": {
+    "karta": [
+      {
+        "street": "Grodzka",
+        "near": [
+          86,
+          -111
+        ]
+      },
+      {
+        "street": "Świętej Gertrudy",
+        "near": [
+          242,
+          -100
+        ]
+      },
+      {
+        "street": "Józefa Dietla",
+        "near": [
+          528,
+          -250
+        ]
+      },
+      {
+        "street": "Starowiślna",
+        "near": [
+          626,
+          -151
+        ]
+      },
+      {
+        "street": "Zwierzyniecka",
+        "near": [
+          -517,
+          -90
+        ]
+      },
+      {
+        "street": "Retoryka",
+        "near": [
+          -610,
+          60
+        ]
+      },
+      {
+        "street": "Sienna",
+        "near": [
+          247,
+          338
+        ]
+      },
+      {
+        "street": "Wielopole",
+        "near": [
+          578,
+          115
+        ]
+      },
+      {
+        "street": "Westerplatte",
+        "near": [
+          528,
+          498
+        ]
+      },
+      {
+        "street": "Miodowa",
+        "near": [
+          627,
+          -517
+        ]
+      },
+      {
+        "street": "Smoleńsk",
+        "near": [
+          -526,
+          150
+        ]
+      },
+      {
+        "point": [
+          "Wzgórze",
+          "Wawelskie"
+        ],
+        "lon": 19.9352,
+        "lat": 50.0546,
+        "kind": "landmark"
+      },
+      {
+        "point": "Rynek Główny",
+        "lon": 19.9373,
+        "lat": 50.06175,
+        "kind": "junction"
+      },
+      {
+        "point": "Stare Miasto",
+        "lon": 19.941608,
+        "lat": 50.060197,
+        "kind": "district"
+      },
+      {
+        "point": "Kazimierz",
+        "lon": 19.943703,
+        "lat": 50.053364,
+        "kind": "district"
+      },
+      {
+        "point": "Wisła",
+        "lon": 19.929738,
+        "lat": 50.053634,
+        "kind": "district"
+      }
+    ]
+  },
+  "markers": {
+    "karta": [
+      {
+        "kind": "tram",
+        "lon": 19.939514,
+        "lat": 50.05438,
+        "name": "Wawel",
+        "align": "left",
+        "offset": [
+          26,
+          -30
+        ]
+      },
+      {
+        "kind": "tram",
+        "lon": 19.933313,
+        "lat": 50.058956,
+        "name": "Filharmonia",
+        "align": "right",
+        "offset": [
+          -26,
+          -30
+        ]
+      }
+    ]
+  },
+  "marker_styles": {
+    "tram": {
+      "shape": "square",
+      "size_css": 12.0,
+      "glyph": "T",
+      "font_css": 8.5,
+      "font": "public-sans-500"
+    }
+  }
+}

@@ -1,0 +1,283 @@
+{
+  "center": [
+    52.0338,
+    22.6083
+  ],
+  "projection": {
+    "type": "lcc",
+    "parallels": [
+      51.3,
+      52.7
+    ]
+  },
+  "highlight": {
+    "center": [
+      52.0338399,
+      23.1193948
+    ],
+    "radius_km": 100
+  },
+  "paths": {
+    "fonts": "../fonts",
+    "extract": "data/extract.json",
+    "output": "../../media/img/_raw/mapa-region-{frame}.png",
+    "font_cache": ".podglad/fonty",
+    "preview": ".podglad"
+  },
+  "extract": {
+    "span_m": [
+      200000,
+      140000
+    ],
+    "tolerance_m": 80,
+    "min_building_m2": 1000000,
+    "min_area_m2": 200000,
+    "decimals": 4,
+    "country": "PL",
+    "admin_levels": [
+      4
+    ],
+    "place_admin_levels": [
+      7
+    ],
+    "clip_to_country_m": 1500
+  },
+  "frames": {
+    "kwadrat": {
+      "width_m": 225000,
+      "aspect": [
+        1,
+        1
+      ],
+      "render_px": 1400,
+      "container_css": 350,
+      "road_classes": [
+        "major",
+        "collector"
+      ],
+      "min_building_m2": 1000000000,
+      "preview_css": [
+        350
+      ],
+      "places": {
+        "min_population": 15000,
+        "min_population_highlight": 1000,
+        "highlight_weight": 20,
+        "city_population": 25000,
+        "admin_centre_population": 1500,
+        "dot_css": 3.5,
+        "gap_css": 3,
+        "margin_css": 6,
+        "exclude": [
+          "Biała Podlaska"
+        ]
+      }
+    },
+    "tablet": {
+      "width_m": 338000,
+      "aspect": [
+        3,
+        2
+      ],
+      "render_px": 2200,
+      "container_css": 728,
+      "road_classes": [
+        "major",
+        "collector"
+      ],
+      "min_building_m2": 1000000000,
+      "preview_css": [
+        728
+      ],
+      "places": {
+        "min_population": 10000,
+        "min_population_highlight": 1000,
+        "highlight_weight": 20,
+        "city_population": 25000,
+        "admin_centre_population": 1500,
+        "dot_css": 3.5,
+        "gap_css": 3,
+        "margin_css": 6,
+        "exclude": [
+          "Biała Podlaska"
+        ]
+      }
+    },
+    "karta": {
+      "width_m": 338000,
+      "aspect": [
+        3,
+        2
+      ],
+      "render_px": 1700,
+      "container_css": 504,
+      "road_classes": [
+        "major",
+        "collector"
+      ],
+      "min_building_m2": 1000000000,
+      "preview_css": [
+        568,
+        440
+      ],
+      "places": {
+        "min_population": 15000,
+        "min_population_highlight": 1000,
+        "highlight_weight": 20,
+        "city_population": 25000,
+        "admin_centre_population": 1500,
+        "dot_css": 3.5,
+        "gap_css": 3,
+        "margin_css": 6,
+        "exclude": [
+          "Biała Podlaska"
+        ]
+      }
+    }
+  },
+  "palette": {
+    "background": "#e6e2d9",
+    "water": "#cfe0ea",
+    "green": "#d5dcc8",
+    "settlement": "#e4ddd1",
+    "building": "#d9d1c4",
+    "landmark": "#f2e7cd",
+    "rail": "#a9a29a",
+    "rail_tie": "#f5f3ee",
+    "tram": "#b3aca3",
+    "road_major": "#c4b9a8",
+    "road_collector": "#d8d1c5",
+    "road_local": "#c9c0b3",
+    "road_access": "#d6cfc4",
+    "road_service": "#e5e1db",
+    "label_street": "#3a352f",
+    "label_primary": "#2d2d2d",
+    "label_district": "#6e6b64",
+    "halo": "#fafaf7",
+    "marker_bg": "#5f6b0d",
+    "marker_fg": "#fafaf7",
+    "country": "#fafaf7",
+    "border": "#8a857e",
+    "border_minor": "#cdc7bc",
+    "highlight": "#dde79c",
+    "highlight_edge": "#8fa316"
+  },
+  "fonts": {
+    "manrope-500": [
+      "manrope.woff2",
+      500
+    ],
+    "manrope-600": [
+      "manrope.woff2",
+      600
+    ],
+    "manrope-700": [
+      "manrope.woff2",
+      700
+    ]
+  },
+  "label_fonts": {
+    "street": "manrope-500",
+    "landmark": "manrope-600",
+    "junction": "manrope-600",
+    "stop": "manrope-700",
+    "district": "manrope-700",
+    "city": "manrope-700",
+    "town": "manrope-600"
+  },
+  "label_colors": {
+    "street": "label_street",
+    "landmark": "label_primary",
+    "junction": "label_primary",
+    "stop": "label_primary",
+    "district": "label_primary",
+    "city": "label_primary",
+    "town": "label_district"
+  },
+  "widths_css": {
+    "major": 1.4,
+    "collector": 0.8,
+    "local": 2.0,
+    "access": 1.3,
+    "service": 0.9,
+    "rail": 2.0,
+    "tram": 1.1,
+    "river": 0.8,
+    "border": 1.1,
+    "border_minor": 0.7,
+    "highlight_edge": 1.8
+  },
+  "font_sizes_css": {
+    "street": 11.0,
+    "landmark": 13.5,
+    "junction": 12.0,
+    "stop": 12.5,
+    "district": 11.0,
+    "city": 11.5,
+    "town": 10.0
+  },
+  "style": {
+    "halo_css": 3.0,
+    "halo_alpha": 0.95,
+    "tracking_street": 0.02,
+    "tracking_district": 0.14,
+    "interline": 1.2
+  },
+  "pin_css": {
+    "width": 0,
+    "height": 0
+  },
+  "labels": {
+    "kwadrat": [],
+    "tablet": [],
+    "karta": []
+  },
+  "markers": {
+    "kwadrat": [
+      {
+        "kind": "siedziba",
+        "lon": 23.1193948,
+        "lat": 52.0338399,
+        "name": "Biała Podlaska",
+        "align": "center",
+        "offset": [
+          0,
+          9804
+        ]
+      }
+    ],
+    "tablet": [
+      {
+        "kind": "siedziba",
+        "lon": 23.1193948,
+        "lat": 52.0338399,
+        "name": "Biała Podlaska",
+        "align": "center",
+        "offset": [
+          0,
+          7080
+        ]
+      }
+    ],
+    "karta": [
+      {
+        "kind": "siedziba",
+        "lon": 23.1193948,
+        "lat": 52.0338399,
+        "name": "Biała Podlaska",
+        "align": "center",
+        "offset": [
+          0,
+          10227
+        ]
+      }
+    ]
+  },
+  "marker_styles": {
+    "siedziba": {
+      "shape": "circle",
+      "size_css": 8.0,
+      "ring_css": 2.0
+    }
+  }
+}

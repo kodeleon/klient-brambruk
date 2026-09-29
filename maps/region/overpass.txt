@@ -1,0 +1,21 @@
+[out:json][timeout:900][maxsize:1073741824];
+area["ISO3166-1"="PL"]["admin_level"="2"]["boundary"="administrative"]->.pl;
+relation["boundary"="administrative"]["admin_level"="2"]["ISO3166-1"="PL"];
+out geom;
+relation["boundary"="administrative"]["admin_level"="4"](50.775,19.688,53.292,25.529);
+out geom;
+relation["boundary"="administrative"]["admin_level"="7"](50.775,19.688,53.292,25.529)(area.pl);
+out body;
+node(r:"admin_centre");
+out;
+node["place"~"^(city|town)$"](50.775,19.688,53.292,25.529)(area.pl);
+out;
+way["waterway"="river"](50.775,19.688,53.292,25.529);
+out geom;
+(
+  way["natural"="water"](if:length()>3000)(50.775,19.688,53.292,25.529)(area.pl);
+  relation["natural"="water"](50.775,19.688,53.292,25.529)(area.pl);
+);
+out geom;
+way["highway"~"^(motorway|trunk|primary|secondary)$"](50.775,19.688,53.292,25.529)(area.pl);
+out geom;

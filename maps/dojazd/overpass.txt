@@ -1,0 +1,27 @@
+[out:json][timeout:600][bbox:52.1154,23.3786,52.1891,23.5437];
+(
+  way[highway];
+  way[railway];
+  way[waterway];
+  way[building];
+  relation[building];
+  way[natural];
+  relation[natural];
+  way[landuse];
+  relation[landuse];
+  way[leisure];
+  relation[leisure];
+  node[place];
+  node[shop=mall];
+  way[shop=mall];
+  relation[shop=mall];
+  node[railway=station];
+  node[public_transport=station];
+  node[amenity=place_of_worship];
+  way[amenity=place_of_worship];
+  node[highway=bus_stop];
+  node[public_transport=stop_position];
+  way[public_transport=platform];
+  way[highway=platform];
+);
+out geom;

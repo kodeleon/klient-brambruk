@@ -178,6 +178,15 @@ export const SIZES = {
   kolazDuze: '(max-width:1024px) 1px, 320px',
   kolazSrednie: '(max-width:1024px) 1px, 240px',
   kolazMale: '(max-width:1024px) 1px, 260px',
+
+  /* Mapa dojazdu (`MapaKontakt`). Tu `sizes` NIE jest szerokością pudełka,
+     bo obraz ma `object-cover`: na telefonie pudełko 290-350×362 px pokrywa
+     obraz 3:2 szeroki na 544 px (362 × 1,5), a boki są ucięte. Przeglądarka
+     ma pobrać plik na tę szerokość, nie na szerokość pudełka.
+     Pomiar: `maps/dojazd/README.md`, sekcja Stan.
+       do 1023 px  jedna kolumna: pudełko 100vw - 40 px, co najmniej 544 px
+       od 1024 px  siatka: pudełko 426-576 × 362-420 px → obraz 555-630 px */
+  mapa: '(max-width:1023px) max(544px, calc(100vw - 40px)), 640px',
 }
 
 /* ------------------------------------------------------------------ */
@@ -239,11 +248,35 @@ export const sources = {
     credit: 'Kompozycja BramBruk; ikony: Flaticon (Magnific, orvipixel) - atrybucja na /credits/',
   }),
 
-  /* --- do przygotowania ---
-     Do czasu wgrania plików `<Foto>` rysuje zaślepkę o właściwych
-     wymiarach. Patrz MIGRACJA-braki.md, punkt 3. */
-  'mapa-dojazd': src('mapa-dojazd', 'Mapa dojazdu do siedziby BramBruk w Bohukałach', { planned: true }),
-  'mapa-region': src('mapa-region', 'Mapa obszaru działania: województwo lubelskie, podlaskie i mazowieckie', { planned: true }),
+  /* --- mapy: render z danych OpenStreetMap, `maps/dojazd/` ---
+     Dwa pliki tej samej mapy, różne tylko zestawem podpisów (szeroki:
+     wszystkie, wąski: bez skrajnych) - patrz kadry i użycie `mapa.dojazd`.
+     Oryginał to PNG z `silnik/render.py`; źródło jak każde inne jest
+     normalizowane do JPEG-a q90 4:4:4, tekst to przeżywa. */
+  'mapa-dojazd-szeroki': src('mapa-dojazd-szeroki', 'Mapa dojazdu do siedziby BramBruk w Bohukałach', {
+    plik: 'mapa-dojazd-szeroki.png',
+    credit: '© OpenStreetMap contributors, ODbL 1.0 - render: maps/dojazd',
+  }),
+  'mapa-dojazd-waski': src('mapa-dojazd-waski', 'Mapa dojazdu do siedziby BramBruk w Bohukałach', {
+    plik: 'mapa-dojazd-waski.png',
+    credit: '© OpenStreetMap contributors, ODbL 1.0 - render: maps/dojazd',
+  }),
+
+  /* Mapa obszaru działania (`maps/region/`): region ~100 km wokół
+     Białej Podlaskiej. Trzy pliki - kwadrat na telefon, dwa 3:2 różniące się
+     skalą podpisów (pudełko 600-983 px na tablecie, 440-568 px w siatce). */
+  'mapa-region-kwadrat': src('mapa-region-kwadrat', 'Mapa obszaru działania BramBruk wokół Białej Podlaskiej', {
+    plik: 'mapa-region-kwadrat.png',
+    credit: '© OpenStreetMap contributors, ODbL 1.0 - render: maps/region',
+  }),
+  'mapa-region-tablet': src('mapa-region-tablet', 'Mapa obszaru działania BramBruk wokół Białej Podlaskiej', {
+    plik: 'mapa-region-tablet.png',
+    credit: '© OpenStreetMap contributors, ODbL 1.0 - render: maps/region',
+  }),
+  'mapa-region-karta': src('mapa-region-karta', 'Mapa obszaru działania BramBruk wokół Białej Podlaskiej', {
+    plik: 'mapa-region-karta.png',
+    credit: '© OpenStreetMap contributors, ODbL 1.0 - render: maps/region',
+  }),
 }
 
 /* ------------------------------------------------------------------ */
@@ -288,7 +321,9 @@ const crop = (source, ratio, { widths, preset, lightbox = false, note } = {}) =>
 
 /* Szerokości liczone z realnego układu, nie przepisane z presetu w całości:
    kafelek ma 384-389 px w siatce trzykolumnowej, więc 820 px pokrywa ekran
-   o podwójnej gęstości, a 1200 px zostaje na powiększenie w galerii. */
+   o podwójnej gęstości, a 1200 px - jedną kolumnę (do 728 px) poniżej 768 px.
+   Powiększenie w galerii NIE sięga po te warianty: ma własną drabinę liczoną
+   ze źródła (`lightboxWidths`, flaga `lightbox` na kadrze i na użyciu). */
 const W_KAFELEK = [420, 820, 1200]
 const W_KARTA = [420, 820]
 /* Kadr tła sekcji głównej pracuje wyłącznie poniżej 1024 px, więc 420
@@ -297,13 +332,14 @@ const W_KARTA = [420, 820]
 const W_HERO_TLO = [420, 820, 1200, 1440, 1920]
 const W_HERO_OBOK = [640, 1200]
 const W_KOLAZ = [420, 820]
+const W_MAPA = [640, 1088, 1632]
 
 const LISTA_KADROW = [
   // ── 16:10 - karty usług, kafelki galerii, karuzela ───────────────
-  crop('ogrodzenia-bramy', [16, 10], { widths: W_KAFELEK, preset: 'grid' }),
-  crop('podjazd', [16, 10], { widths: W_KAFELEK, preset: 'grid' }),
-  crop('altana', [16, 10], { widths: W_KAFELEK, preset: 'grid' }),
-  crop('brama-przesuwna', [16, 10], { widths: W_KAFELEK, preset: 'grid' }),
+  crop('ogrodzenia-bramy', [16, 10], { widths: W_KAFELEK, preset: 'grid', lightbox: true }),
+  crop('podjazd', [16, 10], { widths: W_KAFELEK, preset: 'grid', lightbox: true }),
+  crop('altana', [16, 10], { widths: W_KAFELEK, preset: 'grid', lightbox: true }),
+  crop('brama-przesuwna', [16, 10], { widths: W_KAFELEK, preset: 'grid', lightbox: true }),
   crop('brama-dwuskrzydlowa', [16, 10], { widths: W_KARTA, preset: 'grid' }),
   crop('siatka', [16, 10], { widths: W_KARTA, preset: 'grid' }),
   crop('ogrodzenie-panelowe-2', [16, 10], { widths: W_KARTA, preset: 'grid' }),
@@ -311,17 +347,19 @@ const LISTA_KADROW = [
   crop('podmurowka', [16, 10], {
     widths: W_KARTA,
     preset: 'grid',
+    lightbox: true,
     note: 'źródło 1069×567 - wariant 820 px jest ostatnim, który ma pokrycie w pikselach',
   }),
   crop('furtka', [16, 10], {
     widths: W_KAFELEK,
     preset: 'grid',
+    lightbox: true,
     note: 'pion 1194×2560: kadr poziomy zostawia ~29% klatki - potrzebne zdjęcie poziome',
   }),
-  crop('kostka-brukowa', [16, 10], { widths: W_KAFELEK, preset: 'grid', note: 'pion 1154×2560 - jak wyżej' }),
-  crop('kostka-brukowa-2', [16, 10], { widths: W_KAFELEK, preset: 'grid', note: 'pion 1154×2560 - jak wyżej' }),
-  crop('garaz', [16, 10], { widths: W_KAFELEK, preset: 'grid', note: 'pion 1154×2560 - jak wyżej' }),
-  crop('domek', [16, 10], { widths: W_KAFELEK, preset: 'grid', note: 'pion 1154×2560 - jak wyżej' }),
+  crop('kostka-brukowa', [16, 10], { widths: W_KAFELEK, preset: 'grid', lightbox: true, note: 'pion 1154×2560 - jak wyżej' }),
+  crop('kostka-brukowa-2', [16, 10], { widths: W_KAFELEK, preset: 'grid', lightbox: true, note: 'pion 1154×2560 - jak wyżej' }),
+  crop('garaz', [16, 10], { widths: W_KAFELEK, preset: 'grid', lightbox: true, note: 'pion 1154×2560 - jak wyżej' }),
+  crop('domek', [16, 10], { widths: W_KAFELEK, preset: 'grid', lightbox: true, note: 'pion 1154×2560 - jak wyżej' }),
 
   // ── 16:9 - tło sekcji głównej pod gradientem ─────────────────────
   crop('ogrodzenia-bramy', [16, 9], { widths: W_HERO_TLO, preset: 'hero' }),
@@ -359,13 +397,21 @@ const LISTA_KADROW = [
   // ── obraz podglądu linku ─────────────────────────────────────────
   crop('og-image', [40, 21], { widths: [1200], preset: 'social' }),
 
-  /* ── mapy ─────────────────────────────────────────────────────────
-     ŚWIADOMIE BEZ KADRU. Kadr wskazujący na plik, którego nie ma,
-     wstrzymuje build, a `uses` bez wariantów przerywa renderowanie.
-     Dopóki obrazów nie ma, klucze `mapa.*` NIE MOGĄ istnieć w `uses` -
-     wtedy `<Foto>` rysuje zaślepkę o właściwych wymiarach i to jest
-     jedyny stan, w którym serwis się buduje. Po wgraniu plików:
-     dopisz tu dwa kadry 4:3 i dwa użycia niżej, nic więcej.          */
+  /* ── 3:2 - mapa dojazdu ───────────────────────────────────────────
+     Kadr = cały render (render ma dokładnie 3:2). Szerokości z `SIZES.mapa`:
+     1088 i 1632 px to 544 px obrazu na telefonie przy DPR 2 i 3, a 1632 px
+     pokrywa też 640-728 px przy DPR 2.
+ */
+  crop('mapa-dojazd-szeroki', [3, 2], { widths: W_MAPA, preset: 'content' }),
+  crop('mapa-dojazd-waski', [3, 2], { widths: W_MAPA, preset: 'content' }),
+
+  /* ── mapa obszaru działania: kadr = cały render ───────────────────
+     Szerokości z pudełek (`SIZES.polowa`) przy DPR 2: kwadrat 320-599 px,
+     tablet 600-983 px, karta 440-568 px. Sufit każdej drabiny to render
+     z zapasem potoku (~15%), a nie więcej: powyżej potok by powiększał. */
+  crop('mapa-region-kwadrat', [1, 1], { widths: [400, 800, 1200], preset: 'content' }),
+  crop('mapa-region-tablet', [3, 2], { widths: [800, 1400, 1900], preset: 'content' }),
+  crop('mapa-region-karta', [3, 2], { widths: [600, 1140, 1460], preset: 'content' }),
 ]
 
 export const crops = Object.fromEntries(LISTA_KADROW.map((c) => [c.name, c]))
@@ -418,7 +464,8 @@ export const safeZones = {
 /*   sizes     realna szerokość elementu w układzie (progi jak w CSS)   */
 /*   alt       nadpisuje `alt` źródła w tym jednym miejscu             */
 /*   priority  hero / LCP: fetchpriority="high", bez `loading="lazy"`   */
-/*   art       drugi kadr dla węższego okna (inna PROPORCJA, nie rozmiar) */
+/*   art       drugi kadr dla innego okna: inna PROPORCJA albo inna      */
+/*             TREŚĆ (mapa), nigdy sam rozmiar - od tego jest `srcset`  */
 /*   as        'picture' (domyślnie) albo 'figure'                      */
 /*   class     klasy elementu opakowującego przy as:'figure'            */
 /*   caption   treść <figcaption>                                       */
@@ -509,19 +556,45 @@ export const uses = {
      podstronach różne podpisy (`realizacja.06` był raz chodnikiem, raz
      garażem) - z zaślepkami tego nie było widać, ze zdjęciami owszem.
      Podpisy w `src/data/` są dociągnięte do tej listy.                */
-  'realizacja.01': uzycie('ogrodzenia-bramy-16x10', SIZES.kafelek, { alt: 'Ogrodzenie panelowe z bramą wjazdową' }),
-  'realizacja.02': uzycie('podjazd-16x10', SIZES.kafelek, { alt: 'Podjazd z kostki brukowej' }),
-  'realizacja.03': uzycie('kostka-brukowa-2-16x10', SIZES.kafelek, { alt: 'Taras z kostki brukowej' }),
-  'realizacja.04': uzycie('altana-16x10', SIZES.kafelek, { alt: 'Drewniana altana ogrodowa' }),
-  'realizacja.05': uzycie('podmurowka-16x10', SIZES.kafelek, { alt: 'Ogrodzenie panelowe na betonowej podmurówce' }),
-  'realizacja.06': uzycie('garaz-16x10', SIZES.kafelek, { alt: 'Garaż blaszany na posesji' }),
-  'realizacja.07': uzycie('furtka-16x10', SIZES.kafelek, { alt: 'Furtka i przęsła ogrodzeniowe' }),
-  'realizacja.08': uzycie('brama-przesuwna-16x10', SIZES.kafelek, { alt: 'Brama przesuwna z automatyką' }),
-  'realizacja.09': uzycie('kostka-brukowa-16x10', SIZES.kafelek, { alt: 'Chodnik z kostki brukowej z obrzeżami' }),
-  'realizacja.10': uzycie('domek-16x10', SIZES.kafelek, { alt: 'Domek narzędziowy w ogrodzie' }),
+  'realizacja.01': uzycie('ogrodzenia-bramy-16x10', SIZES.kafelek, { alt: 'Ogrodzenie panelowe z bramą wjazdową', lightbox: true }),
+  'realizacja.02': uzycie('podjazd-16x10', SIZES.kafelek, { alt: 'Podjazd z kostki brukowej', lightbox: true }),
+  'realizacja.03': uzycie('kostka-brukowa-2-16x10', SIZES.kafelek, { alt: 'Taras z kostki brukowej', lightbox: true }),
+  'realizacja.04': uzycie('altana-16x10', SIZES.kafelek, { alt: 'Drewniana altana ogrodowa', lightbox: true }),
+  'realizacja.05': uzycie('podmurowka-16x10', SIZES.kafelek, { alt: 'Ogrodzenie panelowe na betonowej podmurówce', lightbox: true }),
+  'realizacja.06': uzycie('garaz-16x10', SIZES.kafelek, { alt: 'Garaż blaszany na posesji', lightbox: true }),
+  'realizacja.07': uzycie('furtka-16x10', SIZES.kafelek, { alt: 'Furtka i przęsła ogrodzeniowe', lightbox: true }),
+  'realizacja.08': uzycie('brama-przesuwna-16x10', SIZES.kafelek, { alt: 'Brama przesuwna z automatyką', lightbox: true }),
+  'realizacja.09': uzycie('kostka-brukowa-16x10', SIZES.kafelek, { alt: 'Chodnik z kostki brukowej z obrzeżami', lightbox: true }),
+  'realizacja.10': uzycie('domek-16x10', SIZES.kafelek, { alt: 'Domek narzędziowy w ogrodzie', lightbox: true }),
 
-  /* Kluczy `mapa.dojazd` i `mapa.region` tu nie ma celowo - patrz uwaga
-     przy kadrach wyżej. `<Foto klucz="mapa.dojazd">` rysuje zaślepkę. */
+  /* ── mapa dojazdu (`MapaKontakt`, /kontakt/ i /o-nas/) ─────────────
+     Art direction po TREŚCI, nie po proporcji: oba pliki są 3:2 i mają ten
+     sam zasięg, różnią się podpisami. Pudełko ma `object-cover`, więc tam,
+     gdzie jest węższe niż obraz, ucina boki - i ucinało skrajne podpisy
+     w pół słowa. Wąski plik ma tylko podpisy, które mieszczą się w całości
+     w najwęższym pudełku (290×362).
+       do 639 px       telefon, `min-h-[360px]` - pudełko węższe niż obraz
+       640-1023 px     jedna kolumna, wysokość wyznacza obraz - widać całość
+       1024-1279 px    siatka, pudełko 426-575 px - boki ucięte
+       od 1280 px      siatka, 554-576 px - widać wszystkie podpisy
+     Ta sama proporcja obu plików jest warunkiem: `<source>` nie niesie
+     `width`/`height`, a wysokość pudełka w jednej kolumnie wyznacza obraz.
+  */
+  'mapa.dojazd': uzycie('mapa-dojazd-szeroki-3x2', SIZES.mapa, {
+    art: [{ crop: 'mapa-dojazd-waski-3x2', media: '(max-width:639px), (min-width:1024px) and (max-width:1279px)' }],
+  }),
+
+  /* ── mapa obszaru działania (/o-nas/, sekcja „Obszar działania") ────
+     Art direction po PROPORCJI i skali podpisów. Pudełko ma proporcję
+     obrazu (`aspect-square sm:aspect-[3/2]` w `o-nas.astro`), więc nic nie
+     jest przycinane, a brak `width`/`height` na `<source>` nie przesuwa
+     układu - wysokość wyznacza CSS, nie plik. */
+  'mapa.region': uzycie('mapa-region-karta-3x2', SIZES.polowa, {
+    art: [
+      { crop: 'mapa-region-kwadrat-1x1', media: '(max-width:639px)' },
+      { crop: 'mapa-region-tablet-3x2', media: '(min-width:640px) and (max-width:1023px)' },
+    ],
+  }),
 
   /* ── obraz podglądu linku ─────────────────────────────────────── */
   'og.domyslny': uzycie('og-image-40x21', null, {

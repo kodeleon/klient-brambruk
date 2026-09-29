@@ -271,6 +271,81 @@
       },
       "updatedAt": "2026-09-22T14:00:23.369Z"
     },
+    "mapa-dojazd-szeroki-3x2": {
+      "rect": {
+        "x": 0,
+        "y": 0,
+        "w": 1876,
+        "h": 1251
+      },
+      "source": "mapa-dojazd-szeroki.jpg",
+      "sourceHash": "9b6def9869055b81",
+      "sourceSize": {
+        "w": 1877,
+        "h": 1251
+      },
+      "updatedAt": "2026-09-27T21:34:15.114Z"
+    },
+    "mapa-dojazd-waski-3x2": {
+      "rect": {
+        "x": 0,
+        "y": 0,
+        "w": 1876,
+        "h": 1251
+      },
+      "source": "mapa-dojazd-waski.jpg",
+      "sourceHash": "896e2d5a47a52254",
+      "sourceSize": {
+        "w": 1877,
+        "h": 1251
+      },
+      "updatedAt": "2026-09-27T21:34:15.117Z"
+    },
+    "mapa-region-karta-3x2": {
+      "rect": {
+        "x": 0,
+        "y": 0,
+        "w": 1680,
+        "h": 1120
+      },
+      "source": "mapa-region-karta.jpg",
+      "sourceHash": "5ade3c0d38cf746f",
+      "sourceSize": {
+        "w": 1680,
+        "h": 1120
+      },
+      "updatedAt": "2026-09-27T23:30:56.497Z"
+    },
+    "mapa-region-kwadrat-1x1": {
+      "rect": {
+        "x": 0,
+        "y": 0,
+        "w": 1380,
+        "h": 1380
+      },
+      "source": "mapa-region-kwadrat.jpg",
+      "sourceHash": "2523b1a53b47d0a9",
+      "sourceSize": {
+        "w": 1380,
+        "h": 1380
+      },
+      "updatedAt": "2026-09-27T23:30:56.491Z"
+    },
+    "mapa-region-tablet-3x2": {
+      "rect": {
+        "x": 0,
+        "y": 0,
+        "w": 2185,
+        "h": 1456
+      },
+      "source": "mapa-region-tablet.jpg",
+      "sourceHash": "42c0d05332749968",
+      "sourceSize": {
+        "w": 2185,
+        "h": 1457
+      },
+      "updatedAt": "2026-09-27T23:30:56.494Z"
+    },
     "og-image-40x21": {
       "rect": {
         "x": 0,

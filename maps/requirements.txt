@@ -1,0 +1,25 @@
+# Zależności renderu map (maps/silnik). Instalacja:
+#     py -3 -m venv .venv
+#     .venv\Scripts\python -m pip install -r requirements.txt
+#
+# To NIE jest zależność budowania serwisu. `npm run build` ich nie potrzebuje,
+# bo do potoku zdjęć wchodzi gotowy PNG. Potrzebne dopiero wtedy, gdy render
+# trzeba przeliczyć od nowa: nowy adres, inny kadr, zmiana podpisów.
+#
+# Wersje PRZYPIĘTE, nie „co najmniej". Render ma się dać odtworzyć piksel
+# w piksel na innej maszynie, a porównanie przed/po zmianie w silniku ma
+# pokazywać zmianę w silniku, nie w bibliotece. matplotlib wpisuje swoją
+# wersję do metadanych PNG i odpowiada za rasteryzację tekstu; shapely za
+# scalanie ulic (od którego zależy położenie podpisu); fonttools za wypalenie
+# wagi kroju zmiennego. Na tych wersjach port silnika dał 0 różnych pikseli
+# względem wzorca (K0, 27.09.2026). Podbicie = zmiana tutaj + render przed
+# i po + porównanie pikselowe (maps/CLAUDE.md, „Zmiana silnika").
+#
+# Pillow wpływa tylko na kompresję PNG (bajty, nie piksele) i na zrzuty
+# podglądowe - dlatego porównanie jest pikselowe, a nie sumą pliku.
+
+shapely==2.1.2        # scalanie i upraszczanie geometrii, przycinanie do kadru
+matplotlib==3.10.9    # rysowanie warstw i tekstu
+pillow==12.3.0        # zrzuty podglądowe w docelowych szerokościach CSS
+fonttools==4.66.0     # woff2 → ttf, instancjonowanie kroju zmiennego
+brotli==1.2.0         # wymagane przez fonttools do rozpakowania woff2
