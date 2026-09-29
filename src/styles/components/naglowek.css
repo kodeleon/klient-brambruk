@@ -3,11 +3,23 @@
  * przewinięta strona i otwarte menu mobilne.
  */
 
-/* Przewinięcie ponad 20 px. Atrybut ustawia `src/scripts/naglowek.ts`. */
+/* Przewinięcie ponad 20 px. Atrybut ustawia `src/scripts/naglowek.ts`.
+
+   ⚠️ Pasek chowający się częściowo pod górną krawędź ekranu na telefonie
+   NIE bierze się stąd, tylko ze strony szerszej niż ekran - uzasadnienie
+   i poprawka przy `<main>` w `layouts/Podstrona.astro`. */
 .naglowek[data-przewiniete] {
   background-color: color-mix(in srgb, var(--color-brand-dark) 95%, transparent);
-  backdrop-filter: blur(var(--blur-md));
   box-shadow: var(--shadow-lg);
+}
+
+/* ROZMYCIE TYLKO OD 768 PX. Na telefonie tło ma 95% krycia, więc rozmycie
+   12 px pracowałoby na 5% przepuszczanego obrazu - niewidoczne, a przy
+   przewijaniu to najdroższy efekt na stronie. */
+@media (min-width: 768px) {
+  .naglowek[data-przewiniete] {
+    backdrop-filter: blur(var(--blur-md));
+  }
 }
 
 /* ------------------------------------------------------------------
@@ -21,15 +33,32 @@
    należy - tuż przed swoją etykietą - a kolejność jest ta, którą widać:
    logo → nawigacja → telefon → wycena → hamburger → panel.
 
-   `visibility`, a nie samo `max-height: 0`. Zwinięcie wysokością plus
-   `overflow-hidden` ukrywa panel dla oka, ale NIE wyjmuje odnośników
-   z kolejności fokusu - zwinięte menu łapało Tab na każdej szerokości
-   poniżej 768 px. `visibility: hidden` wyjmuje je i z fokusu, i z drzewa
-   dostępności.
+   NAKŁADKA, NIE ROZSUWANIE. Panel stoi pozycjonowany bezwzględnie pod
+   paskiem (`top: 100%` wobec `.naglowek`) i przykrywa treść. Wcześniej
+   rozwijał się w przepływie przez `max-height`, czyli zmieniał wysokość
+   `<header>` i całego dokumentu: treść zjeżdżała w dół, a przy dole
+   strony każde zamknięcie skracało dokument i przeglądarka przycinała
+   pozycję przewinięcia - kilka cykli otwórz/zamknij cofało stronę na górę.
+   Nakładka nie zmienia wysokości dokumentu w ogóle.
+
+   Sufit wysokości z `100dvh` minus pasek plus `overflow-y: auto`, a nie
+   stała liczba: dłuższe menu przewija się w środku panelu zamiast zostać
+   obcięte bez żadnego sygnału. `overscroll-behavior: contain` - dojechanie
+   do końca listy nie przewija strony pod spodem.
+
+   Przewijania strony pod otwartym menu świadomie NIE blokujemy
+   (`overflow: hidden` na `<html>`): przy przewiniętej stronie potrafi to
+   zgubić pozycję przewinięcia, czyli dokładnie ten objaw, który usuwa
+   nakładka. Panel siedzi w przyklejonym nagłówku, więc jedzie razem z nim.
+
+   `visibility`, a nie samo `opacity: 0`. Przezroczystość ukrywa panel dla
+   oka, ale NIE wyjmuje odnośników z kolejności fokusu - zamknięte menu
+   łapałoby Tab na każdej szerokości poniżej 768 px. `visibility: hidden`
+   wyjmuje je i z fokusu, i z drzewa dostępności.
 
    Przejście `visibility` bierze się z `transition-all` na elemencie panelu
    (znacznik w `Naglowek.astro`) i jest tam potrzebne: bez niego odnośniki
-   znikają natychmiast, zanim panel zdąży się zwinąć. `all` obejmuje
+   znikają natychmiast, zanim panel zdąży wygasnąć. `all` obejmuje
    `visibility`, a przeglądarka przełącza ją na końcu przejścia przy
    chowaniu i na początku przy pokazywaniu - dokładnie w tej kolejności,
    o którą chodzi. Zamiana `transition-all` na listę wybranych właściwości
@@ -37,14 +66,52 @@
    ------------------------------------------------------------------ */
 
 .naglowek__panel {
-  max-height: 0;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  max-height: calc(100dvh - var(--naglowek-wysokosc));
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  opacity: 0;
+  transform: translateY(-0.5rem);
   visibility: hidden;
 }
 
 .naglowek:has(#menu-mobilne:checked) .naglowek__panel {
-  max-height: 500px;
+  opacity: 1;
+  transform: none;
   visibility: visible;
   border-top: 1px solid rgb(255 255 255 / 0.1);
+}
+
+/* OTWARTE MENU: pasek i panel to jedna nieprzezroczysta płaszczyzna.
+   Przewinięty pasek ma 95% krycia, a panel 100% - bez tej reguły przez
+   pasek prześwitywała treść strony tuż nad pełnym panelem i obie części
+   wyglądały na dwa różne elementy. Zmiana idzie przejściem
+   `transition-[background-color,box-shadow]` z `<header>`, więc kolor
+   dochodzi do pełnego razem z wygaszaniem panelu, a po zamknięciu wraca
+   do stanu sprzed otwarcia. Selektor z `:has(#...)` jest mocniejszy niż
+   `[data-przewiniete]`, więc wygrywa bez `!important`. */
+.naglowek:has(#menu-mobilne:checked) {
+  background-color: var(--color-brand-dark);
+}
+
+/* POLE WYBORU NIE MOŻE PRZEWIJAĆ STRONY.
+   Stuknięcie w hamburger daje fokus polu wyboru, a przeglądarka przewija
+   element z fokusem „do widoku" z uwzględnieniem `scroll-padding-top`
+   (`base.css`). Pole leży w przyklejonym pasku, czyli zawsze w tej strefie,
+   więc Chrome uznawał je za zasłonięte i przy KAŻDYM stuknięciu cofał
+   stronę o ~430 px (środek ekranu minus strefa) - kilka otwarć i zamknięć
+   i strona wracała na górę. Nakładka sama tego nie usuwa: pomiar po jej
+   wprowadzeniu dał dokładnie te same 430 px przy stałej wysokości dokumentu.
+
+   Ujemny `scroll-margin-top` równy tej strefie zeruje ją dla tego jednego
+   elementu. Pasek jest przyklejony, więc pole i tak nigdy nie wymaga
+   przewinięcia. Przesunięcie pola niżej nie wchodzi w grę: pasek ma
+   72 px, strefa 88 px. */
+#menu-mobilne {
+  scroll-margin-top: calc(-1 * var(--odstep-pod-naglowkiem));
 }
 
 .naglowek__ikona-zamknij {

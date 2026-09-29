@@ -10,14 +10,30 @@
  * │ było - czyli deklarację „wyłącznie techniczne cookies", która nie     │
  * │ była prawdziwa.                                                      │
  * │                                                                      │
- * │ Zamiast tego: statyczny obraz mapy (do wgrania) plus odnośnik do     │
- * │ wizytówki w Mapach Google. Zero żądań poza domenę, zero cookie,      │
- * │ polityka prywatności zostaje zgodna z tym, co serwis robi.           │
- * │                                                                      │
- * │ ⚠️ STAN PRZEJŚCIOWY: do czasu wgrania obrazu stoi tu zaślepka.       │
+ * │ Zamiast tego: statyczny obraz mapy renderowany z danych OpenStreetMap│
+ * │ (`maps/dojazd/`) plus odnośnik do wizytówki w Mapach Google. Zero    │
+ * │ żądań poza domenę, zero cookie.                                      │
  * └──────────────────────────────────────────────────────────────────────┘
+ *
+ * PINEZKA jest elementem HTML, nie częścią obrazu. Render stoi na punkcie
+ * siedziby, więc punkt jest zawsze na środku obrazu, a `object-cover` trzyma
+ * środek obrazu na środku pudełka przy każdej proporcji karty - pinezka
+ * wyśrodkowana w pudełku trafia w punkt. Trafia SZPICEM: ikona jest
+ * przesunięta w górę o 23/24 własnej wysokości, bo w siatce 24×24 kształt
+ * kończy się na y = 22, a obrys dokłada jeszcze 1.
+ *
+ * Rozmiar pinezki bierze się z `pin_css` w `maps/dojazd/map.project.json` -
+ * tej samej liczby render używa, rysując obrys pinezki na zrzutach, na których
+ * sprawdza się kolizje z podpisami. Zmiana tam zmienia i mapę, i stronę.
+ *
+ * ATRYBUCJA „© OpenStreetMap contributors" to wymóg licencji ODbL: przy
+ * mapie, nie w stopce. Stoi w prawym górnym rogu - dół zajmuje przycisk
+ * nawigacji, lewy górny róg na telefonie zajmuje podpis sanktuarium.
+ * Napis jest stałym tekstem licencji, nie treścią do edycji - dlatego
+ * mieszka tu, a nie w `src/content/`.
  */
 import firma from '../../content/firma.json'
+import projektMapy from '../../../maps/dojazd/map.project.json'
 import Foto from '../media/Foto.astro'
 import Ikona from '../icons/Ikona.astro'
 
@@ -25,6 +41,11 @@ interface Props {
   class?: string
 }
 const { class: klasa = '' } = Astro.props
+
+/* Ikona `map-pin` w siatce 24×24 ma kształt 16×20 jednostek. Rozmiar SVG
+   dobrany tak, żeby kształt miał wysokość `pin_css.height`; szerokość wychodzi
+   16/20 z tego (38 px → 30,7 px, w projekcie mapy zapisane jako 30). */
+const pinezka = Math.round((projektMapy.pin_css.height * 24) / 20)
 ---
 
 <div
@@ -38,6 +59,23 @@ const { class: klasa = '' } = Astro.props
     alt={`Mapa dojazdu do ${firma.nazwa}, ${firma.adres}`}
     class="w-full h-full min-h-[360px] object-cover"
   />
+
+  <Ikona
+    nazwa="map-pin"
+    rozmiar={pinezka}
+    wypelnienie="currentColor"
+    class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-[95.8%] pointer-events-none text-brand-olive-text stroke-brand-card"
+  />
+
+  <a
+    href="https://www.openstreetmap.org/copyright"
+    target="_blank"
+    rel="noopener noreferrer"
+    class="absolute top-3 right-3 inline-flex items-center min-h-6 rounded-full bg-brand-card/90 px-2.5 text-[10px] leading-none text-brand-text-light hover:text-brand-text transition-colors"
+  >
+    © OpenStreetMap contributors
+    <span class="poza-ekranem">(otwiera się w nowej karcie)</span>
+  </a>
 
   <a
     href={firma.mapyUrl}

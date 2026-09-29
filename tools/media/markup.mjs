@@ -14,6 +14,12 @@
  * kluczowany źródłem, więc dwa kafle z tego samego zdjęcia dzielą jeden
  * komplet plików powiększenia.
  *
+ * Gdzie jedzie zestaw powiększenia (`data-lb-*`): przy zwykłym `<picture>`
+ * na `<img>`, przy `as: 'figure'` na `<figure>` - nigdy w obu miejscach
+ * naraz. Obok `srcset`-ów idą wymiary największego wariantu (`data-lb-w`,
+ * `data-lb-h`): pełna klatka ma inne proporcje niż kadr kafelka, więc okno
+ * powiększenia nie odgadnie ich z miniatury i podskoczyłoby przy wczytaniu.
+ *
  * Nieznany klucz kończy budowanie błędem - cicho pominięte zdjęcie jest
  * gorsze niż zatrzymany build.
  */
@@ -57,16 +63,20 @@ function sourcesFor(entry, sizes, media) {
 
 /**
  * Atrybuty powiększenia. Zestaw bierzemy z `manifest.lightbox`, kluczowanego
- * ŹRÓDŁEM kadru - pełna klatka, nie wycinek.
+ * ŹRÓDŁEM kadru - pełna klatka, nie wycinek. Wymiary z największego wariantu
+ * JPEG (ten sam plik, który okno wstawia jako `src`), a gdy JPEG-a nie ma -
+ * z największego wariantu dowolnego formatu: proporcje są te same.
  */
 function lightboxAttrs(manifest, entry) {
   const lb = entry.lightbox ? manifest.lightbox?.[entry.lightbox]?.formats : null
   if (!lb) return ''
   const map = { avif: 'data-lb-avif', webp: 'data-lb-webp', jpeg: 'data-lb-jpg' }
-  return Object.entries(map)
+  const zestawy = Object.entries(map)
     .filter(([f]) => lb[f]?.length)
     .map(([f, attr]) => ` ${attr}="${esc(srcset(lb[f]))}"`)
-    .join('')
+  if (!zestawy.length) return ''
+  const najwiekszy = (lb.jpeg?.length ? lb.jpeg : Object.values(lb).find((l) => l?.length)).slice(-1)[0]
+  return zestawy.join('') + ` data-lb-w="${najwiekszy.w}" data-lb-h="${najwiekszy.h}"`
 }
 
 /**
@@ -129,7 +139,9 @@ export function renderUse(useKey, { config, manifest, strict = true }, overrides
     use.priority ? 'fetchpriority="high"' : 'loading="lazy"',
     'decoding="async"',
     klasy ? `class="${esc(klasy)}"` : null,
-    `alt="${esc(alt)}"`
+    `alt="${esc(alt)}"`,
+    // Przy `figure` zestaw powiększenia stoi już na `<figure>` - tu nie dublujemy.
+    use.as !== 'figure' && use.lightbox ? lightboxAttrs(manifest, entry).trim() : null
   ].filter(Boolean)
 
   const picture = `<picture>${parts.join('')}<img ${imgAttrs.join(' ')}></picture>`

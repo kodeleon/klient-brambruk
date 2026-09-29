@@ -10,9 +10,12 @@
  *   2. Okno powiększenia to natywny `<dialog>`: warstwa najwyższa, pułapka
  *      na fokus, Escape i powrót fokusu bez ani jednej linii kodu.
  *
- * Zawartość okna wstawia skrypt `galeria.ts` - kopiuje ją z klikniętego
- * kafelka. Bez JavaScriptu okno się nie otwiera, a zdjęcia i tak są widoczne
- * w siatce; nic z treści nie ginie.
+ * Zawartość okna wstawia skrypt `galeria.ts` - buduje ją z zestawu
+ * powiększenia na `<img>` klikniętego kafelka (`data-lb-*`, pełna klatka
+ * źródła), a gdy go nie ma, kopiuje zdjęcie kafelka. Szerokość obrazu w oknie
+ * (`mx-4 md:mx-8 max-w-5xl` niżej) jest zapisana w `sizes` w tym skrypcie -
+ * zmiana tych klas wymaga zmiany tam. Bez JavaScriptu okno się nie otwiera,
+ * a zdjęcia i tak są widoczne w siatce; nic z treści nie ginie.
  */
 import Odslon from './Odslon.astro'
 import Ikona from '../icons/Ikona.astro'
@@ -38,7 +41,7 @@ const idOkna = `galeria-${Math.random().toString(36).slice(2, 8)}`
     pozycje.map((pozycja, i) => (
       <Odslon
         wariant="scale"
-        zwloka={i * 60}
+        zwloka={i * 30}
         data-kategoria={pozycja.kategoria}
         data-szukaj={`${pozycja.tytul ?? ''} ${pozycja.lokalizacja ?? ''}`.toLowerCase()}
       >

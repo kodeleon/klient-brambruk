@@ -17,7 +17,7 @@
     /* Kotwica (`#sekcja-cennik`) nie może wylądować pod przyklejonym
        nagłówkiem. W starym projekcie załatwiał to skrypt (`ScrollManager`),
        tutaj robi to przeglądarka. */
-    scroll-padding-top: calc(var(--naglowek-wysokosc) + 1rem);
+    scroll-padding-top: var(--odstep-pod-naglowkiem);
     -webkit-text-size-adjust: 100%;
   }
 
@@ -170,14 +170,20 @@
   /* ------------------------------------------------------------------
      ODSŁANIANIE PRZY PRZEWIJANIU.
 
-     Odpowiednik komponentu `Reveal` ze starego projektu: te same warianty,
-     ten sam czas (500 ms) i ta sama krzywa (`ease-out`).
+     Odpowiednik komponentu `Reveal` ze starego projektu: te same warianty
+     i ta sama krzywa (`ease-out`). Czas jest o połowę krótszy niż tam
+     (`--czas-odslon` w `tokens.css` - uzasadnienie przy tokenie).
 
      RÓŻNICA, KTÓRA MA ZNACZENIE: stan domyślny jest WIDOCZNY. Stary `Reveal`
      startował z `opacity-0` i odsłaniał dopiero po starcie Reacta - przy
      wyłączonym JavaScripcie połowa treści serwisu była niewidoczna na zawsze.
      Tutaj to skrypt `ruch.ts` najpierw CHOWA (`data-rv="czeka"`), więc bez
      skryptu nie chowa się nic.
+
+     ⚠️ Warianty `left` i `right` czekają przesunięte o 2rem w bok, czyli
+     poza krawędź ekranu. Nie poszerzają strony tylko dlatego, że `<main>`
+     ma `overflow-x-clip` (`layouts/Podstrona.astro` - uzasadnienie tam).
+     Odsłanianie z boku poza `<main>` wymaga tego samego zabezpieczenia.
      ------------------------------------------------------------------ */
   [data-rv='czeka'] {
     opacity: 0;

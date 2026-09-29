@@ -16,7 +16,12 @@
  * w pliku treści - liczy ją `src/lib/cennik.ts` z dwóch pierwszych, więc
  * wiersz nie ma jak się rozjechać sam ze sobą. Przy wąskiej tabeli kolumny
  * składowych chowają się pod nazwę usługi: „Razem" zostaje zawsze, bo to
- * jedyna liczba, po którą ktoś tu przyszedł.
+ * jedyna liczba, po którą ktoś tu przyszedł. Nagłówek „Materiał"
+ * i „Robocizna" znika wtedy razem z kolumnami, więc jego rolę przejmuje
+ * druga linia nagłówka pierwszej kolumny („materiał + robocizna") - bez niej
+ * dwie kwoty pod nazwą pozycji nie mówiły, co znaczą. Ta linia dziedziczy
+ * `neutral-400` z wiersza nagłówka (6,61:1 na `brand-dark`); własny kolor
+ * `neutral-500` spadłby do 3,52:1.
  *
  * ⚠️ PRZEŁĄCZA ZAPYTANIE O KONTENER (`@container` + wariant `@lg`), nie punkt
  * łamania okna. Szerokość tabeli nie wynika z szerokości ekranu, tylko z tego,
@@ -112,9 +117,13 @@ const INNE_USLUGI = {
                 <tr
                   class="border-b border-white/10 bg-white/[0.04] text-[10px] uppercase tracking-widest text-neutral-400"
                 >
-                  <th class="px-3 py-2.5 text-left font-semibold @lg:px-4"
-                    >Pozycja</th
-                  >
+                  <th class="px-3 py-2.5 text-left font-semibold @lg:px-4">
+                    Pozycja
+                    <span
+                      class="block font-normal normal-case tracking-normal @lg:hidden"
+                      >materiał + robocizna</span
+                    >
+                  </th>
                   <th
                     class="hidden px-2 py-2.5 text-right font-semibold @lg:table-cell"
                     >Materiał</th

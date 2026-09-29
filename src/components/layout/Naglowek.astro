@@ -7,18 +7,23 @@
  * │ nie dało się otworzyć menu w ogóle. Tutaj stan trzyma ukryte pole    │
  * │ wyboru (`#menu-mobilne`), a panel rozwija się regułą CSS.            │
  * │                                                                      │
- * │ Kolejność w dokumencie została ta sama co poprzednio: pasek u góry,  │
- * │ panel pod nim, oba w `<header>`. Dzięki temu panel rozsuwa nagłówek, │
- * │ a nie przykrywa treść - tak jak działało to wcześniej.               │
+ * │ Panel jest NAKŁADKĄ nad treścią: stoi w `<header>` pod paskiem,      │
+ * │ pozycjonowany bezwzględnie wobec nagłówka. Wariant w przepływie      │
+ * │ (panel rozsuwał nagłówek) zmieniał wysokość dokumentu, spychał treść │
+ * │ w dół, a przy dole strony każde zamknięcie zjadało kawałek pozycji   │
+ * │ przewinięcia. Stan nadal trzyma pole wyboru, nadal bez JavaScriptu.  │
  * │                                                                      │
- * │ Zwinięty panel jest `visibility: hidden`, nie tylko `max-height: 0` -│
+ * │ Zamknięty panel jest `visibility: hidden`, nie tylko `opacity: 0` -  │
  * │ inaczej jego odnośniki nadal łapią Tab. Uzasadnienie i przejście:    │
  * │ `src/styles/components/naglowek.css`.                                │
  * │                                                                      │
- * │ Przyklejenie po przewinięciu (`bg-brand-dark/95` + rozmycie + cień)  │
- * │ dokłada moduł `src/scripts/naglowek.ts`. Bez skryptu pasek jest      │
- * │ po prostu zawsze nieprzezroczysty - czyli stan, który stary projekt  │
- * │ pokazywał na górze strony.                                          │
+ * │ Przyklejenie po przewinięciu (`bg-brand-dark/95` + cień, rozmycie    │
+ * │ tylko od 768 px) dokłada moduł `src/scripts/naglowek.ts`. Przejście  │
+ * │ obejmuje wyłącznie kolor tła i cień - `transition-all` animowało też │
+ * │ `backdrop-filter`. Bez skryptu pasek jest po prostu zawsze           │
+ * │ nieprzezroczysty - czyli stan, który stary projekt pokazywał         │
+ * │ na górze strony. Przy otwartym menu pasek płynnie wraca do pełnego   │
+ * │ krycia, żeby razem z panelem tworzył jedną płaszczyznę.              │
  * └──────────────────────────────────────────────────────────────────────┘
  */
 import firma from "../../content/firma.json";
@@ -45,7 +50,7 @@ const menu = (nawigacja.glowna as PozycjaNawigacji[]).map((pozycja) => ({
 ---
 
 <header
-  class="naglowek sticky top-0 left-0 right-0 z-50 transition-all duration-300 bg-brand-dark"
+  class="naglowek sticky top-0 z-50 transition-[background-color,box-shadow] duration-300 bg-brand-dark"
   data-naglowek
 >
   <div class="max-w-7xl mx-auto px-2 lg:px-10 min-h-[72px]">
@@ -188,9 +193,9 @@ const menu = (nawigacja.glowna as PozycjaNawigacji[]).map((pozycja) => ({
   </div>  
 
   <div
-    class="naglowek__panel md:hidden overflow-hidden transition-all duration-300"
+    class="naglowek__panel md:hidden bg-brand-dark shadow-xl shadow-black/40 transition-all duration-300"
   >
-    <div class="px-5 py-4 bg-brand-dark space-y-1">
+    <div class="px-5 py-4 space-y-1">
       {
         menu.map((pozycja) => {
           const podmenu = pozycja.podmenu.length ? pozycja.podmenu : undefined;

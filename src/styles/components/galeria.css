@@ -66,9 +66,20 @@ html:has(.galeria-okno[open]) {
 }
 
 /* Obraz w oknie powiększenia. Klasy narzędziowe nie dosięgną elementu,
-   który skrypt wstawia w czasie działania - stąd reguła tutaj. */
+   który skrypt wstawia w czasie działania - stąd reguła tutaj.
+
+   `height: auto` jest konieczne: obraz dostaje atrybuty `width`/`height`
+   pełnej klatki (rezerwacja proporcji przed wczytaniem), a bez tej linii
+   przeglądarka wzięłaby wysokość wprost z atrybutu - pudełko obrazu
+   miałoby wtedy 2560 px wysokości. `auto` liczy ją z proporcji i szerokości,
+   a `max-height` z `object-fit: contain` działają jak wcześniej.
+
+   ⚠️ 82vh jest powtórzone w `sizes` w `src/scripts/galeria.ts`
+   (`rozmiarKlatki`) - zdjęcie pionowe ma szerokość wynikającą z tej
+   wysokości. Zmiana tu wymaga zmiany tam. */
 .galeria-okno__obraz :is(img, .foto-zaslepka) {
   width: 100%;
+  height: auto;
   max-height: 82vh;
   object-fit: contain;
   border-radius: 0.75rem;

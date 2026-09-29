@@ -30,6 +30,7 @@ import { existsSync } from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { startPreview } from './server.mjs'
+import { collectUrls } from './urls.mjs'
 import puppeteer from 'puppeteer-core'
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', '..')
@@ -124,16 +125,72 @@ stan = await p.evaluate(async () => {
 ok('galeria: otwarcie, następne, zamknięcie', stan.otwarte && stan.maObraz && stan.licznik === '1 / 6' && stan.licznik2 === '2 / 6' && stan.zamkniete ? true : stan)
 
 // --- 4. Menu mobilne ---
+// Panel jest nakładką: zamknięty ma pełną wysokość, tylko `visibility: hidden`.
+// Otwarcie NIE może zmienić wysokości dokumentu - wariant, który rozsuwał
+// nagłówek, spychał treść i przy dole strony zjadał pozycję przewinięcia.
 await p.setViewport({ width: 390, height: 844 })
 await p.goto(adres + '/', { waitUntil: 'networkidle0' })
 stan = await p.evaluate(async () => {
   const panel = document.querySelector('.naglowek__panel')
-  const przed = panel.getBoundingClientRect().height
+  const przed = getComputedStyle(panel).visibility
+  const dokumentPrzed = document.documentElement.scrollHeight
   document.querySelector('label[for="menu-mobilne"]').click()
   await new Promise((r) => setTimeout(r, 400))
-  return { przed, po: panel.getBoundingClientRect().height }
+  return {
+    przed,
+    po: getComputedStyle(panel).visibility,
+    wysokosc: panel.getBoundingClientRect().height,
+    dokumentPrzed,
+    dokumentPo: document.documentElement.scrollHeight,
+  }
 })
-ok('menu mobilne rozwija się', stan.przed === 0 && stan.po > 100 ? true : stan)
+ok(
+  'menu mobilne otwiera się nad treścią',
+  stan.przed === 'hidden' && stan.po === 'visible' && stan.wysokosc > 100 && stan.dokumentPrzed === stan.dokumentPo
+    ? true
+    : stan
+)
+
+// Pięć cykli otwórz/zamknij na dole strony nie może ruszyć przewinięcia.
+// Klik w punkt na ekranie, jak palcem - `page.click` sam przewija element
+// do widoku i zafałszowałby wynik. Łapie też fokus pola wyboru w strefie
+// `scroll-padding-top`, który cofał stronę o ~430 px przy każdym stuknięciu.
+await p.goto(adres + '/realizacje/', { waitUntil: 'networkidle0' })
+await p.evaluate(() => {
+  document.documentElement.style.setProperty('scroll-behavior', 'auto')
+  window.scrollTo(0, document.documentElement.scrollHeight)
+})
+const przewiniecie = () => p.evaluate(() => Math.round(window.scrollY))
+const przewiniecieStart = await przewiniecie()
+for (let i = 0; i < 10; i += 1) {
+  const punkt = await p.evaluate(() => {
+    const r = document.querySelector('label[for="menu-mobilne"]').getBoundingClientRect()
+    return { x: r.x + r.width / 2, y: r.y + r.height / 2 }
+  })
+  await p.mouse.click(punkt.x, punkt.y)
+  await new Promise((r) => setTimeout(r, 350))
+}
+const przewiniecieKoniec = await przewiniecie()
+ok(
+  'menu mobilne: 5 cykli na dole strony nie rusza przewinięcia',
+  przewiniecieStart > 0 && przewiniecieStart === przewiniecieKoniec
+    ? true
+    : { przed: przewiniecieStart, po: przewiniecieKoniec }
+)
+
+// Żadna podstrona nie może być szersza niż ekran telefonu - Z DZIAŁAJĄCYM
+// skryptem, bo to on przesuwa elementy odsłaniane z boku poza krawędź.
+// Strona szersza choćby o 12 px każe mobilnemu Chrome'owi poszerzyć obszar
+// układu, a przyklejony nagłówek chował się wtedy o ~26 px pod górną
+// krawędź ekranu. Emulacja telefonu (`isMobile`) jest tu konieczna.
+await p.setViewport({ width: 390, height: 844, isMobile: true, hasTouch: true })
+const szersze = []
+for (const sciezka of (await collectUrls({ root: ROOT })).sciezki) {
+  await p.goto(adres + sciezka, { waitUntil: 'networkidle0' })
+  const szerokosc = await p.evaluate(() => document.documentElement.scrollWidth)
+  if (szerokosc > 390) szersze.push(`${sciezka} ${szerokosc}px`)
+}
+ok('390px: żadna podstrona nie jest szersza niż ekran', szersze.length ? szersze : true)
 
 // --- 5. Nagłówek: kolejność fokusu i zwinięte menu ---
 // `max-height: 0` plus `overflow-hidden` ukrywa panel dla oka, ale zostawia

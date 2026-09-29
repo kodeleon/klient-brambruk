@@ -2,17 +2,59 @@
  * GALERIA - powiększanie zdjęć.
  *
  * Kafelki są przyciskami, okno to natywny `<dialog>`. Ten moduł robi trzy
- * rzeczy: kopiuje zdjęcie z klikniętego kafelka do okna, przestawia je
+ * rzeczy: wstawia do okna zdjęcie klikniętego kafelka, przestawia je
  * strzałkami i pilnuje licznika. Blokadę tła, Escape, pułapkę na fokus
  * i powrót fokusu do kafelka robi przeglądarka.
+ *
+ * Zdjęcie w oknie to PEŁNA KLATKA ŹRÓDŁA z zestawu powiększenia, który potok
+ * zdjęć wypisuje na `<img>` kafelka (`data-lb-*`, patrz
+ * `tools/media/markup.mjs`). Kopia znacznika kafelka zostaje wyłącznie jako
+ * ścieżka awaryjna - dla kafelka bez zestawu albo z zaślepką.
  *
  * Bez tego modułu okno się nie otwiera, a zdjęcia i tak są widoczne
  * w siatce - żadna treść nie ginie.
  */
 
+/**
+ * Szerokość obrazu w oknie powiększenia - opis UKŁADU, nie życzenie co do
+ * pliku. Obraz stoi w `<div class="relative mx-4 md:mx-8 max-w-5xl">`
+ * (`GaleriaSiatka.astro`): do 768 px okno minus 2 × 16 px, od 768 px
+ * okno minus 2 × 32 px, ale nie więcej niż 1024 px. Zmiana tych klas
+ * wymaga zmiany tej wartości.
+ */
+const ROZMIAR_W_OKNIE = '(min-width:768px) min(1024px, calc(100vw - 64px)), calc(100vw - 32px)'
+
+/**
+ * `sizes` konkretnej klatki. Obraz w oknie ma też sufit wysokości
+ * (`max-height: 82vh` w `styles/components/galeria.css`), a pudełko okna
+ * dopasowuje się do obrazu - zdjęcie pionowe ma więc szerokość 82vh razy
+ * proporcje, nie szerokość okna. Na komputerze to ok. 312 px zamiast
+ * 1024 px: sam `ROZMIAR_W_OKNIE` kazałby pobrać plik dwa razy za szeroki.
+ * Proporcje znamy z `data-lb-w` / `data-lb-h`. Zmiana 82vh w arkuszu
+ * wymaga zmiany tutaj.
+ */
+function rozmiarKlatki(lb: Powiekszenie): string {
+  const proporcja = Number(lb.szerokosc) / Number(lb.wysokosc)
+  if (!Number.isFinite(proporcja) || proporcja <= 0) return ROZMIAR_W_OKNIE
+  const zWysokosci = `calc(82vh * ${proporcja.toFixed(4)})`
+  return `(min-width:768px) min(1024px, calc(100vw - 64px), ${zWysokosci}), min(calc(100vw - 32px), ${zWysokosci})`
+}
+
+/** Zestaw powiększenia z atrybutów `data-lb-*` na `<img>` kafelka. */
+type Powiekszenie = {
+  avif?: string
+  webp?: string
+  jpg?: string
+  szerokosc?: string
+  wysokosc?: string
+}
+
 type Kafelek = {
   przycisk: HTMLButtonElement
+  /** Znacznik zdjęcia kafelka - używany tylko, gdy nie ma `powiekszenie`. */
   zrodlo: string
+  powiekszenie: Powiekszenie | null
+  alt: string
   tytul: string
   lokalizacja: string
 }
@@ -20,13 +62,71 @@ type Kafelek = {
 function zbierz(siatka: HTMLElement): Kafelek[] {
   return [...siatka.querySelectorAll<HTMLButtonElement>('[data-galeria-kafelek]')].map((przycisk) => {
     const obraz = przycisk.querySelector('picture, .foto-zaslepka, img')
+    const img = przycisk.querySelector<HTMLImageElement>('img')
+    const lb = img?.dataset
+    const maZestaw = Boolean(lb && (lb.lbAvif || lb.lbWebp || lb.lbJpg))
     return {
       przycisk,
       zrodlo: obraz?.outerHTML ?? '',
+      powiekszenie:
+        lb && maZestaw
+          ? { avif: lb.lbAvif, webp: lb.lbWebp, jpg: lb.lbJpg, szerokosc: lb.lbW, wysokosc: lb.lbH }
+          : null,
+      alt: img?.alt ?? '',
       tytul: przycisk.dataset.tytul ?? '',
       lokalizacja: przycisk.dataset.lokalizacja ?? '',
     }
   })
+}
+
+/** Adres największego kandydata z `srcset` z deskryptorami `w`. */
+function najwiekszy(srcset: string): string {
+  const kandydaci = srcset.split(',').map((kandydat) => {
+    const [adres = '', opis = ''] = kandydat.trim().split(/\s+/)
+    return { adres, szerokosc: Number.parseInt(opis, 10) || 0 }
+  })
+  return kandydaci.reduce((a, b) => (b.szerokosc > a.szerokosc ? b : a)).adres
+}
+
+/**
+ * Nowe `<picture>` z zestawu powiększenia. `<img>` trafia do `<picture>`
+ * PRZED ustawieniem adresów: obraz dostaje wtedy od razu wybór spośród
+ * `<source>`, zamiast ruszyć po JPEG, zanim zobaczy AVIF i WebP.
+ *
+ * Bez `loading` - zdjęcie w oknie jest jedyną rzeczą na ekranie. Bez klas
+ * kafelka - wygląd obrazu w oknie opisuje `styles/components/galeria.css`.
+ */
+function zbudujPowiekszenie(lb: Powiekszenie, alt: string): HTMLPictureElement {
+  const sizes = rozmiarKlatki(lb)
+  const picture = document.createElement('picture')
+  for (const [typ, srcset] of [
+    ['image/avif', lb.avif],
+    ['image/webp', lb.webp],
+  ] as const) {
+    if (!srcset) continue
+    const source = document.createElement('source')
+    source.setAttribute('type', typ)
+    source.setAttribute('sizes', sizes)
+    source.setAttribute('srcset', srcset)
+    picture.appendChild(source)
+  }
+
+  const img = document.createElement('img')
+  picture.appendChild(img)
+  img.setAttribute('alt', alt)
+  img.setAttribute('decoding', 'async')
+  // Wymiary pełnej klatki: rezerwują proporcje, zanim plik dojdzie.
+  if (lb.szerokosc && lb.wysokosc) {
+    img.setAttribute('width', lb.szerokosc)
+    img.setAttribute('height', lb.wysokosc)
+  }
+  if (lb.jpg) {
+    img.setAttribute('sizes', sizes)
+    img.setAttribute('srcset', lb.jpg)
+  }
+  const zapas = lb.jpg ?? lb.webp ?? lb.avif
+  if (zapas) img.setAttribute('src', najwiekszy(zapas))
+  return picture
 }
 
 export function galeria() {
@@ -55,20 +155,23 @@ export function galeria() {
       biezacy = (indeks + kafelki.length) % kafelki.length
       const kafelek = kafelki[biezacy]
 
-      miejsceObrazu.innerHTML = kafelek.zrodlo
-      // Zdjęcie w oknie nie jest już leniwe - jest jedyną rzeczą na ekranie.
-      miejsceObrazu.querySelector('img')?.removeAttribute('loading')
-
-      /* ⚠️ `sizes` PRZEPISANY NA `100vw`.
-         Kafelek galerii deklaruje szerokość ~389 px, więc przeglądarka
-         dobiera z `srcset` najmniejszy wariant. Skopiowany do okna
-         powiększenia ten sam `<picture>` zachowywał tamtą deklarację
-         i okno na pełnym ekranie pokazywało MINIATURĘ rozciągniętą do
-         1200 px. Tutaj element zajmuje całą szerokość okna i dokładnie
-         to musi mówić `sizes` - wtedy przeglądarka sięga po największy
-         dostępny wariant kadru. */
-      for (const el of miejsceObrazu.querySelectorAll<HTMLElement>('source, img')) {
-        if (el.hasAttribute('srcset')) el.setAttribute('sizes', '100vw')
+      /* Zestaw powiększenia pochodzi z manifestu zdjęć: drabina szerokości
+         liczona ze ŹRÓDŁA (`lightboxWidths` w `media/images.config.mjs`),
+         pełna klatka, do 2560 px na dłuższej krawędzi. Warianty kafelka się
+         do tego nie nadają: największy ma 1200 px, a dla zdjęć pionowych
+         820 px - na telefonie o trzykrotnej gęstości to ten sam plik, który
+         już był w kafelku, czyli miniatura rozciągnięta na cały ekran.
+         Do tego kafelek 16:10 z pionu pokazuje ~29% klatki. */
+      if (kafelek.powiekszenie) {
+        miejsceObrazu.replaceChildren(zbudujPowiekszenie(kafelek.powiekszenie, kafelek.alt))
+      } else {
+        // Ścieżka awaryjna: kopia znacznika kafelka, ale z `sizes` opisującym
+        // okno, nie kafelek - inaczej przeglądarka zostałaby przy miniaturze.
+        miejsceObrazu.innerHTML = kafelek.zrodlo
+        miejsceObrazu.querySelector('img')?.removeAttribute('loading')
+        for (const el of miejsceObrazu.querySelectorAll<HTMLElement>('source, img')) {
+          if (el.hasAttribute('srcset')) el.setAttribute('sizes', ROZMIAR_W_OKNIE)
+        }
       }
 
       if (tytul) tytul.textContent = kafelek.tytul

@@ -60,12 +60,17 @@ export const moduly = {
   drugiJezyk: false,
 
   /**
-   * Mapa. Wyłączona świadomie: zamiast osadzonego iframe Google (żądanie poza
-   * domenę, pliki cookie u dostawcy, akapit w polityce prywatności) sekcja
-   * kontaktu pokazuje statyczny obraz mapy plus odnośnik do wizytówki
-   * w Mapach Google. Do czasu wgrania obrazu stoi tam zaślepka.
+   * Mapa dojazdu: statyczny obraz renderowany z danych OpenStreetMap
+   * (`maps/dojazd/`) plus odnośnik do wizytówki w Mapach Google - zamiast
+   * osadzonego iframe Google.
+   *
+   * ⚠️ Przełącznik NIE steruje niczym w kodzie. Obraz z własnego originu
+   * nie potrzebuje wpisu w CSP ani w polityce prywatności, więc - w odróżnieniu
+   * od `formularz` i `analityka` - nie ma czego włączać. Stan opisuje zakres
+   * wdrożenia (tabela modułów w README). Iframe z zewnętrznym serwisem map
+   * byłby osobnym modułem z wpisem w `frame-src` i w polityce, nie tym.
    */
-  mapa: false,
+  mapa: true,
 } as const
 
 /**

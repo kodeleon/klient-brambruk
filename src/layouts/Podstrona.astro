@@ -147,7 +147,16 @@ const daneStrukturalne = {
     <div class="min-h-screen bg-brand-bg font-body text-brand-text">
       <Naglowek />
 
-      <main id="tresc">
+      {/* `overflow-x-clip`: treść nie może poszerzać strony. Elementy
+          odsłaniane z boku (`Odslon wariant="left"/"right"`) czekają
+          przesunięte o 2rem poza krawędź ekranu, a strona szersza niż ekran
+          każe mobilnemu Chrome'owi poszerzyć obszar układu - przyklejony
+          nagłówek trzymał się wtedy jego krawędzi, nie ekranu, i chował się
+          o ~26 px pod górną krawędź, dopóki wszystko się nie odsłoniło.
+          `clip`, nie `hidden`: `hidden` robi z `<main>` kontener przewijania
+          i psuje każdy `position: sticky` w środku.
+          Na `<html>` to nie działa - sprawdzone, Chrome i tak poszerza układ. */}
+      <main id="tresc" class="overflow-x-clip">
         <slot />
       </main>
 

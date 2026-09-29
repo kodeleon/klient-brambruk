@@ -260,6 +260,12 @@
      lądować pod nim - stąd `scroll-padding-top` w `base.css`. */
   --naglowek-wysokosc: 72px;
 
+  /* Strefa pod przyklejonym nagłówkiem, którą przeglądarka omija przy
+     przewijaniu do kotwicy i do elementu z fokusem (`scroll-padding-top`
+     w `base.css`). Ta sama wartość, z przeciwnym znakiem, zeruje tę strefę
+     dla pola wyboru menu mobilnego - uzasadnienie w `naglowek.css`. */
+  --odstep-pod-naglowkiem: calc(var(--naglowek-wysokosc) + 1rem);
+
   /* Zaznaczenie aktywnego elementu. Jedna wartość dla całego serwisu.
      Kolor `brand-olive-dark` zamiast `brand-olive`: obrys fokusu to element
      nietekstowy, próg 3:1, a sam `brand-olive` daje na jasnym tle 1,63.
@@ -272,8 +278,10 @@
   /* Minimalny cel dotykowy. WCAG 2.1 AA, punkt 2.5.5. */
   --cel-dotykowy: 44px;
 
-  /* Czas i krzywa odsłaniania przy przewijaniu. Odpowiadają `Reveal`
-     ze starego projektu (`duration-500 ease-out`). */
-  --czas-odslon: 500ms;
+  /* Czas i krzywa odsłaniania przy przewijaniu. Krzywa jak w `Reveal`
+     ze starego projektu (`ease-out`), czas SKRÓCONY O POŁOWĘ wobec jego
+     `duration-500`: pełne 500 ms razem z kaskadą opóźnień przy szybkim
+     przewijaniu czytało się jako wolne ładowanie strony. */
+  --czas-odslon: 250ms;
   --ease-odslon: cubic-bezier(0, 0, 0.2, 1);
 }

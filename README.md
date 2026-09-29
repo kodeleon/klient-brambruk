@@ -722,7 +722,7 @@ jednocześnie dyrektywami CSP, blokami polityki prywatności i zakresem audytu.
 | `galeria` | włączony | powiększanie zdjęć (`<dialog>`, bez bibliotek) |
 | `artykuly` | wyłączony | kolekcja treści (pakiet Premium) |
 | `drugiJezyk` | wyłączony | punkty zaczepienia `hreflang` w układzie |
-| `mapa` | wyłączony | miejsce na render z `osm-custom-view` |
+| `mapa` | włączony | statyczna mapa dojazdu z `maps/` - bez wpisu w CSP i polityce, przełącznik niczego nie steruje |
 
 **Formularz** wymaga wdrożenia Workera - patrz `forms-worker/README.md`. Bez adresu
 w `endpointy.formularz` formularz się nie renderuje: lepiej brak formularza
@@ -738,10 +738,10 @@ dwujęzyczny to decyzja projektowa - Astro ma własny mechanizm i18n, ale jego
 konfiguracja zależy od tego, czy język siedzi w ścieżce, w domenie, czy
 w podkatalogu.
 
-**Mapa** nie jest w bazie. Wchodzi jako `osm-custom-view` - osobne narzędzie,
-osobne repozytorium, przypinane do projektu tagiem. Baza daje tylko miejsce
-na wynik (zwykłe zdjęcie w potoku) i obowiązek atrybucji przy mapie, nie
-w stopce.
+**Mapa** to katalog `maps/`: silnik renderu (Python, `maps/silnik/`) i projekty
+map, z własnym `README.md` i `CLAUDE.md`. Wynik jest zwykłym zdjęciem w potoku
+(`media/img/_raw/` → manifest), atrybucja OpenStreetMap stoi przy mapie, nie
+w stopce. Co z `maps/` przechodzi do bazy: `maps/README.md`, sekcja „Do bazy".
 
 ---
 
@@ -1066,13 +1066,13 @@ sposób ukrywania.** Element niewidoczny, a łapiący fokus, to pułapka dla
 klawiatury. Dopuszczalne formy są cztery: `[hidden]`, `.poza-ekranem`, `inert`
 i `visibility: hidden`.
 
-Czwarta jest tam, gdzie trzy pierwsze nie wchodzą: przy panelu zwijanym
-`max-height` z przejściem. `inert` wymaga JavaScriptu, a `[hidden]` się nie
+Czwarta jest tam, gdzie trzy pierwsze nie wchodzą: przy panelu, który
+pojawia się i znika z przejściem. `inert` wymaga JavaScriptu, a `[hidden]` się nie
 animuje - zostaje `visibility`, bo jako jedyna wyjmuje treść z fokusu I daje
 się przełączyć przejściem. Warunek: `visibility` musi być objęta `transition`
 na tym samym elemencie (`transition-all` ją obejmuje). Bez tego odnośniki
-znikają, zanim panel zdąży się zwinąć. Wzór: `.naglowek__panel`
-w `src/styles/components/naglowek.css`.
+znikają, zanim panel zdąży wygasnąć. Wzór: `.naglowek__panel`
+w `src/styles/components/naglowek.css` (nakładka z `opacity` i `transform`).
 
 Samo `max-height: 0` plus `overflow-hidden` **nie** wyjmuje odnośników
 z kolejności fokusu - zwinięte menu łapie wtedy Tab i nie widać tego

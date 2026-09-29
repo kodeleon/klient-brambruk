@@ -19,10 +19,8 @@
  *     jednym zdaniem przy mapie dojazdu, chociaż to jedna z dwóch rzeczy,
  *     po które ludzie wchodzą na „O nas".
  *
- * ⚠️ Obie mapy są ZAŚLEPKAMI. Klucze `mapa.dojazd` i `mapa.region` celowo
- * nie istnieją w `uses` - `<Foto>` rysuje wtedy prostokąt o właściwych
- * wymiarach zamiast przerywać budowanie. Po wgraniu obrazów z narzędzia
- * `osm-custom-view` w tym pliku nie zmienia się ani jedna linia.
+ * Obie mapy to rendery z `maps/`: dojazdu (`MapaKontakt`, `maps/dojazd/`)
+ * i obszaru działania (`mapa.region`, `maps/region/`).
  */
 import Podstrona from "../layouts/Podstrona.astro";
 import firma from "../content/firma.json";
@@ -186,7 +184,7 @@ const rejestr: { etykieta: string; wartosc: string | string[] }[] = [
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
         {
           dlaczegoMy.wartosci.map((wartosc, i) => (
-            <Odslon wariant="up" zwloka={i * 80}>
+            <Odslon wariant="up" zwloka={i * 40}>
               <div class="h-full rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-6 lg:px-5 lg:py-7 transition-colors duration-300 hover:border-brand-olive/40">
                 <span class="mb-5 flex h-12 w-12 items-center justify-center rounded-xl bg-brand-olive/15 text-brand-olive">
                   <Ikona nazwa={wartosc.ikona as NazwaIkony} rozmiar={22} />
@@ -258,7 +256,7 @@ const rejestr: { etykieta: string; wartosc: string | string[] }[] = [
           <h3 class="font-display text-lg font-bold text-brand-text mb-5">
             {daneFirmy.tytulMapy}
           </h3>
-          <Odslon wariant="right" zwloka={100} class="flex-1">
+          <Odslon wariant="right" zwloka={50} class="flex-1">
             <MapaKontakt class="h-full" />
           </Odslon>
         </div>
@@ -301,10 +299,14 @@ const rejestr: { etykieta: string; wartosc: string | string[] }[] = [
           <div
             class="overflow-hidden rounded-2xl border border-brand-border bg-brand-card"
           >
+            {/* Ramka o proporcji obrazu, nie o stałej wysokości: mapa kraju
+                przycięta przez `object-cover` traciła wybrzeże albo wschodnią
+                granicę (przy stałych 320 px na tablecie ramka miała ~3:1).
+                Kwadrat na telefonie, 3:2 wyżej - tak jak pliki w manifeście. */}
             <Foto
               klucz={obszar.foto}
               alt={obszar.fotoAlt}
-              class="w-full h-[320px] lg:h-[380px] object-cover rounded-2xl"
+              class="w-full aspect-square sm:aspect-[3/2] object-cover rounded-2xl"
             />
           </div>
         </Odslon>
@@ -314,7 +316,7 @@ const rejestr: { etykieta: string; wartosc: string | string[] }[] = [
         /* Tagi przeniesione spod mapy dojazdu - tam odpowiadały na pytanie
           „gdzie jest siedziba", a odpowiadały na „gdzie dojeżdżacie". */
       }
-      <Odslon zwloka={120}>
+      <Odslon zwloka={60}>
         <div class="mt-10 lg:mt-12">
           <p
             class="text-xs font-bold uppercase tracking-[2px] text-brand-text-light mb-4"

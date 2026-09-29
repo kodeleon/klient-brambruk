@@ -13,9 +13,9 @@
  * plik dostarczony razem z materiałami. Po dołożeniu grafiki z nowego
  * źródła dopisuje się pozycję TUTAJ, nie tylko w tamtym pliku.
  *
- * Mapy jeszcze nie ma. Kiedy wejdzie obraz z `osm-custom-view`, atrybucja
- * OpenStreetMap obowiązuje PRZY MAPIE, nie tutaj - ta sekcja jest wtedy
- * dopiskiem, nie spełnieniem warunku.
+ * Mapa dojazdu to render z danych OpenStreetMap (`maps/dojazd/`). Atrybucja
+ * ODbL obowiązuje PRZY MAPIE (`MapaKontakt.astro`), nie tutaj - sekcja
+ * „Mapa dojazdu" niżej jest dopiskiem, nie spełnieniem warunku.
  *
  * [decyzja] TA SAMA REGUŁA CO PRZY POLITYCE PRYWATNOŚCI: proza zostaje
  * w pliku podstrony, bo klient jej nie edytuje. Z treści pobierana jest
@@ -125,6 +125,25 @@ const kroje = [
                 ))
               }
             </ul>
+          </div>
+
+          <div class="mb-9">
+            <h2 class="font-display text-lg font-bold text-brand-text mb-2">Mapa dojazdu</h2>
+            <p class="text-sm text-brand-text-light leading-relaxed">
+              Mapa na stronach „Kontakt” i „O nas” jest rysowana z danych OpenStreetMap (© autorzy
+              OpenStreetMap), udostępnionych na licencji Open Database License -{' '}
+              <a
+                href="https://www.openstreetmap.org/copyright"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="inline-flex items-center gap-1 font-medium text-brand-olive-text underline underline-offset-2 hover:text-brand-text transition-colors"
+              >
+                prawa autorskie i licencja
+                <Ikona nazwa="arrow-up-right" rozmiar={12} grubosc={2.5} class="shrink-0" />
+                <span class="poza-ekranem">(otwiera się w nowej karcie)</span>
+              </a>. Plik mapy jest wgrany na serwer serwisu - oglądanie jej nie łączy się z żadnym
+              serwisem map.
+            </p>
           </div>
 
           <div>

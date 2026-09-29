@@ -1,8 +1,14 @@
 /**
  * RUCH - odsłanianie przy przewijaniu i jedna pętla animacji na stronę.
  *
- * Odpowiednik komponentu `Reveal.jsx` ze starego projektu: te same progi
- * obserwatora (0,08 widoczności, margines -40 px), ten sam czas i krzywa.
+ * Odpowiednik komponentu `Reveal.jsx` ze starego projektu, ŚWIADOMIE szybszy.
+ * Próg widoczności ten sam (0,08), ale margines obserwatora odwrócony:
+ * `Reveal` miał -40 px, czyli element musiał wejść 40 px GŁĘBIEJ w ekran,
+ * zanim ruszył; tutaj odsłanianie startuje 80 px PRZED wejściem na ekran,
+ * więc przy przewijaniu treść jest gotowa, zanim ją widać. Czas przejścia
+ * skrócony o połowę (`--czas-odslon`), a narosłe opóźnienie kaskady ma
+ * sufit (`MAKS_ZWLOKA`) - pełne 500 ms plus kaskada czytały się przy
+ * szybkim przewijaniu jak wolne ładowanie strony.
  *
  * KOLEJNOŚĆ JEST ISTOTNA. Element oznaczony `data-odslon` jest w dokumencie
  * WIDOCZNY. Dopiero ten skrypt ustawia mu `data-rv="czeka"` (czyli chowa go)
@@ -18,6 +24,11 @@
  */
 
 const OGRANICZONY_RUCH = '(prefers-reduced-motion: reduce)'
+
+/** Sufit narosłego opóźnienia. Kaskada ma być rytmem, nie kolejką: przy
+    dziesięciu kafelkach ostatni startował po ponad pół sekundy od pierwszego
+    i przy szybkim przewijaniu czytało się to jako wolne ładowanie strony. */
+const MAKS_ZWLOKA = 240
 
 /** Jedna pętla klatek na stronę, nie jedna na moduł. */
 const zadaniaKlatki = new Set<() => void>()
@@ -66,14 +77,14 @@ export function ruch() {
         obserwator.unobserve(el)
       }
     },
-    { rootMargin: '0px 0px -40px 0px', threshold: 0.08 }
+    { rootMargin: '0px 0px 80px 0px', threshold: 0.08 }
   )
 
   for (const el of elementy) {
     // Kaskada: kolejny element w grupie startuje o `--rv-zwloka` później.
     // Wartość ustawiamy właściwością CSS, nie atrybutem `style` w znaczniku -
     // atrybut `style` wymagałby `'unsafe-inline'` w `style-src`.
-    const zwloka = Number(el.dataset.odslon)
+    const zwloka = Math.min(Number(el.dataset.odslon), MAKS_ZWLOKA)
     if (Number.isFinite(zwloka) && zwloka > 0) {
       el.style.setProperty('--rv-zwloka', `${zwloka}ms`)
     }
