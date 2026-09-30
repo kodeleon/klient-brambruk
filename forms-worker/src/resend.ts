@@ -24,7 +24,8 @@ export function readMailConfig(env: Env): MailConfig | null {
     .map((address) => address.trim())
     .filter(Boolean)
   const dryRun = env.MAIL_DRY_RUN?.trim().toLowerCase() === 'true'
-  // Sekret może nie istnieć (np. przed `wrangler secret put`), mimo typu string.
+  // Sekrety (MAIL_TO, RESEND_API_KEY) mogą nie istnieć (np. przed
+  // `wrangler secret put`), mimo typu string - stąd `?? ''` i rzutowanie.
   const apiKey = (env.RESEND_API_KEY as string | undefined)?.trim() || null
 
   if (!from || to.length === 0) return null

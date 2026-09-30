@@ -8,37 +8,37 @@
  * Bez JavaScriptu zostaje jedna długa forma z wszystkimi polami - czytelna
  * i wypełnialna, choć bez podziału na kroki.
  *
- * Reguły walidacji, limity pól, komunikaty i klucze zapisu są te same,
- * co w `code/src/pages/Wycena.jsx` - zgłoszenie ma dojść do Workera
- * w formacie, na który się umówimy, a nie w nowym.
+ * Nazwy pól, klucze opcji i reguły walidacji są kontraktem z Workerem
+ * (`forms-worker/INTEGRATION.md`, `src/config/formularze.ts`); wspólną
+ * walidację i wysyłkę daje `formularz.ts`, kompresję zdjęć `zdjecia.ts`.
  */
 
 import {
   pobierzPola,
   oznaczPole,
-  ponadLimit,
-  poprawnyEmail,
-  poprawnyTelefon,
-  pokazPodsumowanie,
-  pokazBlad,
+  sprawdzPola,
+  pokazBledyPol,
+  pokazBladWysylki,
+  wyczyscBledy as wyczyscBledyFormularza,
   podepnijLicznik,
-  backendGotowy,
-  komunikatBrakBackendu,
+  przejdzDo,
+  ustawBlokade,
+  wyslij as wyslijZgloszenie,
+  zablokujNatywnaWysylke,
+  wypelnij,
+  type Bledy,
   type Pole,
 } from './formularz'
-// Słowniki wprost z pliku treści: to moduł przeglądarki, więc nie może
-// przejść przez kolekcje Astro.
+import { zdjecia as podepnijZdjecia, type Zdjecia } from './zdjecia'
+// Słowniki i teksty wprost z plików treści: to moduł przeglądarki, więc nie
+// może przejść przez kolekcje Astro.
 import slowniki from '../content/wycena.json'
+import teksty from '../content/formularze.json'
 
 const { typy: typyUslug, podtypy, teren: opcjeTerenu, termin: opcjeTerminu, budzet: opcjeBudzetu } = slowniki
-import { endpointy } from '../config/site'
 
 const KLUCZ_ZAPISU = 'brambruk_wycena-draft'
 const LICZBA_KROKOW = 5
-
-const MAKS_PLIKOW = 2
-const MAKS_ROZMIAR_MB = 4
-const DOZWOLONE = ['image/jpeg', 'image/png', 'image/webp']
 
 const ETYKIETY_KROKOW = ['Usługa', 'Szczegóły', 'Dodatkowe', 'Dane', 'Sprawdź']
 
@@ -58,12 +58,9 @@ const KROK_POLA: Record<string, number> = {
   phone: 3,
 }
 
-function rozmiar(bajty: number): string {
-  if (bajty < 1024) return `${bajty} B`
-  if (bajty < 1024 * 1024) return `${(bajty / 1024).toFixed(0)} KB`
-  return `${(bajty / (1024 * 1024)).toFixed(1)} MB`
-}
+const ODMIANA = new Intl.PluralRules('pl-PL')
 
+/** Pole „wymiary" ma obok jednostkę, więc przyjmuje samą liczbę - to reguła frontu, nie Workera. */
 function poprawnaLiczba(wartosc: string): boolean {
   const przyciety = wartosc.trim()
   if (!przyciety) return true
@@ -89,7 +86,7 @@ export function wycena() {
   const kreator = document.querySelector<HTMLElement>('[data-wycena]')
 
   let krok = 0
-  let pliki: File[] = []
+  let zdjecia: Zdjecia | null = null
 
   /* ---------------------------------------------------------------- */
   /* Stan formularza                                                   */
@@ -195,75 +192,37 @@ export function wycena() {
   /* Walidacja                                                         */
   /* ---------------------------------------------------------------- */
 
-  const sprawdzKrok = (numer: number): Record<string, string> => {
-    const bledy: Record<string, string> = {}
+  /** Pola tekstowe kroku według reguł Workera + wybór usługi i liczba w „wymiarach". */
+  const sprawdzKrok = (numer: number): Bledy => {
+    const kontener = kroki[numer]
+    const bledy: Bledy = kontener ? sprawdzPola(kontener) : {}
     const dane = stan()
 
     if (numer === 0 && !dane.serviceType) bledy.serviceType = 'required'
-
-    if (numer === 1) {
-      const pole = formularz.querySelector<Pole>('[data-pole="amount"]')
-      if (pole && ponadLimit(pole)) bledy.amount = 'too_long'
-      else if (dane.amount.trim() && !poprawnaLiczba(dane.amount)) bledy.amount = 'invalid_number'
-
-      const lokalizacja = formularz.querySelector<Pole>('[data-pole="location"]')
-      if (lokalizacja && ponadLimit(lokalizacja)) bledy.location = 'too_long'
+    if (numer === 1 && !bledy.amount && dane.amount.trim() && !poprawnaLiczba(dane.amount)) {
+      bledy.amount = 'invalid_number'
     }
-
-    if (numer === 2) {
-      const opis = formularz.querySelector<Pole>('[data-pole="description"]')
-      if (opis && ponadLimit(opis)) bledy.description = 'too_long'
-    }
-
-    if (numer === 3) {
-      const imie = formularz.querySelector<Pole>('[data-pole="name"]')
-      const email = formularz.querySelector<Pole>('[data-pole="email"]')
-      const telefon = formularz.querySelector<Pole>('[data-pole="phone"]')
-
-      if (!dane.name.trim()) bledy.name = 'required'
-      else if (imie && ponadLimit(imie)) bledy.name = 'too_long'
-
-      if (!dane.email.trim()) bledy.email = 'required'
-      else if (!poprawnyEmail(dane.email)) bledy.email = 'invalid_format'
-      else if (email && ponadLimit(email)) bledy.email = 'too_long'
-
-      if (dane.phone.trim()) {
-        if (telefon && ponadLimit(telefon)) bledy.phone = 'too_long'
-        else if (!poprawnyTelefon(dane.phone)) bledy.phone = 'invalid_phone'
-      }
-    }
-
     return bledy
   }
 
-  const wszystkieBledy = () => ({
-    ...sprawdzKrok(0),
-    ...sprawdzKrok(1),
-    ...sprawdzKrok(2),
-    ...sprawdzKrok(3),
-  })
+  const wszystkieBledy = (): Bledy => Object.assign({}, ...kroki.map((_, i) => sprawdzKrok(i)))
 
   const wyczyscBledy = () => {
-    for (const pole of pobierzPola(formularz)) oznaczPole(formularz, pole.dataset.pole ?? '', null)
-    kroki[0]?.removeAttribute('data-blad')
-    const blok = formularz.querySelector<HTMLElement>('[data-formularz-podsumowanie]')
-    if (blok) blok.hidden = true
-    const blad = formularz.querySelector<HTMLElement>('[data-formularz-blad]')
-    if (blad) blad.hidden = true
+    wyczyscBledyFormularza(formularz)
+    kroki[0]?.removeAttribute('data-blad-wyboru')
   }
 
-  const pokazBledy = (bledy: Record<string, string>, wstep: string) => {
-    for (const [nazwa, kod] of Object.entries(bledy)) oznaczPole(formularz, nazwa, kod)
-    if (bledy.serviceType) {
-      kroki[0]?.setAttribute('data-blad', '')
-      const opis = formularz.querySelector<HTMLElement>('[data-krok0-opis]')
-      if (opis) {
-        opis.textContent = 'Wybierz jedną z poniższych opcji, aby przejść dalej.'
-        opis.classList.add('text-red-500', 'font-medium')
-        opis.classList.remove('text-brand-text-light')
-      }
-    }
-    pokazPodsumowanie(formularz, bledy, wstep)
+  const pokazBledy = (bledy: Bledy) => {
+    pokazBledyPol(formularz, bledy)
+    if (bledy.serviceType) kroki[0]?.setAttribute('data-blad-wyboru', '')
+  }
+
+  /** Wraca do kroku z pierwszym błędnym polem i ustawia na nim fokus. */
+  const pokazBledyWKreatorze = (bledy: Bledy) => {
+    pokazBledy(bledy)
+    const pierwszyKrok = Math.min(...Object.keys(bledy).map((nazwa) => KROK_POLA[nazwa] ?? 0))
+    pokazKrok(pierwszyKrok)
+    przejdzDo(kroki[pierwszyKrok]?.querySelector<HTMLElement>('[data-blad-pola]') ?? null)
   }
 
   /* ---------------------------------------------------------------- */
@@ -288,6 +247,13 @@ export function wycena() {
     ]
     const powierzchnia = dane.serviceType === 'brukarstwo' || dane.serviceType === 'budownictwo'
 
+    const liczbaZdjec = () => {
+      const liczba = zdjecia?.liczba() ?? 0
+      if (!liczba) return teksty.zdjecia.brak
+      const forma = ODMIANA.select(liczba) as keyof typeof teksty.zdjecia.liczba
+      return wypelnij(teksty.zdjecia.liczba[forma] ?? teksty.zdjecia.liczba.many, { liczba })
+    }
+
     const wartosci: Record<string, string> = {
       usluga: `${etykieta(typyUslug, dane.serviceType)} - ${listaPodtypow ? etykieta(listaPodtypow, dane.subtype) : '-'}`,
       wymiary: dane.amount ? `${dane.amount} ${powierzchnia ? 'm²' : 'mb'}` : '-',
@@ -300,7 +266,7 @@ export function wycena() {
           ? `${dane.description.slice(0, 80)}...`
           : dane.description
         : '-',
-      zdjecia: pliki.length ? `${pliki.length} plik(ów)` : 'Brak',
+      zdjecia: liczbaZdjec(),
       kontakt: [dane.name, dane.email, dane.phone].filter(Boolean).join(' · ') || '-',
     }
 
@@ -347,7 +313,10 @@ export function wycena() {
     }
 
     if (ostatni) odswiezPodsumowanie()
-    if (przewin && krok > 0) sekcja?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    if (przewin && krok > 0) {
+      const bezRuchu = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+      sekcja?.scrollIntoView({ behavior: bezRuchu ? 'auto' : 'smooth', block: 'start' })
+    }
   }
 
   /* ---------------------------------------------------------------- */
@@ -357,94 +326,22 @@ export function wycena() {
   const polePliku = formularz.querySelector<HTMLInputElement>('[data-upload-pole]')
   const listaPlikow = formularz.querySelector<HTMLElement>('[data-upload-lista]')
   const odrzucone = formularz.querySelector<HTMLElement>('[data-upload-odrzucone]')
-  const przyciskPliku = formularz.querySelector<HTMLElement>('[data-upload-przycisk]')
 
-  const odswiezPliki = () => {
-    if (!listaPlikow) return
-    listaPlikow.replaceChildren(
-      ...pliki.map((plik, indeks) => {
-        const karta = document.createElement('div')
-        karta.className =
-          'flex items-center gap-2 bg-brand-card border border-brand-border rounded-lg px-3 py-2'
-
-        const podglad = document.createElement('img')
-        podglad.className = 'w-8 h-8 rounded object-cover'
-        podglad.alt = plik.name
-        podglad.src = URL.createObjectURL(plik)
-
-        const nazwa = document.createElement('span')
-        nazwa.className = 'text-xs text-brand-text truncate max-w-[120px]'
-        nazwa.textContent = plik.name
-
-        const waga = document.createElement('span')
-        waga.className = 'text-[10px] text-brand-text-light'
-        waga.textContent = rozmiar(plik.size)
-
-        const usun = document.createElement('button')
-        usun.type = 'button'
-        usun.className = 'p-0.5 text-brand-text-light hover:text-brand-text transition-colors'
-        usun.setAttribute('aria-label', `Usuń ${plik.name}`)
-        usun.textContent = '✕'
-        usun.addEventListener('click', () => {
-          URL.revokeObjectURL(podglad.src)
-          pliki = pliki.filter((_, i) => i !== indeks)
-          odswiezPliki()
-        })
-
-        karta.append(podglad, nazwa, waga, usun)
-        return karta
-      })
-    )
-
-    if (przyciskPliku) {
-      const pelno = pliki.length >= MAKS_PLIKOW
-      przyciskPliku.textContent = pelno ? `Limit ${MAKS_PLIKOW} plików` : 'Wybierz pliki'
-      przyciskPliku.classList.toggle('bg-brand-border/50', pelno)
-      przyciskPliku.classList.toggle('text-brand-text-light', pelno)
-      przyciskPliku.classList.toggle('cursor-not-allowed', pelno)
-      przyciskPliku.classList.toggle('bg-brand-olive', !pelno)
-      przyciskPliku.classList.toggle('text-brand-dark', !pelno)
-      przyciskPliku.classList.toggle('cursor-pointer', !pelno)
-    }
+  if (polePliku && listaPlikow && odrzucone) {
+    zdjecia = podepnijZdjecia({
+      formularz,
+      pole: polePliku,
+      lista: listaPlikow,
+      komunikaty: odrzucone,
+      przycisk: formularz.querySelector<HTMLElement>('[data-upload-przycisk]'),
+      poZmianie: () => {
+        oznaczPole(formularz, 'photos', null)
+        // Wysyłka czeka, aż kompresja się skończy - inaczej poszedłby oryginał albo nic.
+        if (wyslij) ustawBlokade(wyslij, 'zdjecia', zdjecia?.trwa() ?? false)
+        if (krok === LICZBA_KROKOW - 1) odswiezPodsumowanie()
+      },
+    })
   }
-
-  const dodajPliki = (lista: FileList | null) => {
-    if (!lista || !odrzucone) return
-    const odrzuty: string[] = []
-
-    for (const plik of [...lista]) {
-      if (!DOZWOLONE.includes(plik.type)) {
-        const rozszerzenie = plik.name.split('.').pop()?.toUpperCase() ?? '?'
-        odrzuty.push(`${plik.name} - Niedozwolony format (.${rozszerzenie}). Dozwolone: JPG, PNG, WebP.`)
-        continue
-      }
-      if (plik.size > MAKS_ROZMIAR_MB * 1024 * 1024) {
-        odrzuty.push(`${plik.name} - Za duży (${rozmiar(plik.size)}). Max ${MAKS_ROZMIAR_MB} MB.`)
-        continue
-      }
-      if (pliki.length >= MAKS_PLIKOW) {
-        odrzuty.push(`${plik.name} - Osiągnięto limit ${MAKS_PLIKOW} plików.`)
-        continue
-      }
-      pliki.push(plik)
-    }
-
-    odrzucone.replaceChildren(
-      ...odrzuty.map((tresc) => {
-        const wiersz = document.createElement('p')
-        wiersz.className = 'text-xs text-amber-700'
-        wiersz.textContent = tresc
-        return wiersz
-      })
-    )
-
-    odswiezPliki()
-  }
-
-  polePliku?.addEventListener('change', () => {
-    dodajPliki(polePliku.files)
-    polePliku.value = ''
-  })
 
   /* ---------------------------------------------------------------- */
   /* Zdarzenia                                                         */
@@ -466,15 +363,19 @@ export function wycena() {
           podtyp.checked = false
         }
         odswiezPodtypy()
-        oznaczPole(formularz, 'serviceType', null)
-        kroki[0]?.removeAttribute('data-blad')
+        oznaczPole(formularz, 'subtype', null)
+        kroki[0]?.removeAttribute('data-blad-wyboru')
       }
+      oznaczPole(formularz, wybor.name, null)
       zapisz()
     })
   }
 
   for (const select of formularz.querySelectorAll<HTMLSelectElement>('select[data-pole]')) {
-    select.addEventListener('change', zapisz)
+    select.addEventListener('change', () => {
+      oznaczPole(formularz, select.name, null)
+      zapisz()
+    })
   }
 
   formularz.querySelector('[data-podsumowanie-zamknij]')?.addEventListener('click', () => {
@@ -504,62 +405,62 @@ export function wycena() {
   })
 
   dalej?.addEventListener('click', () => {
+    wyczyscBledy()
     const bledy = sprawdzKrok(krok)
     if (Object.keys(bledy).length) {
-      pokazBledy(bledy, 'Popraw')
-      const pierwsze = formularz.querySelector<Pole>('[data-blad-pola]')
-      pierwsze?.scrollIntoView({ behavior: 'smooth', block: 'center' })
-      pierwsze?.focus({ preventScroll: true })
+      pokazBledy(bledy)
+      przejdzDo(kroki[krok]?.querySelector<HTMLElement>('[data-blad-pola]') ?? null)
       return
     }
-    wyczyscBledy()
     pokazKrok(krok + 1)
   })
 
   wyslij?.addEventListener('click', async () => {
+    wyczyscBledy()
     const bledy = wszystkieBledy()
     if (Object.keys(bledy).length) {
-      pokazBledy(bledy, 'Popraw')
-      const pierwszePole = Object.keys(bledy)[0]
-      pokazKrok(KROK_POLA[pierwszePole] ?? 0)
+      pokazBledyWKreatorze(bledy)
       return
     }
 
-    if (!backendGotowy()) {
-      pokazBlad(formularz, komunikatBrakBackendu())
-      return
-    }
-
+    // Pola z formularza jak są: `terrain` jako powtórzony klucz (terrain=a&terrain=b),
+    // pułapka `_hp` pusta. Zdjęcia tylko po kompresji, z pola pliku nic.
     const dane = new FormData(formularz)
-    dane.set('terrain', JSON.stringify(teren()))
-    for (const plik of pliki) dane.append('photos[]', plik)
+    dane.delete('photos')
+    for (const { plik, nazwa } of zdjecia?.pliki() ?? []) dane.append('photos', plik, nazwa)
 
-    try {
-      const odpowiedz = await fetch(endpointy.formularz, { method: 'POST', body: dane })
-      if (odpowiedz.ok) {
-        try {
-          localStorage.removeItem(KLUCZ_ZAPISU)
-        } catch {
-          /* nic */
-        }
-        if (sukces) sukces.hidden = false
-        if (kreator) kreator.hidden = true
-        window.scrollTo(0, 0)
-        return
+    ustawBlokade(wyslij, 'wysylka', true)
+    const wynik = await wyslijZgloszenie(formularz, dane)
+    ustawBlokade(wyslij, 'wysylka', false)
+
+    if (wynik.ok) {
+      try {
+        localStorage.removeItem(KLUCZ_ZAPISU)
+      } catch {
+        /* nic */
       }
-      pokazBlad(formularz, 'Wystąpił błąd przy wysyłaniu. Spróbuj ponownie.')
-    } catch {
-      pokazBlad(formularz, 'Nie udało się połączyć z serwerem. Sprawdź połączenie z internetem i spróbuj ponownie.')
+      zdjecia?.wyczysc()
+      if (sukces) sukces.hidden = false
+      if (kreator) kreator.hidden = true
+      window.scrollTo(0, 0)
+      sukces?.focus({ preventScroll: true })
+      return
     }
+
+    if (wynik.pola) {
+      pokazBledyWKreatorze(wynik.pola)
+      return
+    }
+    pokazBladWysylki(formularz, wynik, wyslij)
   })
 
   /* ---------------------------------------------------------------- */
   /* Start                                                             */
   /* ---------------------------------------------------------------- */
 
+  zablokujNatywnaWysylke(formularz)
   podepnijLicznik(formularz)
   odtworz()
   odswiezPodtypy()
-  odswiezPliki()
   pokazKrok(0, false)
 }

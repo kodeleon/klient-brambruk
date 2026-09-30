@@ -39,7 +39,13 @@ const connect = ["'self'"]
 const script: string[] = []
 const img = ["'self'", 'data:']
 
-if (moduly.formularz && endpointy.formularz) connect.push(endpointy.formularz)
+if (moduly.formularz && endpointy.formularz) {
+  // Sam origin Workera - adresy formularzy (`/forms/...`) są pod nim.
+  connect.push(endpointy.formularz)
+  // Podgląd zdjęć w kreatorze wyceny to `URL.createObjectURL` na pliku po
+  // kompresji, czyli adres `blob:`. Tylko przy włączonym formularzu.
+  img.push('blob:')
+}
 if (moduly.analityka && endpointy.plausible) {
   script.push(endpointy.plausible)
   connect.push(endpointy.plausible)

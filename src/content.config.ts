@@ -465,6 +465,71 @@ const wycena = defineCollection({
 })
 
 /**
+ * FORMULARZE - komunikaty kontaktu i kreatora wyceny.
+ *
+ * Czyta je wyłącznie skrypt przeglądarki (`src/scripts/formularz.ts`,
+ * import wprost). ⚠️ Klamry to NIE są znaczniki serwisu: `{telefon}`,
+ * `{email}`, `{maks}`, `{czas}`, `{kod}`, `{nazwa}`, `{liczba}` wstawia skrypt
+ * w chwili pokazania komunikatu (telefon i e-mail jako klikalne odnośniki
+ * z `firma.json`). Nie przepuszczaj tego pliku przez `wpis()` - `rozwin()`
+ * zatrzymałby build na nieznanym znaczniku.
+ *
+ * Klucze w `bledyPol` i `bledyWysylki` to kody z odpowiedzi workera
+ * (`forms-worker/INTEGRATION.md`, pkt 3) - brak komunikatu wywala build.
+ */
+const komunikat = z.string().min(1)
+const formularze = defineCollection({
+  loader: file('src/content/formularze.json', jedenRekord('formularze')),
+  schema: z
+    .object({
+      bledyPol: z
+        .object({
+          required: komunikat,
+          requiredWybor: komunikat,
+          invalid_format: komunikat,
+          invalid_phone: komunikat,
+          too_long: komunikat,
+          invalid_option: komunikat,
+          invalid_optionZalezne: komunikat,
+          too_many_files: komunikat,
+          file_too_large: komunikat,
+          invalid_file_type: komunikat,
+          links_blocked: komunikat,
+          invalid_number: komunikat,
+          photo_failed: komunikat,
+          photo_duplicate: komunikat,
+        })
+        .strict(),
+      bledyWysylki: z
+        .object({
+          validation_failed: komunikat,
+          rate_limited: komunikat,
+          mail_failed: komunikat,
+          siec: komunikat,
+          payload_too_large: komunikat,
+          odrzucone: komunikat,
+          nieczynny: komunikat,
+          kodZgloszenia: komunikat,
+          minuta: komunikat,
+          minuty: komunikat,
+        })
+        .strict(),
+      podsumowanieBledow: z.object({ jedno: komunikat, wiele: komunikat }).strict(),
+      etykietyPol: z.record(z.string(), komunikat),
+      zdjecia: z
+        .object({
+          przetwarzanie: komunikat,
+          usun: komunikat,
+          pelno: komunikat,
+          liczba: z.object({ one: komunikat, few: komunikat, many: komunikat }).strict(),
+          brak: komunikat,
+        })
+        .strict(),
+    })
+    .strict(),
+})
+
+/**
  * PODSTRONY - treść stron, które nie mieszczą się w żadnym szablonie.
  *
  * Jedna kolekcja, jeden plik na podstronę. Schemat wymienia WSZYSTKIE pola,
@@ -701,5 +766,6 @@ export const collections = {
   uslugi,
   realizacje,
   wycena,
+  formularze,
   strony,
 }

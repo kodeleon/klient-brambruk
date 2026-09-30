@@ -156,6 +156,12 @@ describe('MAIL_DRY_RUN i konfiguracja', () => {
     expect(lastLog()).toMatchObject({ outcome: 'dry_run', status: 200, files: 2, bytes: 5000 })
   })
 
+  it('dry run bez sekretu MAIL_TO -> 500 not_configured', async () => {
+    const response = await call(postForm('contact', CONTACT_FIELDS), { MAIL_DRY_RUN: 'true', MAIL_TO: undefined })
+    expect(response.status).toBe(500)
+    expect(await json(response)).toMatchObject({ ok: false, error: 'not_configured' })
+  })
+
   it('dry run nie wymaga klucza Resend', async () => {
     const response = await call(postForm('contact', CONTACT_FIELDS), { MAIL_DRY_RUN: 'true', RESEND_API_KEY: '' })
     expect(response.status).toBe(200)
@@ -166,7 +172,8 @@ describe('MAIL_DRY_RUN i konfiguracja', () => {
     ['brak RESEND_API_KEY', { RESEND_API_KEY: undefined }],
     ['pusty RESEND_API_KEY', { RESEND_API_KEY: '  ' }],
     ['brak MAIL_FROM', { MAIL_FROM: '' }],
-    ['brak MAIL_TO', { MAIL_TO: ' , ' }],
+    ['brak sekretu MAIL_TO', { MAIL_TO: undefined }],
+    ['pusta lista MAIL_TO', { MAIL_TO: ' , ' }],
   ])('%s przy MAIL_DRY_RUN=false -> 500 not_configured', async (_, overrides) => {
     const response = await call(postForm('contact', CONTACT_FIELDS), { ...SEND, ...overrides })
     expect(response.status).toBe(500)

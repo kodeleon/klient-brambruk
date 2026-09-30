@@ -49,7 +49,7 @@
 }
 
 /* Podświetlenie braku wyboru - klasę ustawia skrypt po nieudanym „Dalej". */
-[data-krok='0'][data-blad] .karta-pole:not(:checked) + .karta-wyboru {
+[data-krok='0'][data-blad-wyboru] .karta-pole:not(:checked) + .karta-wyboru {
   border-color: var(--color-red-300);
 }
 

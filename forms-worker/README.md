@@ -48,7 +48,8 @@ npm run dev:page         # w drugim terminalu: strona testowa http://localhost:4
 ```
 
 `.dev.vars.example` ma `MAIL_DRY_RUN=true` - lokalnie nic nie wychodzi, dopóki
-tego nie zmienisz. Strona testowa ma pole "Adres workera" (domyślnie
+tego nie zmienisz. `MAIL_TO` jest wymagany także w dry run (bez niego
+`500 not_configured`), stąd przykładowy adres w pliku. Strona testowa ma pole "Adres workera" (domyślnie
 `http://localhost:8787`), przyciski z przykładowymi i błędnymi danymi,
 podgląd honeypota, wysyłkę jako JSON i przełącznik "wyślij bez kompresji".
 Surowa odpowiedź workera pokazuje się pod formularzem, linia logu w terminalu
@@ -80,28 +81,38 @@ W `.dev.vars`:
 ```
 RESEND_API_KEY=re_...          # klucz z panelu Resend (konto klienta)
 MAIL_DRY_RUN=false
-MAIL_TO=twoj-adres@example.com # żeby testy nie szły do firmy
+MAIL_TO=twoj-adres@example.com # własny adres, żeby testy nie szły do firmy
 ```
 
 Potem `npm run dev`, `npm run dev:page` i wysyłka ze strony testowej.
 
 ## Konfiguracja
 
-Zmienne w `wrangler.jsonc` (`vars`):
+Zmienne w `wrangler.jsonc` (`vars`, jawne):
 
 | Zmienna | Znaczenie |
 |---|---|
-| `ALLOWED_ORIGINS` | originy stron, które mogą wysyłać (po przecinku, dokładne dopasowanie) |
+| `ALLOWED_ORIGINS` | originy stron, które mogą wysyłać (po przecinku, dokładne dopasowanie). W pliku tylko produkcyjne - testowy dochodzi przy deployu przez `--var` |
 | `MAIL_FROM` | nadawca, na domenie zweryfikowanej w Resend |
-| `MAIL_TO` | odbiorcy zgłoszeń (po przecinku) |
 | `LOGO_URL` | logo w stopce maila (PNG, 64 px) |
 | `MAIL_DRY_RUN` | `"true"` = wszystko oprócz samego wywołania Resend |
 
-Sekret (nigdy w pliku, nigdy w repo):
+Sekrety (`secrets.required` w `wrangler.jsonc`; wartość nigdy w pliku ani w repo):
+
+| Sekret | Znaczenie |
+|---|---|
+| `RESEND_API_KEY` | klucz API Resend (konto klienta) |
+| `MAIL_TO` | odbiorcy zgłoszeń (po przecinku). Prywatny adres - dlatego sekret, a nie zmienna widoczna w panelu |
 
 ```bash
 npx wrangler secret put RESEND_API_KEY
+npx wrangler secret put MAIL_TO
 ```
+
+Zmiana odbiorcy (np. adres testowy -> adres właściciela) to jedno
+`npx wrangler secret put MAIL_TO` - wrangler od razu wdraża nową wersję,
+bez zmiany kodu i bez `deploy`. Brak któregoś sekretu: `deploy` odmawia
+wdrożenia, a działający worker odpowiada `500 not_configured`.
 
 Rate limit: `RL_IP` (5 zgłoszeń / 60 s na formularz i IP) i `RL_EMAIL`
 (3 / 60 s na formularz i adres e-mail). `namespace_id` (`1001`, `1002`) musi być
@@ -110,25 +121,36 @@ unikalny w obrębie konta Cloudflare - sprawdź przed pierwszym wdrożeniem, czy
 
 ## Wdrożenie
 
+Konto Cloudflare klienta (`account_id` w `wrangler.jsonc`), jedyny adres:
+Custom Domain `https://api.brambruk.pl` (`routes`). Adresów `*.workers.dev`
+i preview URL nie ma (`workers_dev: false`, `preview_urls: false`) - stan
+ustawia każdy deploy, zmiana w panelu nie przetrwa następnego.
+
+Pierwsze wdrożenie (z tego katalogu):
+
 ```bash
-npx wrangler login
-npx wrangler secret put RESEND_API_KEY
-npx wrangler deploy
+npx wrangler secret put RESEND_API_KEY   # worker jeszcze nie istnieje: wrangler zapyta,
+npx wrangler secret put MAIL_TO          # czy założyć pusty - tak
+npx wrangler deploy                      # zakłada api.brambruk.pl (DNS + certyfikat)
 ```
 
-Wrangler wypisze adres `https://brambruk-forms.<konto>.workers.dev`. Do czasu
-przeniesienia DNS front może wysyłać na ten adres (ścieżki te same:
-`/forms/contact`, `/forms/quote`).
+Dopóki strona działa pod adresem testowym `*.workers.dev`, jej origin musi
+być na liście `ALLOWED_ORIGINS`. Nie dopisuj go do pliku - podaj przy
+deployu PEŁNĄ listę (`--var` zastępuje wartość z pliku, nie dopisuje):
 
-### Podpięcie `api.brambruk.pl` (po przeniesieniu DNS do Cloudflare)
+```bash
+npx wrangler deploy --var "ALLOWED_ORIGINS:https://brambruk.pl,https://www.brambruk.pl,https://<adres testowy strony>"
+```
 
-1. Strefa `brambruk.pl` musi być aktywna na tym samym koncie Cloudflare.
-2. W `wrangler.jsonc` odkomentuj:
-   `"routes": [{ "pattern": "api.brambruk.pl", "custom_domain": true }]`
-3. `npx wrangler deploy` - Wrangler sam założy rekord DNS i certyfikat.
-4. Sprawdź: `curl -i -X OPTIONS -H "Origin: https://brambruk.pl" https://api.brambruk.pl/forms/contact` -> `204`.
-5. Na froncie: adres workera i CSP `connect-src` na `https://api.brambruk.pl`.
-6. Opcjonalnie `"workers_dev": false`, żeby wyłączyć adres testowy.
+Po przełączeniu domeny zwykły `npx wrangler deploy` przywraca listę
+z pliku, czyli usuwa origin testowy.
+
+Sprawdzenie:
+
+```bash
+curl -i -X OPTIONS -H "Origin: https://brambruk.pl" https://api.brambruk.pl/forms/contact   # 204
+curl -i -X OPTIONS -H "Origin: https://example.com" https://api.brambruk.pl/forms/contact   # 403
+```
 
 ## Logi
 
@@ -171,14 +193,15 @@ Kod robi niewiele (walidacja, render, base64 natywnym
 Cloudflare - lokalny `wrangler dev` nie mierzy CPU tak jak produkcja.
 Nic przy tym nie wychodzi mailem (`MAIL_DRY_RUN`).
 
-1. Tymczasowo w `wrangler.jsonc`:
-   - `"MAIL_DRY_RUN": "true"`,
-   - do `ALLOWED_ORIGINS` dopisz `,http://localhost:4321`,
-   - w `observability.logs` ustaw `"invocation_logs": true` (ruch testowy
-     pochodzi tylko od Ciebie, a bez tego CPU widać tylko zbiorczo w Metrics).
-2. `npx wrangler deploy` (bez `routes` - tylko `*.workers.dev`).
+Pomiar robi się na `api.brambruk.pl`, więc **tylko przed przełączeniem
+domeny** (formularze produkcyjne w tym czasie nie wysyłają maili).
+
+1. Tymczasowo w `wrangler.jsonc` w `observability.logs` ustaw
+   `"invocation_logs": true` (ruch testowy pochodzi tylko od Ciebie, a bez
+   tego CPU widać tylko zbiorczo w Metrics).
+2. `npx wrangler deploy --var MAIL_DRY_RUN:true --var "ALLOWED_ORIGINS:https://brambruk.pl,http://localhost:4321"`
 3. `npm run dev:page`, na stronie testowej w polu "Adres workera" wpisz
-   adres `https://brambruk-forms.<konto>.workers.dev`.
+   `https://api.brambruk.pl`.
 4. Wyślij po 5 razy formularz wyceny:
    - **(a)** 2 zdjęcia z telefonu z kompresją (normalny tryb strony),
    - **(b)** 2 zdjęcia po ~3,5-4 MB z zaznaczonym "wyślij bez kompresji"
@@ -187,8 +210,9 @@ Nic przy tym nie wychodzi mailem (`MAIL_DRY_RUN`).
    pole **CPU time** (`$workers.cpuTimeMs`); w tym samym wywołaniu nasza linia
    logu pokazuje `bytes`, więc wiadomo, który wariant to był. Pierwsze
    wywołanie po wdrożeniu (zimny start) pomiń. Zbiorczo (percentyle): zakładka Metrics.
-6. Przywróć `wrangler.jsonc` (`MAIL_DRY_RUN` `"false"`, originy bez
-   localhost, `invocation_logs` `false`) i wdróż ponownie.
+6. Przywróć `invocation_logs` na `false` i wdróż ponownie (zwykły
+   `npx wrangler deploy` albo z `--var` originu testowego, jeśli strona
+   jest jeszcze na `*.workers.dev`).
 
 **Kryterium:** wariant (a) musi mieścić się w 10 ms z zapasem (maksimum z 5
 prób najwyżej ~6-7 ms).
@@ -223,8 +247,9 @@ Skopiuj cały katalog i zmień tylko:
 
 - `src/forms.ts` - formularze, pola, opcje, limity, sekcje maila, temat;
 - `src/email/layout.ts` - `BRAND` (nazwa, strona, kolory, logo) i `TEXT`;
-- `wrangler.jsonc` - `name`, `vars` (originy, nadawca, odbiorcy, logo),
-  `namespace_id` rate limitów, `routes`;
+- `wrangler.jsonc` - `name`, `account_id`, `vars` (originy, nadawca, logo),
+  `namespace_id` rate limitów, `routes` (sekrety `RESEND_API_KEY` i `MAIL_TO`
+  ustawiasz od nowa przez `wrangler secret put`);
 - `.dev.vars.example` - originy lokalne;
 - `dev/test-page.html` - pola formularzy (przepisane z `forms.ts`);
 - testy z danymi formularzy: `test/helpers.ts` (`QUOTE_FIELDS`, `CONTACT_FIELDS`)

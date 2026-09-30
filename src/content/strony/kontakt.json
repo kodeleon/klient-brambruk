@@ -10,6 +10,10 @@
     "opis": "Odpowiemy w ciągu 24 godzin w dni robocze."
   },
   "tytulDanych": "Dane kontaktowe",
+  "rodo": {
+    "przed": "Administratorem danych z formularza jest {firma.nazwaPelna}. Wykorzystujemy je, żeby odpowiedzieć na Twoje zapytanie (art. 6 ust. 1 lit. f RODO). Więcej o przetwarzaniu danych i Twoich prawach:",
+    "link": "Polityka prywatności"
+  },
   "baner": {
     "tytul": "Szukasz wyceny na ogrodzenie lub brukarstwo?",
     "opis": "Kreator wyceny prowadzi przez pięć krótkich kroków: typ usługi, wymiary, teren, termin i dane kontaktowe. Na tej podstawie odsyłamy widełki cenowe."

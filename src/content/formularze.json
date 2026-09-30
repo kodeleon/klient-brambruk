@@ -1,0 +1,60 @@
+{
+  "bledyPol": {
+    "required": "To pole jest wymagane.",
+    "requiredWybor": "Wybierz jedną z opcji.",
+    "invalid_format": "Podaj poprawny adres e-mail, np. jan@example.com.",
+    "invalid_phone": "Podaj poprawny numer telefonu (cyfry, spacje, +, -, nawiasy).",
+    "too_long": "Tekst jest za długi - maksymalnie {maks} znaków.",
+    "invalid_option": "Wybierz opcję z listy.",
+    "invalid_optionZalezne": "Wybierz rodzaj pasujący do wybranej usługi.",
+    "too_many_files": "Możesz dodać maksymalnie {maks} zdjęcia.",
+    "file_too_large": "Zdjęcie jest za duże (maksymalnie {maks} MB). Dodaj mniejsze zdjęcie.",
+    "invalid_file_type": "Dodaj zdjęcie w formacie JPG, PNG lub WebP.",
+    "links_blocked": "Usuń linki z treści (http://, https://, www.). Adres strony możesz opisać słowami.",
+    "invalid_number": "Podaj samą liczbę, np. 40 albo 12,5.",
+    "photo_failed": "Nie udało się przetworzyć zdjęcia {nazwa}. Zapisz je jako JPG i dodaj ponownie.",
+    "photo_duplicate": "Zdjęcie {nazwa} jest już dodane."
+  },
+  "bledyWysylki": {
+    "validation_failed": "Popraw zaznaczone pola.",
+    "rate_limited": "Wysłano zbyt wiele zgłoszeń w krótkim czasie. Spróbuj ponownie za {czas} albo zadzwoń: {telefon}, napisz: {email}.",
+    "mail_failed": "Nie udało się wysłać wiadomości. Spróbuj ponownie za chwilę albo skontaktuj się z nami bezpośrednio: {telefon}, {email}.",
+    "siec": "Brak połączenia z serwerem. Sprawdź internet i spróbuj ponownie albo skontaktuj się z nami: {telefon}, {email}.",
+    "payload_too_large": "Zgłoszenie jest za duże. Usuń jedno ze zdjęć albo dodaj mniejsze.",
+    "odrzucone": "Nie udało się wysłać formularza. Odśwież stronę i spróbuj ponownie albo skontaktuj się z nami: {telefon}, {email}.",
+    "nieczynny": "Formularz chwilowo nie działa. Skontaktuj się z nami: {telefon}, {email}.",
+    "kodZgloszenia": "Kod zgłoszenia: {kod}",
+    "minuta": "minutę",
+    "minuty": "{liczba} min"
+  },
+  "podsumowanieBledow": {
+    "jedno": "Popraw pole:",
+    "wiele": "Popraw pola:"
+  },
+  "etykietyPol": {
+    "serviceType": "Typ usługi",
+    "subtype": "Rodzaj",
+    "amount": "Wymiary",
+    "location": "Miejscowość",
+    "terrain": "Utrudnienia terenu",
+    "timeline": "Termin",
+    "budget": "Budżet",
+    "description": "Dodatkowe informacje",
+    "photos": "Zdjęcia",
+    "name": "Imię",
+    "email": "E-mail",
+    "phone": "Telefon",
+    "message": "Wiadomość"
+  },
+  "zdjecia": {
+    "przetwarzanie": "Przetwarzanie...",
+    "usun": "Usuń zdjęcie {nazwa}",
+    "pelno": "Dodano {maks} zdjęcia",
+    "liczba": {
+      "one": "{liczba} zdjęcie",
+      "few": "{liczba} zdjęcia",
+      "many": "{liczba} zdjęć"
+    },
+    "brak": "Brak"
+  }
+}

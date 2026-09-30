@@ -16,8 +16,9 @@
  * │ długą, czytelną formą zamiast pustej strony.                         │
  * └──────────────────────────────────────────────────────────────────────┘
  *
- * ⚠️ WYSYŁKA: backend dopiero powstanie (Worker). Do tego czasu przycisk
- * pokazuje komunikat zastępczy z telefonem i e-mailem.
+ * WYSYŁKA: do Workera z `forms-worker/` (`src/scripts/formularz.ts`),
+ * zdjęcia kompresowane w przeglądarce (`src/scripts/zdjecia.ts`). Nazwy pól,
+ * klucze opcji i limity to kontrakt z Workerem - `src/config/formularze.ts`.
  */
 import Podstrona from '../layouts/Podstrona.astro'
 import wycena from '../content/wycena.json'
@@ -28,6 +29,8 @@ import Przycisk from '../components/ui/Przycisk.astro'
 import OsCzasuProcesu from '../components/ui/OsCzasuProcesu.astro'
 import Ikona from '../components/icons/Ikona.astro'
 import Foto from '../components/media/Foto.astro'
+import { adresFormularza } from '../config/site'
+import { LIMITY, POLE_PULAPKA, ZDJECIA } from '../config/formularze'
 
 const { typy: typyUslug, podtypy, teren: opcjeTerenu, termin: opcjeTerminu, budzet: opcjeBudzetu } = wycena
 
@@ -41,6 +44,7 @@ const klasaChipa =
   'chip inline-flex px-5 py-2.5 rounded-full border text-sm font-medium transition-all duration-200 border-brand-border bg-brand-card text-brand-text-light hover:border-brand-olive/40 hover:text-brand-text'
 
 const wierszePodsumowania = podsumowanie.wiersze
+const limity = LIMITY.quote
 ---
 
 <Podstrona
@@ -50,7 +54,7 @@ const wierszePodsumowania = podsumowanie.wiersze
   <Okruszki pozycje={[{ etykieta: 'Strona główna', sciezka: '/' }, { etykieta: 'Wycena' }]} />
 
   {/* ═══ PODZIĘKOWANIE - odsłania je skrypt po udanej wysyłce ═══ */}
-  <div data-wycena-sukces hidden>
+  <div data-wycena-sukces tabindex="-1" class="focus:outline-none" hidden>
     <section class="bg-brand-section py-4 lg:py-10">
       <div class="max-w-2xl mx-auto px-5 lg:px-10">
         <div class="bg-brand-card border border-brand-border rounded-2xl px-3 py-5 lg:px-4 lg:py-6 text-center">
@@ -137,6 +141,7 @@ const wierszePodsumowania = podsumowanie.wiersze
           class="bg-brand-card rounded-2xl border border-brand-border/60 shadow-sm shadow-black/[0.04] px-3 py-5 lg:px-4 lg:py-6"
           novalidate
           data-formularz="wycena"
+          data-adres={adresFormularza('quote')}
         >
           <p class="text-xs text-brand-text-light mb-1">
             {licznikKrokow.przed} <span data-wycena-numer>1</span> {licznikKrokow.miedzy} {kroki.length}
@@ -181,6 +186,7 @@ const wierszePodsumowania = podsumowanie.wiersze
                 ))
               }
             </div>
+            <p class="mt-3 text-xs text-red-500" data-blad="serviceType" hidden></p>
           </div>
 
           {/* ═══ KROK 2 - szczegóły ════════════════════════ */}
@@ -209,6 +215,7 @@ const wierszePodsumowania = podsumowanie.wiersze
                     </div>
                   ))
                 }
+                <p class="mt-2 text-xs text-red-500" data-blad="subtype" data-zalezne hidden></p>
               </div>
             </div>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -222,7 +229,8 @@ const wierszePodsumowania = podsumowanie.wiersze
                     name="amount"
                     inputmode="decimal"
                     data-pole="amount"
-                    data-limit="50"
+                    data-limit={limity.amount}
+                    aria-describedby="blad-amount"
                     placeholder="np. 40"
                     class={`${klasaPola} flex-1 rounded-r-none`}
                   />
@@ -230,7 +238,7 @@ const wierszePodsumowania = podsumowanie.wiersze
                     class="px-4 py-3 rounded-r-lg bg-brand-section border border-l-0 border-brand-border text-sm text-brand-text-light font-medium"
                     data-jednostka>mb</span>
                 </div>
-                <p class="mt-1 text-xs text-red-500" data-blad="amount" hidden></p>
+                <p class="mt-1 text-xs text-red-500" id="blad-amount" data-blad="amount" hidden></p>
               </div>
               <div>
                 <label class="block text-xs font-semibold text-brand-text mb-2" for="pole-lokalizacja">
@@ -240,11 +248,12 @@ const wierszePodsumowania = podsumowanie.wiersze
                   id="pole-lokalizacja"
                   name="location"
                   data-pole="location"
-                  data-limit="100"
+                  data-limit={limity.location}
+                  aria-describedby="blad-location"
                   placeholder="np. Biała Podlaska"
                   class={klasaPola}
                 />
-                <p class="mt-1 text-xs text-red-500" data-blad="location" hidden></p>
+                <p class="mt-1 text-xs text-red-500" id="blad-location" data-blad="location" hidden></p>
               </div>
             </div>
           </div>
@@ -274,6 +283,7 @@ const wierszePodsumowania = podsumowanie.wiersze
                   ))
                 }
               </div>
+              <p class="mt-2 text-xs text-red-500" data-blad="terrain" hidden></p>
             </div>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
@@ -283,6 +293,7 @@ const wierszePodsumowania = podsumowanie.wiersze
                 <select id="pole-termin" name="timeline" data-pole="timeline" class={klasaPola}>
                   {opcjeTerminu.map((opcja) => <option value={opcja.klucz}>{opcja.etykieta}</option>)}
                 </select>
+                <p class="mt-1 text-xs text-red-500" data-blad="timeline" hidden></p>
               </div>
               <div>
                 <label class="block text-xs font-semibold text-brand-text mb-2" for="pole-budzet">
@@ -297,6 +308,7 @@ const wierszePodsumowania = podsumowanie.wiersze
                     ))
                   }
                 </select>
+                <p class="mt-1 text-xs text-red-500" data-blad="budget" hidden></p>
               </div>
             </div>
 
@@ -304,7 +316,7 @@ const wierszePodsumowania = podsumowanie.wiersze
               <div class="flex items-baseline justify-between mb-2">
                 <label class="text-xs font-semibold text-brand-text" for="pole-opis">Dodatkowe informacje</label>
                 <span class="text-xs tabular-nums text-brand-text-light" data-licznik="description">
-                  0&nbsp;/&nbsp;2 000
+                  0 / {limity.description.toLocaleString('pl-PL')}
                 </span>
               </div>
               <textarea
@@ -312,10 +324,11 @@ const wierszePodsumowania = podsumowanie.wiersze
                 name="description"
                 rows="4"
                 data-pole="description"
-                data-limit="2000"
+                data-limit={limity.description}
+                aria-describedby="blad-description"
                 placeholder="Opisz szczegóły, które nie zostały jeszcze uwzględnione - np. kolor ogrodzenia, materiał, planowane elementy dodatkowe (oświetlenie, przęsła ozdobne, rodzaj słupków), dostępność placu budowy..."
                 class={`${klasaPola} resize-none`}></textarea>
-              <p class="mt-1 text-xs text-red-500" data-blad="description" hidden></p>
+              <p class="mt-1 text-xs text-red-500" id="blad-description" data-blad="description" hidden></p>
             </div>
 
             {/* --- zdjęcia --- */}
@@ -342,19 +355,23 @@ const wierszePodsumowania = podsumowanie.wiersze
                   >
                     {zdjecia.przycisk}
                   </label>
+                  {/* HEIC/HEIF na wejściu: kompresja zamienia je w JPEG
+                      (tam, gdzie przeglądarka umie je zdekodować). */}
                   <input
                     id="pole-zdjecia"
                     type="file"
                     name="photos"
-                    accept=".jpg,.jpeg,.png,.webp"
+                    accept={ZDJECIA.typyWejscia.join(',')}
                     multiple
                     class="poza-ekranem"
+                    data-pole="photos"
                     data-upload-pole
                   />
                 </div>
               </div>
 
-              <div class="mt-2 space-y-1" data-upload-odrzucone></div>
+              <p class="mt-2 text-xs text-red-500" data-blad="photos" hidden></p>
+              <div class="mt-2 space-y-1" data-upload-odrzucone aria-live="polite"></div>
               <div class="mt-3 flex flex-wrap gap-2" data-upload-lista></div>
             </div>
           </div>
@@ -372,12 +389,14 @@ const wierszePodsumowania = podsumowanie.wiersze
                   id="pole-imie"
                   name="name"
                   data-pole="name"
-                  data-limit="100"
+                  data-limit={limity.name}
                   required
+                  autocomplete="name"
+                  aria-describedby="blad-name"
                   placeholder="Twoje imię"
                   class={klasaPola}
                 />
-                <p class="mt-1 text-xs text-red-500" data-blad="name" hidden></p>
+                <p class="mt-1 text-xs text-red-500" id="blad-name" data-blad="name" hidden></p>
               </div>
               <div>
                 <label class="block text-xs font-semibold text-brand-text mb-2" for="pole-email">
@@ -388,12 +407,14 @@ const wierszePodsumowania = podsumowanie.wiersze
                   type="email"
                   name="email"
                   data-pole="email"
-                  data-limit="200"
+                  data-limit={limity.email}
                   required
+                  autocomplete="email"
+                  aria-describedby="blad-email"
                   placeholder="np. jan@domena.pl"
                   class={klasaPola}
                 />
-                <p class="mt-1 text-xs text-red-500" data-blad="email" hidden></p>
+                <p class="mt-1 text-xs text-red-500" id="blad-email" data-blad="email" hidden></p>
               </div>
               <div class="sm:col-span-2">
                 <label class="block text-xs font-semibold text-brand-text mb-2" for="pole-telefon">
@@ -404,12 +425,14 @@ const wierszePodsumowania = podsumowanie.wiersze
                   type="tel"
                   name="phone"
                   data-pole="phone"
-                  data-limit="12"
+                  data-limit={limity.phone}
+                  autocomplete="tel"
+                  aria-describedby="blad-phone podpowiedz-phone"
                   placeholder="+48 xxx xxx xxx"
                   class={klasaPola}
                 />
-                <p class="mt-1 text-xs text-red-500" data-blad="phone" hidden></p>
-                <p class="mt-1 text-xs text-brand-text-light" data-podpowiedz="phone">
+                <p class="mt-1 text-xs text-red-500" id="blad-phone" data-blad="phone" hidden></p>
+                <p class="mt-1 text-xs text-brand-text-light" id="podpowiedz-phone" data-podpowiedz="phone">
                   Podanie numeru przyspiesza odpowiedź - oddzwonimy w ciągu 24h.
                 </p>
               </div>
@@ -453,8 +476,11 @@ const wierszePodsumowania = podsumowanie.wiersze
             </div>
           </div>
 
-          {/* Pułapka na boty. */}
-          <input type="text" name="_hp" tabindex="-1" autocomplete="off" class="poza-ekranem" aria-hidden="true" />
+          {/* Pułapka na boty (INTEGRATION.md): poza ekranem i ukryta przed
+              czytnikami, ale nie `type="hidden"` - takie pola boty pomijają. */}
+          <div class="poza-ekranem" aria-hidden="true">
+            <label>Nie wypełniaj <input type="text" name={POLE_PULAPKA} tabindex="-1" autocomplete="off" /></label>
+          </div>
 
           <div
             class="mt-6 flex items-start gap-3 px-4 py-3 rounded-xl bg-red-50 border border-red-200"
@@ -463,14 +489,16 @@ const wierszePodsumowania = podsumowanie.wiersze
             hidden
           >
             <Ikona nazwa="alert-triangle" rozmiar={18} class="text-red-500 shrink-0 mt-0.5" />
-            <p class="text-sm text-red-700" data-formularz-blad-tekst></p>
+            <div class="min-w-0">
+              <p class="text-sm text-red-700" data-formularz-blad-tekst></p>
+              <p class="mt-1 text-[11px] text-red-700/80 break-all" data-formularz-kod hidden></p>
+            </div>
           </div>
 
-          <p class="mt-6 text-xs text-brand-text-light" data-wycena-rodo hidden>
-            {rodo.przed}&nbsp;
-            <a href="/polityka-prywatnosci/" class="text-brand-olive-text underline hover:text-brand-text">
-              {rodo.link}
-            </a>.
+          {/* Klauzula informacyjna, nie zgoda (art. 6 ust. 1 lit. f RODO).
+              Widoczna w źródle; skrypt chowa ją na krokach innych niż ostatni. */}
+          <p class="mt-6 text-xs text-brand-text-light" data-wycena-rodo>
+            {rodo.przed}&nbsp;<a href="/polityka-prywatnosci/" class="text-brand-olive-text underline hover:text-brand-text">{rodo.link}</a>.
           </p>
 
           <div class="mt-4 px-4 py-3 rounded-xl bg-red-50 border border-red-200" data-formularz-podsumowanie hidden>
@@ -514,7 +542,7 @@ const wierszePodsumowania = podsumowanie.wiersze
             <button
               type="button"
               data-wycena-wyslij
-              class="flex items-center gap-1 px-6 py-3 rounded-full text-sm font-semibold transition-all bg-brand-olive text-brand-dark hover:bg-brand-olive-dark hover:shadow-lg hover:shadow-brand-olive/20"
+              class="flex items-center gap-1 px-6 py-3 rounded-full text-sm font-semibold transition-all bg-brand-olive text-brand-dark hover:bg-brand-olive-dark hover:shadow-lg hover:shadow-brand-olive/20 disabled:opacity-60 disabled:cursor-not-allowed"
               hidden
             >
               {przyciski.wyslij}

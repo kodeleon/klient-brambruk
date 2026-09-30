@@ -14,8 +14,11 @@ export default defineConfig({
       miniflare: {
         // Pool czyta też .dev.vars, jeśli istnieje. Testy nie polegają na żadnym z tych
         // źródeł: zmienne istotne dla danego testu podają jawnie (test/helpers.ts `call`).
+        // Sekrety (RESEND_API_KEY, MAIL_TO) nie mają wartości w wrangler.jsonc -
+        // bez nich każde zgłoszenie kończyłoby się 500 not_configured.
         bindings: {
           RESEND_API_KEY: 're_test_key',
+          MAIL_TO: 'odbiorca@example.com',
           ALLOWED_ORIGINS: 'https://brambruk.pl,https://www.brambruk.pl',
           MAIL_DRY_RUN: 'false',
         },

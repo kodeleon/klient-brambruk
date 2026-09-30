@@ -1,7 +1,7 @@
 {
   "extends": "astro/tsconfigs/strict",
   "include": [".astro/types.d.ts", "**/*"],
-  "exclude": ["dist", "node_modules", ".media-cache", "reports"],
+  "exclude": ["dist", "node_modules", ".media-cache", "reports", "forms-worker"],
   "compilerOptions": {
     "strictNullChecks": true,
     "allowJs": true

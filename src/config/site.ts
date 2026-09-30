@@ -14,6 +14,8 @@
  * robots.txt i narzędzie audytu. Zmiana domeny to zmiana tej jednej linii.
  */
 
+import type { SlugFormularza } from './formularze'
+
 export const site = {
   /** Adres bezwzględny, bez ukośnika na końcu. */
   origin: 'https://brambruk.pl',
@@ -34,18 +36,14 @@ export const site = {
  */
 export const moduly = {
   /**
-   * Formularze (kontakt + kreator wyceny).
+   * Formularze (kontakt + kreator wyceny) wysyłane do Workera z `forms-worker/`.
    *
-   * ⚠️ STAN PRZEJŚCIOWY. Formularze renderują się i walidują po stronie
-   * przeglądarki, ale NIE MAJĄ jeszcze backendu: stary punkt docelowy
-   * (`/wp-json/codove-mailing/...` w WordPressie) odpada razem z WordPressem,
-   * a Worker powstanie osobno. Do tego czasu wysyłka pokazuje komunikat
-   * zastępczy z telefonem i e-mailem - patrz `src/scripts/formularz.ts`.
-   *
-   * Przełącznik zostaje na `false`, dopóki `endpointy.formularz` jest pusty:
-   * to on decyduje o wpisie w `connect-src`.
+   * Włączony dokłada origin Workera do `connect-src`, `blob:` do `img-src`
+   * (podgląd zdjęć w kreatorze) i adres wysyłki do znacznika formularzy
+   * (`adresFormularza`). Wyłączony: formularze się renderują, ale wysyłka
+   * kończy się komunikatem z telefonem i e-mailem firmy.
    */
-  formularz: false,
+  formularz: true,
 
   /** Analityka Plausible. Skrypt strony trzeciej - wymaga wpisu w polityce prywatności. */
   analityka: false,
@@ -81,13 +79,40 @@ export const moduly = {
  */
 export const endpointy = {
   /**
-   * Worker przyjmujący zgłoszenia z formularzy.
-   * Trafia do `connect-src`. Przykład: 'https://formularz.brambruk.workers.dev'
+   * Worker przyjmujący zgłoszenia z formularzy - sam origin, bez ścieżki.
+   * Trafia do `connect-src`; adresy formularzy składa `adresFormularza`.
    */
-  formularz: '',
+  formularz: originApiFormularzy(),
 
   /** Host skryptu Plausible. Trafia do `script-src` i `connect-src`. */
   plausible: 'https://plausible.io',
+}
+
+/**
+ * Origin Workera formularzy. Domyślnie produkcja; zmienna środowiskowa builda
+ * `ADRES_API_FORMULARZY` przestawia go bez zmiany kodu, np. na worker lokalny:
+ *
+ *   ADRES_API_FORMULARZY=http://localhost:8787 npm run build
+ *
+ * CSP (astro.config.ts) i adres wysyłki (znacznik stron) biorą się z tej
+ * jednej wartości, więc nie mogą się rozjechać. Czytana wyłącznie z
+ * `process.env`: ten plik wykonują tylko konfiguracja i prerender stron, oba
+ * w Node. Plik `.env` jej NIE ustawia - konfigurację Astro ładuje, zanim
+ * Vite wczyta `.env`, więc CSP i znacznik dostałyby różne adresy.
+ */
+function originApiFormularzy(): string {
+  const zmienna = typeof process === 'undefined' ? undefined : process.env.ADRES_API_FORMULARZY
+  // `origin` odcina ścieżkę i końcowy ukośnik; zły adres przerywa build.
+  return new URL(zmienna?.trim() || 'https://api.brambruk.pl').origin
+}
+
+/**
+ * Adres wysyłki jednego formularza albo `undefined` przy wyłączonym module.
+ * Dla stron `.astro` - skrypt przeglądarki czyta go z `data-adres` formularza
+ * i tego pliku nie importuje (zmienna builda istnieje tylko w Node).
+ */
+export function adresFormularza(slug: SlugFormularza): string | undefined {
+  return moduly.formularz ? `${endpointy.formularz}/forms/${slug}` : undefined
 }
 
 /**

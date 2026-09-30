@@ -65,9 +65,10 @@ Brak potwierdzenia do osoby wysyłającej. Brak zapisu zgłoszeń. Brak bazy dan
 ## 3. Decyzje zamknięte
 
 1. **Topologia:** osobny worker `brambruk-forms` na własnej domenie
-   `api.brambruk.pl` (`routes: [{ pattern: "api.brambruk.pl", custom_domain: true }]`).
-   Do testów przed przeniesieniem DNS: `workers_dev: true`. Serwis statyczny
-   jest osobnym wdrożeniem i tego workera nie dotyczy.
+   `api.brambruk.pl` (`routes: [{ pattern: "api.brambruk.pl", custom_domain: true }]`),
+   na koncie Cloudflare klienta. Bez `*.workers.dev` i preview URL
+   (`workers_dev: false`, `preview_urls: false`) - strona testowa też wysyła
+   na `api.brambruk.pl`. Serwis statyczny jest osobnym wdrożeniem.
 2. **Worker pod Brambruk, napisany jako wzorzec do skopiowania.** W kolejnym
    projekcie AI skopiuje ten katalog i dostosuje go - nie będzie go
    konfigurować. Dlatego:
@@ -237,7 +238,8 @@ Zasady twarde:
 ## 7. Mail do firmy
 
 - `from`: z `MAIL_FROM` (`Brambruk - Kontakt <kontakt@brambruk.pl>`).
-- `to`: z `MAIL_TO` (lista po przecinku; domyślnie `kontakt@brambruk.pl`).
+- `to`: z sekretu `MAIL_TO` (lista po przecinku; prywatny adres właściciela,
+  nie `kontakt@brambruk.pl` - ta skrzynka obsługuje tylko pocztę przychodzącą).
 - `reply_to`: e-mail osoby wysyłającej (pole typu `email` z definicji).
 - Temat z `forms.ts`, z podstawieniem wartości pola:
   - contact: `Nowe zapytanie od {name}`
@@ -285,10 +287,12 @@ Zasady twarde:
 
 - `name`: `brambruk-forms`, `main`: `src/index.ts`, `compatibility_date`
   aktualna (serwis używa `2026-09-14`).
-- `vars`: `ALLOWED_ORIGINS` (po przecinku: `https://brambruk.pl,https://www.brambruk.pl`),
-  `MAIL_FROM`, `MAIL_TO`, `LOGO_URL`, `MAIL_DRY_RUN` (`"false"`).
-- Sekret: `RESEND_API_KEY` - wyłącznie `wrangler secret put`, lokalnie `.dev.vars`.
-  Nigdy w repo, nigdy w logu, nigdy w odpowiedzi.
+- `vars`: `ALLOWED_ORIGINS` (tylko produkcyjne: `https://brambruk.pl,https://www.brambruk.pl`;
+  origin testowy przez `wrangler deploy --var`), `MAIL_FROM`, `LOGO_URL`,
+  `MAIL_DRY_RUN` (`"false"`).
+- Sekrety (`secrets.required`): `RESEND_API_KEY` i `MAIL_TO` - wyłącznie
+  `wrangler secret put`, lokalnie `.dev.vars`. Nigdy w repo, nigdy w logu,
+  nigdy w odpowiedzi.
 - `ratelimits`: dwa bindingi `simple` z `period: 60` (dozwolone tylko 10 lub 60):
   - `RL_IP` - klucz `{form}:{CF-Connecting-IP}`, limit 5,
   - `RL_EMAIL` - klucz `{form}:{email lowercase}`, limit 3.

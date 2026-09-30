@@ -7,12 +7,9 @@
  *   1. MAPA. Osadzony `<iframe>` Map Google zastąpiony statycznym obrazem
  *      z odnośnikiem - patrz `MapaKontakt.astro`.
  *
- *   2. FORMULARZ. Stary punkt docelowy (`/wp-json/codove-mailing/...`
- *      w WordPressie) odpada razem z WordPressem. Do czasu Workera formularz
- *      wygląda i waliduje się tak samo, ale wysyłka pokazuje komunikat
- *      zastępczy z telefonem i e-mailem (`src/scripts/formularz.ts`).
- *      Pola i limity zostają te same, żeby podpięcie backendu było
- *      podmianą jednej stałej, a nie przepisywaniem formularza.
+ *   2. FORMULARZ. Zamiast wtyczki WordPressa wysyła do Workera
+ *      z `forms-worker/` (`src/scripts/formularz.ts`). Nazwy pól i limity
+ *      to kontrakt z Workerem - `src/config/formularze.ts`.
  */
 import Podstrona from '../layouts/Podstrona.astro'
 import firma from '../content/firma.json'
@@ -23,8 +20,11 @@ import Odslon from '../components/ui/Odslon.astro'
 import BanerCta from '../components/ui/BanerCta.astro'
 import MapaKontakt from '../components/ui/MapaKontakt.astro'
 import Ikona from '../components/icons/Ikona.astro'
+import { adresFormularza } from '../config/site'
+import { LIMITY, POLE_PULAPKA } from '../config/formularze'
 
 const strona = await wpis('strony', 'kontakt')
+const limity = LIMITY.contact
 
 const klasaPola =
   'w-full px-4 py-3 rounded-lg border bg-white text-brand-text text-sm focus:outline-none focus:border-brand-olive focus:ring-2 focus:ring-brand-olive/10 transition-all border-brand-border'
@@ -52,8 +52,9 @@ const klasaPola =
           <div
             class="bg-brand-card rounded-2xl border border-brand-border/60 shadow-sm shadow-black/[0.04] px-3 py-5 lg:px-4 lg:py-6"
           >
-            {/* Stan „wysłano" - odsłania go skrypt po udanej wysyłce. */}
-            <div data-formularz-sukces hidden>
+            {/* Stan „wysłano" - odsłania go skrypt po udanej wysyłce
+                i przenosi na niego fokus (stąd `tabindex`). */}
+            <div data-formularz-sukces tabindex="-1" class="focus:outline-none" hidden>
               <div class="text-center py-6">
                 <div
                   class="w-16 h-16 rounded-2xl bg-brand-olive/10 flex items-center justify-center text-brand-sage-jasny mx-auto mb-6"
@@ -65,7 +66,7 @@ const klasaPola =
               </div>
             </div>
 
-            <form class="space-y-5" data-formularz="kontakt" novalidate data-formularz-tresc>
+            <form class="space-y-5" data-formularz="kontakt" data-adres={adresFormularza('contact')} novalidate>
               <div>
                 <label class="block text-sm font-medium text-brand-text mb-1.5" for="pole-imie">
                   Imię <span class="text-red-400">*</span>
@@ -75,12 +76,14 @@ const klasaPola =
                   name="name"
                   type="text"
                   data-pole="name"
-                  data-limit="100"
+                  data-limit={limity.name}
                   required
+                  autocomplete="name"
+                  aria-describedby="blad-name"
                   class={klasaPola}
                   placeholder="Twoje imię"
                 />
-                <p class="mt-1 text-xs text-red-500" data-blad="name" hidden></p>
+                <p class="mt-1 text-xs text-red-500" id="blad-name" data-blad="name" hidden></p>
               </div>
 
               <div>
@@ -92,12 +95,14 @@ const klasaPola =
                   name="email"
                   type="email"
                   data-pole="email"
-                  data-limit="200"
+                  data-limit={limity.email}
                   required
+                  autocomplete="email"
+                  aria-describedby="blad-email"
                   class={klasaPola}
                   placeholder="twoj@email.pl"
                 />
-                <p class="mt-1 text-xs text-red-500" data-blad="email" hidden></p>
+                <p class="mt-1 text-xs text-red-500" id="blad-email" data-blad="email" hidden></p>
               </div>
 
               <div>
@@ -109,12 +114,14 @@ const klasaPola =
                   name="phone"
                   type="tel"
                   data-pole="phone"
-                  data-limit="12"
+                  data-limit={limity.phone}
+                  autocomplete="tel"
+                  aria-describedby="blad-phone podpowiedz-phone"
                   class={klasaPola}
                   placeholder="+48 xxx xxx xxx"
                 />
-                <p class="mt-1 text-xs text-red-500" data-blad="phone" hidden></p>
-                <p class="text-xs text-brand-text-light mt-1" data-podpowiedz="phone">
+                <p class="mt-1 text-xs text-red-500" id="blad-phone" data-blad="phone" hidden></p>
+                <p class="text-xs text-brand-text-light mt-1" id="podpowiedz-phone" data-podpowiedz="phone">
                   Podanie numeru przyspiesza odpowiedź - oddzwonimy w ciągu 24h
                 </p>
               </div>
@@ -125,7 +132,7 @@ const klasaPola =
                     Wiadomość <span class="text-red-400">*</span>
                   </label>
                   <span class="text-xs tabular-nums text-brand-text-light" data-licznik="message">
-                    0&nbsp;/&nbsp;2 000
+                    0 / {limity.message.toLocaleString('pl-PL')}
                   </span>
                 </div>
                 <textarea
@@ -133,15 +140,19 @@ const klasaPola =
                   name="message"
                   rows="5"
                   data-pole="message"
-                  data-limit="2000"
+                  data-limit={limity.message}
                   required
+                  aria-describedby="blad-message"
                   class={`${klasaPola} resize-none`}
                   placeholder="W czym możemy pomóc?"></textarea>
-                <p class="mt-1 text-xs text-red-500" data-blad="message" hidden></p>
+                <p class="mt-1 text-xs text-red-500" id="blad-message" data-blad="message" hidden></p>
               </div>
 
-              {/* Pułapka na boty - człowiek tego pola nie widzi i nie wypełni. */}
-              <input type="text" name="_hp" tabindex="-1" autocomplete="off" class="poza-ekranem" aria-hidden="true" />
+              {/* Pułapka na boty (INTEGRATION.md): poza ekranem i ukryta przed
+                  czytnikami, ale nie `type="hidden"` - takie pola boty pomijają. */}
+              <div class="poza-ekranem" aria-hidden="true">
+                <label>Nie wypełniaj <input type="text" name={POLE_PULAPKA} tabindex="-1" autocomplete="off" /></label>
+              </div>
 
               <div
                 class="flex items-start gap-3 px-4 py-3 rounded-xl bg-red-50 border border-red-200"
@@ -150,7 +161,10 @@ const klasaPola =
                 hidden
               >
                 <Ikona nazwa="alert-triangle" rozmiar={18} class="text-red-500 shrink-0 mt-0.5" />
-                <p class="text-sm text-red-700" data-formularz-blad-tekst></p>
+                <div class="min-w-0">
+                  <p class="text-sm text-red-700" data-formularz-blad-tekst></p>
+                  <p class="mt-1 text-[11px] text-red-700/80 break-all" data-formularz-kod hidden></p>
+                </div>
               </div>
 
               <div class="mt-4 px-4 py-3 rounded-xl bg-red-50 border border-red-200" data-formularz-podsumowanie hidden>
@@ -174,16 +188,16 @@ const klasaPola =
               <button
                 type="button"
                 data-formularz-wyslij
-                class="w-full font-semibold py-3.5 rounded-full flex items-center justify-center gap-2 transition-all duration-300 bg-brand-olive text-brand-dark hover:bg-brand-olive-dark hover:shadow-lg hover:shadow-brand-olive/20"
+                class="w-full font-semibold py-3.5 rounded-full flex items-center justify-center gap-2 transition-all duration-300 bg-brand-olive text-brand-dark hover:bg-brand-olive-dark hover:shadow-lg hover:shadow-brand-olive/20 disabled:opacity-60 disabled:cursor-not-allowed"
               >
                 <Ikona nazwa="send" rozmiar={16} />
                 Wyślij wiadomość
               </button>
 
+              {/* Klauzula informacyjna, nie zgoda: podstawą jest art. 6 ust. 1 lit. f
+                  RODO, więc tekst informuje, a nie każe niczego akceptować. */}
               <p class="text-[10px] text-brand-text-light text-center">
-                Wysyłając wiadomość akceptujesz&nbsp;
-                <a href="/polityka-prywatnosci/" class="text-brand-sage-jasny underline">Politykę Prywatności</a>.
-                Podst. prawna: art. 6 ust. 1 lit. f RODO.
+                {strona.rodo?.przed}&nbsp;<a href="/polityka-prywatnosci/" class="text-brand-sage-jasny underline">{strona.rodo?.link}</a>.
               </p>
             </form>
           </div>

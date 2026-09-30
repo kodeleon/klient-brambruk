@@ -66,7 +66,7 @@
   },
   "zdjecia": {
     "tytul": "Dodaj zdjęcia",
-    "opis": "Opcjonalnie - przyspiesza wycenę · max 2 plików, do 4 MB każdy",
+    "opis": "Opcjonalnie - przyspiesza wycenę · maks. 2 zdjęcia, zmniejszamy je automatycznie",
     "przycisk": "Wybierz pliki"
   },
   "podsumowanie": {
@@ -120,8 +120,8 @@
     ]
   },
   "rodo": {
-    "przed": "Wysyłając formularz akceptujesz",
-    "link": "Politykę Prywatności"
+    "przed": "Administratorem danych z formularza jest {firma.nazwaPelna}. Wykorzystujemy je, żeby odpowiedzieć na Twoje zapytanie (art. 6 ust. 1 lit. f RODO). Więcej o przetwarzaniu danych i Twoich prawach:",
+    "link": "Polityka prywatności"
   },
   "przyciski": {
     "wstecz": "Wstecz",
