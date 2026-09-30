@@ -1,6 +1,7 @@
 // Testy przez worker.fetch: routing, CORS, honeypot, pliki w multipart.
 
 import { afterEach, describe, expect, it, vi } from 'vitest'
+import { MAX_REQUEST_BYTES } from '../src/forms.ts'
 import { BASE, call, CONTACT_FIELDS, fakeImage, json, ORIGIN, postForm, postJson, QUOTE_FIELDS } from './helpers.ts'
 
 const MiB = 1024 * 1024
@@ -147,8 +148,18 @@ describe('pliki przez multipart', () => {
     expect(response.status).toBe(200)
   })
 
-  it('plik 4,1 MiB -> file_too_large', async () => {
-    const response = await send([fakeImage('jpeg', 'duzy.jpg', Math.round(4.1 * MiB))])
+  it('plik 1,1 MiB -> file_too_large', async () => {
+    const response = await send([fakeImage('jpeg', 'duzy.jpg', Math.round(1.1 * MiB))])
     expect(await json(response)).toMatchObject({ fields: { photos: 'file_too_large' } })
+  })
+
+  it('żądanie ponad MAX_REQUEST_BYTES -> 413 payload_too_large jako JSON z nagłówkami CORS', async () => {
+    const half = Math.ceil(MAX_REQUEST_BYTES / 2)
+    const response = await send([fakeImage('jpeg', 'a.jpg', half), fakeImage('jpeg', 'b.jpg', half)])
+    expect(response.status).toBe(413)
+    expect(response.headers.get('Content-Type')).toContain('application/json')
+    expect(response.headers.get('Access-Control-Allow-Origin')).toBe(ORIGIN)
+    expect(response.headers.get('Vary')).toBe('Origin')
+    expect(await json(response)).toMatchObject({ ok: false, error: 'payload_too_large' })
   })
 })

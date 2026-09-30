@@ -59,7 +59,7 @@ export const ZDJECIA = {
    * = `maxFileSize` pola `photos` w forms.ts. Front go nie sprawdza (ma niższy
    * `maksWyniku`) - dotyczy tylko odpowiedzi Workera `file_too_large`.
    */
-  maksWorkera: 4 * 1024 * 1024,
+  maksWorkera: 1024 * 1024,
   /** Co worker przyjmuje - rozpoznaje typ po bajtach, nie po nazwie. */
   typyWorkera: ['image/jpeg', 'image/png', 'image/webp'],
   /** Co przyjmuje pole pliku. HEIC/HEIF wychodzi z kompresji jako JPEG. */

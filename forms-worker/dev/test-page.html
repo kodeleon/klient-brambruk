@@ -127,7 +127,7 @@
       <label class="f">Opis projektu <small>description, max 5000, bez linków</small></label>
       <textarea name="description"></textarea>
 
-      <label class="f">Zdjęcia <small>photos, max 2, JPEG/PNG/WebP; front: wejście do 10 MB, po kompresji do 600 KB; worker: max 4 MiB</small></label>
+      <label class="f">Zdjęcia <small>photos, max 2, JPEG/PNG/WebP; front: wejście do 10 MB, po kompresji do 600 KB; worker: max 1 MiB</small></label>
       <input type="file" id="photo-input" accept="image/jpeg,image/png,image/webp,image/heic,image/heif" multiple>
       <div class="tools">
         <label><input type="checkbox" id="no-compress"> wyślij bez kompresji (test ścieżki awaryjnej, bez limitów rozmiaru na froncie)</label>
@@ -174,7 +174,7 @@ const TERRAIN = { flat: 'Teren płaski', uneven: 'Lekkie nierówności', slope: 
 
 const PHOTO_LIMITS = {
   maxFiles: 2,
-  maxFileSize: 4 * 1024 * 1024, // = maxFileSize w forms.ts (bajty); front ma niższy maxResult
+  maxFileSize: 1024 * 1024, // = maxFileSize w forms.ts (bajty); front ma niższy maxResult
   workerTypes: ['image/jpeg', 'image/png', 'image/webp'], // = accept w forms.ts
   // Limity frontu, nie z forms.ts (INTEGRATION.md pkt 4):
   maxInput: 10 * 1024 * 1024, // większego pliku nie dekodujemy

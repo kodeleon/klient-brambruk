@@ -60,14 +60,15 @@ Każdy etap = osobny commit, żeby dało się go sprawdzić i zmierzyć oddzieln
 
 ### Etap 3 - worker: twarde limity rozmiaru
 
-- [ ] `forms-worker/src/forms.ts`: `maxFileSize` 1 MiB, `MAX_REQUEST_BYTES` 3 MiB, komentarze
-- [ ] `src/config/formularze.ts`: `ZDJECIA.maksWorkera` 1 MiB
-- [ ] testy: `validate.test.ts`, `http.test.ts` (1,1 MiB + 413 z CORS), `parse.test.ts`
-- [ ] `README.md` (schemat przepływu, warianty (a)(b)(c), „Jeśli (b) się nie mieści"), `CLAUDE.md`, `INTEGRATION.md`, `dev/test-page.html`
-- [ ] opcjonalnie: generator plików do wariantów (b) i (c) w `forms-worker/dev/`
-- [ ] grep bez nieaktualnych wartości; `npm run typecheck`, `npm test`
-- [ ] punkt kontrolny 3 w pliku dla Marka
-- [ ] commit
+- [x] `forms-worker/src/forms.ts`: `maxFileSize` 1 MiB, `MAX_REQUEST_BYTES` 3 MiB, komentarze (+ komentarz w `submit.ts`)
+- [x] `src/config/formularze.ts`: `ZDJECIA.maksWorkera` 1 MiB
+- [x] testy: `validate.test.ts`, `http.test.ts` (1,1 MiB + 413 z CORS), `parse.test.ts` (`LIMIT` = `MAX_REQUEST_BYTES`)
+- [x] `README.md` (schemat przepływu, warianty (a)(b)(c), „Jeśli (b) się nie mieści"), `CLAUDE.md` (sekcje 3, 4 i 8), `INTEGRATION.md`, `dev/test-page.html`
+- [x] poza listą planu: `dev/preview-emails.ts` (wariant „długi" miał zdjęcia po 4 MB - nie przeszedłby walidacji)
+- [x] generator plików do wariantów (b) i (c): `dev/measure-files.ts`, `npm run measure:files`
+- [x] grep bez nieaktualnych wartości (trafienia to wartości aktualne - opis w raporcie); `npm run typecheck`, `npm test` (184/184)
+- [x] punkt kontrolny 3 w pliku dla Marka
+- [x] commit
 
 ### Zamknięcie części A
 

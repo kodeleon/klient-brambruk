@@ -109,3 +109,27 @@ oraz strona testowa workera `npm run dev:page` w `forms-worker/`):
       prawdziwej próby użyj workera lokalnego (zmienna builda
       `ADRES_API_FORMULARZY`, opis w `src/config/site.ts`) albo strony
       testowej workera.
+
+### Punkt kontrolny 3 - twarde limity workera (1 MiB na plik, 3 MiB na żądanie)
+
+Zmiana: `maxFileSize` 1 MiB i `MAX_REQUEST_BYTES` 3 MiB w
+`forms-worker/src/forms.ts`, kopia `ZDJECIA.maksWorkera` we froncie
+(komunikat `file_too_large` pokazuje teraz "1 MB"). Testy: dokładnie 1 MiB
+przechodzi, 1 MiB + 1 B -> `file_too_large`, żądanie ponad 3 MiB -> 413
+JSON z nagłówkami CORS.
+
+- [ ] **Seria (a)(b)(c) na workerze pomiarowym**, commit etapu 3. Pliki do
+      (b) i (c): `npm run measure:files` w `forms-worker/` (trafiają do
+      `dev/out/`), na stronie testowej zaznaczone "wyślij bez kompresji".
+      Warianty i oczekiwane odpowiedzi: README workera, "Pomiar CPU", krok 4.
+  - (a) 2 zdjęcia z telefonu z kompresją: maksimum z 5 prób ≤ ~6-7 ms,
+  - (b) `pomiar-b-1.jpg` + `pomiar-b-2.jpg`: < 10 ms,
+  - (c1) `pomiar-c1.jpg`: `400` z `photos: file_too_large`; (c2)
+    `pomiar-c2-1.jpg` + `pomiar-c2-2.jpg`: `413 payload_too_large` - w obu
+    JSON na stronie testowej, nie błąd sieci.
+- [ ] **Usuń workera pomiarowego** po ostatniej serii:
+      `npx wrangler delete --config wrangler.pomiar.jsonc`.
+- Jeśli (b) nie mieści się w 10 ms: cięcia na froncie nie pomogą (wariant
+  omija front). Zostaje niższy `maxFileSize` (+ `ZDJECIA.maksWorkera`)
+  albo Workers Paid (5 USD/mies.) - decyzja kosztowa klienta. README
+  workera, "Jeśli (b) się nie mieści".

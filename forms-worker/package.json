@@ -9,6 +9,7 @@
     "typecheck": "tsc --noEmit && tsc --noEmit -p dev",
     "types": "wrangler types --strict-vars=false",
     "preview:emails": "tsx dev/preview-emails.ts",
+    "measure:files": "tsx dev/measure-files.ts",
     "dev:page": "node dev/serve.mjs"
   },
   "devDependencies": {

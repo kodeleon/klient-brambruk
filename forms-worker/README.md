@@ -9,7 +9,7 @@ osobnym wdrożeniem - ten katalog go nie dotyczy.
 POST https://api.brambruk.pl/forms/contact   formularz kontaktowy
 POST https://api.brambruk.pl/forms/quote     kreator wyceny (do 2 zdjęć)
 
-CORS -> limit 10 MiB -> honeypot -> walidacja (pola, linki, pliki po sygnaturze)
+CORS -> limit 3 MiB -> honeypot -> walidacja (pola, linki, pliki po sygnaturze)
      -> rate limit -> mail HTML + tekst -> Resend -> jedna linia logu -> JSON
 ```
 
@@ -36,6 +36,7 @@ Integracja z frontem: [INTEGRATION.md](INTEGRATION.md). Kontekst i decyzje: [CLA
 | `src/log.ts`, `src/response.ts` | linia logu, kształt odpowiedzi |
 | `dev/test-page.html` | strona testowa z oboma formularzami + kompresja zdjęć (wzór dla frontu) |
 | `dev/preview-emails.ts` | podgląd maili do `dev/out/` |
+| `dev/measure-files.ts` | pliki do wariantów (b) i (c) pomiaru CPU (`npm run measure:files`) |
 | `reference/` | eksport starej wtyczki WP (materiał źródłowy, nieużywany w runtime) |
 
 ## Uruchomienie lokalne
@@ -234,10 +235,22 @@ nie wychodzi mailem.
    ten origin jest w `ALLOWED_ORIGINS` workera pomiarowego, `127.0.0.1` nie
    przejdzie). W polu "Adres workera" adres `*.workers.dev` z wyniku deployu.
 4. Wyślij po 5 razy formularz wyceny w każdym wariancie; pierwsze wywołanie
-   po wdrożeniu (zimny start) pomiń:
-   - **(a)** 2 zdjęcia z telefonu z kompresją (normalny tryb strony),
-   - **(b)** 2 zdjęcia po ~3,5-4 MB z zaznaczonym "wyślij bez kompresji"
-     (każde musi mieć mniej niż 4 MiB = 4 194 304 B, inaczej worker odrzuci je walidacją).
+   po wdrożeniu (zimny start) pomiń. Pliki do (b) i (c) robi
+   `npm run measure:files` (sygnatura JPEG + losowe bajty w `dev/out/`,
+   rozmiary liczone z limitów w `src/forms.ts`) - worker sprawdza tylko
+   sygnaturę, a dry run nic nie wysyła, więc do pomiaru CPU to wystarcza.
+   W (b) i (c) zaznacz "wyślij bez kompresji":
+   - **(a)** 2 zdjęcia z telefonu z kompresją (normalny tryb strony) -
+     `200`, outcome `dry_run`,
+   - **(b)** `pomiar-b-1.jpg` + `pomiar-b-2.jpg` (tuż pod `maxFileSize`
+     = 1 MiB) - najgorszy przypadek, jaki worker przyjmie; `200`,
+   - **(c1)** `pomiar-c1.jpg` (tuż nad 1 MiB) - `400 validation_failed`
+     z `photos: file_too_large`,
+   - **(c2)** `pomiar-c2-1.jpg` + `pomiar-c2-2.jpg` (razem ponad
+     `MAX_REQUEST_BYTES` = 3 MiB) - `413 payload_too_large`.
+
+   W (c1) i (c2) odpowiedź ma być JSON-em z nagłówkami CORS (strona testowa
+   pokazuje treść), a nie błędem sieci / 1102.
 5. Odczyt: Dashboard -> Workers & Pages -> `brambruk-forms-test` ->
    Observability. Przy każdym wywołaniu pole **CPU time**
    (`$workers.cpuTimeMs`); w tym samym wywołaniu nasza linia logu pokazuje
@@ -251,16 +264,20 @@ nie wychodzi mailem.
    npx wrangler delete --config wrangler.pomiar.jsonc
    ```
 
-**Kryterium:** wariant (a) musi mieścić się w 10 ms z zapasem (maksimum z 5
-prób najwyżej ~6-7 ms).
+**Kryterium:** wariant (a) mieści się w 10 ms z zapasem (maksimum z 5 prób
+najwyżej ~6-7 ms), wariant (b) poniżej 10 ms.
 
-**Jeśli (b) się nie mieści** (błąd "Exceeded CPU" w Metrics, na stronie
-testowej błąd sieci zamiast JSON): przy działającej kompresji na froncie
-ścieżka awaryjna jest rzadka, więc
+**Jeśli (b) się nie mieści** (outcome `exceededCpu`, na stronie testowej
+błąd sieci zamiast JSON): cięcia na froncie nie pomogą, bo wariant (b)
+omija front - to dokładnie to, co może wysłać bot albo przeglądarka bez
+działającej kompresji. Zostaje:
 
-- obniż twardy limit pliku `maxFileSize` w `src/forms.ts` (np. do `2 * 1024 * 1024`)
-  i ten sam limit na froncie, albo
-- przejdź na Workers Paid (limit CPU liczony w sekundach, nie milisekundach).
+- niższy twardy limit pliku `maxFileSize` w `src/forms.ts`, razem z kopią
+  we froncie (`ZDJECIA.maksWorkera` w `src/config/formularze.ts`) i
+  przeglądem `MAX_REQUEST_BYTES` - bez schodzenia poniżej celu kompresji
+  frontu (600 KB), albo
+- Workers Paid (5 USD/mies., limit CPU liczony w sekundach) - decyzja
+  kosztowa klienta.
 
 ## Checklista po wdrożeniu
 

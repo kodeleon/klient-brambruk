@@ -169,12 +169,12 @@ describe('pliki', () => {
       'too_many_files',
     ))
 
-  it('file_too_large (4,1 MiB przy limicie 4 MiB)', () => {
-    expect(photos.maxFileSize).toBe(4 * MiB)
-    expect(errorsOf(quote, validQuote, { photos: [file('jpeg', Math.round(4.1 * MiB))] }).photos).toBe('file_too_large')
+  it('file_too_large (1 MiB + 1 B przy limicie 1 MiB)', () => {
+    expect(photos.maxFileSize).toBe(MiB)
+    expect(errorsOf(quote, validQuote, { photos: [file('jpeg', MiB + 1)] }).photos).toBe('file_too_large')
   })
 
-  it('dokładnie 4 MiB przechodzi', () => expect(errorsOf(quote, validQuote, { photos: [file('jpeg', 4 * MiB)] })).toEqual({}))
+  it('dokładnie 1 MiB przechodzi', () => expect(errorsOf(quote, validQuote, { photos: [file('jpeg', MiB)] })).toEqual({}))
 
   it.each(['text', 'gif'] as const)('invalid_file_type: %s', (kind) =>
     expect(errorsOf(quote, validQuote, { photos: [file('jpeg'), file(kind)] }).photos).toBe('invalid_file_type'),

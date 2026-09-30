@@ -115,7 +115,8 @@ const VARIANTS: Record<string, Variant[]> = {
         email: `${'b'.repeat(180)}@example.com`,
         phone: '+48 (83) 343-11-22',
       },
-      files: { photos: [jpeg(4_000_000), jpeg(3_900_000)] },
+      // Największe pliki, jakie przyjmie walidacja (maxFileSize = 1 MiB = 1 048 576 B).
+      files: { photos: [jpeg(1_048_576), jpeg(1_000_000)] },
     },
   ],
 }

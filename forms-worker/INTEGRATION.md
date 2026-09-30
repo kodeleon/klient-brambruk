@@ -56,6 +56,7 @@ front trzeba przejrzeć według listy z punktu 2.
 - [ ] `value` każdej opcji = klucz opcji z `forms.ts`. Etykiety na froncie mogą się różnić, klucze nie.
 - [ ] Limity walidacji frontu ≤ limity workera: `maxlength` pól ≤ `maxLength`, liczba plików ≤ `maxFiles`, rozmiar pliku po kompresji ≤ `maxFileSize`. Front nie może przepuszczać tego, co worker odrzuci.
 - [ ] Celowy wyjątek w drugą stronę: cel kompresji zdjęć na froncie (600 KB, punkt 4) jest NIŻSZY niż `maxFileSize`. To nie walidacja danych, tylko budżet CPU workera (10 ms na żądanie, koszt rośnie z bajtami zdjęć) - nie „wyrównuj" go w górę do `maxFileSize`. `maxFileSize` jest siatką bezpieczeństwa dla wysyłki z pominięciem kompresji.
+- [ ] Limity rozmiaru zależą od siebie - jedno źródło prawdy jest opisane, nie współdzielone przez kod: `maxFileSize` pola `file` = kopia we froncie (u Brambruka `ZDJECIA.maksWorkera`, z niej komunikat `file_too_large`); `MAX_REQUEST_BYTES` ≥ `maxFiles` × `maxFileSize` + zapas na pola tekstowe i narzut multipart; cel kompresji frontu < `maxFileSize`. Zmiana jednego = przegląd pozostałych i nowy pomiar CPU (README workera, "Pomiar CPU").
 - [ ] Pola wymagane na froncie = pola z `required: true`. Sam ciąg spacji traktuj jak puste pole (worker robi `trim()`).
 - [ ] Zależności opcji odwzorowane: po zmianie pola nadrzędnego lista opcji pola zależnego się zmienia, a wybrana wartość, która nie pasuje do nowej grupy, jest czyszczona.
 - [ ] Walidacja e-maila i telefonu na froncie nie ostrzejsza niż `EMAIL_PATTERN` i `PHONE_PATTERN` (np. `+48 123 456 789` i `(83) 343-11-22` muszą przejść).
@@ -116,7 +117,7 @@ klikalne `tel:` i `mailto:`.
 | `too_long` | Tekst jest za długi - maksymalnie {maxLength} znaków. |
 | `invalid_option` | Wybierz opcję z listy. (pole zależne: Wybierz rodzaj pasujący do wybranej usługi.) |
 | `too_many_files` | Możesz dodać maksymalnie {maxFiles} zdjęcia. |
-| `file_too_large` | Zdjęcie jest za duże (maksymalnie {maxFileSize jako waga, np. „4 MB"}). Dodaj mniejsze zdjęcie. Przy działającej kompresji się nie zdarza (front ma niższy cel) - tylko przy wysyłce z jej pominięciem. |
+| `file_too_large` | Zdjęcie jest za duże (maksymalnie {maxFileSize jako waga, np. „1 MB"}). Dodaj mniejsze zdjęcie. Przy działającej kompresji się nie zdarza (front ma niższy cel) - tylko przy wysyłce z jej pominięciem. |
 | `invalid_file_type` | Dodaj zdjęcie w formacie JPG, PNG lub WebP. |
 | `links_blocked` | Usuń linki z treści (http://, https://, www.). Adres strony możesz opisać słowami. |
 

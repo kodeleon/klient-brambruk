@@ -95,7 +95,7 @@ Brak potwierdzenia do osoby wysyłającej. Brak zapisu zgłoszeń. Brak bazy dan
 7. **Zdjęcia:** maks. 2 pliki, JPEG/PNG/WebP. Front kompresuje zdjęcia
    w przeglądarce (dłuższy bok maks. 1600 px, JPEG 0,82, w razie potrzeby
    0,7) - worker dostaje najwyżej 600 KB na plik (INTEGRATION.md, pkt 4).
-   Worker i tak trzyma twardy limit 4 MB na plik
+   Worker i tak trzyma twardy limit 1 MiB na plik i 3 MiB na żądanie
    (ścieżka awaryjna, gdy kompresja w przeglądarce zawiedzie, i ochrona
    przed botami, które pomijają skrypt frontu). Worker NIE przetwarza
    obrazów - tylko waliduje i koduje base64 dla Resend.
@@ -140,7 +140,7 @@ w formacie `+48 123 456 789` musi przejść).
 | `timeline` | select | nie | - | |
 | `budget` | select | nie | - | |
 | `description` | textarea | nie | 5000 | blokada linków |
-| `photos` | file | nie | 2 pliki × 4 MB | `image/jpeg`, `image/png`, `image/webp` |
+| `photos` | file | nie | 2 pliki × 1 MiB | `image/jpeg`, `image/png`, `image/webp` |
 | `name` | text | tak | 100 | |
 | `email` | email | tak | 200 | |
 | `phone` | tel | nie | 20 | |
@@ -303,7 +303,7 @@ Zasady twarde:
 - `observability`: `{ enabled: true, head_sampling_rate: 1 }`.
 - `MAIL_DRY_RUN="true"`: pełna ścieżka łącznie z budową payloadu i kodowaniem
   załączników, bez ostatniego `fetch`. W logu `outcome: "dry_run"`.
-- Limit rozmiaru żądania: 10 MB (`Content-Length` przed parsowaniem).
+- Limit rozmiaru żądania: 3 MiB (`Content-Length` przed parsowaniem).
 
 `.dev.vars.example` (commitowany) z pustym `RESEND_API_KEY=` i
 `ALLOWED_ORIGINS` rozszerzonym o originy lokalne. `.dev.vars` w `.gitignore`.

@@ -19,7 +19,7 @@ export async function handleSubmission(
   form: FormDef,
   requestId: string,
 ): Promise<Outcome> {
-  // Najpierw konfiguracja: bez niej nie ma sensu parsować 10 MB.
+  // Najpierw konfiguracja: bez niej nie ma sensu parsować żądania ze zdjęciami.
   const config = readMailConfig(env)
   if (!config) return failure(500, 'not_configured')
 

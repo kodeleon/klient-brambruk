@@ -219,9 +219,13 @@ export const FORMS: Record<string, FormDef> = {
         type: 'file',
         label: 'Zdjęcia',
         maxFiles: 2,
-        // Front kompresuje zdjęcia do ~0,3-0,6 MB. 4 MiB to ścieżka awaryjna
-        // i ochrona przed botami. Razem z tekstem mieści się w limicie żądania 10 MiB.
-        maxFileSize: 4 * 1024 * 1024,
+        // 1 MiB (1 048 576 B). Twardy limit, nie cel: front kompresuje zdjęcia
+        // do 600 KB (INTEGRATION.md pkt 4), a ten limit chroni tylko przed wysyłką
+        // z pominięciem kompresji (boty, awaria skryptu). maxFiles × maxFileSize
+        // to najgorszy przypadek, jaki worker przyjmie i przepuści przez base64
+        // przy limicie 10 ms CPU - podnoszenie go wymaga pomiaru (README).
+        // Kopia we froncie: ZDJECIA.maksWorkera (src/config/formularze.ts).
+        maxFileSize: 1024 * 1024,
         accept: ['image/jpeg', 'image/png', 'image/webp'],
         attachmentName: 'zdjecie',
         countWords: ['zdjęcie', 'zdjęcia', 'zdjęć'],
@@ -246,5 +250,11 @@ export const FORMS: Record<string, FormDef> = {
   },
 }
 
-/** Twardy limit całego żądania (sprawdzany przed parsowaniem). */
-export const MAX_REQUEST_BYTES = 10 * 1024 * 1024
+/**
+ * Twardy limit całego żądania, sprawdzany przed parsowaniem: 3 MiB (3 145 728 B)
+ * = maxFiles × maxFileSize pola zdjęć plus zapas na pola tekstowe i narzut
+ * multipart. Większe żądanie dostaje 413 JSON z CORS, zanim worker zacznie
+ * parsować - zamiast przekroczenia CPU (błąd 1102 bez CORS). Zmiana limitu
+ * pliku = przegląd tej wartości.
+ */
+export const MAX_REQUEST_BYTES = 3 * 1024 * 1024

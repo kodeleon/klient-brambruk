@@ -1,10 +1,10 @@
 import { describe, expect, it } from 'vitest'
-import { FORMS } from '../src/forms.ts'
+import { FORMS, MAX_REQUEST_BYTES } from '../src/forms.ts'
 import { normalizeText, parseRequest, splitMulti, type ParsedInput } from '../src/parse.ts'
 import { BASE, call, fakeImage, json, ORIGIN, postForm, postJson, QUOTE_FIELDS } from './helpers.ts'
 
 const quote = FORMS.quote!
-const LIMIT = 10 * 1024 * 1024
+const LIMIT = MAX_REQUEST_BYTES
 
 async function parseOk(request: Request, maxBytes = LIMIT): Promise<ParsedInput> {
   const result = await parseRequest(request, quote, maxBytes)
@@ -154,7 +154,7 @@ describe('Content-Type i rozmiar', () => {
     expect(response.status).toBe(400)
   })
 
-  it('za duże żądanie (Content-Length > 10 MiB) -> 413 payload_too_large', async () => {
+  it('za duże żądanie (Content-Length > MAX_REQUEST_BYTES) -> 413 payload_too_large', async () => {
     const big = fakeImage('jpeg', 'big.jpg', LIMIT + 1)
     const response = await call(postForm('quote', { ...QUOTE_FIELDS, photos: big }))
     expect(response.status).toBe(413)
