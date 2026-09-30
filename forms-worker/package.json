@@ -17,11 +17,11 @@
     "tsx": "^4.23.15",
     "typescript": "^7.0.2",
     "vitest": "^4.1.11",
-    "wrangler": "^4.141.0"
+    "wrangler": "^4.144.0"
   },
   "overrides": {
     "@cloudflare/vitest-pool-workers": {
-      "miniflare": "5.20260925.0-alpha",
+      "miniflare": "5.20260926.1-alpha",
       "wrangler": "$wrangler"
     }
   }
