@@ -1,13 +1,13 @@
 // Obsługa zgłoszenia - kolejne kroki z CLAUDE.md sekcja 2:
 // konfiguracja -> limit rozmiaru i parsowanie -> honeypot -> walidacja (z linkami
-// i plikami) -> rate limit -> render maila -> payload z base64 -> wysyłka.
+// i plikami) -> rate limit -> render maila -> body z base64 -> wysyłka.
 
 import { renderEmail } from './email/render.ts'
 import { BRAND } from './email/layout.ts'
 import { MAX_REQUEST_BYTES, type FormDef } from './forms.ts'
 import { parseRequest } from './parse.ts'
 import { checkRateLimit } from './ratelimit.ts'
-import { buildPayload, readMailConfig, sendEmail } from './resend.ts'
+import { buildBody, readMailConfig, sendEmail } from './resend.ts'
 import { failure, success, type Outcome } from './response.ts'
 import { isHoneypotTripped } from './spam.ts'
 import { validate } from './validate.ts'
@@ -51,9 +51,10 @@ export async function handleSubmission(
   }
 
   const email = renderEmail(form, data, { requestId, logoUrl: config.logoUrl ?? BRAND.defaultLogoUrl })
-  const body = JSON.stringify(buildPayload(config, email, { replyTo: senderEmail, form: slug, attachments }))
+  // Kolejność celowa: body (z base64 załączników) powstaje PRZED gałęzią dry run.
+  // Dry run służy do pomiaru CPU, więc wykonuje całą pracę poza wywołaniem Resend.
+  const body = buildBody(config, email, { replyTo: senderEmail, form: slug, attachments })
 
-  // Dry run: cała praca (render, base64, JSON) wykonana, brak tylko wywołania Resend.
   if (config.dryRun || !config.apiKey) return success('dry_run', { ...stats, warnings })
 
   const sent = await sendEmail(body, config.apiKey, requestId)

@@ -44,11 +44,13 @@ export interface ResendPayload {
   attachments?: { filename: string; content: string }[]
 }
 
-export function buildPayload(
-  config: MailConfig,
-  email: RenderedEmail,
-  options: { replyTo: string | undefined; form: string; attachments: Attachment[] },
-): ResendPayload {
+export interface PayloadOptions {
+  replyTo: string | undefined
+  form: string
+  attachments: Attachment[]
+}
+
+export function buildPayload(config: MailConfig, email: RenderedEmail, options: PayloadOptions): ResendPayload {
   const payload: ResendPayload = {
     from: config.from,
     to: config.to,
@@ -65,11 +67,32 @@ export function buildPayload(
 }
 
 /**
+ * Body żądania do Resend: ten sam JSON co JSON.stringify(buildPayload(...)),
+ * ale base64 załączników nie przechodzi przez JSON.stringify - to setki KB
+ * tekstu, które stringify skanowałby i kopiował drugi raz przy limicie 10 ms CPU.
+ * Część bez załączników (dane od użytkownika) nadal escapuje JSON.stringify,
+ * a załączniki są doklejane przed zamykającym `}`. Wynik to jeden string,
+ * kodowany do UTF-8 raz, przez fetch.
+ */
+export function buildBody(config: MailConfig, email: RenderedEmail, options: PayloadOptions): string {
+  const head = JSON.stringify(buildPayload(config, email, { ...options, attachments: [] }))
+  if (!options.attachments.length) return head
+  const attachments = options.attachments.map(
+    (a) => `{"filename":${JSON.stringify(a.filename)},"content":"${toBase64(a.bytes)}"}`,
+  )
+  return `${head.slice(0, -1)},"attachments":[${attachments.join(',')}]}`
+}
+
+/**
  * Base64 załącznika. Uint8Array.prototype.toBase64 (TC39, natywnie w V8/workerd
  * przy compatibility_date 2026-09-14, bez flagi nodejs_compat): jedno wywołanie
  * w C++, bez pętli w JS. Alternatywy są droższe w CPU: Buffer wymaga
  * nodejs_compat i warstwy polyfilli, a btoa(String.fromCharCode(...)) tworzy
  * pośredni "binarny" string i kopiuje dane dwa razy.
+ *
+ * Wynik ma tylko znaki A-Z a-z 0-9 + / = i żaden z nich nie wymaga escapowania
+ * w JSON - na tym opiera się buildBody, który wstawia go do body wprost.
+ * Inne kodowanie albo alfabet: najpierw sprawdź to założenie.
  */
 function toBase64(bytes: Uint8Array): string {
   return bytes.toBase64()

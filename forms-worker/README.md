@@ -32,7 +32,7 @@ Integracja z frontem: [INTEGRATION.md](INTEGRATION.md). Kontekst i decyzje: [CLA
 | `src/ratelimit.ts` | bindingi `RL_IP` i `RL_EMAIL` |
 | `src/cors.ts` | lista originów, nagłówki CORS |
 | `src/email/html.ts`, `render.ts` | escapowanie, generyczny renderer `{ subject, html, text }` |
-| `src/resend.ts` | wywołanie Resend, base64 załączników |
+| `src/resend.ts` | wywołanie Resend, base64 załączników, body składane z fragmentów |
 | `src/log.ts`, `src/response.ts` | linia logu, kształt odpowiedzi |
 | `dev/test-page.html` | strona testowa z oboma formularzami + kompresja zdjęć (wzór dla frontu) |
 | `dev/preview-emails.ts` | podgląd maili do `dev/out/` |
@@ -203,7 +203,11 @@ ginie przed zapisem linii logu, mail nie wychodzi.
 
 Koszt rośnie z bajtami zdjęć: parsowanie multipart, kopia pliku do
 `Uint8Array`, base64, złożenie body do Resend i jego kodowanie do UTF-8,
-sprzątanie dużych stringów.
+sprzątanie dużych stringów. Worker ogranicza swoją część: base64 liczy
+natywnie (`Uint8Array.prototype.toBase64`), a body składa z fragmentów
+(`buildBody` w `src/resend.ts`) - treść maila przechodzi przez
+`JSON.stringify`, base64 załączników jest doklejany wprost, bez drugiego
+przebiegu przez `JSON.stringify`, i całość trafia do `fetch` jako jeden string.
 
 Pomiar idzie na osobnym workerze `brambruk-forms-test`
 (`wrangler.pomiar.jsonc`, adres `*.workers.dev`, zawsze `MAIL_DRY_RUN`),

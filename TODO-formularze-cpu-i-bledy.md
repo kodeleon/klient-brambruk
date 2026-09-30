@@ -34,13 +34,13 @@ Każdy etap = osobny commit, żeby dało się go sprawdzić i zmierzyć oddzieln
 
 ### Etap 1 - worker: body do Resend bez `JSON.stringify` na base64
 
-- [ ] `src/resend.ts`: funkcja budująca body z fragmentów, komentarz przy `toBase64`
-- [ ] `src/submit.ts`: użycie nowej funkcji; komentarz o kolejności przed dry run
-- [ ] `test/send.test.ts`: równoważność (0/1/2 załączniki), nazwa pliku ze znakami specjalnymi, `Content-Type`, dry run buduje body
-- [ ] `README.md`: zdanie w sekcji pomiaru, co robi worker
-- [ ] `npm run typecheck`, `npm test`; linia logu bez zmian
-- [ ] punkt kontrolny 1 w pliku dla Marka
-- [ ] commit
+- [x] `src/resend.ts`: funkcja budująca body z fragmentów (`buildBody`), komentarz przy `toBase64`
+- [x] `src/submit.ts`: użycie nowej funkcji; komentarz o kolejności przed dry run
+- [x] `test/send.test.ts`: równoważność (0/1/2/3 załączniki, także string 1:1), nazwa pliku ze znakami specjalnymi, `Content-Type`, dry run buduje body (spy na `Uint8Array.prototype.toBase64`)
+- [x] `README.md`: zdanie w sekcji pomiaru, co robi worker
+- [x] `npm run typecheck`, `npm test` (183/183); linia logu bez zmian (`log.test.ts` zielony)
+- [x] punkt kontrolny 1 w pliku dla Marka
+- [x] commit
 
 ### Etap 2 - front: kompresja i limity zdjęć
 

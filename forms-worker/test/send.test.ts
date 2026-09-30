@@ -1,7 +1,9 @@
 // Wysyłka, dry run, konfiguracja, rate limit. Resend zawsze mockowany (spy na fetch).
 
 import { afterEach, beforeEach, describe, expect, it, vi, type MockInstance } from 'vitest'
-import type { ResendPayload } from '../src/resend.ts'
+import type { RenderedEmail } from '../src/email/render.ts'
+import type { Attachment } from '../src/files.ts'
+import { buildBody, buildPayload, type MailConfig, type ResendPayload } from '../src/resend.ts'
 import { call, CONTACT_FIELDS, fakeImage, json, postForm, QUOTE_FIELDS, realRateLimits } from './helpers.ts'
 
 const SEND = { MAIL_DRY_RUN: 'false', RESEND_API_KEY: 're_test_key', MAIL_TO: 'kontakt@brambruk.pl' }
@@ -95,6 +97,58 @@ describe('payload do Resend', () => {
     const payload = JSON.parse(fetchSpy.mock.calls[0]![1]!.body as string) as ResendPayload
     expect(payload.html).toContain('src="https://cdn.example/logo.png"')
   })
+
+  it('body jako string z jawnym Content-Type: application/json (bez niego fetch wysłałby text/plain)', async () => {
+    await call(postForm('quote', { ...QUOTE_FIELDS, photos: [fakeImage('jpeg', 'a.jpg', 1500)] }), SEND)
+    const init = fetchSpy.mock.calls[0]![1]!
+    expect(typeof init.body).toBe('string')
+    expect(new Headers(init.headers).get('Content-Type')).toBe('application/json')
+  })
+})
+
+describe('buildBody - body składane z fragmentów', () => {
+  const config: MailConfig = {
+    from: 'Brambruk - Kontakt <kontakt@brambruk.pl>',
+    to: ['kontakt@brambruk.pl', 'biuro@brambruk.pl'],
+    logoUrl: undefined,
+    dryRun: false,
+    apiKey: 're_test_key',
+  }
+  // Treść z cudzysłowami, ukośnikami, nowymi liniami, U+2028 i polskimi znakami -
+  // tę część nadal escapuje JSON.stringify.
+  const email: RenderedEmail = {
+    subject: 'Nowe zapytanie od "Jan" \\ Łódź',
+    html: '<p>Zażółć "gęślą" jaźń</p>\n<p>\u2028</p>',
+    text: 'Linia 1\nLinia 2\t\\koniec "cytat"',
+  }
+  // Rozmiary dają base64 bez dopełnienia, z "==" i z "="; bajt 0xfb daje w base64 znaki + i /.
+  const attachment = (filename: string, size: number): Attachment => ({
+    filename,
+    mime: 'image/jpeg',
+    bytes: new Uint8Array(size).fill(0xfb),
+  })
+  const attachments = [attachment('zdjecie-1.jpg', 3000), attachment('zdjecie-2.png', 2002), attachment('zdjecie-3.webp', 2003)]
+
+  it.each([0, 1, 2, 3])('%i załączników: JSON.parse(body) = obiekt w starym kształcie', (count) => {
+    const options = { replyTo: 'jan@example.com', form: 'quote', attachments: attachments.slice(0, count) }
+    const body = buildBody(config, email, options)
+    expect(JSON.parse(body)).toStrictEqual(buildPayload(config, email, options))
+    expect(body).toBe(JSON.stringify(buildPayload(config, email, options)))
+  })
+
+  it('bez reply_to: pole pominięte tak samo jak w buildPayload', () => {
+    const options = { replyTo: undefined, form: 'contact', attachments: attachments.slice(0, 1) }
+    const payload = JSON.parse(buildBody(config, email, options)) as ResendPayload
+    expect(payload).not.toHaveProperty('reply_to')
+    expect(payload).toStrictEqual(buildPayload(config, email, options))
+  })
+
+  it('nazwa pliku z ", \\, nową linią i polskimi znakami -> poprawny JSON, nazwa odzyskana 1:1', () => {
+    const filename = 'zdjęcie "ogród"\\C:\\tmp\nŻółw źdźbło.jpg'
+    const body = buildBody(config, email, { replyTo: undefined, form: 'quote', attachments: [attachment(filename, 10)] })
+    const payload = JSON.parse(body) as ResendPayload
+    expect(payload.attachments).toEqual([{ filename, content: new Uint8Array(10).fill(0xfb).toBase64() }])
+  })
 })
 
 describe('błędy Resend -> 502 bez szczegółów', () => {
@@ -154,6 +208,19 @@ describe('MAIL_DRY_RUN i konfiguracja', () => {
     expect(await json(response)).toMatchObject({ ok: true })
     expect(fetchSpy).not.toHaveBeenCalled()
     expect(lastLog()).toMatchObject({ outcome: 'dry_run', status: 200, files: 2, bytes: 5000 })
+  })
+
+  // DECYZJA: zamiast spy na module resend.ts (eksport ESM w workerd nie daje się
+  // podmienić, a submit.ts i tak trzyma własne powiązanie) - spy na metodzie
+  // prototypu, której body używa. Sprawdza to, co ważne dla pomiaru CPU:
+  // base64 załączników liczy się także w dry run.
+  it('dry run buduje body: base64 każdego załącznika policzone mimo braku wysyłki', async () => {
+    const toBase64 = vi.spyOn(Uint8Array.prototype, 'toBase64')
+    const photos = [fakeImage('jpeg', 'a.jpg', 4000), fakeImage('webp', 'b.webp', 1000)]
+    const response = await call(postForm('quote', { ...QUOTE_FIELDS, photos }), { ...SEND, MAIL_DRY_RUN: 'true' })
+    expect(response.status).toBe(200)
+    expect(fetchSpy).not.toHaveBeenCalled()
+    expect(toBase64).toHaveBeenCalledTimes(2)
   })
 
   it('dry run bez sekretu MAIL_TO -> 500 not_configured', async () => {
