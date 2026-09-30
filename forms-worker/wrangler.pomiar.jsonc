@@ -1,0 +1,73 @@
+{
+  // TYLKO POMIAR CPU (README, "Pomiar CPU"). Worker `brambruk-forms-test`
+  // pod adresem *.workers.dev, na tym samym koncie co produkcja. Ruch
+  // wyłącznie od Marka ze strony testowej (`npm run dev:page`). Po serii
+  // pomiarów usuwasz WORKERA, nie ten plik:
+  //   npx wrangler delete --config wrangler.pomiar.jsonc
+  //
+  // Dlaczego osobny plik: `wrangler deploy --name ...` na wrangler.jsonc
+  // próbowałby podpiąć api.brambruk.pl (custom_domain) pod worker testowy,
+  // a blok `env.pomiar` zmieniałby plik produkcyjny - przy czym `vars`
+  // i `ratelimits` i tak nie są dziedziczone między środowiskami.
+  //
+  // ⚠️ Bindingi (zmienne, sekrety, nazwy rate limitów) muszą się zgadzać
+  // z wrangler.jsonc: typy `Env` generuje `npm run types` wyłącznie z pliku
+  // produkcyjnego.
+  //
+  // DECYZJA: plik zostaje w repo - pomiar jest powtarzalny przy każdej
+  // zmianie workera. Po pomiarze usuwa się worker na Cloudflare.
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "brambruk-forms-test",
+  "main": "src/index.ts",
+  "account_id": "56eddaf0d952ff77198c8210a6f0b8ca",
+  "compatibility_date": "2026-09-14",
+  // Bez `routes`: jedyny adres to *.workers.dev.
+  "workers_dev": true,
+  "preview_urls": false,
+
+  "vars": {
+    // Tylko strona testowa workera (`npm run dev:page`), dokładnie ten origin.
+    "ALLOWED_ORIGINS": "http://localhost:4321",
+    "MAIL_FROM": "Brambruk - Kontakt <kontakt@brambruk.pl>",
+    "LOGO_URL": "https://brambruk.pl/assets/logo/znak-144.png",
+    // Zawsze "true": cała praca (walidacja, render, base64, body do Resend)
+    // bez samego wywołania Resend. Nic nie wychodzi mailem.
+    "MAIL_DRY_RUN": "true"
+  },
+
+  // Te same sekrety co w produkcji, z wartościami zastępczymi (README,
+  // "Pomiar CPU"). Dry run nie używa klucza Resend, ale MAIL_TO musi być
+  // ustawiony - bez niego worker odpowiada 500 not_configured.
+  "secrets": { "required": ["RESEND_API_KEY", "MAIL_TO"] },
+
+  // Te same nazwy bindingów (kod ich oczekuje), ale własne liczniki i wyższy
+  // limit. Rate limit działa po walidacji, a przed renderem i base64: żądanie
+  // odrzucone 429 nie mierzy kosztownej części, a seria wysyłek z jednego IP
+  // i jednego adresu e-mail szybko przekracza produkcyjne 5 i 3 na minutę.
+  // namespace_id: UNIKALNY na koncie, inny niż 1001/1002 produkcji - wspólny
+  // numer to wspólny licznik z produkcją.
+  "ratelimits": [
+    {
+      "name": "RL_IP",
+      "namespace_id": "1901",
+      "simple": { "limit": 100, "period": 60 }
+    },
+    {
+      "name": "RL_EMAIL",
+      "namespace_id": "1902",
+      "simple": { "limit": 100, "period": 60 }
+    }
+  ],
+
+  "observability": {
+    "enabled": true,
+    "head_sampling_rate": 1,
+    "logs": {
+      // Wyłącznie tutaj. CPU pojedynczego wywołania ($workers.cpuTimeMs)
+      // i outcome `exceededCpu` są tylko w logach wywołań. Zapisują one IP
+      // i obiekt `cf` - dopuszczalne, bo ruch pochodzi tylko od Marka.
+      // Produkcja ma je wyłączone (wrangler.jsonc).
+      "invocation_logs": true
+    }
+  }
+}

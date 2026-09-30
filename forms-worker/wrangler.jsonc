@@ -67,8 +67,9 @@
       // projektu: IP nigdzie nie jest zapisywane. Zostają tylko nasze
       // własne linie logu (src/log.ts), bez danych osobowych.
       // Błędy przekroczenia CPU widać w zakładce Metrics workera.
-      // Do pomiaru CPU (README, faza pomiaru) można włączyć na chwilę
-      // na wdrożeniu testowym - ruch testowy pochodzi tylko od nas.
+      // Pomiar CPU pojedynczych wywołań idzie na osobnym workerze
+      // z wrangler.pomiar.jsonc (README, "Pomiar CPU") - tylko tam logi
+      // wywołań są włączone. Tutaj nie włączaj ich nawet na chwilę.
       "invocation_logs": false
     }
   }

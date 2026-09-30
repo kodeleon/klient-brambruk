@@ -22,6 +22,7 @@ Integracja z frontem: [INTEGRATION.md](INTEGRATION.md). Kontekst i decyzje: [CLA
 | `src/forms.ts` | **definicje formularzy** (pola, limity, opcje, sekcje maila, temat) - jedyny plik z danymi projektu |
 | `src/email/layout.ts` | **wygląd maila** (kolory, logo, stopka, teksty stałe) |
 | `wrangler.jsonc` | **adresy, originy, rate limit, logi** |
+| `wrangler.pomiar.jsonc` | worker pomiarowy CPU (`*.workers.dev`, dry run) - tylko do sekcji "Pomiar CPU" |
 | `src/index.ts` | router: `/forms/:slug`, OPTIONS, 404/405/403 |
 | `src/submit.ts` | kolejne kroki obsługi zgłoszenia |
 | `src/parse.ts` | multipart/JSON -> wartości i pliki, normalizacja, limit rozmiaru |
@@ -183,36 +184,68 @@ lokalizację osoby wysyłającej - a zasada projektu brzmi: IP nigdzie nie jest
 zapisywane. Liczbę błędów, w tym przekroczenia CPU, i percentyle czasu CPU
 widać w zakładce **Metrics** workera, bez zapisu danych żądań.
 
+Jedyny wyjątek to worker pomiarowy `brambruk-forms-test`
+(`wrangler.pomiar.jsonc`): tylko logi wywołań pokazują CPU pojedynczego
+żądania. Trafia do niego wyłącznie Twój ruch ze strony testowej, a po serii
+pomiarów worker jest usuwany (sekcja "Pomiar CPU").
+
 `npx wrangler tail` pokazuje ruch na żywo razem z metadanymi żądania (także
 IP) - nic nie zapisuje, ale używaj tylko do diagnozy.
 
 ## Pomiar CPU na planie Free (10 ms na żądanie)
 
-Kod robi niewiele (walidacja, render, base64 natywnym
-`Uint8Array.prototype.toBase64`), ale limit 10 ms trzeba sprawdzić na
-Cloudflare - lokalny `wrangler dev` nie mierzy CPU tak jak produkcja.
-Nic przy tym nie wychodzi mailem (`MAIL_DRY_RUN`).
+Limit 10 ms trzeba sprawdzić na Cloudflare - lokalny `wrangler dev` nie
+mierzy CPU tak jak produkcja, a worker nie zmierzy własnego CPU (w Workers
+zegar stoi podczas pracy CPU, więc `ms` w logu to głównie czekanie na
+Resend). Czas CPU podaje tylko platforma. Przekroczenie kończy się błędem
+Cloudflare 1102 bez nagłówków CORS: przeglądarka widzi błąd sieci, worker
+ginie przed zapisem linii logu, mail nie wychodzi.
 
-Pomiar robi się na `api.brambruk.pl`, więc **tylko przed przełączeniem
-domeny** (formularze produkcyjne w tym czasie nie wysyłają maili).
+Koszt rośnie z bajtami zdjęć: parsowanie multipart, kopia pliku do
+`Uint8Array`, base64, złożenie body do Resend i jego kodowanie do UTF-8,
+sprzątanie dużych stringów.
 
-1. Tymczasowo w `wrangler.jsonc` w `observability.logs` ustaw
-   `"invocation_logs": true` (ruch testowy pochodzi tylko od Ciebie, a bez
-   tego CPU widać tylko zbiorczo w Metrics).
-2. `npx wrangler deploy --var MAIL_DRY_RUN:true --var "ALLOWED_ORIGINS:https://brambruk.pl,http://localhost:4321"`
-3. `npm run dev:page`, na stronie testowej w polu "Adres workera" wpisz
-   `https://api.brambruk.pl`.
-4. Wyślij po 5 razy formularz wyceny:
+Pomiar idzie na osobnym workerze `brambruk-forms-test`
+(`wrangler.pomiar.jsonc`, adres `*.workers.dev`, zawsze `MAIL_DRY_RUN`),
+nie na `api.brambruk.pl` - produkcja działa w tym czasie bez zmian i nic
+nie wychodzi mailem.
+
+1. **Profil lokalny** (proporcje, nie wartości): `npm run dev`, w terminalu
+   klawisz `d` -> DevTools -> Performance (w starszych wersjach: Profiler)
+   -> nagrywanie -> wysyłka wyceny z 2 zdjęciami ze strony testowej -> stop
+   -> zapis profilu `.cpuprofile` do `dev/out/` (katalog jest w `.gitignore`).
+   Profil pokazuje, które kroki ważą najwięcej; liczby z komputera nie są
+   liczbami z Cloudflare.
+2. **Worker pomiarowy** (z tego katalogu). Sekrety z wartościami
+   zastępczymi - dry run nie używa klucza, a `MAIL_TO` musi tylko istnieć:
+
+   ```bash
+   npx wrangler secret put RESEND_API_KEY --config wrangler.pomiar.jsonc   # np. re_pomiar
+   npx wrangler secret put MAIL_TO --config wrangler.pomiar.jsonc          # np. pomiar@example.invalid
+   npx wrangler deploy --config wrangler.pomiar.jsonc
+   ```
+
+   Pierwszy `secret put` zapyta, czy założyć workera - tak.
+3. `npm run dev:page` i strona testowa pod `http://localhost:4321` (dokładnie
+   ten origin jest w `ALLOWED_ORIGINS` workera pomiarowego, `127.0.0.1` nie
+   przejdzie). W polu "Adres workera" adres `*.workers.dev` z wyniku deployu.
+4. Wyślij po 5 razy formularz wyceny w każdym wariancie; pierwsze wywołanie
+   po wdrożeniu (zimny start) pomiń:
    - **(a)** 2 zdjęcia z telefonu z kompresją (normalny tryb strony),
    - **(b)** 2 zdjęcia po ~3,5-4 MB z zaznaczonym "wyślij bez kompresji"
      (każde musi mieć mniej niż 4 MiB = 4 194 304 B, inaczej worker odrzuci je walidacją).
-5. Dashboard -> `brambruk-forms` -> Observability: przy każdym wywołaniu
-   pole **CPU time** (`$workers.cpuTimeMs`); w tym samym wywołaniu nasza linia
-   logu pokazuje `bytes`, więc wiadomo, który wariant to był. Pierwsze
-   wywołanie po wdrożeniu (zimny start) pomiń. Zbiorczo (percentyle): zakładka Metrics.
-6. Przywróć `invocation_logs` na `false` i wdróż ponownie (zwykły
-   `npx wrangler deploy` albo z `--var` originu testowego, jeśli strona
-   jest jeszcze na `*.workers.dev`).
+5. Odczyt: Dashboard -> Workers & Pages -> `brambruk-forms-test` ->
+   Observability. Przy każdym wywołaniu pole **CPU time**
+   (`$workers.cpuTimeMs`); w tym samym wywołaniu nasza linia logu pokazuje
+   `bytes`, więc wiadomo, który wariant to był. Przekroczenie limitu widać
+   jako outcome `exceededCpu` (na stronie testowej: błąd sieci zamiast JSON).
+   Zbiorczo (percentyle): zakładka Metrics.
+6. Po ostatniej serii usuń workera (razem z sekretami i logami wywołań;
+   plik konfiguracji zostaje w repo na następny pomiar):
+
+   ```bash
+   npx wrangler delete --config wrangler.pomiar.jsonc
+   ```
 
 **Kryterium:** wariant (a) musi mieścić się w 10 ms z zapasem (maksimum z 5
 prób najwyżej ~6-7 ms).
@@ -250,6 +283,8 @@ Skopiuj cały katalog i zmień tylko:
 - `wrangler.jsonc` - `name`, `account_id`, `vars` (originy, nadawca, logo),
   `namespace_id` rate limitów, `routes` (sekrety `RESEND_API_KEY` i `MAIL_TO`
   ustawiasz od nowa przez `wrangler secret put`);
+- `wrangler.pomiar.jsonc` - `name`, `account_id`, `vars` i `namespace_id`
+  tak samo (numery inne niż w `wrangler.jsonc`);
 - `.dev.vars.example` - originy lokalne;
 - `dev/test-page.html` - pola formularzy (przepisane z `forms.ts`);
 - testy z danymi formularzy: `test/helpers.ts` (`QUOTE_FIELDS`, `CONTACT_FIELDS`)
