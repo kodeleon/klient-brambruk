@@ -497,6 +497,7 @@ const formularze = defineCollection({
           links_blocked: komunikat,
           invalid_number: komunikat,
           photo_failed: komunikat,
+          photo_input_too_large: komunikat,
           photo_duplicate: komunikat,
         })
         .strict(),
@@ -523,6 +524,10 @@ const formularze = defineCollection({
           pelno: komunikat,
           liczba: z.object({ one: komunikat, few: komunikat, many: komunikat }).strict(),
           brak: komunikat,
+          /** Krótki powód na karcie zdjęcia, którego kompresja nie dodała (`src/scripts/zdjecia.ts`). */
+          nieDodano: z.object({ photo_input_too_large: komunikat, photo_failed: komunikat }).strict(),
+          /** Dopisek w podsumowaniu kreatora, np. „1 zdjęcie · 1 nie dodano". */
+          nieDodaneLiczba: komunikat,
         })
         .strict(),
     })
@@ -587,6 +592,8 @@ const strony = defineCollection({
           opis: tekst.optional(),
           opisPrzed: tekst.optional(),
           opisMocny: tekst.optional(),
+          /** /wycena/: dopisek przed adresem e-mail, gdy kreator nie dodał któregoś zdjęcia. */
+          zdjeciaPrzed: tekst.optional(),
           etykietaOsi: tekst.optional(),
           przycisk: tekst.optional(),
         })

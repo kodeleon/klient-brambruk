@@ -93,8 +93,9 @@ Brak potwierdzenia do osoby wysyłającej. Brak zapisu zgłoszeń. Brak bazy dan
    ustala Cloudflare (3 dni na planie Free, 7 na Paid) - nie budujemy
    własnej tabeli ani crona. W logach NIE MA danych osobowych (sekcja 6).
 7. **Zdjęcia:** maks. 2 pliki, JPEG/PNG/WebP. Front kompresuje zdjęcia
-   w przeglądarce (dłuższy bok maks. 2000 px) - worker dostaje zwykle
-   ~0,3-0,6 MB na plik. Worker i tak trzyma twardy limit 4 MB na plik
+   w przeglądarce (dłuższy bok maks. 1600 px, JPEG 0,82, w razie potrzeby
+   0,7) - worker dostaje najwyżej 600 KB na plik (INTEGRATION.md, pkt 4).
+   Worker i tak trzyma twardy limit 4 MB na plik
    (ścieżka awaryjna, gdy kompresja w przeglądarce zawiedzie, i ochrona
    przed botami, które pomijają skrypt frontu). Worker NIE przetwarza
    obrazów - tylko waliduje i koduje base64 dla Resend.

@@ -44,19 +44,19 @@ Każdy etap = osobny commit, żeby dało się go sprawdzić i zmierzyć oddzieln
 
 ### Etap 2 - front: kompresja i limity zdjęć
 
-- [ ] `src/config/formularze.ts`: `ZDJECIA` w docelowej strukturze (bok, jakości, limit wejścia / wyniku / workera) + komentarz o wyjątku od zasady „front nie ostrzejszy"
-- [ ] `src/scripts/formularz.ts`: wspólny formatter wagi, `file_too_large` z wagą, odnośniki w komunikatach przy zdjęciach
-- [ ] `src/scripts/zdjecia.ts`: nowy przepływ (typ -> duplikat -> liczba -> > 10 MB -> 1600 px / 0,82 -> 0,7 -> awaria), karty „nie dodano", licznik niedodanych
-- [ ] `src/scripts/wycena.ts`: podsumowanie z niedodanymi, dopisek na ekranie sukcesu
-- [ ] `src/pages/wycena.astro`: ukryty dopisek w bloku sukcesu, szablon ikony karty
-- [ ] `src/content/formularze.json` + `src/content.config.ts`: `photo_input_too_large`, nowe `photo_failed`, `file_too_large` z wagą, teksty „nie dodano"
-- [ ] `src/content/strony/wycena.json` + schemat `strony`: dopisek sukcesu, „do 10 MB" w opisie pola
-- [ ] `forms-worker/dev/test-page.html`: sekcja KOMPRESJA ZDJĘĆ, `PHOTO_LIMITS`, etykieta pola
-- [ ] `forms-worker/INTEGRATION.md`: pkt 2, 3, 4
-- [ ] `forms-worker/CLAUDE.md`: sekcja 3 pkt 7
-- [ ] `npm run check` (bez nowych błędów), `npm run build`, `npm run no-js`; próba w przeglądarce
-- [ ] punkt kontrolny 2 w pliku dla Marka
-- [ ] commit
+- [x] `src/config/formularze.ts`: `ZDJECIA` w docelowej strukturze (bok, jakości, limit wejścia / wyniku / workera) + komentarz o wyjątku od zasady „front nie ostrzejszy"
+- [x] `src/scripts/formularz.ts`: wspólny formatter wagi (`waga`), `file_too_large` z wagą, `zOdnosnikami` eksportowane (klikalny e-mail w komunikatach zdjęć)
+- [x] `src/scripts/zdjecia.ts`: nowy przepływ (typ -> duplikat -> liczba -> > 10 MB -> 1600 px / 0,82 -> 0,7 -> awaria), karty „nie dodano", licznik niedodanych
+- [x] `src/scripts/wycena.ts`: podsumowanie z niedodanymi, dopisek na ekranie sukcesu
+- [x] `src/pages/wycena.astro`: ukryty dopisek w bloku sukcesu (+ strażnik pola przy buildzie), szablon ikony karty
+- [x] `src/content/formularze.json` + `src/content.config.ts`: `photo_input_too_large`, nowe `photo_failed`, `file_too_large` z wagą, teksty „nie dodano"
+- [x] `src/content/strony/wycena.json` + schemat `strony`: dopisek sukcesu (`sukces.zdjeciaPrzed`); „do 10 MB" w opisie pola - świadomie NIE (DECYZJA)
+- [x] `forms-worker/dev/test-page.html`: sekcja KOMPRESJA ZDJĘĆ, `PHOTO_LIMITS`, etykieta pola
+- [x] `forms-worker/INTEGRATION.md`: pkt 2, 3, 4
+- [x] `forms-worker/CLAUDE.md`: sekcja 3 pkt 7
+- [x] `npm run check` (141 błędów, zero nowych), `npm run build`, `npm run no-js` (/wycena/ i /kontakt/ ✓); próba w przeglądarce (desktop i 375 px)
+- [x] punkt kontrolny 2 w pliku dla Marka
+- [x] commit
 
 ### Etap 3 - worker: twarde limity rozmiaru
 

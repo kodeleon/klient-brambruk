@@ -33,7 +33,7 @@ export function wypelnij(szablon: string, wartosci: Record<string, string | numb
 }
 
 /** Jak `wypelnij`, ale `{telefon}` i `{email}` stają się klikalnymi odnośnikami firmy. */
-function zOdnosnikami(szablon: string, wartosci: Record<string, string | number> = {}): (string | Node)[] {
+export function zOdnosnikami(szablon: string, wartosci: Record<string, string | number> = {}): (string | Node)[] {
   const odnosniki: Record<string, [string, string]> = {
     telefon: [`tel:${firma.telefonHref}`, firma.telefon],
     email: [`mailto:${firma.email}`, firma.email],
@@ -50,6 +50,16 @@ function zOdnosnikami(szablon: string, wartosci: Record<string, string | number>
       a.className = 'font-semibold underline whitespace-nowrap'
       return a
     })
+}
+
+/**
+ * Waga pliku: „594 KB", „1,4 MB", „10 MB". Te same jednostki co limity
+ * w `ZDJECIA` (1 MB = 1024 × 1024 B), więc limit i komunikat o nim się zgadzają.
+ */
+export function waga(bajty: number): string {
+  const kb = Math.max(1, Math.round(bajty / 1024))
+  if (kb < 1024) return `${kb} KB`
+  return `${(bajty / (1024 * 1024)).toLocaleString('pl-PL', { maximumFractionDigits: 1 })} MB`
 }
 
 export function limit(pole: Pole): number | null {
@@ -77,7 +87,8 @@ export function komunikatPola(formularz: HTMLElement, nazwa: string, kod: string
     case 'too_many_files':
       return wypelnij(b.too_many_files, { maks: ZDJECIA.maksPlikow })
     case 'file_too_large':
-      return wypelnij(b.file_too_large, { maks: ZDJECIA.maksRozmiar / (1024 * 1024) })
+      // Tylko z odpowiedzi Workera (wysyłka z pominięciem kompresji) - front ma niższy `maksWyniku`.
+      return wypelnij(b.file_too_large, { maks: waga(ZDJECIA.maksWorkera) })
     default:
       return b[kod as keyof typeof b] ?? kod
   }

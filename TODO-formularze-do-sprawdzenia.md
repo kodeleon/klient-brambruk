@@ -68,3 +68,44 @@ takie samo jak wcześniej (test porównuje stringi), więc mail się nie zmienia
 - Ryzyko z planu: V8 ma szybką ścieżkę `JSON.stringify` dla stringów
   jednobajtowych (base64 taki jest), więc zysk może być mniejszy niż w
   diagnozie. Zmiana i tak jest tania i bez wpływu na treść maila.
+
+### Punkt kontrolny 2 - kompresja i limity zdjęć na froncie
+
+Zmiana: 1600 px, JPEG 0,82 -> w razie potrzeby 0,7, cel 600 KB, plik ponad
+10 MB odrzucany przed dekodowaniem, karty „nie dodano", dopisek na ekranie
+sukcesu. Limit workera nadal 4 MiB (zmienia go etap 3).
+
+Sprawdzone przez model w Chrome (desktop i widok 375 px), na plikach
+syntetycznych i zdjęciu kostki z serwisu:
+
+- JPEG 4000×3000 (4,6 MB, z EXIF) -> JPEG 1600×1200, 353 KB, bez EXIF;
+- kostka brukowa 1154×2560 -> 721×1600, 318 KB (przy 0,82);
+- PNG 1600×1200 z drobnym detalem -> 762 KB przy 0,82 -> 521 KB przy 0,7 (drugie kodowanie działa);
+- czysty szum -> 983 KB nawet przy 0,7 -> karta „nie dodano" (`photo_failed`);
+- plik 11-12 MB -> karta od razu, bez "Przetwarzanie...";
+- udawany HEIC w Chrome -> karta „nie dodano"; uszkodzony JPEG 100 KB -> wysłany oryginał, 700 KB -> karta;
+- podsumowanie "1 zdjęcie · 2 nie dodano", wysyłka (z atrapą `fetch`, nic nie wyszło) -> w zgłoszeniu tylko `zdjecie-1.jpg`, ekran sukcesu z dopiskiem i klikalnym `mailto:`;
+- 375 px: karty i komunikaty mieszczą się, brak przewijania w poziomie.
+
+Do sprawdzenia przez Ciebie (`npm run dev` w `astro/`, strona `/wycena/`,
+oraz strona testowa workera `npm run dev:page` w `forms-worker/`):
+
+- [ ] **Zdjęcia z własnego telefonu** (12 MP, JPEG): na karcie waga ≤ 600 KB;
+      w DevTools -> Network przy wysyłce (albo na stronie testowej) widać
+      1600 px na dłuższym boku.
+- [ ] **HEIC z iPhone'a**: w Safari na iPhonie ma przejść (Safari dekoduje
+      HEIC -> wychodzi JPEG); w Chrome na komputerze -> karta „nie dodano",
+      formularz da się wysłać, podsumowanie i ekran sukcesu to pokazują.
+- [ ] **Zdjęcie o dużej szczegółowości** z prawdziwego aparatu (żwir,
+      kostka, siatka ogrodzeniowa) -> przechodzi (przy 0,82 albo 0,7).
+- [ ] **Zdjęcie ponad 10 MB** (np. 50 MP) -> komunikat od razu, bez
+      "Przetwarzanie...".
+- [ ] **Średni telefon z Androidem + zdjęcie 50 MP poniżej 10 MB** (ryzyko
+      z planu: HEIC 48-50 MP waży 5-8 MB, a dekoduje się do ~200 MB pamięci)
+      -> czy karta się nie zawiesza i czy strona nie przeładowuje się sama.
+- [ ] **Wycena z niedodanym zdjęciem do końca**: podsumowanie "N zdjęć · M
+      nie dodano", po wysyłce dopisek pod "Nic nie musisz robić" z adresem.
+      ⚠️ Lokalny `npm run dev` wysyła na `https://api.brambruk.pl` - do
+      prawdziwej próby użyj workera lokalnego (zmienna builda
+      `ADRES_API_FORMULARZY`, opis w `src/config/site.ts`) albo strony
+      testowej workera.

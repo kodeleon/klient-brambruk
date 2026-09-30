@@ -55,6 +55,7 @@ front trzeba przejrzeć według listy z punktu 2.
 - [ ] Atrybut `name` każdego pola = klucz pola w `forms.ts` (wielkość liter ma znaczenie). Pola o innych nazwach worker po cichu ignoruje - dane przepadną bez błędu.
 - [ ] `value` każdej opcji = klucz opcji z `forms.ts`. Etykiety na froncie mogą się różnić, klucze nie.
 - [ ] Limity walidacji frontu ≤ limity workera: `maxlength` pól ≤ `maxLength`, liczba plików ≤ `maxFiles`, rozmiar pliku po kompresji ≤ `maxFileSize`. Front nie może przepuszczać tego, co worker odrzuci.
+- [ ] Celowy wyjątek w drugą stronę: cel kompresji zdjęć na froncie (600 KB, punkt 4) jest NIŻSZY niż `maxFileSize`. To nie walidacja danych, tylko budżet CPU workera (10 ms na żądanie, koszt rośnie z bajtami zdjęć) - nie „wyrównuj" go w górę do `maxFileSize`. `maxFileSize` jest siatką bezpieczeństwa dla wysyłki z pominięciem kompresji.
 - [ ] Pola wymagane na froncie = pola z `required: true`. Sam ciąg spacji traktuj jak puste pole (worker robi `trim()`).
 - [ ] Zależności opcji odwzorowane: po zmianie pola nadrzędnego lista opcji pola zależnego się zmienia, a wybrana wartość, która nie pasuje do nowej grupy, jest czyszczona.
 - [ ] Walidacja e-maila i telefonu na froncie nie ostrzejsza niż `EMAIL_PATTERN` i `PHONE_PATTERN` (np. `+48 123 456 789` i `(83) 343-11-22` muszą przejść).
@@ -115,9 +116,17 @@ klikalne `tel:` i `mailto:`.
 | `too_long` | Tekst jest za długi - maksymalnie {maxLength} znaków. |
 | `invalid_option` | Wybierz opcję z listy. (pole zależne: Wybierz rodzaj pasujący do wybranej usługi.) |
 | `too_many_files` | Możesz dodać maksymalnie {maxFiles} zdjęcia. |
-| `file_too_large` | Zdjęcie jest za duże (maksymalnie {maxFileSize w MB} MB). Dodaj mniejsze zdjęcie. |
+| `file_too_large` | Zdjęcie jest za duże (maksymalnie {maxFileSize jako waga, np. „4 MB"}). Dodaj mniejsze zdjęcie. Przy działającej kompresji się nie zdarza (front ma niższy cel) - tylko przy wysyłce z jej pominięciem. |
 | `invalid_file_type` | Dodaj zdjęcie w formacie JPG, PNG lub WebP. |
 | `links_blocked` | Usuń linki z treści (http://, https://, www.). Adres strony możesz opisać słowami. |
+
+**Kompresja zdjęć na froncie** (przed wysyłką, to nie są kody workera; punkt 4).
+Zdjęcie zostaje na liście jako „nie dodano", komunikat żyje razem z nim:
+
+| Sytuacja | Komunikat przy polu zdjęć |
+|---|---|
+| plik ponad 10 MB (bez dekodowania) | Zdjęcie {nazwa} ma ponad 10 MB - wyślij je mailem na {e-mail}. |
+| nie da się zdekodować ani zakodować, albo wynik ponad 600 KB także po jakości 0,7 | Nie udało się dodać zdjęcia {nazwa}. Zapisz je jako JPG i dodaj ponownie albo wyślij je mailem na {e-mail}. |
 
 **Kody `error`**:
 
@@ -148,13 +157,16 @@ Implementacja referencyjna: `dev/test-page.html`, sekcja skryptu
 Przepisz logikę do frontu - nie importuj pliku.
 
 - Kompresja **w momencie dodania** zdjęcia, nie przy wysyłce - użytkownik od razu widzi podgląd i wagę.
-- `createImageBitmap(file, { imageOrientation: 'from-image' })` -> canvas (albo `OffscreenCanvas`) -> dłuższy bok maks. **2000 px**, bez powiększania mniejszych.
-- Wyjście **JPEG, jakość ~0,82** (JPEG zamiast WebP: pewny podgląd załącznika w każdym kliencie poczty). Przezroczystość PNG na białym tle.
-- Ponowne kodowanie usuwa EXIF, w tym lokalizację GPS - to zamierzone.
-- Jeśli wynik jest większy od oryginału, a oryginał mieści się w wymiarach (i ma typ z `accept`) - wyślij oryginał.
-- Błąd dekodowania (np. HEIC w przeglądarce bez obsługi): wyślij oryginał, jeśli spełnia limity workera (typ z `accept`, rozmiar ≤ `maxFileSize`); jeśli nie - komunikat przy polu ("Nie udało się przetworzyć zdjęcia. Zapisz je jako JPG i dodaj ponownie.").
+- Dlaczego tak mocno: każdy bajt zdjęcia to czas CPU workera (parsowanie, base64, body do Resend), a plan Free daje 10 ms na żądanie. Przekroczenie kończy się błędem sieci bez maila. Cel: **najwyżej 600 KB** (600 × 1024 B) na zdjęcie.
+- Kolejność dla jednego pliku ma znaczenie:
+  1. **Typ, duplikat, liczba plików** - przed czymkolwiek innym. Liczą się zdjęcia dodane, nie te „nie dodano".
+  2. **Plik ponad 10 MB** (10 × 1024 × 1024 B) - komunikat od razu, **bez dekodowania** i bez stanu "przetwarzanie". Pamięć telefonu zjada dekodowanie (liczba pikseli), a próg bajtowy to jego przybliżenie.
+  3. `createImageBitmap(file, { imageOrientation: 'from-image' })` -> canvas (albo `OffscreenCanvas`) -> dłuższy bok maks. **1600 px**, bez powiększania mniejszych -> **JPEG, jakość 0,82** (JPEG zamiast WebP: pewny podgląd załącznika w każdym kliencie poczty). Przezroczystość PNG na białym tle.
+  4. Wynik ponad 600 KB -> **jedno** ponowne kodowanie z tej samej bitmapy, **jakość 0,7** (bitmapę zamykaj dopiero po nim). Nadal ponad 600 KB -> zdjęcie nie dodane (komunikaty: sekcja 3, „Kompresja zdjęć na froncie").
+  5. **Wyjątek** przy dekodowaniu albo kodowaniu (np. HEIC w przeglądarce bez obsługi) -> oryginał tylko wtedy, gdy ma typ z `accept` i mieści się w 600 KB; inaczej zdjęcie nie dodane. Oryginał wysyłany jest wyłącznie w tym przypadku.
+- **Bez porównywania wyniku z oryginałem**: poza awarią z punktu 5 zawsze wychodzi nowy JPEG, nawet jeśli jest większy od oryginału. Ponowne kodowanie usuwa EXIF, w tym lokalizację GPS - to zamierzone.
+- Zdjęcie, którego nie udało się dodać, **zostaje widoczne na liście** („nie dodano", z powodem i przyciskiem "Usuń"), a komunikat przy polu żyje tak długo jak ono. Nie jest wysyłane i nie blokuje wysyłki - klient ma wiedzieć, że to zdjęcie nie dotrze, i dostać drogę (mail).
 - Wskaźnik przetwarzania przy każdym zdjęciu; przycisk wysyłki zablokowany, dopóki kompresja trwa.
-- Limity **liczby i typów** plików sprawdzane **przed** kompresją, limit **rozmiaru po** kompresji.
 - Pole pliku przyjmuje na wejściu także HEIC/HEIF (`accept="image/jpeg,image/png,image/webp,image/heic,image/heif"`) - po kompresji i tak wychodzi JPEG. Worker sprawdza typ po bajtach, więc HEIC bez konwersji odrzuci (`invalid_file_type`).
 - Przycisk "Usuń" przy każdym zdjęciu; to samo zdjęcie nie może być dodane dwa razy.
 

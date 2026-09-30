@@ -127,10 +127,10 @@
       <label class="f">Opis projektu <small>description, max 5000, bez linków</small></label>
       <textarea name="description"></textarea>
 
-      <label class="f">Zdjęcia <small>photos, max 2, JPEG/PNG/WebP, max 4 MiB po kompresji</small></label>
+      <label class="f">Zdjęcia <small>photos, max 2, JPEG/PNG/WebP; front: wejście do 10 MB, po kompresji do 600 KB; worker: max 4 MiB</small></label>
       <input type="file" id="photo-input" accept="image/jpeg,image/png,image/webp,image/heic,image/heif" multiple>
       <div class="tools">
-        <label><input type="checkbox" id="no-compress"> wyślij bez kompresji (test ścieżki awaryjnej, bez limitu rozmiaru na froncie)</label>
+        <label><input type="checkbox" id="no-compress"> wyślij bez kompresji (test ścieżki awaryjnej, bez limitów rozmiaru na froncie)</label>
       </div>
       <ul class="photos" id="photo-list"></ul>
       <div class="field-msg" id="photo-msg"></div>
@@ -174,8 +174,11 @@ const TERRAIN = { flat: 'Teren płaski', uneven: 'Lekkie nierówności', slope: 
 
 const PHOTO_LIMITS = {
   maxFiles: 2,
-  maxFileSize: 4 * 1024 * 1024, // = maxFileSize w forms.ts (bajty)
+  maxFileSize: 4 * 1024 * 1024, // = maxFileSize w forms.ts (bajty); front ma niższy maxResult
   workerTypes: ['image/jpeg', 'image/png', 'image/webp'], // = accept w forms.ts
+  // Limity frontu, nie z forms.ts (INTEGRATION.md pkt 4):
+  maxInput: 10 * 1024 * 1024, // większego pliku nie dekodujemy
+  maxResult: 600 * 1024, // cel kompresji - celowo niżej niż maxFileSize (budżet CPU workera)
 }
 
 const $ = (sel, root = document) => root.querySelector(sel)
@@ -205,20 +208,27 @@ for (const [key, label] of Object.entries(TERRAIN)) {
 // KOMPRESJA ZDJĘĆ - implementacja referencyjna dla frontu (INTEGRATION.md pkt 4)
 // ---------------------------------------------------------------------------
 //
-// - kompresja w momencie dodania zdjęcia (podgląd i waga od razu),
-// - createImageBitmap(file, { imageOrientation: 'from-image' }) -> canvas,
-//   dłuższy bok maks. 2000 px, bez powiększania mniejszych,
-// - wyjście JPEG, jakość 0,82 (pewny podgląd załącznika w każdym kliencie poczty),
-// - ponowne kodowanie usuwa EXIF, w tym GPS - zamierzone,
-// - wynik większy od oryginału, a oryginał mieści się w wymiarach i ma typ
-//   akceptowany przez worker -> wysyłamy oryginał,
-// - błąd dekodowania (np. HEIC bez obsługi): oryginał, jeśli spełnia limity
-//   workera; jeśli nie - komunikat przy polu,
-// - liczba i typ plików sprawdzane PRZED kompresją, rozmiar PO kompresji,
-// - przycisk wysyłki zablokowany, dopóki trwa kompresja.
+// Kompresja w momencie dodania zdjęcia (podgląd i waga od razu). Kolejność
+// dla jednego pliku ma znaczenie:
+// 1. typ i liczba plików (liczą się zdjęcia bez błędu),
+// 2. plik ponad maxInput (10 MB) -> błąd od razu, BEZ dekodowania
+//    (dekodowanie dużych zdjęć zjada pamięć telefonu),
+// 3. createImageBitmap(file, { imageOrientation: 'from-image' }) -> canvas,
+//    dłuższy bok maks. 1600 px (bez powiększania), JPEG 0,82 (pewny podgląd
+//    załącznika w każdym kliencie poczty); wynik ponad maxResult (600 KB) ->
+//    jedno ponowne kodowanie z tej samej bitmapy, JPEG 0,7; nadal za duży -> błąd,
+// 4. wyjątek przy dekodowaniu albo kodowaniu (np. HEIC bez obsługi) ->
+//    oryginał tylko z typem akceptowanym przez worker i do maxResult; inaczej błąd,
+// 5. poza punktem 4 zawsze wychodzi nowy JPEG, nawet większy od oryginału:
+//    ponowne kodowanie usuwa EXIF, w tym GPS - zamierzone.
+// Zdjęcie z błędem zostaje na liście z komunikatem, nie jest wysyłane i nie
+// blokuje wysyłki. Przycisk wysyłki zablokowany, dopóki trwa kompresja.
+// maxResult to cel kompresji (każdy bajt to czas CPU workera, 10 ms na
+// żądanie), celowo niżej niż maxFileSize - ten jest siatką bezpieczeństwa.
 
-const MAX_SIDE = 2000
+const MAX_SIDE = 1600
 const JPEG_QUALITY = 0.82
+const JPEG_QUALITY_RETRY = 0.7
 const INPUT_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/heic', 'image/heif']
 const INPUT_EXT = /\.(jpe?g|png|webp|heic|heif)$/i
 
@@ -241,7 +251,7 @@ photoInput.addEventListener('change', () => {
   photoInput.value = '' // pozwala dodać ten sam plik ponownie po usunięciu
   const rejectedType = picked.filter((f) => !isAcceptedInput(f))
   const accepted = picked.filter(isAcceptedInput)
-  const room = PHOTO_LIMITS.maxFiles - photos.length
+  const room = PHOTO_LIMITS.maxFiles - photos.filter((p) => p.status !== 'error').length
   const messages = []
   if (rejectedType.length) messages.push(`Nieobsługiwany format: ${rejectedType.map((f) => f.name).join(', ')}. Dodaj zdjęcie JPG, PNG lub WebP.`)
   if (accepted.length > room) messages.push(`Możesz dodać maksymalnie ${PHOTO_LIMITS.maxFiles} zdjęcia.`)
@@ -260,15 +270,20 @@ noCompress.addEventListener('change', () => {
 
 async function processPhoto(photo) {
   const run = (photo.run = (photo.run ?? 0) + 1)
-  photo.status = 'busy'
-  photo.error = undefined
-  renderPhotos()
   const file = photo.original
   let result
-  try {
-    result = noCompress.checked ? await passThrough(file) : await compressImage(file)
-  } catch {
-    result = decodeFailed(file)
+  if (!noCompress.checked && file.size > PHOTO_LIMITS.maxInput) {
+    // Punkt 2: przed createImageBitmap i bez stanu "Przetwarzanie".
+    result = failed(`Zdjęcie "${file.name}" ma ${kb(file.size)}, ponad limit wejścia ${kb(PHOTO_LIMITS.maxInput)} - nie dekodujemy go.`)
+  } else {
+    photo.status = 'busy'
+    photo.error = undefined
+    renderPhotos()
+    try {
+      result = noCompress.checked ? await passThrough(file) : await compressImage(file)
+    } catch {
+      result = decodeFailed(file)
+    }
   }
   if (run !== photo.run || !photos.includes(photo)) return // nowszy przebieg wygrywa / zdjęcie usunięte
   Object.assign(photo, result)
@@ -277,29 +292,31 @@ async function processPhoto(photo) {
   renderPhotos()
 }
 
-/** Główna ścieżka: zmniejszenie i JPEG. */
+/** Główna ścieżka (punkty 3 i 5): zmniejszenie i JPEG, w razie potrzeby drugie kodowanie. */
 async function compressImage(file) {
   const bitmap = await createImageBitmap(file, { imageOrientation: 'from-image' })
-  const { width, height } = bitmap
-  const scale = Math.min(1, MAX_SIDE / Math.max(width, height)) // bez powiększania
-  const w = Math.round(width * scale)
-  const h = Math.round(height * scale)
-  let blob
+  // Bitmapa zamykana dopiero po obu kodowaniach - drugie idzie z tej samej.
   try {
-    blob = await drawToJpeg(bitmap, w, h)
+    const { width, height } = bitmap
+    const scale = Math.min(1, MAX_SIDE / Math.max(width, height)) // bez powiększania
+    const w = Math.max(1, Math.round(width * scale))
+    const h = Math.max(1, Math.round(height * scale))
+    const name = file.name.replace(/\.[^.]+$/, '') + '.jpg'
+    const dims = `${width}×${height}, ${kb(file.size)} → ${w}×${h}`
+
+    const first = await drawToJpeg(bitmap, w, h, JPEG_QUALITY)
+    if (first.size <= PHOTO_LIMITS.maxResult) return ready(first, name, `${dims}, ${kb(first.size)} (JPEG ${JPEG_QUALITY})`)
+
+    const retry = await drawToJpeg(bitmap, w, h, JPEG_QUALITY_RETRY)
+    const info = `${dims}, JPEG ${JPEG_QUALITY}: ${kb(first.size)}, JPEG ${JPEG_QUALITY_RETRY}: ${kb(retry.size)}`
+    if (retry.size <= PHOTO_LIMITS.maxResult) return ready(retry, name, info)
+    return failed(`Zdjęcie "${file.name}" przekracza cel ${kb(PHOTO_LIMITS.maxResult)} nawet po drugim kodowaniu (${info}).`)
   } finally {
     bitmap.close()
   }
-
-  const originalFits = scale === 1 && PHOTO_LIMITS.workerTypes.includes(file.type)
-  if (originalFits && blob.size >= file.size) {
-    return ready(file, file.name, `${width}×${height}, ${kb(file.size)} - oryginał (kompresja nic nie dała)`)
-  }
-  const info = `${width}×${height}, ${kb(file.size)} → ${w}×${h}, ${kb(blob.size)} (JPEG ${JPEG_QUALITY})`
-  return ready(blob, file.name.replace(/\.[^.]+$/, '') + '.jpg', info)
 }
 
-async function drawToJpeg(bitmap, w, h) {
+async function drawToJpeg(bitmap, w, h, quality) {
   const paint = (ctx) => {
     ctx.fillStyle = '#fff' // przezroczystość PNG -> białe tło (JPEG nie ma kanału alfa)
     ctx.fillRect(0, 0, w, h)
@@ -311,7 +328,7 @@ async function drawToJpeg(bitmap, w, h) {
     const ctx = canvas.getContext('2d')
     if (ctx && canvas.convertToBlob) {
       paint(ctx)
-      return canvas.convertToBlob({ type: 'image/jpeg', quality: JPEG_QUALITY })
+      return canvas.convertToBlob({ type: 'image/jpeg', quality })
     }
   }
   const canvas = document.createElement('canvas')
@@ -319,7 +336,7 @@ async function drawToJpeg(bitmap, w, h) {
   canvas.height = h
   paint(canvas.getContext('2d'))
   return new Promise((resolve, reject) =>
-    canvas.toBlob((b) => (b ? resolve(b) : reject(new Error('toBlob failed'))), 'image/jpeg', JPEG_QUALITY),
+    canvas.toBlob((b) => (b ? resolve(b) : reject(new Error('toBlob failed'))), 'image/jpeg', quality),
   )
 }
 
@@ -334,21 +351,17 @@ async function passThrough(file) {
   return ready(file, file.name, `${dims}, ${kb(file.size)} - bez kompresji`)
 }
 
-/** Nie udało się zdekodować: oryginał, jeśli spełnia limity workera. */
+/** Punkt 4 - wyjątek przy dekodowaniu/kodowaniu: oryginał, jeśli worker go przyjmie i mieści się w celu. */
 function decodeFailed(file) {
-  if (PHOTO_LIMITS.workerTypes.includes(file.type) && file.size <= PHOTO_LIMITS.maxFileSize) {
+  if (PHOTO_LIMITS.workerTypes.includes(file.type) && file.size <= PHOTO_LIMITS.maxResult) {
     return ready(file, file.name, `${kb(file.size)} - nie udało się przetworzyć, wysyłamy oryginał`)
   }
-  return { status: 'error', output: undefined, error: `Nie udało się przetworzyć zdjęcia "${file.name}". Zapisz je jako JPG i dodaj ponownie.` }
+  return failed(`Nie udało się dodać zdjęcia "${file.name}". Zapisz je jako JPG i dodaj ponownie albo wyślij je mailem.`)
 }
 
-function ready(blob, name, info) {
-  // Limit rozmiaru sprawdzany PO kompresji. Tryb "bez kompresji" celowo go pomija.
-  if (!noCompress.checked && blob.size > PHOTO_LIMITS.maxFileSize) {
-    return { status: 'error', output: undefined, error: `Zdjęcie "${name}" jest za duże (${kb(blob.size)}, limit 4 MB).` }
-  }
-  return { status: 'ready', output: blob, name, info }
-}
+// Limity rozmiaru pilnują compressImage i processPhoto; tryb "bez kompresji" celowo je pomija.
+const ready = (blob, name, info) => ({ status: 'ready', output: blob, name, info })
+const failed = (error) => ({ status: 'error', output: undefined, error })
 
 function renderPhotos() {
   photoList.replaceChildren(
@@ -372,8 +385,9 @@ function renderPhotos() {
       return li
     }),
   )
-  // Wysyłka zablokowana, dopóki trwa przetwarzanie albo jest zdjęcie z błędem.
-  quoteSubmit.disabled = photos.some((p) => p.status !== 'ready')
+  // Wysyłka zablokowana, dopóki trwa przetwarzanie. Zdjęcie z błędem nie idzie
+  // w zgłoszeniu (brak `output`) i wysyłki nie blokuje.
+  quoteSubmit.disabled = photos.some((p) => p.status === 'busy')
 }
 
 quoteForm.addEventListener('reset', () => {

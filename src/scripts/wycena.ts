@@ -83,6 +83,7 @@ export function wycena() {
   const rodo = formularz.querySelector<HTMLElement>('[data-wycena-rodo]')
   const jednostka = formularz.querySelector<HTMLElement>('[data-jednostka]')
   const sukces = document.querySelector<HTMLElement>('[data-wycena-sukces]')
+  const sukcesZdjecia = document.querySelector<HTMLElement>('[data-wycena-sukces-zdjecia]')
   const kreator = document.querySelector<HTMLElement>('[data-wycena]')
 
   let krok = 0
@@ -247,11 +248,17 @@ export function wycena() {
     ]
     const powierzchnia = dane.serviceType === 'brukarstwo' || dane.serviceType === 'budownictwo'
 
+    // Np. „1 zdjęcie · 1 nie dodano" - karta „nie dodano" nie pójdzie w zgłoszeniu.
+    // DECYZJA: bez dodanych zdjęć sam „1 nie dodano", nie „Brak · 1 nie dodano".
     const liczbaZdjec = () => {
       const liczba = zdjecia?.liczba() ?? 0
-      if (!liczba) return teksty.zdjecia.brak
+      const nieDodane = zdjecia?.nieDodane() ?? 0
       const forma = ODMIANA.select(liczba) as keyof typeof teksty.zdjecia.liczba
-      return wypelnij(teksty.zdjecia.liczba[forma] ?? teksty.zdjecia.liczba.many, { liczba })
+      const czesci = [
+        liczba ? wypelnij(teksty.zdjecia.liczba[forma] ?? teksty.zdjecia.liczba.many, { liczba }) : '',
+        nieDodane ? wypelnij(teksty.zdjecia.nieDodaneLiczba, { liczba: nieDodane }) : '',
+      ]
+      return czesci.filter(Boolean).join(' · ') || teksty.zdjecia.brak
     }
 
     const wartosci: Record<string, string> = {
@@ -334,6 +341,7 @@ export function wycena() {
       lista: listaPlikow,
       komunikaty: odrzucone,
       przycisk: formularz.querySelector<HTMLElement>('[data-upload-przycisk]'),
+      ikonaNieDodano: formularz.querySelector<HTMLTemplateElement>('template[data-upload-ikona-nie-dodano]'),
       poZmianie: () => {
         oznaczPole(formularz, 'photos', null)
         // Wysyłka czeka, aż kompresja się skończy - inaczej poszedłby oryginał albo nic.
@@ -434,12 +442,15 @@ export function wycena() {
     ustawBlokade(wyslij, 'wysylka', false)
 
     if (wynik.ok) {
+      // Przed `wyczysc()` - razem z listą znikają karty „nie dodano".
+      const nieDodane = zdjecia?.nieDodane() ?? 0
       try {
         localStorage.removeItem(KLUCZ_ZAPISU)
       } catch {
         /* nic */
       }
       zdjecia?.wyczysc()
+      if (sukcesZdjecia) sukcesZdjecia.hidden = nieDodane === 0
       if (sukces) sukces.hidden = false
       if (kreator) kreator.hidden = true
       window.scrollTo(0, 0)

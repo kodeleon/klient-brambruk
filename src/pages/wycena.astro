@@ -21,6 +21,7 @@
  * klucze opcji i limity to kontrakt z Workerem - `src/config/formularze.ts`.
  */
 import Podstrona from '../layouts/Podstrona.astro'
+import firma from '../content/firma.json'
 import wycena from '../content/wycena.json'
 import { wpis } from '../lib/tresc'
 import Okruszki from '../components/ui/Okruszki.astro'
@@ -37,6 +38,11 @@ const { typy: typyUslug, podtypy, teren: opcjeTerenu, termin: opcjeTerminu, budz
 const strona = await wpis('strony', 'wycena')
 const { hero, etapy, sukces, zdjecia, podsumowanie, rodo, przyciski, licznikKrokow } = strona
 const kroki = strona.kroki ?? []
+
+// Schemat `strony` jest wspólny dla podstron, więc pole jest w nim opcjonalne -
+// wymaga go ta strona. Bez niego dopisek wyszedłby z dziurą w zdaniu.
+const dopisekZdjec = sukces?.zdjeciaPrzed
+if (!dopisekZdjec) throw new Error('src/content/strony/wycena.json: brak pola sukces.zdjeciaPrzed')
 
 const klasaPola =
   'w-full px-4 py-3 rounded-lg border bg-white text-brand-text text-sm focus:outline-none focus:border-brand-olive focus:ring-2 focus:ring-brand-olive/10 transition-all border-brand-border'
@@ -67,6 +73,11 @@ const limity = LIMITY.quote
           <p class="mt-2 text-sm text-brand-text-light">
             {sukces.opisPrzed}
             <strong class="text-brand-text font-semibold">{sukces.opisMocny}</strong>.
+          </p>
+          {/* Odsłania go skrypt, gdy w chwili wysyłki na liście była karta
+              „nie dodano" - te zdjęcia nie dotarły z formularzem. */}
+          <p class="mt-2 text-sm text-brand-text-light" data-wycena-sukces-zdjecia hidden>
+            {dopisekZdjec}&nbsp;<a href={`mailto:${firma.email}`} class="font-semibold underline whitespace-nowrap">{firma.email}</a>.
           </p>
           <OsCzasuProcesu aktywny="2" etykieta={sukces.etykietaOsi} kompakt />
           <div class="flex flex-wrap justify-center gap-3">
@@ -373,6 +384,10 @@ const limity = LIMITY.quote
               <p class="mt-2 text-xs text-red-500" data-blad="photos" hidden></p>
               <div class="mt-2 space-y-1" data-upload-odrzucone aria-live="polite"></div>
               <div class="mt-3 flex flex-wrap gap-2" data-upload-lista></div>
+              {/* Ikona karty zdjęcia „nie dodano" - skrypt klonuje ją na listę. */}
+              <template data-upload-ikona-nie-dodano>
+                <Ikona nazwa="alert-triangle" rozmiar={16} />
+              </template>
             </div>
           </div>
 

@@ -8,11 +8,12 @@
     "invalid_option": "Wybierz opcję z listy.",
     "invalid_optionZalezne": "Wybierz rodzaj pasujący do wybranej usługi.",
     "too_many_files": "Możesz dodać maksymalnie {maks} zdjęcia.",
-    "file_too_large": "Zdjęcie jest za duże (maksymalnie {maks} MB). Dodaj mniejsze zdjęcie.",
+    "file_too_large": "Zdjęcie jest za duże (maksymalnie {maks}). Dodaj mniejsze zdjęcie.",
     "invalid_file_type": "Dodaj zdjęcie w formacie JPG, PNG lub WebP.",
     "links_blocked": "Usuń linki z treści (http://, https://, www.). Adres strony możesz opisać słowami.",
     "invalid_number": "Podaj samą liczbę, np. 40 albo 12,5.",
-    "photo_failed": "Nie udało się przetworzyć zdjęcia {nazwa}. Zapisz je jako JPG i dodaj ponownie.",
+    "photo_failed": "Nie udało się dodać zdjęcia {nazwa}. Zapisz je jako JPG i dodaj ponownie albo wyślij je mailem na {email}.",
+    "photo_input_too_large": "Zdjęcie {nazwa} ma ponad {maks} - wyślij je mailem na {email}.",
     "photo_duplicate": "Zdjęcie {nazwa} jest już dodane."
   },
   "bledyWysylki": {
@@ -55,6 +56,11 @@
       "few": "{liczba} zdjęcia",
       "many": "{liczba} zdjęć"
     },
-    "brak": "Brak"
+    "brak": "Brak",
+    "nieDodano": {
+      "photo_input_too_large": "Nie dodano - ponad {maks}",
+      "photo_failed": "Nie dodano - błąd przetwarzania"
+    },
+    "nieDodaneLiczba": "{liczba} nie dodano"
   }
 }
