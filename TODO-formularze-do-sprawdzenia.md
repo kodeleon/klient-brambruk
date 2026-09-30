@@ -5,7 +5,14 @@ Plan: `PLAN-formularze-cpu-i-bledy.md`. Plik roboczy modelu:
 zrobić sam: pomiary na Cloudflare, próby na telefonie, decyzje do oceny.
 
 Każdy etap to osobny commit (`git log --oneline --grep="^Etap"`), więc każdy
-da się zmierzyć i obejrzeć oddzielnie.
+da się zmierzyć i obejrzeć oddzielnie:
+
+| Etap | Commit | Co |
+|---|---|---|
+| 0 | `c24ec5e` | worker pomiarowy (`wrangler.pomiar.jsonc`), procedura pomiaru |
+| 1 | `2071cbb` | body do Resend bez `JSON.stringify` na base64 |
+| 2 | `20da33a` | front: 1600 px, cel 600 KB, karty „nie dodano" |
+| 3 | `b0e4a73` | worker: 1 MiB na plik, 3 MiB na żądanie |
 
 ---
 
@@ -133,3 +140,141 @@ JSON z nagłówkami CORS.
   omija front). Zostaje niższy `maxFileSize` (+ `ZDJECIA.maksWorkera`)
   albo Workers Paid (5 USD/mies.) - decyzja kosztowa klienta. README
   workera, "Jeśli (b) się nie mieści".
+
+### Testy ręczne - część A (zbiorczo)
+
+Zdjęcia i ekran sukcesu: szczegóły w punkcie kontrolnym 2.
+
+- [ ] zdjęcie ponad 10 MB -> komunikat od razu, bez "Przetwarzanie...";
+- [ ] HEIC w Chrome (desktop) -> karta „nie dodano", formularz da się wysłać;
+- [ ] zdjęcie o dużej szczegółowości (żwir, kostka, siatka) -> przechodzi;
+- [ ] wycena z niedodanym zdjęciem -> podsumowanie i dopisek na ekranie sukcesu;
+- [ ] tryb samolotowy -> dotychczasowy komunikat "Brak połączenia z serwerem..."
+      z telefonem i e-mailem (część A tego nie zmienia; lokalnie sprawdzone
+      z atrapą `fetch`);
+- [ ] **po wdrożeniu**: mail z 2 zdjęciami na produkcji - załączniki się
+      otwierają, ~1600 px, bez lokalizacji GPS we właściwościach pliku.
+
+### Kolejność wdrożenia produkcyjnego
+
+**Najpierw strona, potem worker.** Odwrotnie przez chwilę działałby stary
+front (2000 px, wyniki do ~1,2 MB) z nowym workerem (1 MiB) - część zgłoszeń
+ze zdjęciami dostałaby `file_too_large`.
+
+```bash
+# 1. Strona (katalog astro/) - README główne, "Wdrożenie"
+npm ci
+npm run build
+npx wrangler deploy
+```
+
+```bash
+# 2. Worker (katalog forms-worker/), po wdrożeniu strony
+npx wrangler deploy
+```
+
+Jeśli strona jest jeszcze na `*.workers.dev`, worker wdrażasz z PEŁNĄ listą
+originów (README workera, "Wdrożenie"; `--var` zastępuje wartość z pliku):
+
+```bash
+npx wrangler deploy --var "ALLOWED_ORIGINS:https://brambruk.pl,https://www.brambruk.pl,https://<adres testowy strony>"
+```
+
+Karta przeglądarki otwarta przed wdrożeniem strony nadal ma stary skrypt.
+Jeśli chcesz wykluczyć i ten przypadek, zrób krok 2 np. następnego dnia.
+
+### Decyzje podjęte w trakcie (`DECYZJA`) - do oceny
+
+W kodzie oznaczone komentarzem `DECYZJA:` (pozycje 1, 4, 7, 9, 10);
+pozostałe wynikają z kodu albo z dokumentacji.
+
+**Etap 0**
+
+1. `wrangler.pomiar.jsonc` zostaje w repo (zgodnie z planem) - usuwany
+   jest worker na Cloudflare, nie konfiguracja.
+2. Worker pomiarowy: `namespace_id` 1901/1902, limit 100/60 dla obu
+   bindingów (`RL_EMAIL` też - seria z jednym adresem e-mail przekroczyłaby
+   produkcyjne 3/min). `ALLOWED_ORIGINS` tylko `http://localhost:4321`
+   (`127.0.0.1` nie przejdzie - opisane w README).
+3. README workera: nowy plik dopisany też w "Struktura" i "Kopiowanie do
+   innego projektu".
+
+**Etap 1**
+
+4. Test "dry run buduje body": zamiast spy na module (eksportu ESM w
+   workerd nie da się podmienić, a `submit.ts` trzyma własne powiązanie) -
+   spy na `Uint8Array.prototype.toBase64`. Sprawdza to, co ważne dla
+   pomiaru: base64 załączników liczy się także w dry run.
+5. Test równoważności porównuje też stringi 1:1 (body bajt w bajt jak
+   wcześniej) dla 0-3 załączników, z wszystkimi wariantami dopełnienia base64.
+
+**Etap 2**
+
+6. Treści (`src/content/formularze.json`): `photo_failed` i komunikat
+   ponad 10 MB wg Twoich odpowiedzi w czacie; na kartach "Nie dodano -
+   ponad 10 MB" / "Nie dodano - błąd przetwarzania"; w podsumowaniu
+   "{liczba} nie dodano"; dopisek sukcesu "Zdjęcia, których nie udało się
+   dodać, możesz przesłać na {e-mail}." (w planie "Zdjęć" - poprawione na
+   biernik, bo "przesłać zdjęcia").
+7. Nazwa kodu `photo_input_too_large` (propozycja z planu) - kod tylko
+   frontu, worker go nie zna.
+8. "Do 10 MB" w opisie pola zdjęć (plan: opcjonalnie) - **nie dodane**:
+   powielałoby wartość z konfiguracji w treści, a komunikat i tak pojawia
+   się od razu po wyborze pliku. Jedna linia w `src/content/strony/wycena.json`,
+   jeśli wolisz inaczej.
+9. Ponowny wybór pliku, który ma kartę „nie dodano", to nowa próba
+   (zastępuje kartę) - nie komunikat "już dodane" ani druga karta.
+10. Podsumowanie bez żadnego dodanego zdjęcia: samo "1 nie dodano", nie
+    "Brak · 1 nie dodano".
+11. Ikona karty „nie dodano": `<template>` z komponentem `Ikona` w
+    `wycena.astro`, klonowany przez skrypt - bez kształtów SVG w pakiecie JS.
+12. Karta „nie dodano": nazwa nad powodem (dwa wiersze) i obramowanie w
+    kolorze `amber-700` z tokenów - w jednym wierszu nie mieściła się na 375 px.
+13. Komunikaty przy zdjęciach: klikalny e-mail (`zOdnosnikami` z
+    `formularz.ts` wyeksportowane), `break-words` (długie nazwy plików z
+    telefonu rozpychały stronę), kontener `aria-live` przebudowywany tylko
+    przy zmianie treści (czytnik nie powtarza komunikatów przy każdej
+    zmianie listy).
+14. `wycena.astro`: brak `sukces.zdjeciaPrzed` w treści przerywa build
+    z nazwą pliku (schemat `strony` jest wspólny i ma pola opcjonalne).
+    Efekt uboczny: znika 5 zastanych błędów `astro check` o `sukces`.
+15. Strona testowa workera: zdjęcie z błędem nie blokuje wysyłki i nie
+    zajmuje miejsca w limicie liczby plików - tak jak front.
+
+**Etap 3**
+
+16. Poza listą plików z planu: `dev/preview-emails.ts` (wariant "długi"
+    miał zdjęcia po 4 MB i przestałby przechodzić walidację), komentarz
+    w `src/submit.ts` ("parsować 10 MB") i `CLAUDE.md` sekcja 8 (limit
+    żądania 10 MB).
+17. `parse.test.ts` bierze limit z `MAX_REQUEST_BYTES` zamiast przepisanej
+    liczby.
+18. Generator `dev/measure-files.ts` (`npm run measure:files`) liczy
+    rozmiary z `forms.ts`; dołożony wariant (c2): dwa pliki po połowie
+    limitu żądania + 1 KiB.
+19. Kryterium grep z planu (`4 \* 1024` itd.) trafia w wartości aktualne:
+    `1024 * 1024` i `64 * 1024` zawierają podciąg `4 * 1024`, a jedyne
+    `10 * 1024 * 1024` to nowy limit wejścia frontu (10 MB) z etapu 2.
+    Nieaktualnych wartości (4 MiB, 10 MiB) nie ma.
+
+### Usterki zastane - poza zakresem, nie ruszane
+
+- `npm run check`: **146 błędów przed zmianami** (teraz 141, zero nowych) -
+  głównie `'x' is possibly 'undefined'` w `src/pages/*.astro` (schemat
+  kolekcji `strony` ma same pola opcjonalne) i `z.record` z jednym
+  argumentem w `content.config.ts` (zod 4). `CLAUDE.md` wymaga 0.
+- `npm run no-js` jest **niestabilny**: mierzy przy `domcontentloaded`, a
+  CSS jest plikiem zewnętrznym (`inlineStylesheets: 'never'`) - wynik zależy
+  od tego, czy arkusz zdążył dojść. W przebiegu bazowym `/`, `/brukarstwo/`
+  i `/wycena/` były mierzone bez CSS (7 zamiast 4 pozycji nawigacji), więc
+  wyszło 12 blokerów; z CSS jest ich 14. Faktyczna przyczyna blokerów:
+  podpisy kafelków `opacity-0 group-hover:opacity-100`
+  (`src/components/ui/GaleriaSiatka.astro`) - bez najechania są
+  niewidoczne także z JavaScriptem.
+- `/wycena/`, ekran sukcesu: "w ciągu24 godzin" - brak spacji (kompresja
+  HTML Astro zjada odstęp między `{sukces.opisPrzed}` a `<strong>`).
+- `TODO-formularze-wdrozenie.md`, na który powołuje się plan (grupy D-G,
+  dopisek do D3 w części B), nie istnieje w repozytorium ani w historii Gita.
+- Lokalny `forms-worker/.dev.vars` nie ma `MAIL_TO` (wrangler ostrzega przy
+  testach) - lokalny `npm run dev` workera odpowie `500 not_configured`,
+  dopóki go nie dopiszesz (pliku nie czytałem).

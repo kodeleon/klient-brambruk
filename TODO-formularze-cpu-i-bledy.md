@@ -72,10 +72,10 @@ Każdy etap = osobny commit, żeby dało się go sprawdzić i zmierzyć oddzieln
 
 ### Zamknięcie części A
 
-- [ ] `forms-worker`: `npm run typecheck`, `npm test`, `npx wrangler deploy --dry-run` (oba configi)
-- [ ] `astro`: `npm run check`, `npm run no-js`, `npm run build`
-- [ ] `TODO-formularze-do-sprawdzenia.md`, sekcja A: komendy pomiaru, testy ręczne, `DECYZJA`, kolejność wdrożenia
-- [ ] STOP i raport
+- [x] `forms-worker`: `npm run typecheck`, `npm test` (184/184), `npx wrangler deploy --dry-run` (oba configi)
+- [x] `astro`: `npm run check` (141, zero nowych), `npm run no-js` (/wycena/ i /kontakt/ ✓), `npm run build`; build produkcyjny w przeglądarce bez naruszeń CSP
+- [x] `TODO-formularze-do-sprawdzenia.md`, sekcja A: komendy pomiaru, testy ręczne, `DECYZJA`, kolejność wdrożenia, usterki zastane
+- [x] STOP i raport - czekam na pomiary Marka i ewentualne „start B"
 
 ## Grupa B - po potwierdzeniu Marka („start B"), osobne wdrożenie
 
