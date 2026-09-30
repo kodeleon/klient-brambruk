@@ -11,11 +11,11 @@
           "jednostka": "zł",
           "material": {
             "min": 2500,
-            "max": 4500
+            "max": 3000
           },
           "montaz": {
-            "min": 1500,
-            "max": 2500
+            "min": 2200,
+            "max": 2900
           }
         }
       ],
@@ -39,11 +39,11 @@
           "jednostka": "zł/mb",
           "material": {
             "min": 40,
-            "max": 60
+            "max": 70
           },
           "montaz": {
-            "min": 100,
-            "max": 150
+            "min": 40,
+            "max": 140
           }
         },
         {
@@ -52,10 +52,10 @@
           "jednostka": "zł/mb",
           "material": {
             "min": 50,
-            "max": 80
+            "max": 100
           },
           "montaz": {
-            "min": 100,
+            "min": 50,
             "max": 150
           }
         }
@@ -73,12 +73,12 @@
           "usluga": "Słupek murowany",
           "jednostka": "zł/szt.",
           "material": {
-            "min": 250,
-            "max": 500
+            "min": 400,
+            "max": 900
           },
           "montaz": {
-            "min": 150,
-            "max": 300
+            "min": 400,
+            "max": 800
           }
         },
         {
@@ -86,12 +86,12 @@
           "usluga": "Podmurówka wylewana",
           "jednostka": "zł/mb",
           "material": {
-            "min": 180,
+            "min": 150,
             "max": 300
           },
           "montaz": {
-            "min": 120,
-            "max": 200
+            "min": 150,
+            "max": 300
           }
         },
         {
@@ -99,12 +99,12 @@
           "usluga": "Podmurówka prefabrykowana",
           "jednostka": "zł/mb",
           "material": {
-            "min": 20,
-            "max": 45
+            "min": 50,
+            "max": 80
           },
           "montaz": {
-            "min": 10,
-            "max": 25
+            "min": 15,
+            "max": 30
           }
         }
       ]
@@ -117,12 +117,12 @@
           "usluga": "Ogrodzenie z siatki",
           "jednostka": "zł/mb",
           "material": {
-            "min": 15,
-            "max": 30
+            "min": 30,
+            "max": 60
           },
           "montaz": {
-            "min": 40,
-            "max": 60
+            "min": 50,
+            "max": 90
           }
         }
       ],
@@ -164,7 +164,7 @@
           },
           "montaz": {
             "min": 1400,
-            "max": 3500
+            "max": 3000
           }
         }
       ],
@@ -180,12 +180,12 @@
           "usluga": "Furtka panelowa",
           "jednostka": "zł",
           "material": {
-            "min": 800,
+            "min": 1000,
             "max": 1500
           },
           "montaz": {
-            "min": 300,
-            "max": 600
+            "min": 800,
+            "max": 1300
           }
         },
         {
@@ -193,12 +193,12 @@
           "usluga": "Furtka stalowa",
           "jednostka": "zł",
           "material": {
-            "min": 1200,
+            "min": 1600,
             "max": 2500
           },
           "montaz": {
-            "min": 300,
-            "max": 600
+            "min": 900,
+            "max": 1400
           }
         },
         {
@@ -206,12 +206,12 @@
           "usluga": "Wideodomofon przy furtce",
           "jednostka": "zł",
           "material": {
-            "min": 2200,
-            "max": 3000
+            "min": 1000,
+            "max": 2500
           },
           "montaz": {
-            "min": 800,
-            "max": 1000
+            "min": 1000,
+            "max": 2000
           }
         }
       ]
@@ -229,8 +229,8 @@
             "max": 28
           },
           "montaz": {
-            "min": 17,
-            "max": 27
+            "min": 25,
+            "max": 40
           }
         },
         {
@@ -238,12 +238,12 @@
           "usluga": "Krawężniki",
           "jednostka": "zł/mb",
           "material": {
-            "min": 12,
-            "max": 20
+            "min": 27,
+            "max": 60
           },
           "montaz": {
-            "min": 13,
-            "max": 20
+            "min": 40,
+            "max": 100
           }
         },
         {
@@ -256,7 +256,7 @@
           },
           "montaz": {
             "min": 8,
-            "max": 13
+            "max": 15
           }
         }
       ],
@@ -275,11 +275,11 @@
           "usluga": "Układanie kostki brukowej",
           "jednostka": "zł/m²",
           "material": {
-            "min": 30,
+            "min": 35,
             "max": 80
           },
           "montaz": {
-            "min": 100,
+            "min": 90,
             "max": 150
           }
         }
@@ -297,12 +297,12 @@
           "usluga": "Podjazd z kostki",
           "jednostka": "zł/m²",
           "material": {
-            "min": 30,
-            "max": 80
+            "min": 110,
+            "max": 160
           },
           "montaz": {
-            "min": 100,
-            "max": 150
+            "min": 120,
+            "max": 180
           }
         },
         {
@@ -310,12 +310,12 @@
           "usluga": "Odwodnienie liniowe",
           "jednostka": "zł/mb",
           "material": {
-            "min": 70,
-            "max": 120
+            "min": 100,
+            "max": 180
           },
           "montaz": {
-            "min": 50,
-            "max": 80
+            "min": 140,
+            "max": 190
           }
         },
         {
@@ -341,12 +341,12 @@
           "usluga": "Chodnik z kostki",
           "jednostka": "zł/m²",
           "material": {
-            "min": 30,
-            "max": 80
+            "min": 90,
+            "max": 140
           },
           "montaz": {
-            "min": 65,
-            "max": 85
+            "min": 140,
+            "max": 200
           }
         },
         {
@@ -354,12 +354,12 @@
           "usluga": "Taras z kostki lub płyt",
           "jednostka": "zł/m²",
           "material": {
-            "min": 30,
-            "max": 80
+            "min": 160,
+            "max": 200
           },
           "montaz": {
-            "min": 75,
-            "max": 100
+            "min": 160,
+            "max": 300
           }
         },
         {
@@ -408,8 +408,8 @@
           "usluga": "Altana 3×3 m",
           "jednostka": "zł",
           "material": {
-            "min": 5000,
-            "max": 9500
+            "min": 2000,
+            "max": 5000
           },
           "montaz": {
             "min": 3000,
@@ -421,8 +421,8 @@
           "usluga": "Altana 4×4 m",
           "jednostka": "zł",
           "material": {
-            "min": 7500,
-            "max": 14000
+            "min": 6000,
+            "max": 11000
           },
           "montaz": {
             "min": 4500,
@@ -434,12 +434,12 @@
           "usluga": "Altana z grillem murowanym",
           "jednostka": "zł",
           "material": {
-            "min": 9500,
-            "max": 19000
+            "min": 12000,
+            "max": 22000
           },
           "montaz": {
-            "min": 5500,
-            "max": 11000
+            "min": 7000,
+            "max": 15000
           }
         },
         {
