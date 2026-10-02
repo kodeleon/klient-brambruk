@@ -46,7 +46,7 @@ export const ZDJECIA = {
   /** Jakość JPEG pierwszego kodowania. */
   jakosc: 0.82,
   /** Jakość jedynego ponownego kodowania (z tej samej bitmapy), gdy wynik przekroczy `maksWyniku`. */
-  jakoscAwaryjna: 0.7,
+  jakoscAwaryjna: 0.65,
   /**
    * Większego pliku nie dekodujemy wcale (10 MB). Pamięć telefonu zjada
    * liczba pikseli, nie bajty - próg jest przybliżeniem, które chroni
