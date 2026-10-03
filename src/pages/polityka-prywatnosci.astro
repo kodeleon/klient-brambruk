@@ -2,14 +2,25 @@
 /**
  * /polityka-prywatnosci/ - dokument prawny.
  *
- * Treść przeniesiona bez zmian z `code/src/pages/PolitykaPrywatnosci.jsx`.
+ * Treść przepisana 03.10.2026 pod stan faktyczny serwisu po migracji.
  *
- * Punkt 5 mówi, że serwis używa wyłącznie technicznych plików cookies.
- * W starym serwisie było to NIEPRAWDĄ: osadzona mapa Google zapisywała
- * własne pliki i wysyłała IP odwiedzającego do Google. Po migracji mapa jest
- * obrazem, analityki nie ma, kroje są lokalne - serwis nie wykonuje ani
- * jednego żądania poza własną domenę, więc ten akapit wreszcie opisuje stan
- * faktyczny. Nie trzeba go było zmieniać; trzeba było zmienić serwis.
+ * Stary tekst (z `code/src/pages/PolitykaPrywatnosci.jsx`) mówił o
+ * „technicznych plikach cookies" i nie wymieniał odbiorców. W starym serwisie
+ * mapa Google zapisywała własne pliki i wysyłała IP odwiedzającego do Google.
+ * Po migracji mapa jest obrazem, analityki nie ma, kroje są lokalne, CSP nie
+ * ma żadnego hosta zewnętrznego poza `api.brambruk.pl` (worker formularzy).
+ *
+ * Punkt 5 opisuje to, co serwis robi NA URZĄDZENIU odwiedzającego:
+ *   - żadnych cookies,
+ *   - jeden wpis w localStorage: szkic kreatora wyceny
+ *     (`brambruk_wycena-draft`, `scripts/wycena.ts` i `scripts/cta.ts`),
+ *     usuwany po wysłaniu formularza.
+ * Dodanie czegokolwiek, co zapisuje się na urządzeniu (analityka, nowy klucz
+ * localStorage, cookie), wymaga zmiany punktu 5 w tym samym commicie.
+ *
+ * Punkty 2, 3 i 7 opisują to, co robi worker z `forms-worker/` (nic nie
+ * przechowuje, IP i e-mail tylko jako klucz limitu zgłoszeń, mail przez
+ * Resend). Zmiana w workerze = zmiana tych punktów.
  *
  * Podstrona ZOSTAJE w mapie strony i jest indeksowana - tak jak poprzednio.
  *
@@ -48,7 +59,7 @@ import Odslon from '../components/ui/Odslon.astro'
           Polityka Prywatności
         </h1>
         <p class="text-brand-text-light text-sm mb-10">
-          Ostatnia aktualizacja: <strong>01.03.2026</strong>
+          Ostatnia aktualizacja: <strong>03.10.2026</strong>
         </p>
       </Odslon>
 
@@ -86,6 +97,10 @@ import Odslon from '../components/ui/Odslon.astro'
                 </li>
                 <li>Realizacja umowy (gdy dochodzi do jej zawarcia) - podstawa: art. 6 ust. 1 lit. b RODO.</li>
                 <li>
+                  Ochrona formularzy przed nadużyciami i spamem (ograniczanie liczby zgłoszeń z jednego adresu) -
+                  podstawa: art. 6 ust. 1 lit. f RODO.
+                </li>
+                <li>
                   Wypełnienie obowiązków prawnych (np. podatkowych) - podstawa: art. 6 ust. 1 lit. c RODO.
                 </li>
               </ul>
@@ -96,15 +111,25 @@ import Odslon from '../components/ui/Odslon.astro'
             <h2 class="font-display text-lg font-bold text-brand-text mb-3">3. Zakres zbieranych danych</h2>
             <div class="text-brand-text-light leading-relaxed space-y-2 text-sm">
               <p>
-                Za pośrednictwem formularzy na stronie zbieramy wyłącznie dane niezbędne do obsługi zapytania:
+                Dane osobowe zbieramy wyłącznie za pośrednictwem formularzy na stronie i tylko w zakresie
+                potrzebnym do obsługi zapytania:
               </p>
               <ul class="list-disc pl-5 space-y-1">
                 <li>imię,</li>
                 <li>adres e-mail,</li>
                 <li>numer telefonu (opcjonalnie),</li>
-                <li>opis projektu i załączone zdjęcia (opcjonalnie),</li>
-                <li>miejscowość lokalizacji inwestycji.</li>
+                <li>treść wiadomości (formularz kontaktowy),</li>
+                <li>
+                  informacje o zleceniu (formularz wyceny): rodzaj usługi, wymiary, miejscowość lokalizacji
+                  inwestycji, ukształtowanie terenu, planowany termin, orientacyjny budżet i opis projektu,
+                </li>
+                <li>załączone zdjęcia (opcjonalnie).</li>
               </ul>
+              <p>
+                Nie prowadzimy kont użytkowników ani newslettera, nie stosujemy analityki ani reklam. Samo
+                przeglądanie strony nie wymaga podania żadnych danych. Dane z formularzy nie są zapisywane na
+                serwerze strony: trafiają do nas wyłącznie jako wiadomość e-mail (patrz punkt 7).
+              </p>
             </div>
           </div>
 
@@ -146,15 +171,28 @@ import Odslon from '../components/ui/Odslon.astro'
             <h2 class="font-display text-lg font-bold text-brand-text mb-3">5. Pliki cookies</h2>
             <div class="text-brand-text-light leading-relaxed space-y-2 text-sm">
               <p>
-                Strona brambruk.pl korzysta wyłącznie z technicznych plików cookies niezbędnych do prawidłowego
-                działania serwisu (np. obsługa sesji formularzy). Nie korzystamy z analitycznych ani
-                marketingowych plików cookies bez Twojej uprzedniej zgody.
+                Strona brambruk.pl <strong>nie zapisuje na Twoim urządzeniu żadnych plików cookies</strong> -
+                ani własnych, ani pochodzących od podmiotów trzecich.
               </p>
               <p>
-                Podstawa prawna stosowania technicznych cookies: art. 399 ust. 3 ustawy Prawo komunikacji
-                elektronicznej (PKE). Nie wymagają one Twojej zgody, gdyż są niezbędne do świadczenia usługi
-                drogą elektroniczną.
+                Strona zapisuje na Twoim urządzeniu jedynie szkic kreatora wyceny <strong>w pamięci lokalnej przeglądarki</strong>.
+                Jeśli zaczniesz wypełniać formularz wyceny albo
+                wpiszesz dane w oknie na stronie głównej i przejdziesz dalej, wpisane wartości zapisują się 
+                w Twojej przeglądarce, żebyś mógł wrócić do formularza bez ponownego wpisywania tych danych. 
+                Zapis nie uwzględnia zdjęć dodanych do formularza.
               </p>
+              <ul class="list-disc pl-5 space-y-1">
+                <li>
+                  Szkic zostaje wyłącznie na Twoim urządzeniu. Nie jest wysyłany do nas ani do nikogo innego,
+                  dopóki sam nie wyślesz formularza.
+                </li>
+                <li>Po wysłaniu formularza szkic jest usuwany.</li>
+                <li>
+                  Możesz usunąć szkic w każdej chwili, czyszcząc dane witryny w ustawieniach przeglądarki. Jeśli
+                  przeglądarka blokuje zapis (np. w trybie prywatnym), formularz działa tak samo, tylko bez
+                  zapamiętywania postępu.
+                </li>
+              </ul>
             </div>
           </div>
 
@@ -174,9 +212,30 @@ import Odslon from '../components/ui/Odslon.astro'
             <h2 class="font-display text-lg font-bold text-brand-text mb-3">7. Odbiorcy danych</h2>
             <div class="text-brand-text-light leading-relaxed space-y-2 text-sm">
               <p>
-                Twoje dane mogą być przekazywane dostawcom usług technicznych (hosting, obsługa poczty e-mail),
-                którzy przetwarzają je wyłącznie na nasze zlecenie i na podstawie stosownych umów powierzenia
-                przetwarzania danych. Nie przekazujemy danych osobom trzecim w celach marketingowych.
+                Dane z formularzy przetwarzają w naszym imieniu dostawcy usług technicznych:
+              </p>
+              <ul class="list-disc pl-5 space-y-1">
+                <li>
+                  <strong>Cloudflare, Inc.</strong> - dostawca hostingu strony oraz infrastruktury sieciowej 
+                  przyjmującej zgłoszenia z formularzy. Narzędzie to nie zapisuje na stałe treści zgłoszeń 
+                  ani załączonych zdjęć, lecz przekazuje je dalej jako wiadomość e-mail. Adres IP oraz adres 
+                  e-mail są wykorzystywane tymczasowo, wyłącznie w celu ograniczania liczby zgłoszeń i ochrony 
+                  przed spamem. Jako dostawca hostingu Cloudflare przetwarza również adres IP odwiedzającego 
+                  w celu bezpiecznego i prawidłowego dostarczenia zawartości strony internetowej.
+                </li>
+                <li>
+                  <strong>Resend, Inc.</strong> - dostawca usługi wysyłki wiadomości e-mail, odpowiedzialny za 
+                  dostarczenie wiadomości ze zgłoszeniem na naszą skrzynkę odbiorczą.
+                </li>
+              </ul>
+              <p>
+                Obaj dostawcy mają siedzibę w Stanach Zjednoczonych, w związku z czym Twoje dane osobowe mogą
+                być przekazywane poza Europejski Obszar Gospodarczy (EOG). Podstawą prawną tego transferu jest 
+                decyzja Komisji Europejskiej stwierdzająca odpowiedni stopień ochrony danych (w ramach programu 
+                EU-US Data Privacy Framework) lub standardowe klauzule umowne zatwierdzone przez Komisję 
+                Europejską. Dostawcy przetwarzają dane wyłącznie na nasze udokumentowane zlecenie, na podstawie 
+                zawartych umów powierzenia przetwarzania danych (DPA) i nie przekazują ich podmiotom trzecim 
+                w celach marketingowych.
               </p>
             </div>
           </div>

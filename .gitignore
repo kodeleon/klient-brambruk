@@ -77,3 +77,5 @@ maps/*/.podglad/
 #
 # W gicie ZOSTAJĄ: maps/*/map.project.json, maps/*/overpass.txt,
 # maps/*/data/extract.json, maps/silnik/, maps/fonts/, maps/templates/
+
+.wrangler
