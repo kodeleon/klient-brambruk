@@ -21,7 +21,6 @@ import Foto from "../media/Foto.astro";
 interface Pozycja {
   foto: string;
   tytul?: string;
-  lokalizacja?: string;
 }
 interface Props {
   pozycje: readonly Pozycja[];
@@ -58,25 +57,13 @@ const { pozycje, class: klasa = "" } = Astro.props;
             class="relative shrink-0 w-full h-full snap-center"
             data-karuzela-slajd={i}
           >
-            <Foto
-              klucz={pozycja.foto}
-              alt={pozycja.tytul ?? "Realizacja BramBruk"}
-              class="w-full h-full object-cover"
-            />
+            <Foto klucz={pozycja.foto} class="w-full h-full object-cover" />
             <div class="absolute inset-0 bg-gradient-to-t from-black/55 via-black/0 to-transparent pointer-events-none" />
-            {(pozycja.tytul || pozycja.lokalizacja) && (
-              <figcaption class="absolute bottom-0 left-0 right-0 px-5 py-4 flex items-end justify-between pointer-events-none">
-                {pozycja.tytul && (
-                  <span class="text-white font-display font-semibold text-sm drop-shadow">
-                    {pozycja.tytul}
-                  </span>
-                )}
-                {pozycja.lokalizacja && (
-                  <span class="flex items-center gap-1 text-white/70 text-xs">
-                    <Ikona nazwa="map-pin" rozmiar={12} class="shrink-0" />
-                    {pozycja.lokalizacja}
-                  </span>
-                )}
+            {pozycja.tytul && (
+              <figcaption class="absolute bottom-0 left-0 right-0 px-5 py-4 pointer-events-none">
+                <span class="text-white font-display font-semibold text-sm drop-shadow">
+                  {pozycja.tytul}
+                </span>
               </figcaption>
             )}
           </figure>

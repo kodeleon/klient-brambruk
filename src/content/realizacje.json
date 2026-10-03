@@ -21,62 +21,132 @@
     {
       "kategoria": "ogrodzenia",
       "tytul": "Ogrodzenie panelowe + brama",
-      "lokalizacja": "Biała Podlaska, 2025",
       "foto": "realizacja.01"
     },
     {
       "kategoria": "brukarstwo",
-      "tytul": "Podjazd z kostki brukowej",
-      "lokalizacja": "Międzyrzec Podlaski, 2025",
+      "tytul": "Podjazd z kostki i brama przesuwna",
       "foto": "realizacja.02"
     },
     {
       "kategoria": "ogrodzenia",
-      "tytul": "Brama przesuwna automatyczna",
-      "lokalizacja": "Janów Podlaski, 2024",
-      "foto": "realizacja.08"
+      "tytul": "Ogrodzenie metalowe z podmurówką",
+      "foto": "realizacja.13"
     },
     {
       "kategoria": "budownictwo",
-      "tytul": "Altana ogrodowa",
-      "lokalizacja": "Terespol, 2024",
-      "foto": "realizacja.04"
-    },
-    {
-      "kategoria": "brukarstwo",
-      "tytul": "Chodniki i obrzeża",
-      "lokalizacja": "Sławacinek Stary, 2024",
-      "foto": "realizacja.09"
+      "tytul": "Dom bliźniak",
+      "foto": "realizacja.17"
     },
     {
       "kategoria": "ogrodzenia",
-      "tytul": "Ogrodzenie z podmurówką",
-      "lokalizacja": "Leśna Podlaska, 2024",
-      "foto": "realizacja.05"
+      "tytul": "Ogrodzenie metalowe i brama dwuskrzydłowa",
+      "foto": "realizacja.26"
+    },
+    {
+      "kategoria": "brukarstwo",
+      "tytul": "Chodnik i taras z kostki",
+      "foto": "realizacja.12"
+    },
+    {
+      "kategoria": "ogrodzenia",
+      "tytul": "Ogrodzenie metalowe z podmurówką",
+      "foto": "realizacja.15"
     },
     {
       "kategoria": "budownictwo",
       "tytul": "Garaż blaszany",
-      "lokalizacja": "Łomazy, 2025",
       "foto": "realizacja.06"
     },
     {
       "kategoria": "ogrodzenia",
-      "tytul": "Furtka i przęsła metalowe",
-      "lokalizacja": "Radzyń Podlaski, 2025",
-      "foto": "realizacja.07"
+      "tytul": "Ogrodzenie panelowe",
+      "foto": "realizacja.24"
     },
     {
       "kategoria": "brukarstwo",
       "tytul": "Taras z kostki brukowej",
-      "lokalizacja": "Biała Podlaska, 2024",
       "foto": "realizacja.03"
+    },
+    {
+      "kategoria": "ogrodzenia",
+      "tytul": "Ogrodzenie drewniane",
+      "foto": "realizacja.21"
     },
     {
       "kategoria": "budownictwo",
       "tytul": "Domek narzędziowy",
-      "lokalizacja": "Cicibór, 2025",
       "foto": "realizacja.10"
+    },
+    {
+      "kategoria": "ogrodzenia",
+      "tytul": "Furtka drewniana",
+      "foto": "realizacja.22"
+    },
+    {
+      "kategoria": "ogrodzenia",
+      "tytul": "Ogrodzenie metalowe z podmurówką",
+      "foto": "realizacja.20"
+    },
+    {
+      "kategoria": "budownictwo",
+      "tytul": "Dom bliźniak",
+      "foto": "realizacja.18"
+    },
+    {
+      "kategoria": "ogrodzenia",
+      "tytul": "Brama przesuwna z przęsłami metalowymi",
+      "foto": "realizacja.16"
+    },
+    {
+      "kategoria": "ogrodzenia",
+      "tytul": "Ogrodzenie z podmurówką",
+      "foto": "realizacja.05"
+    },
+    {
+      "kategoria": "brukarstwo",
+      "tytul": "Chodniki i obrzeża",
+      "foto": "realizacja.09"
+    },
+    {
+      "kategoria": "ogrodzenia",
+      "tytul": "Brama przesuwna automatyczna",
+      "foto": "realizacja.08"
+    },
+    {
+      "kategoria": "ogrodzenia",
+      "tytul": "Ogrodzenie metalowe z podmurówką",
+      "foto": "realizacja.14"
+    },
+    {
+      "kategoria": "budownictwo",
+      "tytul": "Altana ogrodowa",
+      "foto": "realizacja.04"
+    },
+    {
+      "kategoria": "ogrodzenia",
+      "tytul": "Ogrodzenie panelowe",
+      "foto": "realizacja.25"
+    },
+    {
+      "kategoria": "ogrodzenia",
+      "tytul": "Ogrodzenie metalowe i brama przesuwna",
+      "foto": "realizacja.23"
+    },
+    {
+      "kategoria": "ogrodzenia",
+      "tytul": "Furtka i brama z przęsłami metalowymi",
+      "foto": "realizacja.11"
+    },
+    {
+      "kategoria": "ogrodzenia",
+      "tytul": "Furtka i przęsła metalowe",
+      "foto": "realizacja.07"
+    },
+    {
+      "kategoria": "ogrodzenia",
+      "tytul": "Ogrodzenie metalowe z podmurówką",
+      "foto": "realizacja.19"
     }
   ]
 }

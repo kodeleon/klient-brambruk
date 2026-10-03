@@ -64,32 +64,32 @@
     "brama-dwuskrzydlowa-16x10": {
       "rect": {
         "x": 0,
-        "y": 41,
-        "w": 1380,
-        "h": 863
+        "y": 59,
+        "w": 2000,
+        "h": 1250
       },
       "source": "brama-dwuskrzydlowa.jpg",
-      "sourceHash": "eac747d0cd30db64",
+      "sourceHash": "2e4fdf0a85bbc098",
       "sourceSize": {
-        "w": 1380,
-        "h": 1027
+        "w": 2000,
+        "h": 1488
       },
-      "updatedAt": "2026-09-22T13:58:16.293Z"
+      "updatedAt": "2026-10-03T18:39:12.599Z"
     },
     "brama-dwuskrzydlowa-3x2": {
       "rect": {
         "x": 0,
         "y": 0,
-        "w": 1380,
-        "h": 920
+        "w": 2000,
+        "h": 1333
       },
       "source": "brama-dwuskrzydlowa.jpg",
-      "sourceHash": "eac747d0cd30db64",
+      "sourceHash": "2e4fdf0a85bbc098",
       "sourceSize": {
-        "w": 1380,
-        "h": 1027
+        "w": 2000,
+        "h": 1488
       },
-      "updatedAt": "2026-09-22T13:59:53.462Z"
+      "updatedAt": "2026-10-03T18:39:12.599Z"
     },
     "brama-przesuwna-16x10": {
       "rect": {
@@ -136,20 +136,80 @@
       },
       "updatedAt": "2026-09-22T13:59:50.623Z"
     },
+    "brama-przesuwna-metalowa-20240604-16x10": {
+      "rect": {
+        "w": 1380,
+        "h": 862,
+        "x": 0,
+        "y": 955
+      },
+      "source": "brama-przesuwna-metalowa-20240604.jpg",
+      "sourceHash": "24b87913f5098cbb",
+      "sourceSize": {
+        "w": 1380,
+        "h": 3014
+      },
+      "updatedAt": "2026-10-03T18:39:12.599Z"
+    },
+    "chodnik-taras-kostka-20230522-16x10": {
+      "rect": {
+        "w": 1380,
+        "h": 862,
+        "x": 0,
+        "y": 304
+      },
+      "source": "chodnik-taras-kostka-20230522.jpg",
+      "sourceHash": "e6aa713dea33e9e3",
+      "sourceSize": {
+        "w": 1380,
+        "h": 3062
+      },
+      "updatedAt": "2026-10-03T18:39:12.599Z"
+    },
+    "dom-blizniak-20250110-16x10": {
+      "rect": {
+        "w": 1380,
+        "h": 862,
+        "x": 0,
+        "y": 855
+      },
+      "source": "dom-blizniak-20250110.jpg",
+      "sourceHash": "ff43711bdcea5935",
+      "sourceSize": {
+        "w": 1380,
+        "h": 3062
+      },
+      "updatedAt": "2026-10-03T18:39:12.599Z"
+    },
+    "dom-blizniak-20250423-16x10": {
+      "rect": {
+        "w": 1846,
+        "h": 1154,
+        "x": 255,
+        "y": 0
+      },
+      "source": "dom-blizniak-20250423.jpg",
+      "sourceHash": "ad29563b353de2ad",
+      "sourceSize": {
+        "w": 2560,
+        "h": 1154
+      },
+      "updatedAt": "2026-10-03T18:39:12.599Z"
+    },
     "domek-16x10": {
       "rect": {
         "x": 0,
-        "y": 465,
-        "w": 943,
-        "h": 589
+        "y": 589,
+        "w": 1154,
+        "h": 721
       },
       "source": "domek.jpg",
-      "sourceHash": "59bc9d888f382864",
+      "sourceHash": "e38704e1027a32e1",
       "sourceSize": {
-        "w": 943,
-        "h": 2092
+        "w": 1154,
+        "h": 2560
       },
-      "updatedAt": "2026-09-22T13:59:17.493Z"
+      "updatedAt": "2026-10-03T19:43:27.160Z"
     },
     "furtka-16x10": {
       "rect": {
@@ -180,6 +240,36 @@
         "h": 2560
       },
       "updatedAt": "2026-09-22T14:00:20.376Z"
+    },
+    "furtka-brama-metalowa-20230206-16x10": {
+      "rect": {
+        "w": 1380,
+        "h": 862,
+        "x": 0,
+        "y": 1069
+      },
+      "source": "furtka-brama-metalowa-20230206.jpg",
+      "sourceHash": "940b5c99a1b3a232",
+      "sourceSize": {
+        "w": 1380,
+        "h": 3062
+      },
+      "updatedAt": "2026-10-03T18:39:12.599Z"
+    },
+    "furtka-drewniana-20260125-16x10": {
+      "rect": {
+        "w": 1380,
+        "h": 862,
+        "x": 0,
+        "y": 855
+      },
+      "source": "furtka-drewniana-20260125.jpg",
+      "sourceHash": "342894d299e7a338",
+      "sourceSize": {
+        "w": 1380,
+        "h": 3062
+      },
+      "updatedAt": "2026-10-03T18:39:12.599Z"
     },
     "garaz-16x10": {
       "rect": {
@@ -421,20 +511,125 @@
       },
       "updatedAt": "2026-09-22T14:00:08.723Z"
     },
+    "ogrodzenie-drewniane-20260125-16x10": {
+      "rect": {
+        "w": 1846,
+        "h": 1154,
+        "x": 229,
+        "y": 0
+      },
+      "source": "ogrodzenie-drewniane-20260125.jpg",
+      "sourceHash": "4200f3edefaf656f",
+      "sourceSize": {
+        "w": 2560,
+        "h": 1154
+      },
+      "updatedAt": "2026-10-03T18:39:12.599Z"
+    },
+    "ogrodzenie-metalowe-20230916-16x10": {
+      "rect": {
+        "w": 1846,
+        "h": 1154,
+        "x": 229,
+        "y": 0
+      },
+      "source": "ogrodzenie-metalowe-20230916.jpg",
+      "sourceHash": "c4a5b5b6caf9b14c",
+      "sourceSize": {
+        "w": 2560,
+        "h": 1154
+      },
+      "updatedAt": "2026-10-03T18:39:12.599Z"
+    },
+    "ogrodzenie-metalowe-20240217a-16x10": {
+      "rect": {
+        "w": 1380,
+        "h": 862,
+        "x": 0,
+        "y": 1006
+      },
+      "source": "ogrodzenie-metalowe-20240217a.jpg",
+      "sourceHash": "13cea62904933f56",
+      "sourceSize": {
+        "w": 1380,
+        "h": 3058
+      },
+      "updatedAt": "2026-10-03T18:39:12.599Z"
+    },
+    "ogrodzenie-metalowe-20240217b-16x10": {
+      "rect": {
+        "w": 1380,
+        "h": 862,
+        "x": 0,
+        "y": 511
+      },
+      "source": "ogrodzenie-metalowe-20240217b.jpg",
+      "sourceHash": "da99929cd803ab59",
+      "sourceSize": {
+        "w": 1380,
+        "h": 2771
+      },
+      "updatedAt": "2026-10-03T18:39:12.599Z"
+    },
+    "ogrodzenie-metalowe-20250821-16x10": {
+      "rect": {
+        "w": 1380,
+        "h": 862,
+        "x": 0,
+        "y": 916
+      },
+      "source": "ogrodzenie-metalowe-20250821.jpg",
+      "sourceHash": "9a6aebecf2237417",
+      "sourceSize": {
+        "w": 1380,
+        "h": 3062
+      },
+      "updatedAt": "2026-10-03T18:39:12.599Z"
+    },
+    "ogrodzenie-metalowe-20250828-16x10": {
+      "rect": {
+        "w": 1846,
+        "h": 1154,
+        "x": 229,
+        "y": 0
+      },
+      "source": "ogrodzenie-metalowe-20250828.jpg",
+      "sourceHash": "5e4f9f631c2681c3",
+      "sourceSize": {
+        "w": 2560,
+        "h": 1154
+      },
+      "updatedAt": "2026-10-03T18:39:12.599Z"
+    },
+    "ogrodzenie-metalowe-brama-20260125-16x10": {
+      "rect": {
+        "w": 1846,
+        "h": 1154,
+        "x": 50,
+        "y": 0
+      },
+      "source": "ogrodzenie-metalowe-brama-20260125.jpg",
+      "sourceHash": "d2aff718a658ec83",
+      "sourceSize": {
+        "w": 2560,
+        "h": 1154
+      },
+      "updatedAt": "2026-10-03T18:39:12.599Z"
+    },
     "ogrodzenie-panelowe-2-16x10": {
       "rect": {
         "x": 0,
-        "y": 118,
-        "w": 943,
-        "h": 589
+        "y": 135,
+        "w": 1080,
+        "h": 675
       },
       "source": "ogrodzenie-panelowe-2.jpg",
-      "sourceHash": "c477caa1bb97de4c",
+      "sourceHash": "e5f872ea22becd6c",
       "sourceSize": {
-        "w": 943,
-        "h": 1257
+        "w": 1080,
+        "h": 1440
       },
-      "updatedAt": "2026-09-22T13:58:34.234Z"
+      "updatedAt": "2026-10-03T18:39:12.599Z"
     },
     "ogrodzenie-panelowe-3d-16x10": {
       "rect": {
@@ -555,6 +750,21 @@
         "h": 1154
       },
       "updatedAt": "2026-09-22T14:00:06.656Z"
+    },
+    "podjazd-brama-przesuwna-20250710-16x10": {
+      "rect": {
+        "w": 1846,
+        "h": 1154,
+        "x": 511,
+        "y": 0
+      },
+      "source": "podjazd-brama-przesuwna-20250710.jpg",
+      "sourceHash": "790da683a3e67f03",
+      "sourceSize": {
+        "w": 2560,
+        "h": 1154
+      },
+      "updatedAt": "2026-10-03T18:39:12.599Z"
     },
     "podmurowka-16x10": {
       "rect": {

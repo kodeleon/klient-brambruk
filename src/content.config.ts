@@ -180,9 +180,13 @@ const nawigacja = defineCollection({
 /** Klucz zdjęcia z manifestu mediów (`media/images.config.mjs`). */
 const foto = z.string().min(1)
 
-/** Kafelek galerii: zdjęcie, co na nim jest i gdzie zrobione. */
+/**
+ * Kafelek galerii: zdjęcie i kilka słów o usłudze. Bez lokalizacji - to samo
+ * zdjęcie miałoby inny podpis w siatce i w oknie powiększenia, a część zdjęć
+ * nie ma jej wcale. (Opinie w `dowody` mają własne pole `lokalizacja`.)
+ */
 const galeria = z.array(
-  z.object({ foto, tytul: z.string().min(1), lokalizacja: z.string().min(1) })
+  z.object({ foto, tytul: z.string().min(1) })
 ).min(1)
 
 /** Pytanie i odpowiedź. Odpowiedzi bywają nośnikiem kwot - stąd znaczniki. */
@@ -428,7 +432,6 @@ const realizacje = defineCollection({
         z.object({
           kategoria: z.string().min(1),
           tytul: z.string().min(1),
-          lokalizacja: z.string().min(1),
           foto,
         })
       )

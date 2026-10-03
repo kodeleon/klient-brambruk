@@ -109,18 +109,15 @@
   "galeria": [
     {
       "foto": "realizacja.01",
-      "tytul": "Ogrodzenie panelowe + brama",
-      "lokalizacja": "Biała Podlaska"
+      "tytul": "Ogrodzenie panelowe + brama"
     },
     {
       "foto": "realizacja.08",
-      "tytul": "Brama przesuwna",
-      "lokalizacja": "Janów Podlaski"
+      "tytul": "Brama przesuwna"
     },
     {
       "foto": "realizacja.05",
-      "tytul": "Ogrodzenie z podmurówką",
-      "lokalizacja": "Leśna Podlaska"
+      "tytul": "Ogrodzenie z podmurówką"
     }
   ],
   "tytulGalerii": "Nasze ogrodzenia i bramy",

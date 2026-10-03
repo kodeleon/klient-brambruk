@@ -68,18 +68,15 @@
   "galeria": [
     {
       "foto": "realizacja.03",
-      "tytul": "Słupki murowane + panel",
-      "lokalizacja": "Biała Podlaska"
+      "tytul": "Słupki murowane + panel"
     },
     {
       "foto": "realizacja.06",
-      "tytul": "Podmurówka betonowa",
-      "lokalizacja": "Rakowiska"
+      "tytul": "Podmurówka betonowa"
     },
     {
       "foto": "realizacja.09",
-      "tytul": "Ogrodzenie z cegły",
-      "lokalizacja": "Międzyrzec Podl."
+      "tytul": "Ogrodzenie z cegły"
     }
   ],
   "faq": [

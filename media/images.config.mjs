@@ -46,10 +46,23 @@
  * │ wypisze je po nazwie - to nie jest usterka potoku, tylko informacja, │
  * │ że w tych miejscach potrzebne są zdjęcia poziome.                    │
  * │                                                                      │
- * │ Kadry nie są jeszcze zaznaczone ręcznie: `media/crops.json` jest      │
- * │ pusty, więc potok bierze największy możliwy prostokąt od lewego      │
- * │ górnego rogu i ostrzega o tym przy każdym kadrze. Docelowe kadrowanie│
- * │ to `npm run images:crop` - kolejka obejmie dokładnie te kadry.        │
+ * │ Kadry zapisane są w `media/crops.json`. Kadr, którego tam brakuje,   │
+ * │ potok bierze jako największy prostokąt od lewego górnego rogu i      │
+ * │ ostrzega o tym przy każdym takim kadrze; poprawia się go przez       │
+ * │ `npm run images:crop`.                                               │
+ * └──────────────────────────────────────────────────────────────────────┘
+ *
+ * ┌── DOKŁADKA DO GALERII (03.10.2026) ─────────────────────────────────┐
+ * │ 17 zdjęć z telefonu, z czego 14 to nowe fotografie (klucze `opis-    │
+ * │ RRRRMMDD` w `sources`), a 3 to ujęcia, które serwis już miał jako    │
+ * │ `ogrodzenie-panelowe-2`, `ogrodzenie-panelowe-3d` i                  │
+ * │ `brama-dwuskrzydlowa` - te dostały tylko kafelek (`realizacja.24-26`)│
+ * │ i znacznik `lightbox` na istniejącym kadrze 16:10.                   │
+ * │                                                                      │
+ * │ Osiem nowych zdjęć to piony ok. 9:20. Kadr 16:10 zostawia z nich     │
+ * │ ok. 28% klatki, więc `images:check` wypisze je jako ZŁE DOPASOWANIE. │
+ * │ To nie usterka potoku: kafelek pokazuje wycinek, a okno powiększenia │
+ * │ pełną klatkę. Wycinki dobrano po obejrzeniu zdjęć (`crops.json`).    │
  * └──────────────────────────────────────────────────────────────────────┘
  */
 
@@ -229,15 +242,37 @@ export const sources = {
   siatka: src('siatka', 'Ogrodzenie z siatki na słupkach', { credit: KLIENT }),
   'ogrodzenia-bramy': src('ogrodzenia-bramy', 'Ogrodzenie panelowe z bramą wjazdową - ujęcie z drogi', { credit: KLIENT }),
 
+  /* Zdjęcia z telefonu (03.10.2026), tylko do galerii realizacji. Klucz to
+     opis plus data zdjęcia (RRRRMMDD) - ten sam opis powtarza się przy kilku
+     zdjęciach, a data pozwala wrócić do pliku w `_raw/`. Końcówka a/b: dwa
+     zdjęcia tego samego dnia. */
+  'furtka-brama-metalowa-20230206': src('furtka-brama-metalowa-20230206', 'Furtka z poziomych przęseł metalowych w ścianie drewnianego budynku, przed nią kostka brukowa', { credit: KLIENT, plik: '20230206_112140.jpg' }),
+  'ogrodzenie-metalowe-20230916': src('ogrodzenie-metalowe-20230916', 'Furtka i przęsła z poziomych lameli metalowych między słupkami z kamiennych płyt, przy wjeździe z kostki', { credit: KLIENT, plik: '20230916_151403.jpg' }),
+  'ogrodzenie-metalowe-20240217a': src('ogrodzenie-metalowe-20240217a', 'Ogrodzenie z poziomych przęseł metalowych na słupkach z kamienia, widok wzdłuż trawnika', { credit: KLIENT, plik: '20240217_120947.jpg' }),
+  'ogrodzenie-metalowe-20240217b': src('ogrodzenie-metalowe-20240217b', 'Brama przesuwna i przęsła metalowe na kamiennych słupkach przed nowym domem z panelami fotowoltaicznymi', { credit: KLIENT, plik: '20240217_121027.jpg' }),
+  'brama-przesuwna-metalowa-20240604': src('brama-przesuwna-metalowa-20240604', 'Brama przesuwna z poziomych przęseł metalowych przy domu, przed nią żwirowy podjazd', { credit: KLIENT, plik: '20240604_141423.jpg' }),
+  'ogrodzenie-metalowe-20250821': src('ogrodzenie-metalowe-20250821', 'Ogrodzenie z kutych przęseł z ozdobnym zwieńczeniem na niskiej podmurówce, wzdłuż chodnika z szarej kostki', { credit: KLIENT, plik: '20250821_191130.jpg' }),
+  'ogrodzenie-metalowe-20250828': src('ogrodzenie-metalowe-20250828', 'Mur z płyt w kolorze łupka i metalowe przęsła w kolorze drewna, obok chodnik z czerwonej kostki', { credit: KLIENT, plik: '20250828_113242.jpg' }),
+  'ogrodzenie-drewniane-20260125': src('ogrodzenie-drewniane-20260125', 'Ogrodzenie z szerokich ciemnych desek zimą, przed nim słup i ośnieżona droga', { credit: KLIENT, plik: '20260125_110516.jpg' }),
+  'furtka-drewniana-20260125': src('furtka-drewniana-20260125', 'Furtka z ciemnych drewnianych desek w stalowej ramie, z klamką i zamkiem', { credit: KLIENT, plik: '20260125_110632.jpg' }),
+  'ogrodzenie-metalowe-brama-20260125': src('ogrodzenie-metalowe-brama-20260125', 'Brama przesuwna i ogrodzenie z poziomych przęseł metalowych między kamiennymi słupkami, zimą', { credit: KLIENT, plik: '20260125_114035.jpg' }),
+
   // --- brukarstwo ---
   'kostka-brukowa': src('kostka-brukowa', 'Nawierzchnia z kostki brukowej przy domu', { credit: KLIENT }),
   'kostka-brukowa-2': src('kostka-brukowa-2', 'Kostka brukowa - ujęcie z bliska, wzór ułożenia', { credit: KLIENT }),
   podjazd: src('podjazd', 'Podjazd z kostki brukowej do garażu', { credit: KLIENT }),
+  'chodnik-taras-kostka-20230522': src('chodnik-taras-kostka-20230522', 'Taras i chodnik z szarej kostki brukowej obok trawnika, w tle drewniane ogrodzenie i wiata', { credit: KLIENT, plik: '20230522_124515.jpg' }),
+  /* To zdjęcie zastępuje `podjazd` WYŁĄCZNIE w kafelku galerii
+     (`realizacja.02`). `podjazd` zostaje: sekcja główna brukarstwa, kolaż,
+     karty i kreator wyceny mają w nim swoje kadry. */
+  'podjazd-brama-przesuwna-20250710': src('podjazd-brama-przesuwna-20250710', 'Podjazd z kostki brukowej przed parterowym domem, po bokach furtka i brama przesuwna z poziomych przęseł', { credit: KLIENT, plik: '20250710_164916.jpg' }),
 
   // --- budownictwo ---
   altana: src('altana', 'Drewniana altana ogrodowa', { credit: KLIENT }),
   garaz: src('garaz', 'Garaż blaszany na posesji', { credit: KLIENT }),
   domek: src('domek', 'Domek narzędziowy w ogrodzie', { credit: KLIENT }),
+  'dom-blizniak-20250110': src('dom-blizniak-20250110', 'Strop nad parterem domu bliźniaka w budowie, widok z góry na belki i pustaki', { credit: KLIENT, plik: '20250110_092033.jpg' }),
+  'dom-blizniak-20250423': src('dom-blizniak-20250423', 'Dom bliźniak w budowie: ściany z pustaków ceramicznych i drewniana więźba dachowa', { credit: KLIENT, plik: '20250423_074117.jpg' }),
 
   /* --- obraz podglądu linku ---
      Grafika złożona: fotografia, znak firmowy i ikony. Pochodzenie ikon
@@ -340,10 +375,10 @@ const LISTA_KADROW = [
   crop('podjazd', [16, 10], { widths: W_KAFELEK, preset: 'grid', lightbox: true }),
   crop('altana', [16, 10], { widths: W_KAFELEK, preset: 'grid', lightbox: true }),
   crop('brama-przesuwna', [16, 10], { widths: W_KAFELEK, preset: 'grid', lightbox: true }),
-  crop('brama-dwuskrzydlowa', [16, 10], { widths: W_KARTA, preset: 'grid' }),
+  crop('brama-dwuskrzydlowa', [16, 10], { widths: W_KAFELEK, preset: 'grid', lightbox: true }),
   crop('siatka', [16, 10], { widths: W_KARTA, preset: 'grid' }),
-  crop('ogrodzenie-panelowe-2', [16, 10], { widths: W_KARTA, preset: 'grid' }),
-  crop('ogrodzenie-panelowe-3d', [16, 10], { widths: W_KARTA, preset: 'grid' }),
+  crop('ogrodzenie-panelowe-2', [16, 10], { widths: W_KARTA, preset: 'grid', lightbox: true, note: 'pion 1080×1440, źródło nie sięga 1200 px - kafelek galerii dostaje 820 px' }),
+  crop('ogrodzenie-panelowe-3d', [16, 10], { widths: W_KARTA, preset: 'grid', lightbox: true, note: 'pion 1080×1440, źródło nie sięga 1200 px - kafelek galerii dostaje 820 px' }),
   crop('podmurowka', [16, 10], {
     widths: W_KARTA,
     preset: 'grid',
@@ -360,6 +395,22 @@ const LISTA_KADROW = [
   crop('kostka-brukowa-2', [16, 10], { widths: W_KAFELEK, preset: 'grid', lightbox: true, note: 'pion 1154×2560 - jak wyżej' }),
   crop('garaz', [16, 10], { widths: W_KAFELEK, preset: 'grid', lightbox: true, note: 'pion 1154×2560 - jak wyżej' }),
   crop('domek', [16, 10], { widths: W_KAFELEK, preset: 'grid', lightbox: true, note: 'pion 1154×2560 - jak wyżej' }),
+
+  // ── 16:10 - kafelki galerii ze zdjęć z telefonu (03.10.2026) ─────
+  crop('ogrodzenie-metalowe-20230916', [16, 10], { widths: W_KAFELEK, preset: 'grid', lightbox: true }),
+  crop('dom-blizniak-20250423', [16, 10], { widths: W_KAFELEK, preset: 'grid', lightbox: true }),
+  crop('podjazd-brama-przesuwna-20250710', [16, 10], { widths: W_KAFELEK, preset: 'grid', lightbox: true }),
+  crop('ogrodzenie-metalowe-20250828', [16, 10], { widths: W_KAFELEK, preset: 'grid', lightbox: true }),
+  crop('ogrodzenie-drewniane-20260125', [16, 10], { widths: W_KAFELEK, preset: 'grid', lightbox: true }),
+  crop('ogrodzenie-metalowe-brama-20260125', [16, 10], { widths: W_KAFELEK, preset: 'grid', lightbox: true }),
+  crop('furtka-brama-metalowa-20230206', [16, 10], { widths: W_KAFELEK, preset: 'grid', lightbox: true, note: 'pion ~9:20: kadr poziomy zostawia ok. 28% klatki, pełna klatka w oknie powiększenia' }),
+  crop('chodnik-taras-kostka-20230522', [16, 10], { widths: W_KAFELEK, preset: 'grid', lightbox: true, note: 'pion ~9:20: kadr poziomy zostawia ok. 28% klatki, pełna klatka w oknie powiększenia' }),
+  crop('ogrodzenie-metalowe-20240217a', [16, 10], { widths: W_KAFELEK, preset: 'grid', lightbox: true, note: 'pion ~9:20: kadr poziomy zostawia ok. 28% klatki, pełna klatka w oknie powiększenia' }),
+  crop('ogrodzenie-metalowe-20240217b', [16, 10], { widths: W_KAFELEK, preset: 'grid', lightbox: true, note: 'pion ~9:20: kadr poziomy zostawia ok. 28% klatki, pełna klatka w oknie powiększenia' }),
+  crop('brama-przesuwna-metalowa-20240604', [16, 10], { widths: W_KAFELEK, preset: 'grid', lightbox: true, note: 'pion ~9:20: kadr poziomy zostawia ok. 28% klatki, pełna klatka w oknie powiększenia' }),
+  crop('dom-blizniak-20250110', [16, 10], { widths: W_KAFELEK, preset: 'grid', lightbox: true, note: 'pion ~9:20: kadr poziomy zostawia ok. 28% klatki, pełna klatka w oknie powiększenia' }),
+  crop('ogrodzenie-metalowe-20250821', [16, 10], { widths: W_KAFELEK, preset: 'grid', lightbox: true, note: 'pion ~9:20: kadr poziomy zostawia ok. 28% klatki, pełna klatka w oknie powiększenia' }),
+  crop('furtka-drewniana-20260125', [16, 10], { widths: W_KAFELEK, preset: 'grid', lightbox: true, note: 'pion ~9:20: kadr poziomy zostawia ok. 28% klatki, pełna klatka w oknie powiększenia' }),
 
   // ── 16:9 - tło sekcji głównej pod gradientem ─────────────────────
   crop('ogrodzenia-bramy', [16, 9], { widths: W_HERO_TLO, preset: 'hero' }),
@@ -434,7 +485,7 @@ const GRADIENT_OD_LEWEJ = [
   { kind: 'cover', x: 0, y: 0, w: 0.45, h: 1, label: 'gradient sekcji głównej - tu zdjęcia praktycznie nie widać' },
 ]
 const PODPIS_KAFELKA = [
-  { kind: 'cover', x: 0, y: 0.78, w: 1, h: 0.22, label: 'podpis kafelka galerii przy najechaniu' },
+  { kind: 'cover', x: 0, y: 0.78, w: 1, h: 0.22, label: 'podpis kafelka galerii (bez JS i na dotyku zawsze, na komputerze przy najechaniu)' },
 ]
 
 export const safeZones = {
@@ -454,6 +505,23 @@ export const safeZones = {
   'kostka-brukowa-2-16x10': PODPIS_KAFELKA,
   'garaz-16x10': PODPIS_KAFELKA,
   'podmurowka-16x10': PODPIS_KAFELKA,
+  'furtka-brama-metalowa-20230206-16x10': PODPIS_KAFELKA,
+  'chodnik-taras-kostka-20230522-16x10': PODPIS_KAFELKA,
+  'ogrodzenie-metalowe-20230916-16x10': PODPIS_KAFELKA,
+  'ogrodzenie-metalowe-20240217a-16x10': PODPIS_KAFELKA,
+  'ogrodzenie-metalowe-20240217b-16x10': PODPIS_KAFELKA,
+  'brama-przesuwna-metalowa-20240604-16x10': PODPIS_KAFELKA,
+  'dom-blizniak-20250110-16x10': PODPIS_KAFELKA,
+  'dom-blizniak-20250423-16x10': PODPIS_KAFELKA,
+  'podjazd-brama-przesuwna-20250710-16x10': PODPIS_KAFELKA,
+  'ogrodzenie-metalowe-20250821-16x10': PODPIS_KAFELKA,
+  'ogrodzenie-metalowe-20250828-16x10': PODPIS_KAFELKA,
+  'ogrodzenie-drewniane-20260125-16x10': PODPIS_KAFELKA,
+  'furtka-drewniana-20260125-16x10': PODPIS_KAFELKA,
+  'ogrodzenie-metalowe-brama-20260125-16x10': PODPIS_KAFELKA,
+  'ogrodzenie-panelowe-2-16x10': PODPIS_KAFELKA,
+  'ogrodzenie-panelowe-3d-16x10': PODPIS_KAFELKA,
+  'brama-dwuskrzydlowa-16x10': PODPIS_KAFELKA,
 }
 
 /* ------------------------------------------------------------------ */
@@ -557,8 +625,8 @@ export const uses = {
      garażem) - z zaślepkami tego nie było widać, ze zdjęciami owszem.
      Podpisy w `src/data/` są dociągnięte do tej listy.                */
   'realizacja.01': uzycie('ogrodzenia-bramy-16x10', SIZES.kafelek, { alt: 'Ogrodzenie panelowe z bramą wjazdową', lightbox: true }),
-  'realizacja.02': uzycie('podjazd-16x10', SIZES.kafelek, { alt: 'Podjazd z kostki brukowej', lightbox: true }),
-  'realizacja.03': uzycie('kostka-brukowa-2-16x10', SIZES.kafelek, { alt: 'Taras z kostki brukowej', lightbox: true }),
+  'realizacja.02': uzycie('podjazd-brama-przesuwna-20250710-16x10', SIZES.kafelek, { lightbox: true }),
+  'realizacja.03': uzycie('kostka-brukowa-2-16x10', SIZES.kafelek, { alt: 'Zagęszczanie świeżo ułożonej kostki brukowej zagęszczarką płytową przed garażem', lightbox: true }),
   'realizacja.04': uzycie('altana-16x10', SIZES.kafelek, { alt: 'Drewniana altana ogrodowa', lightbox: true }),
   'realizacja.05': uzycie('podmurowka-16x10', SIZES.kafelek, { alt: 'Ogrodzenie panelowe na betonowej podmurówce', lightbox: true }),
   'realizacja.06': uzycie('garaz-16x10', SIZES.kafelek, { alt: 'Garaż blaszany na posesji', lightbox: true }),
@@ -566,6 +634,27 @@ export const uses = {
   'realizacja.08': uzycie('brama-przesuwna-16x10', SIZES.kafelek, { alt: 'Brama przesuwna z automatyką', lightbox: true }),
   'realizacja.09': uzycie('kostka-brukowa-16x10', SIZES.kafelek, { alt: 'Chodnik z kostki brukowej z obrzeżami', lightbox: true }),
   'realizacja.10': uzycie('domek-16x10', SIZES.kafelek, { alt: 'Domek narzędziowy w ogrodzie', lightbox: true }),
+
+  /* 11-23: zdjęcia z telefonu (03.10.2026), `alt` bierze się ze źródła.
+     24-26: te same fotografie co karty usług (`ogrodzenie-panelowe-2`,
+     `-3d`, `brama-dwuskrzydlowa`) - jedno zdjęcie, jedno źródło, więc kafelek
+     ma własny `alt` zamiast własnego pliku. */
+  'realizacja.11': uzycie('furtka-brama-metalowa-20230206-16x10', SIZES.kafelek, { lightbox: true }),
+  'realizacja.12': uzycie('chodnik-taras-kostka-20230522-16x10', SIZES.kafelek, { lightbox: true }),
+  'realizacja.13': uzycie('ogrodzenie-metalowe-20230916-16x10', SIZES.kafelek, { lightbox: true }),
+  'realizacja.14': uzycie('ogrodzenie-metalowe-20240217a-16x10', SIZES.kafelek, { lightbox: true }),
+  'realizacja.15': uzycie('ogrodzenie-metalowe-20240217b-16x10', SIZES.kafelek, { lightbox: true }),
+  'realizacja.16': uzycie('brama-przesuwna-metalowa-20240604-16x10', SIZES.kafelek, { lightbox: true }),
+  'realizacja.17': uzycie('dom-blizniak-20250110-16x10', SIZES.kafelek, { lightbox: true }),
+  'realizacja.18': uzycie('dom-blizniak-20250423-16x10', SIZES.kafelek, { lightbox: true }),
+  'realizacja.19': uzycie('ogrodzenie-metalowe-20250821-16x10', SIZES.kafelek, { lightbox: true }),
+  'realizacja.20': uzycie('ogrodzenie-metalowe-20250828-16x10', SIZES.kafelek, { lightbox: true }),
+  'realizacja.21': uzycie('ogrodzenie-drewniane-20260125-16x10', SIZES.kafelek, { lightbox: true }),
+  'realizacja.22': uzycie('furtka-drewniana-20260125-16x10', SIZES.kafelek, { lightbox: true }),
+  'realizacja.23': uzycie('ogrodzenie-metalowe-brama-20260125-16x10', SIZES.kafelek, { lightbox: true }),
+  'realizacja.24': uzycie('ogrodzenie-panelowe-2-16x10', SIZES.kafelek, { alt: 'Ogrodzenie panelowe z czarną podmurówką widziane wzdłuż, za siatką kostka brukowa', lightbox: true }),
+  'realizacja.25': uzycie('ogrodzenie-panelowe-3d-16x10', SIZES.kafelek, { alt: 'Ogrodzenie panelowe z czarną podmurówką od frontu, za siatką kwitnące malwy', lightbox: true }),
+  'realizacja.26': uzycie('brama-dwuskrzydlowa-16x10', SIZES.kafelek, { alt: 'Brama dwuskrzydłowa z łukowymi przęsłami przy wjeździe, obok furtka', lightbox: true }),
 
   /* ── mapa dojazdu (`MapaKontakt`, /kontakt/ i /o-nas/) ─────────────
      Art direction po TREŚCI, nie po proporcji: oba pliki są 3:2 i mają ten

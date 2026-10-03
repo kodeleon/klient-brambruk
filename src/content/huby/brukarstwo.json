@@ -90,18 +90,15 @@
   "galeria": [
     {
       "foto": "realizacja.02",
-      "tytul": "Podjazd z kostki",
-      "lokalizacja": "Międzyrzec Podlaski"
+      "tytul": "Podjazd z kostki"
     },
     {
       "foto": "realizacja.09",
-      "tytul": "Chodniki i obrzeża",
-      "lokalizacja": "Sławacinek Stary"
+      "tytul": "Chodniki i obrzeża"
     },
     {
       "foto": "realizacja.03",
-      "tytul": "Taras z kostki",
-      "lokalizacja": "Biała Podlaska"
+      "tytul": "Taras z kostki"
     }
   ],
   "tytulGalerii": "Nasze prace brukarskie",

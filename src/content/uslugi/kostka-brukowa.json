@@ -69,18 +69,15 @@
   "galeria": [
     {
       "foto": "realizacja.02",
-      "tytul": "Kostka brukowa",
-      "lokalizacja": "Biała Podlaska"
+      "tytul": "Kostka brukowa"
     },
     {
       "foto": "realizacja.06",
-      "tytul": "Chodnik z kostki",
-      "lokalizacja": "Sławacinek"
+      "tytul": "Chodnik z kostki"
     },
     {
       "foto": "realizacja.09",
-      "tytul": "Taras z kostki",
-      "lokalizacja": "Rakowiska"
+      "tytul": "Taras z kostki"
     }
   ],
   "faq": [

@@ -70,18 +70,15 @@
   "galeria": [
     {
       "foto": "realizacja.08",
-      "tytul": "Brama przesuwna panelowa",
-      "lokalizacja": "Biała Podlaska"
+      "tytul": "Brama przesuwna panelowa"
     },
     {
       "foto": "realizacja.02",
-      "tytul": "Brama z automatyką",
-      "lokalizacja": "Sławacinek"
+      "tytul": "Brama przesuwna i podjazd z kostki"
     },
     {
       "foto": "realizacja.07",
-      "tytul": "Brama samonośna",
-      "lokalizacja": "Terespol"
+      "tytul": "Brama samonośna"
     }
   ],
   "faq": [

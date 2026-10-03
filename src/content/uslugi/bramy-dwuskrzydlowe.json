@@ -69,18 +69,15 @@
   "galeria": [
     {
       "foto": "realizacja.07",
-      "tytul": "Brama dwuskrzydłowa",
-      "lokalizacja": "Biała Podlaska"
+      "tytul": "Brama dwuskrzydłowa"
     },
     {
       "foto": "realizacja.05",
-      "tytul": "Brama z automatyką",
-      "lokalizacja": "Cicibór"
+      "tytul": "Brama z automatyką"
     },
     {
       "foto": "realizacja.01",
-      "tytul": "Brama panelowa",
-      "lokalizacja": "Rakowiska"
+      "tytul": "Brama panelowa"
     }
   ],
   "faq": [

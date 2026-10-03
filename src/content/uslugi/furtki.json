@@ -68,18 +68,15 @@
   "galeria": [
     {
       "foto": "realizacja.05",
-      "tytul": "Furtka panelowa",
-      "lokalizacja": "Biała Podlaska"
+      "tytul": "Furtka panelowa"
     },
     {
       "foto": "realizacja.01",
-      "tytul": "Furtka z ogrodzeniem",
-      "lokalizacja": "Sławacinek"
+      "tytul": "Furtka z ogrodzeniem"
     },
     {
       "foto": "realizacja.07",
-      "tytul": "Furtka metalowa",
-      "lokalizacja": "Porosiuki"
+      "tytul": "Furtka metalowa"
     }
   ],
   "faq": [

@@ -63,33 +63,27 @@
     "galeria": [
       {
         "foto": "realizacja.01",
-        "tytul": "Ogrodzenie panelowe + brama",
-        "lokalizacja": "Biała Podlaska"
+        "tytul": "Ogrodzenie panelowe + brama"
       },
       {
         "foto": "realizacja.02",
-        "tytul": "Podjazd z kostki",
-        "lokalizacja": "Międzyrzec Podlaski"
+        "tytul": "Podjazd z kostki"
       },
       {
         "foto": "realizacja.08",
-        "tytul": "Brama przesuwna",
-        "lokalizacja": "Janów Podlaski"
+        "tytul": "Brama przesuwna"
       },
       {
         "foto": "realizacja.04",
-        "tytul": "Altana ogrodowa",
-        "lokalizacja": "Terespol"
+        "tytul": "Altana ogrodowa"
       },
       {
         "foto": "realizacja.07",
-        "tytul": "Furtka i przęsła",
-        "lokalizacja": "Radzyń Podlaski"
+        "tytul": "Furtka i przęsła"
       },
       {
         "foto": "realizacja.09",
-        "tytul": "Chodniki i obrzeża",
-        "lokalizacja": "Sławacinek Stary"
+        "tytul": "Chodniki i obrzeża"
       }
     ]
   },

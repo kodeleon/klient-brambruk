@@ -69,18 +69,15 @@
   "galeria": [
     {
       "foto": "realizacja.01",
-      "tytul": "Ogrodzenie panelowe 3D",
-      "lokalizacja": "Biała Podlaska"
+      "tytul": "Ogrodzenie panelowe 3D"
     },
     {
       "foto": "realizacja.07",
-      "tytul": "Panel z podmurówką",
-      "lokalizacja": "Sławacinek"
+      "tytul": "Panel z podmurówką"
     },
     {
       "foto": "realizacja.08",
-      "tytul": "Ogrodzenie panelowe 2D",
-      "lokalizacja": "Cicibór"
+      "tytul": "Ogrodzenie panelowe 2D"
     }
   ],
   "faq": [

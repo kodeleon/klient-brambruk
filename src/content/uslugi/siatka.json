@@ -68,18 +68,15 @@
   "galeria": [
     {
       "foto": "realizacja.08",
-      "tytul": "Siatka na działce",
-      "lokalizacja": "Biała Podlaska"
+      "tytul": "Siatka na działce"
     },
     {
       "foto": "realizacja.06",
-      "tytul": "Ogrodzenie z siatki",
-      "lokalizacja": "Janów Podlaski"
+      "tytul": "Ogrodzenie z siatki"
     },
     {
       "foto": "realizacja.03",
-      "tytul": "Siatka ogrodowa",
-      "lokalizacja": "Piszczac"
+      "tytul": "Siatka ogrodowa"
     }
   ],
   "faq": [

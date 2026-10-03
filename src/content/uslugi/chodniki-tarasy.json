@@ -70,18 +70,15 @@
   "galeria": [
     {
       "foto": "realizacja.06",
-      "tytul": "Chodnik ogrodowy",
-      "lokalizacja": "Biała Podlaska"
+      "tytul": "Chodnik ogrodowy"
     },
     {
       "foto": "realizacja.09",
-      "tytul": "Taras z kostki",
-      "lokalizacja": "Rakowiska"
+      "tytul": "Taras z kostki"
     },
     {
       "foto": "realizacja.02",
-      "tytul": "Alejka w ogrodzie",
-      "lokalizacja": "Sławacinek"
+      "tytul": "Podjazd z kostki przed domem"
     }
   ],
   "faq": [

@@ -56,7 +56,6 @@ type Kafelek = {
   powiekszenie: Powiekszenie | null
   alt: string
   tytul: string
-  lokalizacja: string
 }
 
 function zbierz(siatka: HTMLElement): Kafelek[] {
@@ -74,7 +73,6 @@ function zbierz(siatka: HTMLElement): Kafelek[] {
           : null,
       alt: img?.alt ?? '',
       tytul: przycisk.dataset.tytul ?? '',
-      lokalizacja: przycisk.dataset.lokalizacja ?? '',
     }
   })
 }
@@ -144,8 +142,6 @@ export function galeria() {
 
     const miejsceObrazu = okno.querySelector<HTMLElement>('[data-galeria-obraz]')
     const tytul = okno.querySelector<HTMLElement>('[data-galeria-tytul]')
-    const lokalizacja = okno.querySelector<HTMLElement>('[data-galeria-lokalizacja]')
-    const lokalizacjaTekst = okno.querySelector<HTMLElement>('[data-galeria-lokalizacja-tekst]')
     const licznik = okno.querySelector<HTMLElement>('[data-galeria-licznik]')
     if (!miejsceObrazu) continue
 
@@ -175,10 +171,6 @@ export function galeria() {
       }
 
       if (tytul) tytul.textContent = kafelek.tytul
-      if (lokalizacja && lokalizacjaTekst) {
-        lokalizacjaTekst.textContent = kafelek.lokalizacja
-        lokalizacja.hidden = !kafelek.lokalizacja
-      }
       if (licznik) licznik.textContent = `${biezacy + 1} / ${kafelki.length}`
     }
 

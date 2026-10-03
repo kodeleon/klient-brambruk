@@ -11,6 +11,22 @@
  * w klasach narzędziowych w `GaleriaSiatka.astro`.
  */
 
+/**
+ * WARIANT `kursor-js:` - podpis kafelka chowany do najechania.
+ *
+ * Podpis kafelka jest DOMYŚLNIE WIDOCZNY. Chowa go dopiero ten wariant, czyli
+ * tylko tam, gdzie da się go odsłonić najechaniem (`hover: hover` - mysz,
+ * gładzik) i gdzie działa skrypt (`scripting: enabled`). Bez JavaScriptu
+ * i na ekranie dotykowym nie ma czym odsłonić podpisu, więc zostaje na wierzchu.
+ *
+ * Samo `opacity-0 group-hover:opacity-100` chowałoby podpis zawsze, a odsłaniało
+ * go zdarzeniem, którego na telefonie nigdy nie będzie, a bez JavaScriptu
+ * audyt `no-js` liczy to jako treść niewidoczną. Przeglądarka, która nie zna
+ * `scripting` (przed Chrome 120, Safari 17, Firefox 113), odrzuca całe
+ * zapytanie i też zostawia podpis widoczny - błąd wypada w bezpieczną stronę.
+ */
+@custom-variant kursor-js (@media (hover: hover) and (scripting: enabled));
+
 .galeria-okno {
   max-width: 100vw;
   max-height: 100dvh;
@@ -30,6 +46,13 @@
    dla otwartego, inaczej okno przykryłoby stronę na stałe. */
 .galeria-okno[open] {
   display: flex;
+}
+
+/* Podpis kafelka za otwartym oknem. Na telefonie jest widoczny na stałe i przez
+   ciemne tło przeświecałby pod zdjęciem, nachodząc na licznik. Tło za oknem jest
+   nieaktywne (`inert`), więc nic z treści nie ginie. */
+html:has(.galeria-okno[open]) .galeria-podpis {
+  visibility: hidden;
 }
 
 /* Przewijanie strony pod otwartym oknem. `<dialog>` modalny blokuje je sam

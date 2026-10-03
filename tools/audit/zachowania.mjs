@@ -26,7 +26,7 @@
  * Kod wyjścia: 1, gdy którykolwiek test nie przeszedł - nadaje się do CI.
  */
 
-import { existsSync } from 'node:fs'
+import { existsSync, readFileSync } from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { startPreview } from './server.mjs'
@@ -65,6 +65,14 @@ const ok = (nazwa, wynik) => {
 }
 
 // --- 1. Filtr + szukajka na /realizacje/ ---
+// Oczekiwane liczby idą z treści, nie z głowy: test sprawdza, że filtr i szukajka
+// działają, a nie ile zdjęć jest w galerii.
+const { pozycje: realizacje } = JSON.parse(readFileSync(path.join(ROOT, 'src/content/realizacje.json'), 'utf8'))
+const ileBrukarstwa = realizacje.filter((r) => r.kategoria === 'brukarstwo').length
+// Szukajka zna wyłącznie tytuł kafelka (lokalizacji w galerii nie ma). Fraza
+// musi trafiać w jeden tytuł, inaczej test niczego nie rozróżnia.
+const FRAZA = 'altana'
+const ileZFraza = realizacje.filter((r) => r.tytul.toLowerCase().includes(FRAZA)).length
 await p.goto(adres + '/realizacje/', { waitUntil: 'networkidle0' })
 let stan = await p.evaluate(() => {
   const ile = () => [...document.querySelectorAll('[data-kategoria]')].filter((k) => k.offsetParent !== null).length
@@ -76,12 +84,12 @@ let stan = await p.evaluate(() => {
 })
 ok(
   'filtr kategorii /realizacje',
-  stan.wszystkie === 10 && stan.poFiltrze === 3 ? true : stan
+  stan.wszystkie === realizacje.length && stan.poFiltrze === ileBrukarstwa && ileBrukarstwa > 0 ? true : stan
 )
 
-stan = await p.evaluate(async () => {
+stan = await p.evaluate(async (fraza) => {
   const pole = document.querySelector('[data-filtr-szukaj]')
-  pole.value = 'terespol'
+  pole.value = fraza
   pole.dispatchEvent(new Event('input', { bubbles: true }))
   await new Promise((r) => setTimeout(r, 100))
   return {
@@ -89,8 +97,13 @@ stan = await p.evaluate(async () => {
     licznik: document.querySelector('[data-filtr-widoczne]')?.textContent,
     pusto: document.querySelector('[data-filtr-pusto]')?.hidden,
   }
-})
-ok('szukajka /realizacje (terespol)', stan.widoczne === 1 && stan.licznik === '1' ? true : stan)
+}, FRAZA)
+ok(
+  `szukajka /realizacje (${FRAZA})`,
+  ileZFraza >= 1 && ileZFraza < realizacje.length && stan.widoczne === ileZFraza && stan.licznik === String(ileZFraza)
+    ? true
+    : stan
+)
 
 // --- 2. FAQ ---
 await p.goto(adres + '/', { waitUntil: 'networkidle0' })
@@ -105,6 +118,47 @@ stan = await p.evaluate(async () => {
   return { otwarty, pierwszyPoDrugim: pierwszy.open, drugiOtwarty: drugi.open }
 })
 ok('FAQ: otwiera i zamyka poprzednie', stan.otwarty && !stan.pierwszyPoDrugim && stan.drugiOtwarty ? true : stan)
+
+// --- 2b. Podpis kafelka galerii ---
+// Domyślnie widoczny. Chowa go wyłącznie wariant `kursor-js:` (mysz + skrypt),
+// a najechanie i fokus z klawiatury go odsłaniają. Na ekranie dotykowym ma zostać
+// na wierzchu - tam nie ma jak najechać. Bez JavaScriptu pilnuje tego `npm run no-js`.
+const przezroczystoscPodpisu = (indeks) =>
+  p.evaluate((i) => {
+    const kafelek = document.querySelectorAll('[data-galeria-kafelek]')[i]
+    return Number(getComputedStyle(kafelek.querySelector('.galeria-podpis')).opacity)
+  }, indeks)
+await p.mouse.move(2, 2)
+const podpisSpoczynek = await przezroczystoscPodpisu(0)
+await (await p.$('[data-galeria-kafelek]')).hover()
+await new Promise((r) => setTimeout(r, 450))
+const podpisNajechany = await przezroczystoscPodpisu(0)
+await p.mouse.move(2, 2)
+await p.evaluate(() => document.querySelectorAll('[data-galeria-kafelek]')[1].focus({ focusVisible: true }))
+await new Promise((r) => setTimeout(r, 450))
+const podpisFokus = await przezroczystoscPodpisu(1)
+await p.evaluate(() => document.querySelectorAll('[data-galeria-kafelek]')[1].blur())
+ok(
+  'galeria (mysz): podpis schowany, najechanie i fokus go odsłaniają',
+  podpisSpoczynek === 0 && podpisNajechany === 1 && podpisFokus === 1
+    ? true
+    : { podpisSpoczynek, podpisNajechany, podpisFokus }
+)
+
+const dotyk = await b.newPage()
+await dotyk.emulate({
+  viewport: { width: 390, height: 844, deviceScaleFactor: 2, isMobile: true, hasTouch: true },
+  userAgent: 'Mozilla/5.0 (Linux; Android 14; Pixel 8) AppleWebKit/537.36 Chrome/130 Mobile Safari/537.36',
+})
+await dotyk.goto(adres + '/realizacje/', { waitUntil: 'networkidle0' })
+const podpisyDotyk = await dotyk.evaluate(() =>
+  [...document.querySelectorAll('[data-galeria-kafelek] .galeria-podpis')].map((el) => Number(getComputedStyle(el).opacity))
+)
+await dotyk.close()
+ok(
+  'galeria (dotyk): podpis kafelka widoczny bez najechania',
+  podpisyDotyk.length > 0 && podpisyDotyk.every((o) => o === 1) ? true : podpisyDotyk
+)
 
 // --- 3. Lightbox ---
 stan = await p.evaluate(async () => {

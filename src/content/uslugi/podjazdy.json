@@ -70,18 +70,15 @@
   "galeria": [
     {
       "foto": "realizacja.02",
-      "tytul": "Podjazd z kostki",
-      "lokalizacja": "Biała Podlaska"
+      "tytul": "Podjazd z kostki"
     },
     {
       "foto": "realizacja.09",
-      "tytul": "Podjazd dwukolorowy",
-      "lokalizacja": "Cicibór"
+      "tytul": "Podjazd dwukolorowy"
     },
     {
       "foto": "realizacja.06",
-      "tytul": "Parking z kostki",
-      "lokalizacja": "Sławacinek"
+      "tytul": "Parking z kostki"
     }
   ],
   "faq": [
