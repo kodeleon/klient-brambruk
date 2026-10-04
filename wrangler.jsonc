@@ -1,19 +1,18 @@
 {
   // Konfiguracja wdrożenia na Cloudflare Workers ze statycznymi zasobami.
   //
-
   "name": "brambruk-website",
   "account_id": "56eddaf0d952ff77198c8210a6f0b8ca",
-  "compatibility_date": "2026-09-14",
+  "compatibility_date": "2026-10-04",
   "workers_dev": false,
   "preview_urls": false,
-
+  //
   // Domena docelowa. Odkomentuj DOPIERO przy przełączeniu, po usunięciu
   // rekordu A starego WordPressa dla `brambruk.pl` - dopóki rekord istnieje,
   // deploy odmówi założenia Custom Domain. Kolejność: usuń rekord A ->
   // odkomentuj -> `npx wrangler deploy` (wrangler zakłada DNS i certyfikat).
   "routes": [{ "pattern": "brambruk.pl", "custom_domain": true }],
-
+  //
   "assets": {
     "directory": "./dist",
     "not_found_handling": "404-page",
