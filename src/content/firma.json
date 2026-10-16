@@ -19,6 +19,36 @@
     "Pon–Pt: 7:00–18:00",
     "Sob: 8:00–14:00"
   ],
+  "godzinyOtwarcia": [
+    {
+      "dni": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday"
+      ],
+      "od": "07:00",
+      "do": "18:00"
+    },
+    {
+      "dni": [
+        "Saturday"
+      ],
+      "od": "08:00",
+      "do": "14:00"
+    }
+  ],
+  "adresPocztowy": {
+    "ulica": "Bohukały 1",
+    "miejscowosc": "Bohukały",
+    "kodPocztowy": "21-550",
+    "wojewodztwo": "lubelskie"
+  },
+  "srodekZasiegu": {
+    "szerokosc": 52.0290344,
+    "dlugosc": 23.1383052
+  },
   "facebookUrl": "https://www.facebook.com/profile.php?id=100088829901271",
   "instagramUrl": "https://www.instagram.com/brambruk/",
   "tiktokUrl": "https://www.tiktok.com/@brambruk_firma_bu",

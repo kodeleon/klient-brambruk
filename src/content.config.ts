@@ -113,6 +113,35 @@ const firma = defineCollection({
     email: z.string().email(),
     /** Wiersz na wpis: tydzień i sobota to dwie informacje, nie jedna. */
     godziny: z.array(z.string().min(1)).min(1),
+    /**
+     * Wersja maszynowa `godziny` - dla danych strukturalnych. Tekst widoczny
+     * na stronie zostaje osobnym polem (to słowa klienta), a rozjazd między
+     * nimi przerywa build (`src/lib/daneStrukturalne.ts`).
+     */
+    godzinyOtwarcia: z
+      .array(
+        z.object({
+          dni: z
+            .array(z.enum(['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']))
+            .min(1),
+          od: z.string().regex(/^\d{2}:\d{2}$/, 'godzina w formacie GG:MM'),
+          do: z.string().regex(/^\d{2}:\d{2}$/, 'godzina w formacie GG:MM'),
+        }),
+      )
+      .min(1),
+    /** Rozbicie `adres` na pola; zgodność z `adres` pilnuje `daneStrukturalne.ts`. */
+    adresPocztowy: z.object({
+      ulica: z.string().min(1),
+      miejscowosc: z.string().min(1),
+      kodPocztowy: z.string().regex(/^\d{2}-\d{3}$/, 'kod pocztowy w formacie 00-000'),
+      wojewodztwo: z.string().min(1),
+    }),
+    /**
+     * Środek zasięgu działania - Biała Podlaska, bo strony obiecują "100 km od
+     * Białej Podlaskiej". To NIE jest położenie firmy (Bohukały, ok. 26 km dalej).
+     * Promień bierze się z `dowody.statystyki.zasieg`, żeby nie było drugiej wartości.
+     */
+    srodekZasiegu: z.object({ szerokosc: z.number().min(-90).max(90), dlugosc: z.number().min(-180).max(180) }),
     // Pusty łańcuch = odnośnik się nie renderuje. Nigdy nie zostawiamy "#".
     facebookUrl: z.string().url().or(z.literal('')),
     instagramUrl: z.string().url().or(z.literal('')),

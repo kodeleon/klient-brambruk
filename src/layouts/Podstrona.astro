@@ -18,6 +18,7 @@
 
 import { site, adres } from '../config/site'
 import firma from '../content/firma.json'
+import { ID_FIRMY, wezelFirmy } from '../lib/daneStrukturalne'
 import Naglowek from '../components/layout/Naglowek.astro'
 import OgImage from '../components/media/OgImage.astro'
 import Stopka from '../components/layout/Stopka.astro'
@@ -67,10 +68,16 @@ const ogUrl = ogImage ? adres(ogImage) : null
 /**
  * Dane strukturalne.
  *
- * Świadomie BEZ `LocalBusiness`, mimo że dane firmy są potwierdzone: stary
- * serwis go nie miał, a migracja nie zmienia sygnałów dla wyszukiwarki bez
- * osobnej decyzji. Wpisany na listę do rozmowy po migracji.
+ * `WebSite` + `WebPage` na każdej podstronie, a do tego węzeł firmy
+ * (`LocalBusiness`, składany w `src/lib/daneStrukturalne.ts` wyłącznie z
+ * `firma.json`). Firma jest prawdziwa, dane potwierdzone przez klienta.
+ *
+ * Węzeł firmy dostają tylko podstrony indeksowane: `noindex` i 404 nie mają
+ * czego deklarować wyszukiwarce. Pełny węzeł na każdej podstronie, a nie
+ * tylko na stronie głównej - odwołanie przez `@id` do węzła z innego adresu
+ * wyszukiwarka nie rozwiązuje, więc musi być w tym samym dokumencie.
  */
+const zFirma = !noindex && kanonicznyProp !== false
 const daneStrukturalne = {
   '@context': 'https://schema.org',
   '@graph': [
@@ -81,6 +88,7 @@ const daneStrukturalne = {
       name: firma.nazwa,
       description: firma.opisSerwisu,
       inLanguage: site.jezyk,
+      ...(zFirma && { publisher: { '@id': ID_FIRMY } }),
     },
     {
       '@type': 'WebPage',
@@ -91,6 +99,7 @@ const daneStrukturalne = {
       isPartOf: { '@id': `${site.origin}/#serwis` },
       inLanguage: jezyk,
     },
+    ...(zFirma ? [wezelFirmy()] : []),
   ],
 }
 ---
